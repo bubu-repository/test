@@ -43,11 +43,14 @@ export function AskHrAnswer() {
   );
 }
 
-/** HR's review queue: one draft per card, the source, why it needs a person, approve in one tap. */
+/**
+ * HR's review queue: the decision first (approve the swap or not), then the reply. A draft about
+ * pay or a contract can't be sent until its source has been opened.
+ */
 export function AskHrQueue() {
   return (
     <div className="ah">
-      <Bar title="Review queue" sub="6 drafts waiting · oldest 25 min" />
+      <Bar title="Review queue" sub="6 waiting · oldest 25 min" />
       <div className="ah-body">
         <div className="ah-card">
           <div className="ah-queue-head">
@@ -60,21 +63,62 @@ export function AskHrQueue() {
               </span>
             </span>
           </div>
-          <p style={{ marginTop: "0.75em" }}>
-            <span className="ah-tag ah-tag--wait">Needs you: shift swaps need approval</span>
-          </p>
-          <p style={{ marginTop: "0.6em", padding: "0.6em 0.7em", borderRadius: "0.7em", background: "#f8f9fc" }}>
-            Hi Rina, yes. Swaps are fine if Dedi agrees and you both log it in the app by Thursday. I&apos;ve approved it on our side.
-          </p>
+          <p className="ah-step">1 · Your decision</p>
+          <div className="ah-row">
+            <span className="ah-btn ah-btn--go">Approve swap</span>
+            <span className="ah-btn">Decline</span>
+          </div>
+          <p className="ah-step">2 · Reply (AI draft)</p>
+          <p className="ah-draft">Hi Rina, yes. Swaps are fine if Dedi agrees and you both log it in the app by Thursday.</p>
           <p className="ah-src">
-            Attendance policy, 3.1 <span>View</span>
+            Attendance policy, 3.1 <span>Open</span>
           </p>
           <div className="ah-row">
             <span className="ah-btn">Edit</span>
-            <span className="ah-btn ah-btn--go">Approve and send</span>
+            <span className="ah-btn ah-btn--off">Send after deciding</span>
           </div>
         </div>
         <span className="ah-peek" />
+      </div>
+    </div>
+  );
+}
+
+/** The admin side: which topics may be answered automatically, and a handbook change to review. */
+export function AskHrAdmin() {
+  const topics: [string, boolean][] = [
+    ["Leave balance", true],
+    ["Payslip dates", true],
+    ["Public holidays", true],
+    ["Reimbursement rules", false],
+  ];
+  return (
+    <div className="ah">
+      <Bar title="Ask HR settings" sub="PT Sinar · admin" />
+      <div className="ah-body">
+        <div className="ah-card ah-card--alert">
+          <span className="ah-tag ah-tag--wait">Handbook changed</span>
+          <p style={{ marginTop: "0.5em" }}>
+            <b>Leave policy</b> was updated today. 3 recent answers cited sections that changed.
+          </p>
+          <div className="ah-row">
+            <span className="ah-btn ah-btn--go">Review 3 answers</span>
+          </div>
+        </div>
+        <div className="ah-card">
+          <h4>Answered automatically</h4>
+          <ul className="ah-toggles">
+            {topics.map(([t, on]) => (
+              <li key={t}>
+                <span>{t}</span>
+                <span className="ah-switch" data-on={on || undefined}>
+                  {on ? "On" : "Off"}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="ah-lock">🔒 Complaints, health, termination and pay disputes always go to a person. Set by Legal; can&apos;t be switched on.</p>
+        </div>
       </div>
     </div>
   );
@@ -109,7 +153,7 @@ export function AskHrPending() {
   );
 }
 
-/** A sensitive message: no AI, a named person, and who can see it. */
+/** A sensitive message, sent after hours: no AI, a named person, when, who can see it, and an urgent line. */
 export function AskHrSensitive() {
   return (
     <div className="ah">
@@ -119,11 +163,11 @@ export function AskHrSensitive() {
         <div className="ah-card">
           <span className="ah-tag ah-tag--care">Sent privately to HR</span>
           <h4 style={{ marginTop: "0.6em" }}>Thank you for telling us.</h4>
-          <p>This goes to Dina in HR, not to your supervisor. She&apos;ll contact you within one working day, by the way you choose.</p>
+          <p>This goes to Dina in HR, not to your supervisor. HR is offline now; she&apos;ll contact you by 10:00 tomorrow, the way you choose.</p>
           <p className="ah-lock">🔒 Only you and HR can see this. No automatic reply is written.</p>
           <div className="ah-row">
-            <span className="ah-btn">Add details</span>
-            <span className="ah-btn ah-btn--care">Call HR now</span>
+            <span className="ah-btn">How Dina contacts me</span>
+            <span className="ah-btn ah-btn--care">Unsafe now? 24-hour line</span>
           </div>
         </div>
       </div>

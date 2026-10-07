@@ -10,7 +10,7 @@ export function HowIWork() {
         <div>
           <p className="type-eyebrow">How I work</p>
           <h2 id="how-title" className="type-display mt-3">
-            Four rules I design by.
+            Four rules I build by.
           </h2>
           <p className="mt-6 max-w-[48ch] text-18 leading-relaxed text-muted">{bio.team}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">

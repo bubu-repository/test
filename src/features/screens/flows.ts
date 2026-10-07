@@ -16,7 +16,7 @@ export const FLOWS: Record<string, FlowStep[]> = {
       tap: { target: ".tl-list li:first-child", label: "Open the top tender" },
     },
     {
-      key: "tl-brief",
+      key: "tl-brief-misread",
       title: "The brief",
       note: "One page per tender: a verdict, three reasons, and the page each one comes from.",
       tap: { target: ".tl-reasons li:nth-child(3) .tl-page", label: "Check the bank guarantee on p. 88" },
@@ -49,8 +49,8 @@ export const FLOWS: Record<string, FlowStep[]> = {
     {
       key: "ah-queue",
       title: "Lane 2, on HR's side",
-      note: "One draft per card, with its source and why it needs a person. Approving takes one tap.",
-      tap: { target: ".ah-btn--go", label: "Approve and send" },
+      note: "HR makes the decision first, then sends the reply. Pay and contract drafts can't go out until the source has been opened.",
+      tap: { target: ".ah-btn--go", label: "Approve the swap, then reply" },
     },
     {
       key: "ah-sensitive",
@@ -60,22 +60,22 @@ export const FLOWS: Record<string, FlowStep[]> = {
   ],
   catat: [
     {
-      key: "ct-sale",
+      key: "ct-sale-before",
       title: "A sale, by voice",
-      note: "A six-second voice note becomes one line: what sold, and for how much.",
-      tap: { target: ".ct-btns [data-picked]", label: "Keep it: ✓ Benar" },
+      note: "A six-second voice note in warung slang becomes one line: what sold, and for how much. Nothing is final yet.",
+      tap: { target: ".ct-btns span:first-child", label: "Keep it: ✓ Benar" },
+    },
+    {
+      key: "ct-ask-before",
+      title: "One short question",
+      note: "Two hours later: 'Ceban, Bu Sri'. A new debt, or a payment? Catat asks instead of guessing.",
+      tap: { target: ".ct-btns span:last-child", label: "Answer: Bayar utang" },
     },
     {
       key: "ct-ask",
-      title: "One short question",
-      note: "'Ceban, Bu Sri' could mean two things, so Catat asks instead of guessing.",
-      tap: { target: ".ct-btns [data-picked]", label: "Answer: Bayar utang" },
-    },
-    {
-      key: "ct-undo",
-      title: "Undo in one tap",
-      note: "A misheard price is cancelled with one tap, and nothing is written down.",
-      tap: { target: ".ct-btns [data-picked]", label: "Undo: ✗ Batalkan" },
+      title: "Logged, with what's left",
+      note: "The payment is logged with Bu Sri's remaining debt, and it can still be undone in one tap.",
+      tap: { label: "Sunday evening" },
     },
     {
       key: "ct-summary",

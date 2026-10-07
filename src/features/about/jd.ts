@@ -1,7 +1,7 @@
 import { projects } from "@/content/projects";
 
 /**
- * A small, honest job-description matcher for product design roles. Each signal is a skill area with the phrases a JD uses
+ * A small, honest job-description matcher for AI product engineering roles. Each signal is a skill area with the phrases a JD uses
  * for it, whether Adelia has it, and the evidence. No model needed; Moci can add a second opinion.
  * CONTOH — ganti dengan data asli: adjust `have` and `evidence` to the real profile.
  */
@@ -16,31 +16,162 @@ export type Signal = {
 };
 
 export const SIGNALS: Signal[] = [
-  { id: "research", label: "User research", weight: 3, have: true, patterns: [/user research/, /research(er)?\b/, /interview/, /field (study|work|research)/, /discovery/, /ethnograph/, /contextual inquiry/], evidence: "Field research at 27 warung and with 9 bid teams", project: "catat" },
-  { id: "framing", label: "Problem framing and product thinking", weight: 3, have: true, patterns: [/product think/, /problem (framing|definition|solving)/, /strateg/, /prioriti[sz]/, /trade-?offs?/, /outcomes?/, /\bjtbd\b|jobs to be done/], evidence: "Each case starts from one user decision and its trade-offs", project: "lintas" },
-  { id: "interaction", label: "Interaction and UX design", weight: 3, have: true, patterns: [/\bux\b/, /interaction design/, /user experience/, /product design(er)?/, /flows?\b/, /information architecture/, /wireframe/], evidence: "End-to-end flows for three shipped products" },
-  { id: "ai-ux", label: "Designing AI and LLM products", weight: 3, have: true, patterns: [/\bllms?\b/, /\bai\b/, /machine learning|\bml\b/, /\bagent(s|ic)?\b/, /gen(erative)? ?ai/, /copilot/, /conversational/, /chatbot/], evidence: "Citations, confidence and undo patterns across three AI products", project: "tenderlens" },
-  { id: "prototyping", label: "Prototyping", weight: 2, have: true, patterns: [/prototyp/, /protopie/, /framer/, /high[- ]fidelity/, /\bhi-?fi\b/], evidence: "Paper to clickable to coded prototypes with real data" },
-  { id: "figma", label: "Figma", weight: 2, have: true, patterns: [/figma/, /sketch\b/, /design tools?/], evidence: "Daily tool; libraries, variables and auto layout" },
-  { id: "systems", label: "Design systems", weight: 2, have: true, patterns: [/design systems?/, /component librar/, /design tokens?/, /pattern librar/], evidence: "Token-based system behind this site and every lab experiment" },
-  { id: "testing", label: "Usability testing and iteration", weight: 2, have: true, patterns: [/usability/, /user testing/, /a\/b test/, /experiment/, /iterat/, /validat/], evidence: "Tested every key screen with 5–12 people before shipping", project: "tenderlens" },
-  { id: "writing", label: "UX writing and conversation design", weight: 2, have: true, patterns: [/ux writing|content design|microcopy/, /conversation design/, /copy\b/, /voice and tone|tone of voice/], evidence: "Wrote every message the Catat agent sends", project: "catat" },
-  { id: "visual", label: "Visual and interface craft", weight: 2, have: true, patterns: [/visual design/, /\bui\b/, /typography/, /layout/, /pixel/, /craft/, /polish/, /aesthetic/], evidence: "This site: type, layout, motion and illustration" },
-  { id: "motion", label: "Motion and micro-interaction", weight: 1, have: true, patterns: [/motion/, /animation/, /micro-?interaction/], evidence: "Purposeful motion with reduced-motion paths on this site" },
-  { id: "a11y", label: "Accessibility", weight: 2, have: true, patterns: [/accessib/, /\ba11y\b/, /wcag/, /inclusive/], evidence: "Keyboard-first, reduced-motion paths, checked contrast" },
-  { id: "data", label: "Metrics and outcomes", weight: 1, have: true, patterns: [/metrics?/, /analytics/, /data[- ]informed|data[- ]driven/, /\bkpis?\b/, /measur/], evidence: "Every case study reports measured outcomes" },
-  { id: "collab", label: "Working with PMs and engineers", weight: 2, have: true, patterns: [/cross[- ]functional/, /collaborat/, /stakeholder/, /engineers?/, /product managers?|\bpms?\b/, /squad/], evidence: "Squad of six at a Jakarta startup; codes, so handoff is a pull request" },
-  { id: "code", label: "Front-end code", weight: 1, have: true, patterns: [/\bhtml\b/, /\bcss\b/, /react/, /front[- ]?end/, /code/, /design engineer/], evidence: "React, Next.js and TypeScript; built this site" },
-  { id: "mobile", label: "Mobile-first design", weight: 1, have: true, patterns: [/mobile/, /responsive/, /\bpwa\b/], evidence: "All four products are used mostly on phones" },
-  { id: "startup", label: "Startup pace and ownership", weight: 1, have: true, patterns: [/startup/, /fast[- ]paced/, /ambigu/, /autonom/, /self[- ]starter/, /ownership/, /zero to one|0 to 1|0→1/], evidence: "Took three products of my own from zero to real users, and shipped Ask HR in a startup squad" },
-  { id: "indonesian", label: "Bahasa Indonesia", weight: 1, have: true, patterns: [/indonesia(n)?/, /bahasa/, /jakarta/, /southeast asia|\bsea\b/], evidence: "Native speaker, based in Bekasi" },
-  { id: "english", label: "English", weight: 1, have: true, patterns: [/english/, /written communication/, /communicat/, /storytell/, /present/], evidence: "Works, writes and presents in English" },
-  { id: "remote", label: "Remote-friendly", weight: 1, have: true, patterns: [/remote/, /distributed/, /async/, /hybrid/], evidence: "UTC+7, overlaps with Asia and Europe mornings" },
+  {
+    id: "llm",
+    label: "LLM APIs and tool use",
+    weight: 3,
+    have: true,
+    patterns: [/\bllms?\b/, /large language model/, /tool (use|calling)/, /function calling/, /\bagent(s|ic)?\b/, /claude|openai|anthropic|gpt/, /gen(erative)? ?ai/],
+    evidence: "Claude with tool use in Catat's ledger agent and in this site's agent",
+    project: "catat",
+  },
+  {
+    id: "evals",
+    label: "Evals and quality measurement",
+    weight: 3,
+    have: true,
+    patterns: [/\bevals?\b/, /evaluation/, /benchmark/, /test sets?/, /quality (metrics|bar)/, /regression/, /accuracy/],
+    evidence: "Frozen test sets, CI gates and error logs in every case",
+    project: "tenderlens",
+  },
+  {
+    id: "rag",
+    label: "Retrieval and RAG",
+    weight: 2,
+    have: true,
+    patterns: [/\brag\b/, /retrieval/, /vector/, /embedding/, /pgvector|pinecone|weaviate|semantic search/],
+    evidence: "Hybrid search over client handbooks in Ask HR",
+    project: "ask-hr",
+  },
+  {
+    id: "product",
+    label: "Product sense and user research",
+    weight: 3,
+    have: true,
+    patterns: [/product (sense|thinking|mind)/, /user research/, /customers?/, /interview/, /discovery/, /end[- ]to[- ]end/, /own(ership)?/],
+    evidence: "Field research with 9 bid teams and 27 warung before writing code",
+    project: "catat",
+  },
+  {
+    id: "frontend",
+    label: "Front-end engineering",
+    weight: 3,
+    have: true,
+    patterns: [/react/, /next\.?js/, /typescript/, /front[- ]?end/, /\bui\b/, /full[- ]?stack/],
+    evidence: "React, Next.js and TypeScript in every product, and this site",
+  },
+  {
+    id: "backend",
+    label: "Back-end and data",
+    weight: 2,
+    have: true,
+    patterns: [/back[- ]?end/, /\bapis?\b/, /postgres|sql|database/, /python/, /node(\.js)?/, /queues?|jobs?/],
+    evidence: "Postgres job queues, FastAPI and Node services",
+    project: "tenderlens",
+  },
+  {
+    id: "design",
+    label: "Interaction design and UX",
+    weight: 2,
+    have: true,
+    patterns: [/\bux\b/, /interaction design/, /design(er)?s?\b/, /figma/, /prototyp/],
+    evidence: "Designed every product she built; Figma and coded prototypes",
+  },
+  {
+    id: "safety",
+    label: "Reliability, guardrails and failure modes",
+    weight: 2,
+    have: true,
+    patterns: [/guardrail/, /safety/, /hallucinat/, /reliab/, /fallback/, /human[- ]in[- ]the[- ]loop/, /trust/],
+    evidence: "Abstention, citation checks in code, lane routing, undo",
+    project: "ask-hr",
+  },
+  {
+    id: "cost",
+    label: "Latency and cost awareness",
+    weight: 1,
+    have: true,
+    patterns: [/latency/, /cost/, /performance/, /scal(e|ing)/, /optimi[sz]/],
+    evidence: "Cost per brief cut from Rp 1,900 to Rp 420; p50/p95 tracked",
+    project: "tenderlens",
+  },
+  {
+    id: "ml",
+    label: "Classic ML and fine-tuning",
+    weight: 1,
+    have: true,
+    patterns: [/machine learning|\bml\b/, /fine[- ]tun/, /classifier/, /speech|asr|whisper/, /pytorch|hugging ?face/],
+    evidence: "Fine-tuned Whisper (WER 31% → 14%) and an IndoBERT router",
+    project: "catat",
+  },
+  {
+    id: "testing",
+    label: "Testing and CI",
+    weight: 1,
+    have: true,
+    patterns: [/testing/, /\bci\b|continuous integration/, /playwright|vitest|jest|pytest/],
+    evidence: "Eval suites in CI; Playwright for the apps",
+  },
+  {
+    id: "collab",
+    label: "Working in a product squad",
+    weight: 2,
+    have: true,
+    patterns: [/cross[- ]functional/, /collaborat/, /product managers?|\bpms?\b/, /designers?/, /squad|team/],
+    evidence: "Six months in a squad: PM, engineers, a data scientist, a designer",
+    project: "ask-hr",
+  },
+  {
+    id: "indonesian",
+    label: "Bahasa Indonesia",
+    weight: 1,
+    have: true,
+    patterns: [/indonesia(n)?/, /bahasa/, /jakarta/, /southeast asia|\bsea\b/],
+    evidence: "Native speaker; three products built for Indonesian users",
+  },
+  {
+    id: "english",
+    label: "English",
+    weight: 1,
+    have: true,
+    patterns: [/english/, /written communication/, /communicat/, /writ(e|ing)/],
+    evidence: "Works and writes in English, as these case studies show",
+  },
+  { id: "remote", label: "Remote-friendly", weight: 1, have: true, patterns: [/remote/, /distributed/, /async/, /hybrid/], evidence: "UTC+7, overlaps with Asia, Australia and Gulf mornings" },
+  {
+    id: "newgrad",
+    label: "New grad or junior level",
+    weight: 1,
+    have: true,
+    patterns: [/new grad|graduate|junior|entry[- ]level|early[- ]career/, /0[-–]2 years/],
+    evidence: "B.Sc. Informatics, 2026, with an internship and three shipped products",
+  },
   // Honest gaps
-  { id: "management", label: "Managing designers", weight: 1, have: false, patterns: [/manag(e|ing) (a )?(team|designers)/, /people manag/, /direct reports/, /design (lead|manager)/, /head of design/], evidence: "Has mentored, hasn't managed a team yet" },
-  { id: "native", label: "Native iOS and Android at scale", weight: 1, have: false, patterns: [/\bios\b/, /android/, /human interface guidelines|\bhig\b/, /material design/], evidence: "Mobile web and PWAs, not native app guidelines at scale" },
-  { id: "enterprise", label: "Large enterprise programmes", weight: 1, have: false, patterns: [/enterprise/, /\bsaas\b at scale|large[- ]scale/, /fortune 500/], evidence: "Small teams and pilots so far, up to a few thousand users" },
-  { id: "brand", label: "Brand and marketing design", weight: 1, have: false, patterns: [/brand (design|identity)/, /marketing design/, /campaign/, /illustrat(or|ion) role/], evidence: "Product first; does illustration for her own work only" },
+  {
+    id: "years",
+    label: "Several years of full-time experience",
+    weight: 2,
+    have: false,
+    patterns: [/[3-9]\+? years/, /senior/, /staff/, /principal/],
+    evidence: "Fresh graduate: a 6-month internship plus her own products",
+  },
+  {
+    id: "scale",
+    label: "Systems at millions of users",
+    weight: 1,
+    have: false,
+    patterns: [/millions of users/, /high[- ]traffic/, /large[- ]scale/, /distributed systems/],
+    evidence: "Up to about 12,000 users so far (Ask HR, as an intern)",
+  },
+  {
+    id: "infra",
+    label: "Training large models and ML infra",
+    weight: 1,
+    have: false,
+    patterns: [/pre-?train/, /training infrastructure/, /\bgpu clusters?\b/, /\bmlops\b/, /kubernetes/],
+    evidence: "Fine-tuning on a rented GPU, not training infrastructure",
+  },
+  { id: "native", label: "Native iOS and Android", weight: 1, have: false, patterns: [/\bios\b/, /android/, /swift|kotlin/], evidence: "Web, PWAs and WhatsApp, not native apps" },
 ];
 
 export type MatchResult = {
@@ -71,8 +202,8 @@ export function matchJD(raw: string): MatchResult {
   return { score, matched, gaps, projects: projectsRanked, words: raw.trim() ? raw.trim().split(/\s+/).length : 0 };
 }
 
-export const SAMPLE_JD = `Product Designer, AI (Remote, APAC)
+export const SAMPLE_JD = `AI Product Engineer, new grad (Remote, APAC)
 
-We're a small startup building AI agents for operations teams in Southeast Asia. You'll own product design end to end: run user research and interviews, frame the problem, design flows and high-fidelity UI in Figma, prototype the tricky AI interactions, and work closely with engineers to ship them.
+We're a small startup building AI agents for operations teams in Southeast Asia. You'll own features end to end: talk to customers, prototype quickly, build with LLM APIs and tool use, write evals that tell us whether a change is better, and ship in TypeScript and React with a Python and Postgres backend.
 
-You have: a portfolio of shipped products with measurable outcomes; experience designing for AI or LLM features (trust, errors, human review); strong interaction and visual craft; a design systems mindset; clear written English. Nice to have: Bahasa Indonesia, front-end code, conversation design.`;
+You have: projects with real users; experience with retrieval, guardrails and failure modes; care for latency and cost; product sense and some design skill; clear written English. Nice to have: Bahasa Indonesia, fine-tuning, testing and CI.`;

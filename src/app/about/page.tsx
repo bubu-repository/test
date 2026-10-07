@@ -9,7 +9,7 @@ import { OffTheClock } from "@/features/about/music/OffTheClock";
 
 export const metadata: Metadata = pageMeta({
   title: "About",
-  description: `About ${identity.name}, a product designer for AI products in ${identity.location}: her story, path, skills, the practical details for hiring teams, and a CV to download.`,
+  description: `About ${identity.name}, an AI product engineer (${identity.degree}, ${identity.cohort.toLowerCase()}) in ${identity.location}: her story, path, skills, the practical details for hiring teams, and a CV to download.`,
   path: "/about",
 });
 

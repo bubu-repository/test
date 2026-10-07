@@ -25,8 +25,12 @@ const Head = ({ t = ROAD }: { t?: typeof ROAD }) => (
   </>
 );
 
-/** The one-page brief, when Tenderlens is confident: a score, three cited reasons, the checklist. */
-export function TenderlensBrief({ hot = false }: { hot?: boolean }) {
+/**
+ * The one-page brief, when Tenderlens is confident: a score, three cited reasons, the money (each
+ * figure cites its page too), the checklist. `misread` is the brief from the click-through, where
+ * the scan was misread as 5% and the money figure was computed from that claim.
+ */
+export function TenderlensBrief({ hot = false, misread = false }: { hot?: boolean; misread?: boolean }) {
   return (
     <div className="tl">
       <Bar title="Brief" />
@@ -54,7 +58,7 @@ export function TenderlensBrief({ hot = false }: { hot?: boolean }) {
           </li>
           <li>
             <i className="warn">!</i>
-            <span>Needs a 5% bank guarantee</span>
+            <span>Needs a {misread ? "5%" : "3%"} bank guarantee</span>
             <em className="tl-page">p. 88</em>
           </li>
         </ul>
@@ -63,14 +67,17 @@ export function TenderlensBrief({ hot = false }: { hot?: boolean }) {
           <span>
             <small>Contract value</small>
             <b>Rp 2.4 B</b>
+            <em>p. 3</em>
           </span>
           <span>
             <small>Bank guarantee</small>
-            <b>Rp 120 M</b>
+            <b>Rp {misread ? "120" : "72"} M</b>
+            <em>p. 88</em>
           </span>
           <span>
             <small>Your last 4 jobs</small>
             <b>Rp 0.8–2.1 B</b>
+            <em>profile</em>
           </span>
         </div>
         <div className="tl-check">
@@ -90,6 +97,9 @@ export function TenderlensBrief({ hot = false }: { hot?: boolean }) {
     </div>
   );
 }
+
+/** The brief from the click-through: the bank guarantee was misread from a faint scan. */
+export const TenderlensBriefMisread = () => <TenderlensBrief misread />;
 
 /** When it can't tell (a different tender, with a blurry scan): no score, why it won't guess, and a person to ask. */
 export function TenderlensUnsure() {

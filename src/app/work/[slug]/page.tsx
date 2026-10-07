@@ -5,10 +5,10 @@ import { notFound } from "next/navigation";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/icons";
 import { PageTransition } from "@/components/PageTransition";
 import { adjacentProjects, getProject, projects, type Project } from "@/content/projects";
-import { ArchitectureDiagram } from "@/features/case/ArchitectureDiagram";
 import { AskAboutProject } from "@/features/case/AskAboutProject";
 import { CaseStudyShell } from "@/features/case/CaseStudyShell";
 import { CountUp } from "@/features/case/CountUp";
+import { Engineering } from "@/features/case/Engineering";
 import { TraceRail, type TraceStep } from "@/features/case/TraceRail";
 import { FlowPlayer } from "@/features/screens/FlowPlayer";
 import { Phone } from "@/features/screens/Phone";
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   if (!project) return {};
   return pageMeta({
     title: `${project.name}: ${project.kind}`,
-    description: `${project.tagline} A product design case study by Adelia Tiara: research, design decisions, iterations, the shipped screens and results.`,
+    description: `${project.tagline} A case study by Adelia Tiara, AI product engineer: research, design decisions, the pipeline, models and evals, and results.`,
     path: `/work/${project.slug}`,
     type: "article",
   });
@@ -42,6 +42,7 @@ const STEPS: TraceStep[] = [
   { id: "decisions", label: "Design decisions" },
   { id: "iterations", label: "Iterations" },
   { id: "design", label: "The shipped design" },
+  { id: "engineering", label: "Engineering" },
   { id: "results", label: "Results" },
   { id: "reflection", label: "Reflection" },
 ];
@@ -402,9 +403,15 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
               </div>
             </section>
 
-            {/* 07 Results */}
+            {/* 07 Engineering */}
+            <section id="engineering" aria-labelledby="engineering-title" className="scroll-mt-28">
+              <SectionHead index={7} eyebrow="Engineering" title="How it's built" id="engineering" lead={project.engineering.summary} />
+              <Engineering project={project} />
+            </section>
+
+            {/* 08 Results */}
             <section id="results" aria-labelledby="results-title" className="scroll-mt-28">
-              <SectionHead index={7} eyebrow="Results" title="What happened" id="results" />
+              <SectionHead index={8} eyebrow="Results" title="What happened" id="results" />
               <dl className="grid gap-3 sm:grid-cols-2">
                 {project.results.metrics.map((m, n) => (
                   <div key={m.label} className={n === 0 ? `widget ${TONE_TINT[project.tone] ?? "tone-accent"} p-7` : "widget p-7"}>
@@ -427,31 +434,19 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   <p key={p}>{p}</p>
                 ))}
               </div>
+              <p className="mt-6 flex max-w-[72ch] gap-3 rounded-[20px] border border-line px-5 py-4 text-16">
+                <span className="type-pixel shrink-0 pt-1 text-ink">Business</span>
+                <span>{project.results.business}</span>
+              </p>
               <figure className="widget relative mt-10 p-7 md:p-10">
                 <blockquote className="relative text-24 leading-snug font-semibold tracking-[-0.02em] md:text-32">“{project.results.quote.text}”</blockquote>
                 <figcaption className="relative mt-3 text-14">— {project.results.quote.who}</figcaption>
               </figure>
-              <details className="case-build mt-10">
-                <summary>
-                  <span className="text-18 font-bold tracking-[-0.02em]">How it&apos;s built</span>
-                  <span className="text-14 text-muted">I prototype and ship in code. The system, for the curious.</span>
-                </summary>
-                <div className="pt-6">
-                  <ArchitectureDiagram project={project} />
-                  <ul className="mt-5 flex flex-wrap gap-1.5" aria-label="Tools">
-                    {project.stack.map((t) => (
-                      <li key={t} className="chip">
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </details>
             </section>
 
-            {/* 08 Reflection */}
+            {/* 09 Reflection */}
             <section id="reflection" aria-labelledby="reflection-title" className="scroll-mt-28">
-              <SectionHead index={8} eyebrow="Reflection" title="What I'd tell my past self" id="reflection" />
+              <SectionHead index={9} eyebrow="Reflection" title="What I'd tell my past self" id="reflection" />
               <p className="max-w-[40ch] text-32 leading-[1.2] font-semibold tracking-[-0.025em]">{project.reflection}</p>
               <p className="mt-6 max-w-[60ch] text-18">
                 <span className="font-semibold">Next: </span>

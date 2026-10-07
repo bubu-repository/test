@@ -16,10 +16,10 @@ const SLOTS: Slot[] = [
   {
     id: "verb",
     options: [
-      { text: "design", p: 0.64 },
-      { text: "prototype", p: 0.16 },
-      { text: "shape", p: 0.1 },
-      { text: "build", p: 0.06 },
+      { text: "design and build", p: 0.62 },
+      { text: "prototype", p: 0.14 },
+      { text: "ship", p: 0.12 },
+      { text: "eval", p: 0.08 },
       { text: "sweat over", p: 0.04 },
     ],
   },
@@ -56,11 +56,11 @@ const SLOTS: Slot[] = [
   {
     id: "to",
     options: [
-      { text: "shipped interface", p: 0.6 },
-      { text: "last pixel", p: 0.18 },
-      { text: "live product", p: 0.12 },
-      { text: "error message", p: 0.07 },
-      { text: "undo button", p: 0.03 },
+      { text: "shipped code", p: 0.56 },
+      { text: "eval suite", p: 0.18 },
+      { text: "last pixel", p: 0.12 },
+      { text: "error message", p: 0.09 },
+      { text: "undo button", p: 0.05 },
     ],
   },
 ];

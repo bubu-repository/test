@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   applicationName: identity.domain,
   authors: [{ name: identity.name, url: identity.url }],
   creator: identity.name,
-  keywords: ["Product Designer", "UX design", "AI product design", "Interaction design", "Design engineer", "Bekasi", "Jakarta", "Indonesia", "Portfolio", identity.name],
+  keywords: ["AI Product Engineer", "AI engineer", "LLM evals", "Product engineer", "New grad", "Design engineer", "Bekasi", "Jakarta", "Indonesia", "Portfolio", identity.name],
   openGraph: {
     type: "website",
     siteName: identity.domain,

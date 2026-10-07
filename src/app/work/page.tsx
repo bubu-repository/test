@@ -15,10 +15,10 @@ export const metadata: Metadata = pageMeta({
 
 /* A reading guide: which case answers which hiring question. CONTOH — ganti dengan data asli */
 const GUIDE = [
-  { q: "How do I work in a squad?", slug: "ask-hr", why: "In-house, with a PM and four engineers. A trade-off I argued for, and one I lost." },
-  { q: "How do I design for an AI that can be wrong?", slug: "tenderlens", why: "Citations, abstaining, and a 'That's wrong' button, with the numbers behind each." },
-  { q: "How do I do research with people who don't use apps?", slug: "catat", why: "Behind shop counters in Bekasi, designing inside WhatsApp, in Indonesian." },
-  { q: "What do I leave out?", slug: "lintas", why: "A commute app that answers one question and stays quiet the rest of the time." },
+  { q: "Can she build AI that knows when not to answer?", slug: "tenderlens", why: "Her thesis: citations checked in code, abstaining, a frozen test set and a CI gate." },
+  { q: "Has she shipped inside a real team?", slug: "ask-hr", why: "Six months as an intern in a squad: a lane router, retrieval, a review queue, a weekly audit." },
+  { q: "Can she build an agent that writes data safely?", slug: "catat", why: "Tool calls that create pending entries, money parsed in code, one-tap undo, idempotent webhooks." },
+  { q: "Where does she put the model, and where not?", slug: "lintas", why: "Her own transit router, and a model that writes one sentence that code checks before anyone sees it." },
 ];
 
 export default function WorkPage() {
@@ -28,7 +28,7 @@ export default function WorkPage() {
         id="work-title"
         label="Case studies"
         title="Four products, read in any order."
-        lead="Each case is about eight minutes: the problem, my role, the research, the decisions and what they cost, the rounds that failed, the shipped screens and the results. If you only have time for one, pick the question you're hiring for."
+        lead="Each case is about ten minutes: the problem, my role, the research and the design, then the engineering in its own section (pipeline, models, evals, budgets, failures, code) and the results. If you only have time for one, pick the question you're hiring for."
       >
         <ul className="mx-auto mt-10 grid max-w-[880px] gap-2 text-left sm:grid-cols-2">
           {GUIDE.map((g) => {
@@ -59,9 +59,11 @@ export default function WorkPage() {
         </h2>
         <ul className="mt-8 grid gap-3 md:grid-cols-3">
           <li>
-            <Link href="/styleguide" className="widget block h-full p-6">
-              <span className="text-18 font-bold">The design system</span>
-              <span className="mt-1 block text-14 text-muted">Tokens, type, components and the rules behind this site, documented the way I&apos;d hand them to engineers.</span>
+            <Link href="/colophon" className="widget block h-full p-6">
+              <span className="text-18 font-bold">How this site is built</span>
+              <span className="mt-1 block text-14 text-muted">
+                Its AI agent (tool use, validation, an offline fallback), performance budgets and the design system, written up like the case studies.
+              </span>
             </Link>
           </li>
           <li>

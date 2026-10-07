@@ -48,8 +48,8 @@ export function FindTimeWidget() {
   }, [zone]);
 
   const availability = yours
-    ? `Adelia Tiara (Product Designer) is free for calls Mon–Fri, 09:00–18:00 ${identity.timeZoneLabel} in Bekasi. That's ${yours.start}–${yours.end} for you in ${yours.city}. Email: ${identity.email}`
-    : `Adelia Tiara (Product Designer) is free for calls Mon–Fri, 09:00–18:00 ${identity.timeZoneLabel} in Bekasi. Email: ${identity.email}`;
+    ? `Adelia Tiara (${identity.role}) is free for calls Mon–Fri, 09:00–18:00 ${identity.timeZoneLabel} in Bekasi. That's ${yours.start}–${yours.end} for you in ${yours.city}. Email: ${identity.email}`
+    : `Adelia Tiara (${identity.role}) is free for calls Mon–Fri, 09:00–18:00 ${identity.timeZoneLabel} in Bekasi. Email: ${identity.email}`;
 
   const commands: Command[] = [
     {

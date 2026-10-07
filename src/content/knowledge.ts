@@ -8,7 +8,7 @@ export const siteMap = [
     path: "/",
     title: "Home",
     description:
-      "A small frosted-glass device with her name, 'Product Designer for AI products', Bekasi and one line on what she designs, plus three buttons: open the work, the CV and email. On wide screens the key screens of her products float in the sky beside it. Below: four case cards (Tenderlens, Ask HR, Catat, Lintas) with real screens and numbers, the four rules she designs by, and a door to the lab. Every page ends at the sea, where you can tap the water and sail a paper boat.",
+      "A small frosted-glass device with her name, 'AI Product Engineer, class of 2026', Bekasi and one line on what she designs, plus three buttons: open the work, the CV and email. On wide screens the key screens of her products float in the sky beside it. Below: four case cards (Tenderlens, Ask HR, Catat, Lintas) with real screens and numbers, the four rules she builds by, and a door to the lab. Every page ends at the sea, where you can tap the water and sail a paper boat.",
   },
   {
     path: "/work",
@@ -17,6 +17,12 @@ export const siteMap = [
       "Four case studies (Tenderlens, Ask HR, Catat, Lintas) with a reading guide: which case answers which hiring question. Each case reads as an article, and can also play out as a chat at the end.",
   },
   ...projects.map((p) => ({ path: `/work/${p.slug}`, title: `${p.name} case study`, description: p.tagline })),
+  {
+    path: "/colophon",
+    title: "How this site is built",
+    description:
+      "The engineering behind the site: Moci the agent (Claude with tool use, server-side validation, an offline retrieval fallback that cites its sources), an eval of Moci you can run in the browser, and the stack.",
+  },
   {
     path: "/lab",
     title: "Lab",
@@ -48,8 +54,8 @@ export function buildDocs(): Doc[] {
     {
       id: "who",
       title: "Who is Adelia",
-      text: `${identity.name} is a ${identity.role.toLowerCase()} for ${identity.focus} based in ${identity.location}. ${bio.short}`,
-      keywords: ["who", "adelia", "about", "introduce", "yourself", "summary", "background", "tiara"],
+      text: `${identity.name} is a fresh graduate and an ${identity.role}, Informatics class of 2026, based in ${identity.location}. ${bio.short}`,
+      keywords: ["who", "adelia", "about", "introduce", "yourself", "summary", "background", "tiara", "graduate", "new", "grad", "junior", "fresh", "level", "experience", "senior"],
       href: "/about",
     },
     {
@@ -130,7 +136,7 @@ export function buildDocs(): Doc[] {
     {
       id: "agents",
       title: "Designing AI products",
-      text: `She designs how AI shows its work: sources, uncertainty, and a cheap way to fix mistakes. ${projects.map((p) => `${p.name}: ${p.decisions[0].title}. ${p.decisions[0].why}`).join(" ")}`,
+      text: `She designs and builds how AI shows its work: sources, abstaining, evals, and a cheap way to fix mistakes. ${projects.map((p) => `${p.name}: ${p.decisions[0].title}. ${p.decisions[0].why}`).join(" ")}`,
       keywords: ["agent", "agents", "agentic", "tool", "tools", "llm", "ai", "evals", "eval", "trust", "uncertainty", "design", "claude"],
       href: "/work",
     },
@@ -147,9 +153,9 @@ export function buildDocs(): Doc[] {
     {
       id: "site",
       title: "About this site",
-      text: "This site was designed and built by Adelia: Next.js, TypeScript, a raymarched WebGL mascot, a Claude-powered agent with tool use (that's me, Moci), live presence over Server-Sent Events, and everything synthesised in the browser, from sounds to the CV. Try X-ray mode to see how it's built.",
-      keywords: ["site", "website", "built", "made", "stack", "this", "portfolio", "how", "nextjs", "tech"],
-      href: "/lab",
+      text: "This site was designed and built by Adelia in Next.js and TypeScript. I'm Moci, its agent: Claude with tool use, streamed to your browser, with every tool call checked on the server before anything happens on your screen, and an offline retrieval brain that answers from the same knowledge base when the API isn't available. The CV is generated from the same data as the pages. The full write-up is at /colophon.",
+      keywords: ["site", "website", "built", "made", "stack", "this", "portfolio", "how", "nextjs", "tech", "colophon", "moci", "agent"],
+      href: "/colophon",
     },
     {
       id: "moci",
@@ -166,8 +172,47 @@ export function buildDocs(): Doc[] {
       text: `${p.name} (${p.year}, ${p.kind}). ${p.summary} Her role: ${p.role.title}. ${p.role.summary} Stack: ${p.stack.join(", ")}. Results: ${p.results.metrics
         .map((m) => `${m.value} ${m.label}`)
         .join("; ")}.`,
-      keywords: [p.slug, p.name.toLowerCase(), ...p.stack.map((s) => s.toLowerCase()), p.kind.toLowerCase()],
+      keywords: [
+        p.slug,
+        p.name.toLowerCase(),
+        ...p.stack.map((s) => s.toLowerCase()),
+        p.kind.toLowerCase(),
+        p.context.toLowerCase(),
+        ...(p.company ? ["company", "startup", "in-house", "intern", "internship"] : []),
+      ],
       href: `/work/${p.slug}`,
+    });
+    // The engineering, split by question so retrieval finds the right part.
+    const e = p.engineering;
+    const eng = `/work/${p.slug}#engineering`;
+    const base = [p.slug, p.name.toLowerCase()];
+    docs.push({
+      id: `project-${p.slug}-engineering`,
+      title: `${p.name}: how it's built`,
+      text: `${e.summary} The pipeline: ${e.pipeline.map((x) => `${x.step}: ${x.detail}`).join(" ")}`,
+      keywords: [...base, "built", "build", "engineering", "architecture", "pipeline", "works", "system", "stack"],
+      href: eng,
+    });
+    docs.push({
+      id: `project-${p.slug}-evals`,
+      title: `${p.name}: evals`,
+      text: `${e.evals.set} ${e.evals.gate}`,
+      keywords: [...base, "eval", "evals", "evaluate", "evaluated", "evaluation", "test", "tested", "accuracy", "measure", "measured", "frozen", "labelled", "quality"],
+      href: eng,
+    });
+    docs.push({
+      id: `project-${p.slug}-models`,
+      title: `${p.name}: models`,
+      text: e.models.map((m) => `For ${m.task.toLowerCase()}, ${p.name} uses ${m.model}: ${m.why}`).join(" "),
+      keywords: [...base, "model", "models", "llm", "claude", "use", "uses", "why", "which", "choose", "chose"],
+      href: eng,
+    });
+    docs.push({
+      id: `project-${p.slug}-budgets`,
+      title: `${p.name}: cost and latency`,
+      text: e.budgets.map((b) => `${b.label}: ${b.value}, ${b.note}.`).join(" "),
+      keywords: [...base, "cost", "costs", "latency", "fast", "slow", "budget", "budgets", "price", "run", "money", "expensive", "cheap"],
+      href: eng,
     });
     docs.push({
       id: `project-${p.slug}-lesson`,
@@ -209,7 +254,15 @@ export function buildKnowledgeText(): string {
     lines.push(`Stack: ${p.stack.join(", ")}`);
     lines.push(`Problem: ${p.problem.body.join(" ")} Constraints: ${p.problem.constraints.join("; ")}`);
     lines.push(`Process: ${p.process.map((s) => `${s.title} (${s.duration}): ${s.body}`).join(" ")}`);
-    lines.push(`Results: ${p.results.metrics.map((m) => `${m.value} ${m.label}`).join("; ")}. ${p.results.body.join(" ")}`);
+    const e = p.engineering;
+    lines.push(`Engineering: ${e.summary} Pipeline: ${e.pipeline.map((x) => `${x.step}: ${x.detail}`).join(" ")}`);
+    lines.push(`Models: ${e.models.map((m) => `${m.task}: ${m.model} (${m.why})`).join("; ")}`);
+    lines.push(
+      `Evals: ${e.evals.set} ${e.evals.gate} Latest (${e.evals.history.at(-1)?.version}): ${e.evals.series.map((x, i) => `${x.name} ${e.evals.history.at(-1)?.values[i]}${x.unit}`).join(", ")}.`,
+    );
+    lines.push(`Budgets: ${e.budgets.map((b) => `${b.label} ${b.value} (${b.note})`).join("; ")}`);
+    lines.push(`Failure handling: ${e.failures.map((f) => `${f.when}: ${f.then}`).join(" ")}`);
+    lines.push(`Results: ${p.results.metrics.map((m) => `${m.value} ${m.label} (${m.how})`).join("; ")}. ${p.results.body.join(" ")} Business: ${p.results.business}`);
     lines.push(`Reflection: ${p.reflection}`);
     lines.push(p.links.live ? `Links: live ${p.links.live}${p.links.repo ? `, repo ${p.links.repo}` : ""}` : `Where: ${p.company ?? "in-house"}`);
     lines.push(`Status: ${p.status}`);

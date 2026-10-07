@@ -7,9 +7,7 @@ import { LiveClock } from "@/components/LiveClock";
 import { bio, edition, identity, nav, socials } from "@/content/profile";
 import { dispatch } from "@/lib/actions";
 import { useNow, useVisitorZone } from "@/lib/hooks";
-import { STICKERS, useStickers } from "@/lib/stickers";
 import { probableStatus, zoneCity } from "@/lib/time";
-import { useUI } from "@/lib/ui";
 import { Poster } from "../objects/Poster";
 import { Sea, SeaSoundToggle } from "../world/Sea";
 import { useLive } from "../live/live-store";
@@ -31,8 +29,6 @@ function VisitorClock() {
 }
 
 export function SiteFooter() {
-  const collected = useStickers((s) => s.unlocked.length);
-  const xray = useUI((s) => s.xray);
   const here = useLive((s) => s.count);
 
   return (
@@ -93,8 +89,8 @@ export function SiteFooter() {
               </div>
               <div>
                 <p className="spec-label">Focus</p>
-                <p className="mt-2 text-ink">Product design for AI</p>
-                <p className="mt-1">Research, interaction, trust</p>
+                <p className="mt-2 text-ink">AI product engineering</p>
+                <p className="mt-1">Pipelines, evals, interfaces</p>
               </div>
               <nav aria-label="Footer">
                 <p className="spec-label">Index</p>
@@ -122,19 +118,25 @@ export function SiteFooter() {
                     ))}
                 </ul>
               </nav>
-              <div className="js-only">
-                <p className="spec-label">System</p>
-                <div className="mt-1 -ml-3 flex flex-wrap items-center gap-1 lg:flex-col lg:items-start">
-                  <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "stickers" })}>
-                    Stickers {collected}/{STICKERS.length}
-                  </button>
-                  <button type="button" className="pill" data-variant="ghost" data-size="sm" aria-pressed={xray} onClick={() => dispatch({ type: "xray" })}>
-                    X-ray {xray ? "on" : "off"}
-                  </button>
-                  <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "shortcuts" })}>
-                    <kbd aria-hidden="true">?</kbd> Shortcuts
-                  </button>
-                </div>
+              <div>
+                <p className="spec-label">Engineering</p>
+                <ul className="mt-2 space-y-1">
+                  <li>
+                    <Link href="/colophon" className="hover:text-ink">
+                      How this site is built
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/colophon#eval" className="hover:text-ink">
+                      Run Moci&apos;s eval
+                    </Link>
+                  </li>
+                  <li className="js-only">
+                    <button type="button" className="hover:text-ink" onClick={() => dispatch({ type: "open", panel: "shortcuts" })}>
+                      Keyboard shortcuts
+                    </button>
+                  </li>
+                </ul>
               </div>
             </div>
             <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-dashed border-line pt-4 font-mono text-[10px] tracking-[0.14em] uppercase">

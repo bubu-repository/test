@@ -115,7 +115,7 @@ export async function runTour(signal: AbortSignal) {
     const name = await waitFor('[data-tour="name"]', signal);
     if (name) {
       await moveTo(name, signal, "left");
-      await say("This is Adelia Tiara, a product designer for AI products, in Bekasi, Indonesia.", signal, 1700);
+      await say("This is Adelia Tiara, an AI product engineer and 2026 graduate, in Bekasi, Indonesia.", signal, 1700);
     }
 
     // 2. The headline is sampled

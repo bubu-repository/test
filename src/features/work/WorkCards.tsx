@@ -23,7 +23,7 @@ export function WorkCards({ projects, headingLevel = 3 }: { projects: Project[];
                 <span className="type-pixel text-muted">
                   {p.index} · {p.kind} · {p.year}
                 </span>
-                <span className="chip min-h-6 px-2.5 text-12 font-semibold">{p.company ? "In-house, with a squad" : "My own product"}</span>
+                <span className="chip min-h-6 px-2.5 text-12 font-semibold">{p.context}</span>
               </p>
               <H className="mt-3 text-48 leading-none font-bold tracking-[-0.045em]">{p.name}</H>
               <p className="mt-3 max-w-[46ch] text-18 leading-snug">{p.tagline}</p>

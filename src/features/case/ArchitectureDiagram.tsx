@@ -3,13 +3,14 @@ import type { ArchNode, Project } from "@/content/projects";
 const KIND: Record<ArchNode["kind"], { fill: string; label: string }> = {
   user: { fill: "var(--sun)", label: "person" },
   ui: { fill: "var(--sky)", label: "interface" },
-  agent: { fill: "var(--accent)", label: "agent" },
+  agent: { fill: "var(--accent)", label: "model" },
   data: { fill: "var(--lime)", label: "data" },
-  service: { fill: "var(--violet)", label: "service" },
+  service: { fill: "var(--violet)", label: "code" },
 };
 
 /**
- * The system as a little SVG map: nodes coloured by kind, data packets travelling along every
+ * The system as a little SVG map: nodes coloured by kind (which steps are a model and which are
+ * plain code is the point), data packets travelling along every
  * edge (SMIL animateMotion; hidden under reduced motion via CSS). Server-rendered, no JS.
  */
 export function ArchitectureDiagram({ project }: { project: Project }) {

@@ -68,7 +68,6 @@ export function FlowPlayer({ slug, name }: { slug: string; name: string }) {
               style={{ left: box.left - 6, top: box.top - 6, width: box.width + 12, height: box.height + 12 }}
               onClick={next}
               aria-label={`${step.tap.label} (go to step ${i + 2})`}
-              data-cursor="Tap"
             />
           )}
         </div>

@@ -60,7 +60,8 @@ function getIndex(): Index {
   return index;
 }
 
-export function retrieve(query: string, k = 3): { doc: Doc; score: number }[] {
+/** BM25 over the knowledge docs. `coverage` is the share of query terms the doc actually contains. */
+export function retrieve(query: string, k = 3): { doc: Doc; score: number; coverage: number }[] {
   const { docs, tf, kw, len, avg, df } = getIndex();
   const terms = tokenize(query);
   if (!terms.length) return [];
@@ -70,7 +71,9 @@ export function retrieve(query: string, k = 3): { doc: Doc; score: number }[] {
   return docs
     .map((doc, i) => {
       let score = 0;
+      let found = 0;
       for (const term of terms) {
+        if (tf[i].has(term) || kw[i].has(term)) found++;
         const n = df.get(term) ?? 0;
         if (!n) continue;
         const idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
@@ -78,7 +81,7 @@ export function retrieve(query: string, k = 3): { doc: Doc; score: number }[] {
         score += idf * ((f * (k1 + 1)) / (f + k1 * (1 - b + (b * len[i]) / avg)));
         if (kw[i].has(term)) score += idf * 1.6;
       }
-      return { doc, score };
+      return { doc, score, coverage: found / terms.length };
     })
     .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score)
@@ -222,7 +225,9 @@ export function think(raw: string): BrainAnswer {
 
   // Retrieval
   const hits = retrieve(q, 3);
-  if (!hits.length || hits[0].score < 1.2) {
+  // Abstain when nothing matches well, or when the best doc only shares a word or two with a
+  // longer question ("favourite pizza topping" shouldn't get her favourite problems).
+  if (!hits.length || hits[0].score < 1.2 || hits[0].coverage < 0.5) {
     return {
       text: `I'm not sure about that one, and I'd rather not make things up. I know about Adelia's projects, skills, experience, availability and this site. For anything else, email ${identity.email}.`,
       actions: [],

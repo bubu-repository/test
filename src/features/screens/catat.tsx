@@ -57,8 +57,8 @@ const Out = ({ children, time }: { children: ReactNode; time: string }) => (
   </div>
 );
 
-/** Logging a sale by voice: one line back, ✓ to keep it, ✗ to undo. */
-export function CatatSale() {
+/** Logging a sale by voice: one line back, ✓ to keep it, ✗ to undo. `before`: nothing tapped yet. */
+export function CatatSale({ before = false }: { before?: boolean }) {
   return (
     <Chat>
       <span className="ct-day">Hari ini</span>
@@ -70,26 +70,30 @@ export function CatatSale() {
         <br />✓ <strong>Terjual 2 Indomie Goreng · Rp7.000</strong>
       </In>
       <div className="ct-btns ct-btns--two">
-        <span data-picked="">✓ Benar</span>
+        <span data-picked={before ? undefined : ""}>✓ Benar</span>
         <span>✗ Batalkan</span>
       </div>
-      <Out time="07:44">
-        <Voice length="0:04" />
-      </Out>
-      <In time="07:44">
-        <span className="ct-quiet">&ldquo;Aqua gelas sedus, ceban&rdquo;</span>
-        <br />✓ <strong>Stok masuk 1 dus Aqua Gelas · Rp10.000</strong>
-      </In>
-      <div className="ct-btns ct-btns--two">
-        <span>✓ Benar</span>
-        <span>✗ Batalkan</span>
-      </div>
+      {!before && (
+        <>
+          <Out time="07:44">
+            <Voice length="0:04" />
+          </Out>
+          <In time="07:44">
+            <span className="ct-quiet">&ldquo;Aqua gelas sedus, ceban&rdquo;</span>
+            <br />✓ <strong>Stok masuk 1 dus Aqua Gelas (48) · Rp10.000</strong>
+          </In>
+          <div className="ct-btns ct-btns--two">
+            <span>✓ Benar</span>
+            <span>✗ Batalkan</span>
+          </div>
+        </>
+      )}
     </Chat>
   );
 }
 
-/** When the note is ambiguous, Catat asks one short question instead of guessing. */
-export function CatatAsk() {
+/** When the note is ambiguous, Catat asks one short question instead of guessing. `before`: not answered yet. */
+export function CatatAsk({ before = false }: { before?: boolean }) {
   return (
     <Chat>
       <span className="ct-day">Hari ini</span>
@@ -103,19 +107,26 @@ export function CatatAsk() {
       </In>
       <div className="ct-btns ct-btns--two">
         <span>Utang baru</span>
-        <span data-picked="">Bayar utang</span>
+        <span data-picked={before ? undefined : ""}>Bayar utang</span>
       </div>
-      <In time="09:15">
-        ✓ <strong>Bu Sri bayar Rp10.000.</strong>
-        <br />
-        Sisa utangnya Rp15.000 (sejak 3 Okt).
-      </In>
-      <div className="ct-btns">
-        <span>✗ Batalkan</span>
-      </div>
+      {!before && (
+        <>
+          <In time="09:15">
+            ✓ <strong>Bu Sri bayar Rp10.000.</strong>
+            <br />
+            Sisa utangnya Rp15.000 (sejak 3 Okt).
+          </In>
+          <div className="ct-btns">
+            <span>✗ Batalkan</span>
+          </div>
+        </>
+      )}
     </Chat>
   );
 }
+
+export const CatatSaleBefore = () => <CatatSale before />;
+export const CatatAskBefore = () => <CatatAsk before />;
 
 /** Undo, in one tap, and nothing is written down. */
 export function CatatUndo() {
@@ -134,9 +145,9 @@ export function CatatUndo() {
         <span data-picked="">✗ Batalkan</span>
       </div>
       <In time="11:02">
-        Oke, dibatalkan. Tidak ada yang dicatat.
+        Oke, dibatalkan. Catatannya sudah dihapus.
         <br />
-        Mau ulang? Kirim lagi aja, misalnya <em>&ldquo;rokok sebungkus, dua puluh lima ribu&rdquo;</em>.
+        Mau ulang? Kirim lagi aja, misalnya <em>&ldquo;rokok sebungkus, dua lima rebu&rdquo;</em>.
       </In>
     </Chat>
   );

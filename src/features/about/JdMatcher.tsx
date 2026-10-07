@@ -107,9 +107,7 @@ export function JdMatcher() {
                     <span className="absolute inset-0 grid place-items-center text-32 font-bold tracking-[-0.04em] tabular-nums">{result.score}%</span>
                   </div>
                   <div>
-                    <p className="text-20 font-bold tracking-[-0.02em]">
-                      {result.score >= 80 ? "Strong match" : result.score >= 55 ? "Good match" : "Partial match"}
-                    </p>
+                    <p className="text-20 font-bold tracking-[-0.02em]">{result.score >= 80 ? "Strong match" : result.score >= 55 ? "Good match" : "Partial match"}</p>
                     <p className="mt-1 text-14 text-muted">
                       {result.matched.length} of {result.matched.length + result.gaps.length} skill areas in this JD, weighted by how central they are.
                     </p>

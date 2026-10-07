@@ -48,18 +48,35 @@ export function CaseStudyShell({ project, next, index, total, cover, children }:
         title={
           <span className="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
             {project.name}
-            <span className="chip min-h-7 translate-y-1 px-3 text-12 font-semibold tracking-normal text-ink">Shipped · {project.year}</span>
+            <span className="chip min-h-7 translate-y-1 px-3 text-12 font-semibold tracking-normal text-ink">
+              {project.context} · {project.year}
+            </span>
           </span>
         }
         lead={project.tagline}
       >
         <p className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-16">
           {project.links.live ? (
-            <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="link-arrow">
-              Try the live product<span className="sr-only"> (opens in a new tab)</span>
-            </a>
+            <>
+              <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="link-arrow">
+                Try the live product<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+              {project.links.repo && (
+                <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="link-arrow">
+                  Read the code<span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              )}
+              <a href="#engineering" className="link-arrow">
+                Skip to the engineering
+              </a>
+            </>
           ) : (
-            <span className="max-w-[60ch] text-14 text-muted">{project.company}</span>
+            <>
+              <span className="max-w-[60ch] text-14 text-muted">{project.company}</span>
+              <a href="#engineering" className="link-arrow">
+                Skip to the engineering
+              </a>
+            </>
           )}
         </p>
       </PageHeader>

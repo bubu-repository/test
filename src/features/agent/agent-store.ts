@@ -54,13 +54,9 @@ export function toolToAction(name: string, input: Record<string, unknown>): Site
     case "copy_email":
       return { type: "copyEmail" };
     case "open_panel":
-      return input.panel === "brief" || input.panel === "terminal" || input.panel === "stickers"
-        ? { type: "open", panel: input.panel }
-        : null;
+      return input.panel === "brief" || input.panel === "terminal" || input.panel === "stickers" ? { type: "open", panel: input.panel } : null;
     case "set_lens":
-      return input.lens === "recruiter" || input.lens === "engineer" || input.lens === "designer" || input.lens === "curious"
-        ? { type: "lens", value: input.lens }
-        : null;
+      return input.lens === "recruiter" || input.lens === "engineer" || input.lens === "designer" || input.lens === "curious" ? { type: "lens", value: input.lens } : null;
     case "download_cv":
       return { type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" };
     default:
@@ -189,9 +185,7 @@ export async function askAgent(question: string) {
       onTool: (action) => {
         const label = describeAction(action);
         patchMessage(botMsg.id, (m) => ({ tools: [...m.tools, { label, done: false }] }));
-        void Promise.resolve(dispatch(action)).then(() =>
-          patchMessage(botMsg.id, (m) => ({ tools: m.tools.map((t) => (t.label === label ? { ...t, done: true } : t)) })),
-        );
+        void Promise.resolve(dispatch(action)).then(() => patchMessage(botMsg.id, (m) => ({ tools: m.tools.map((t) => (t.label === label ? { ...t, done: true } : t)) })));
       },
       onFollowups: (v) => patchMessage(botMsg.id, { followups: v.slice(0, 3) }),
     });

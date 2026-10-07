@@ -7,9 +7,12 @@
 export const identity = {
   name: "Adelia Tiara",
   firstName: "Adelia",
-  role: "Product Designer",
-  /** What kind of product designer, in a few words (hero, meta, the CV). */
+  role: "AI Product Engineer",
+  /** What she works on, in a few words (meta, the CV). */
   focus: "AI products",
+  /** Fresh graduate: the degree and the year, shown next to the role (hero, ID card, brief, CV). */
+  degree: "B.Sc. Informatics",
+  cohort: "Class of 2026",
   city: "Bekasi",
   country: "Indonesia",
   location: "Bekasi, Indonesia",
@@ -25,32 +28,32 @@ export const identity = {
 } as const;
 
 /** The canonical hero sentence. The resampler starts from (and returns to) this. */
-export const tagline = "I design AI products people can trust, from the first interview to the shipped interface.";
+export const tagline = "I design and build AI products people can trust, from the first interview to the shipped code.";
 
 export const description =
-  "Adelia Tiara is a product designer in Bekasi, Indonesia. She designs AI products people can trust, from the first interview to the shipped interface, and prototypes them in real code.";
+  "Adelia Tiara is an AI product engineer and 2026 Informatics graduate in Bekasi, Indonesia. She designs and builds AI products people can trust: the interface, the pipeline and the evals that keep it honest.";
 
 /* CONTOH — ganti dengan data asli */
 export const bio = {
   short:
-    "Product designer for AI products. I find the one decision a person is trying to make, design the interface (and the AI behind it) around that decision, and prototype in real code so what we test is what ships.",
+    "AI product engineer, Informatics class of 2026. I take an AI feature from a conversation with the people who'll use it to production: the interface, the pipeline, the evals, and the unglamorous parts that keep it honest.",
   long: [
-    "I'm a product designer based in Bekasi, just east of Jakarta. I design for the moment an AI meets a messy, real person: a contractor reading a 214-page tender at night, a shop owner with one free hand, a commuter deciding in the time it takes to walk to the station.",
-    "My work starts in the field. I sit behind shop counters, shadow bid teams and ride the 06:40 train with the people I design for, then I turn what I saw into one sharp question the product has to answer. Most of my design work is deciding what to leave out.",
-    "AI changes what an interface has to do. It has to show its sources, admit uncertainty, and make a wrong answer cheap to fix. That's the part I care about most, and it's why I prototype in code: you can't judge how an AI product feels from a static frame.",
+    "I'm a fresh Informatics graduate from a university in West Java, living in Bekasi, just east of Jakarta. I build for the moment an AI meets a messy, real person: a contractor reading a 214-page tender at night, a shop owner with one free hand, a commuter deciding in the time it takes to walk to the station.",
+    "I learned by shipping. Lintas started as a second-year side project for my own commute. Catat came out of a campus incubator with two classmates. Tenderlens was my thesis, and a procurement consultancy now runs it for its clients. In between, I spent six months as an AI engineering intern in a product squad at an HR software startup, where a senior engineer reviewed every pull request I opened.",
+    "The part of an AI product I care about most isn't the model. It's the source it shows, the moment it says 'I can't tell', the eval set that catches a regression before a user does, and the undo that makes a wrong answer cheap. I design those parts, and I write them.",
   ],
-  team: "On a team, I'm the designer who goes to the field first, brings a working prototype to the second meeting, and writes every decision down with what it costs, so engineers and PMs can argue with it before it ships.",
-  now: "Designing review flows for Indonesian-language AI agents, and writing up what I learned about citations as a trust pattern.",
-  availability: "Open to full-time Product Designer roles on AI products, remote or in the Jakarta area.",
+  team: "On a team, I'm the engineer who goes to the field first, brings a working prototype to the second meeting, and writes the eval before the prompt, so the PM and the designer can argue with real output instead of mockups.",
+  now: "Maintaining Tenderlens's eval set for the consultancy that runs it, and writing up my thesis on when a document AI should abstain.",
+  availability: "Graduated in 2026. Open to full-time AI Product Engineer roles (new grad or junior), remote or in the Jakarta area.",
 };
 
-/** How she works: the principles behind every case study (About, the brief, the agent). */
+/** How she works: the principles behind every case study (home, the brief, the agent). */
 /* CONTOH — ganti dengan data asli */
 export const principles = [
-  { title: "One decision per screen", body: "Every screen I design answers one question the person came with. Everything else waits one tap away." },
-  { title: "Show the receipts", body: "If an AI says it, the person can check it. Sources, confidence and an undo are part of the design, not an afterthought." },
-  { title: "Their words, not ours", body: "Interfaces speak the way users talk: 'goceng', not 'IDR 5,000'. I collect the vocabulary in the field before I name a single button." },
-  { title: "Prototype the real thing", body: "AI products are about timing, errors and waiting. I test them in code with real data, because a Figma frame can't misread a voice note." },
+  { title: "One decision per screen", body: "Every screen answers one question the person came with. Everything else waits one tap away." },
+  { title: "Show the receipts", body: "If an AI says it, the person can check it. Citations, abstaining and undo are features I design and build, not afterthoughts." },
+  { title: "Write the eval first", body: "Before I touch a prompt, I write down what 'right' means and collect real cases. Every change runs against them, so 'it feels better' becomes a number." },
+  { title: "Test with real data", body: "Real tenders, real voice notes, real slang ('goceng', not 'IDR 5,000'). A Figma frame can't misread a voice note, so I prototype in code." },
 ];
 
 export type SkillGroup = { name: string; tone: "magenta" | "cobalt" | "lime" | "sun" | "violet"; items: string[] };
@@ -58,24 +61,32 @@ export type SkillGroup = { name: string; tone: "magenta" | "cobalt" | "lime" | "
 /* CONTOH — ganti dengan data asli */
 export const skills: SkillGroup[] = [
   {
+    name: "AI engineering",
+    tone: "violet",
+    items: [
+      "LLM APIs and tool use (Claude)",
+      "Retrieval (pgvector, hybrid search)",
+      "Evals and regression tests",
+      "Structured output and validation",
+      "Abstention and guardrails",
+      "Speech-to-text (Whisper)",
+      "Cost and latency budgets",
+    ],
+  },
+  {
+    name: "Product engineering",
+    tone: "sun",
+    items: ["TypeScript", "React and Next.js", "Python (FastAPI)", "PostgreSQL", "Testing (Vitest, Playwright)", "Queues and background jobs", "CI, Docker, Vercel"],
+  },
+  {
     name: "Product design",
     tone: "magenta",
-    items: ["Field research and interviews", "Problem framing", "Interaction design", "UX writing", "Usability testing", "Design systems", "Accessibility (WCAG 2.2)"],
+    items: ["Field research and interviews", "Interaction design", "UX writing", "Usability testing", "Design systems", "Accessibility (WCAG 2.2)", "Figma"],
   },
   {
     name: "Designing for AI",
-    tone: "violet",
-    items: ["Trust and citations", "Designing for uncertainty", "Human-in-the-loop review", "Conversation design", "Error recovery and undo", "Evals with real users"],
-  },
-  {
-    name: "Craft",
     tone: "cobalt",
-    items: ["Figma", "Prototyping in code", "Motion and micro-interaction", "Type and layout", "Information design", "Mobile-first"],
-  },
-  {
-    name: "Build",
-    tone: "sun",
-    items: ["React and Next.js", "TypeScript", "Tailwind CSS", "Claude API", "PostgreSQL", "Shipping to production"],
+    items: ["Trust and citations", "Designing for uncertainty", "Human-in-the-loop review", "Conversation design", "Error recovery and undo"],
   },
 ];
 
@@ -84,63 +95,71 @@ export type Experience = { period: string; title: string; org: string; summary: 
 /* CONTOH — ganti dengan data asli */
 export const experience: Experience[] = [
   {
-    period: "2024 — now",
-    title: "Product Designer (independent)",
-    org: "Self-employed, Bekasi",
-    summary: "Designed and shipped three AI products of my own, Tenderlens, Catat and Lintas, from the first interview to real users. I prototype and build the front end myself.",
-    highlights: ["Handed Tenderlens to a procurement consultancy and Catat to a cooperative; Lintas is open source", "130+ research sessions in Indonesian and English"],
-  },
-  {
-    period: "2022 — 2024",
-    title: "Product Designer, then Design Engineer",
-    org: "Series A HR software startup, Jakarta · 60 people",
-    summary: "One of three product designers, in a squad with a PM and four engineers. I owned the employee app and led design for the company's first LLM feature.",
+    period: "2026 — now",
+    title: "AI Product Engineer (independent)",
+    org: "Bekasi",
+    summary: "Maintaining Tenderlens for the procurement consultancy that runs it: the eval set, the extraction pipeline and fixes, while I look for a full-time role.",
     highlights: [
-      "Led design of AI reply drafts for HR teams: first replies 28% faster across 40 client companies",
-      "Rebuilt the component library in code with two engineers; three squads adopted it within a quarter",
-      "Ran the weekly design critique and onboarded two junior designers",
+      "Grew the eval set from 240 to 610 hand-labelled fields; every release runs against it in CI",
+      "Cut the cost per brief from Rp 1,900 to Rp 420 by sending easy pages to a smaller model",
     ],
   },
   {
-    period: "2018 — 2022",
-    title: "B.Sc. Informatics, HCI track",
-    org: "University, West Java",
-    summary: "Thesis on how Indonesian users read machine-generated text. Ran the campus design and web club.",
+    period: "Feb — Aug 2025",
+    title: "AI Engineering Intern",
+    org: "Series A HR software startup, Jakarta · 60 people",
+    summary:
+      "Six months in a product squad with a PM, three engineers, a data scientist and a product designer. I built most of Ask HR's answer pipeline and the HR review queue, with a senior engineer reviewing every pull request.",
+    highlights: [
+      "Built the topic-and-risk router and its 1,200-question test set with the data scientist",
+      "Built the HR review queue in React from the design system; HR clears 20 drafts in under 9 minutes",
+      "Wrote the weekly accuracy audit the squad still runs",
+    ],
+  },
+  {
+    period: "2022 — 2026",
+    title: "B.Sc. Informatics, AI and HCI track",
+    org: "University, West Java · GPA 3.78 / 4.00",
+    summary:
+      "Thesis: 'Answer or abstain: citation-grounded extraction from Indonesian tender documents', the research behind Tenderlens. Teaching assistant for Human–Computer Interaction; ran the campus design and web club.",
+    highlights: ["Built Lintas (2024) and Catat (2025, campus incubator) during my studies", "Published the thesis eval set so other students can test against it"],
   },
 ];
 
 /** The plain facts a recruiter needs, on /about. CONTOH — ganti dengan data asli */
 export const practical: { label: string; value: string }[] = [
-  { label: "Looking for", value: "A full-time Product Designer role (individual contributor) on an AI product" },
-  { label: "Experience", value: "4 years in product design: 2 in-house at a Series A startup, 2 independent" },
+  { label: "Looking for", value: "A full-time AI Product Engineer role (new grad or junior) on an AI product" },
+  { label: "Graduated", value: "B.Sc. Informatics, AI and HCI track, 2026" },
+  { label: "Experience", value: "A 6-month AI engineering internship in a product squad, and three AI products of my own with real users" },
   { label: "Where", value: "Bekasi, Indonesia (GMT+7). Remote, or hybrid in Jakarta up to 3 days a week" },
   { label: "Time zones", value: "4+ hours of overlap with anything from GMT+4 (Dubai) to GMT+10 (Sydney)" },
   { label: "Start", value: "Within 2 weeks of an offer" },
   { label: "Languages", value: "Indonesian (native), English (full professional)" },
-  { label: "References", value: "My former PM and engineering lead at the HR startup, and Bu Ratna (Tenderlens). On request" },
-  { label: "Why full-time now", value: "All three of my products are handed over or stable. I want to go deep on one product with a team for years, not alone on three for months." },
+  { label: "References", value: "My internship mentor and PM, my thesis supervisor, and Bu Ratna (Tenderlens). On request" },
+  { label: "Why a team now", value: "I've shipped three products mostly alone. I want to learn how a team ships AI at scale, and I'll bring the field research, the evals and the front end with me." },
 ];
 
 /** Model card fields for /lab (the page reads like a model card). */
 /* CONTOH — ganti dengan data asli */
 export const modelCard = {
   version: "v2026.10",
-  architecture: "Human, caffeinated. Fine-tuned on field research and shipped product.",
+  architecture: "Human, caffeinated. Pre-trained on four years of Informatics, fine-tuned on shipped products.",
   trainingData: [
-    "Four years of designing and shipping web products",
-    "130+ research sessions in Bahasa Indonesia and English, across three products",
+    "A B.Sc. in Informatics (2026), and three AI products shipped along the way",
+    "Six months in a product squad, with every pull request reviewed",
+    "130+ research sessions in Bahasa Indonesia and English",
     "A notebook of every slang word for money in Greater Jakarta",
   ],
   intendedUse: [
-    "Taking an AI product from a fuzzy idea to something people use every day",
-    "Designing how an AI shows its work: sources, confidence, undo",
+    "Taking an AI feature from a fuzzy idea to production, with the evals to prove it works",
+    "Building how an AI shows its work: sources, abstaining, undo",
     "Turning field research into decisions a team can build on",
   ],
   outOfScope: ["Designing an AI feature nobody asked for", "Shipping an agent without testing its mistakes with real people", "Dark patterns"],
-  limitations: ["Will ask 'who is this for?' more than once", "Strong opinions about loading states and empty states", "Needs a second coffee before 9 a.m. WIB"],
+  limitations: ["New grad: hasn't worked on a system with millions of users yet", "Will ask 'what's the eval?' more than once", "Strong opinions about loading states and empty states"],
   evals: [
-    { name: "Products designed and shipped", score: "3 / 3" },
-    { name: "Research sessions, 2024–25", score: "130+" },
+    { name: "AI products shipped", score: "3 + 1 at work" },
+    { name: "Hand-labelled eval cases", score: "2,100+" },
     { name: "Languages", score: "Indonesian, English" },
     { name: "Response time to email", score: "< 24h" },
   ],

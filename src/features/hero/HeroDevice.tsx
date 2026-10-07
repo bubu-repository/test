@@ -122,7 +122,7 @@ export function HeroDevice() {
               <HeroName />
             </div>
             <p className="mt-3 text-[clamp(20px,2vw,24px)] leading-tight font-semibold tracking-[-0.02em] text-screen-ink">
-              {identity.role} <span className="text-screen-accent">for {identity.focus}</span>
+              {identity.role} <span className="text-screen-accent">· {identity.cohort}</span>
             </p>
             <p className="mt-1.5 font-mono text-[11px] font-medium tracking-[0.12em] text-screen-muted uppercase">{identity.location} · remote or Jakarta</p>
             <div className="mt-4 max-w-[46ch]">

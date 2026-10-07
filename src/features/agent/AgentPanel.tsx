@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { CloseIcon, RefreshIcon, SendIcon } from "@/components/icons";
 import { MociAvatar } from "@/components/MociAvatar";
@@ -8,6 +9,17 @@ import { cn } from "@/lib/cn";
 import { ui, useUI } from "@/lib/ui";
 import { defaultFollowups } from "./brain";
 import { askAgent, resetAgent, useAgent } from "./agent-store";
+
+/**
+ * The answer's source: the online brain ends a factual answer with "Source: /path"; the offline
+ * brain returns the doc's href. Only internal paths are linked, so a prompt can't inject a URL.
+ */
+function splitSource(text: string, href?: string): { body: string; source?: string } {
+  const m = text.match(/\n?\s*Sources?:\s*(\S+)\s*$/i);
+  const raw = m ? m[1].replace(/[.,;)]+$/, "") : href;
+  const source = raw && /^\/[a-z0-9/#-]*$/i.test(raw) ? raw : undefined;
+  return { body: m ? text.slice(0, m.index).trimEnd() : text, source };
+}
 
 /**
  * Moci's chat. A non-modal panel: the page stays usable, because Moci can act on it
@@ -47,8 +59,7 @@ export function AgentPanel() {
     void askAgent(text);
   };
 
-  const status =
-    mode === "online" ? { label: "Claude · online", tone: "bg-lime" } : mode === "offline" ? { label: "Offline brain", tone: "bg-sun" } : { label: "Ready", tone: "bg-sky" };
+  const status = mode === "online" ? { label: "Claude · online", tone: "bg-lime" } : mode === "offline" ? { label: "Offline brain", tone: "bg-sun" } : { label: "Ready", tone: "bg-sky" };
 
   return (
     <section
@@ -89,9 +100,7 @@ export function AgentPanel() {
         {messages.length === 0 && (
           <div className="rounded-[18px] border border-line bg-surface-2 p-4">
             <p className="font-display text-24 leading-tight font-bold">Hi! I&apos;m Moci.</p>
-            <p className="mt-2 text-14 text-ink">
-              I know Adelia&apos;s projects, skills and this whole site. I can also open pages, switch the sky or give you a tour.
-            </p>
+            <p className="mt-2 text-14 text-ink">I know Adelia&apos;s projects, skills and this whole site. I can also open pages, switch the sky or give you a tour.</p>
           </div>
         )}
         {messages.map((m) =>
@@ -104,7 +113,7 @@ export function AgentPanel() {
               <MociAvatar size={28} mood={m.pending && !m.text ? "think" : "happy"} className="mt-1" />
               <div className="min-w-0 flex-1">
                 <div className="rounded-[6px_20px_20px_20px] bg-surface-2 px-4 py-2.5 text-16 leading-relaxed">
-                  {m.text || (
+                  {splitSource(m.text).body || (
                     <span className="inline-flex gap-1" aria-label="Moci is thinking">
                       <span className="size-1.5 motion-safe:animate-[float-y_0.8s_ease-in-out_infinite] rounded-full bg-accent" />
                       <span className="size-1.5 motion-safe:animate-[float-y_0.8s_0.15s_ease-in-out_infinite] rounded-full bg-accent" />
@@ -122,7 +131,14 @@ export function AgentPanel() {
                   </ul>
                 )}
                 {!m.pending && m.source && (
-                  <p className="type-pixel mt-1.5 text-muted">{m.source === "claude" ? "Answered by Claude" : "Answered offline"}</p>
+                  <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span className="type-pixel text-muted">{m.source === "claude" ? "Answered by Claude" : "Answered offline"}</span>
+                    {splitSource(m.text, m.href).source && (
+                      <Link href={splitSource(m.text, m.href).source!} className="chip font-mono text-12" onClick={() => ui.set({ agentOpen: false })}>
+                        Source: {splitSource(m.text, m.href).source}
+                      </Link>
+                    )}
+                  </p>
                 )}
               </div>
             </div>

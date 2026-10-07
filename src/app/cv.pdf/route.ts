@@ -90,21 +90,28 @@ async function buildCv() {
   w.text(bio.short, { size: 10.5, leading: 1.5, after: 2 });
   w.text(bio.availability, { size: 10, color: MUTED });
 
-  w.label("Selected work");
-  for (const p of projects) {
-    w.text(`${p.name} — ${p.kind}, ${p.year}`, { size: 11.5, bold: true, leading: 1.3 });
-    w.text(p.summary, { size: 9.5, color: INK, leading: 1.45 });
-    w.text(`${p.role.title}. ${p.results.metrics.slice(0, 3).map((m) => `${m.value} ${m.label}`).join("; ")}.`, { size: 9, color: MUTED, leading: 1.45 });
-    w.text(`${identity.url}/work/${p.slug}`, { size: 8.5, color: ACCENT, after: 6 });
-  }
-
-  w.label("Experience");
+  // A new grad's CV: experience and education first, then the work.
+  w.label("Experience and education");
   for (const e of experience) {
     page.drawText(clean(e.period), { x: M, y: w.y - 10, size: 9, font: regular, color: MUTED });
     const startY = w.y;
     w.text(`${e.title}, ${e.org}`, { size: 10.5, bold: true, x: M + 92, width: A4.w - M * 2 - 92, leading: 1.35 });
     w.text(e.summary, { size: 9.5, x: M + 92, width: A4.w - M * 2 - 92, leading: 1.45, after: 6 });
     if (w.y > startY - 20) w.y = startY - 20;
+  }
+
+  w.label("Selected work");
+  for (const p of projects) {
+    w.text(`${p.name} — ${p.kind} (${p.context.toLowerCase()}), ${p.year}`, { size: 11, bold: true, leading: 1.3 });
+    w.text(`${p.role.title}. Built with ${p.stack.slice(0, 5).join(", ")}.`, { size: 9.5, color: INK, leading: 1.45 });
+    w.text(
+      `${p.results.metrics
+        .slice(0, 2)
+        .map((m) => `${m.value} ${m.label}`)
+        .join("; ")}.`,
+      { size: 9, color: MUTED, leading: 1.45 },
+    );
+    w.text(`${identity.url}/work/${p.slug}`, { size: 8.5, color: ACCENT, after: 5 });
   }
 
   w.label("Skills");

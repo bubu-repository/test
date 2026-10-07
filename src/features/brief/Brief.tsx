@@ -75,15 +75,7 @@ export function Brief() {
               The 40-second version
             </h2>
           </div>
-          <button
-            type="button"
-            className="pill"
-            data-shape="icon"
-            data-size="sm"
-            aria-label={paused ? "Resume timer" : "Pause timer"}
-            onClick={() => setPaused((p) => !p)}
-            disabled={left === 0}
-          >
+          <button type="button" className="pill" data-shape="icon" data-size="sm" aria-label={paused ? "Resume timer" : "Pause timer"} onClick={() => setPaused((p) => !p)} disabled={left === 0}>
             {paused ? <PlayIcon width={16} height={16} /> : <PauseIcon width={16} height={16} />}
           </button>
         </header>
@@ -92,8 +84,8 @@ export function Brief() {
           <section>
             <h3 className="type-pixel text-accent-ink">Who</h3>
             <p className="mt-2 text-16">
-              <strong>{identity.name}</strong>, {identity.role} for {identity.focus} in {identity.location} ({identity.timeZoneLabel}). She designs AI products people can trust,
-              from field research to the shipped interface, and prototypes them in real code.
+              <strong>{identity.name}</strong>, {identity.role} ({identity.degree}, {identity.cohort.toLowerCase()}) in {identity.location} ({identity.timeZoneLabel}). Fresh graduate. She designs and
+              builds AI products people can trust: the interface, the pipeline and the evals. A 6-month AI engineering internship, and three products of her own with real users.
             </p>
           </section>
           <section>
@@ -106,16 +98,14 @@ export function Brief() {
           </section>
           <section className="md:col-span-2">
             <h3 className="type-pixel text-accent-ink">Proof</h3>
-            <ul className="mt-2 grid gap-2 sm:grid-cols-3">
+            <ul className="mt-2 grid gap-2 sm:grid-cols-2">
               {projects.map((p) => (
                 <li key={p.slug}>
-                  <Link
-                    href={`/work/${p.slug}`}
-                    onClick={close}
-                    className="block h-full rounded-sm border border-line bg-surface-2 p-3 transition-colors hover:border-accent"
-                  >
+                  <Link href={`/work/${p.slug}`} onClick={close} className="block h-full rounded-sm border border-line bg-surface-2 p-3 transition-colors hover:border-accent">
                     <span className="font-display text-20 font-bold">{p.name}</span>
-                    <span className="mt-1 block text-14 text-muted">{p.kind}</span>
+                    <span className="mt-1 block text-14 text-muted">
+                      {p.kind} · {p.context}
+                    </span>
                     <span className="mt-2 block text-14 font-semibold">
                       {p.results.metrics[0].value} <span className="font-normal">{p.results.metrics[0].label}</span>
                     </span>
@@ -127,11 +117,13 @@ export function Brief() {
           <section className="md:col-span-2">
             <h3 className="type-pixel text-accent-ink">Strengths</h3>
             <ul className="mt-2 flex flex-wrap gap-2">
-              {["Agentic workflows + tool use", "Evals that drive decisions", "Interface design", "Next.js + TypeScript", "Postgres + pgvector", "User research in Bahasa + English"].map((s) => (
-                <li key={s} className="chip" data-tone="lime">
-                  {s}
-                </li>
-              ))}
+              {["LLM tool use and agents", "Evals with frozen test sets", "Abstention and citations", "TypeScript, Next.js, Python", "Postgres + pgvector", "Field research in Bahasa + English"].map(
+                (s) => (
+                  <li key={s} className="chip" data-tone="lime">
+                    {s}
+                  </li>
+                ),
+              )}
             </ul>
           </section>
         </div>

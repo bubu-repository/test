@@ -375,6 +375,19 @@
   white-space: nowrap;
 }
 
+/* Every money figure carries the page it came from, like the reasons do. */
+.tl-money em {
+  display: inline-block;
+  margin-top: 0.3em;
+  padding: 0.05em 0.4em;
+  border-radius: 0.5em;
+  background: var(--tl-wash);
+  color: var(--tl-muted);
+  font-size: 0.6em;
+  font-style: normal;
+  font-weight: 700;
+}
+
 .tl-check {
   margin-top: 0.9em;
   padding: 0.8em 0.9em;
@@ -1124,12 +1137,17 @@
   background: var(--ln-lime);
 }
 
+/* Crowding is patterned as well as coloured: dots for tight, stripes for packed. */
 .ln-car.a {
-  background: var(--ln-amber);
+  background:
+    radial-gradient(circle, rgba(11, 14, 29, 0.28) 1px, transparent 1.4px) 0 0 / 0.5em 0.5em,
+    var(--ln-amber);
 }
 
 .ln-car.r {
-  background: var(--ln-red);
+  background:
+    repeating-linear-gradient(135deg, rgba(11, 14, 29, 0.24) 0 0.12em, transparent 0.12em 0.42em),
+    var(--ln-red);
 }
 
 .ln-car[data-best] {
@@ -1605,9 +1623,14 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-@media (min-width: 1100px) {
+/* Two per row at most, so the text inside the phones stays readable (about 12px). */
+.case-screen > .dp {
+  max-width: 300px;
+}
+
+@media (min-width: 640px) {
   .case-screens {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 48px 32px;
   }
 }
 
@@ -1731,6 +1754,217 @@
   font-size: var(--text-11);
   font-weight: 700;
   vertical-align: 1px;
+}
+
+.case-table td.case-table__wrap,
+.case-table th.case-table__wrap {
+  min-width: 200px;
+  white-space: normal;
+}
+
+/* ---------- Engineering ---------- */
+.eng-pipeline {
+  display: grid;
+  gap: 10px;
+  counter-reset: none;
+}
+
+.eng-pipeline li {
+  display: flex;
+  gap: 14px;
+  font-size: var(--text-16);
+  line-height: 1.5;
+}
+
+.eng-pipeline__n {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 1px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--surface-solid);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: 700;
+}
+
+.eng-failures {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--line);
+}
+
+.eng-failures > div {
+  display: grid;
+  gap: 4px 24px;
+  padding: 14px 18px;
+  background: var(--surface);
+  font-size: var(--text-16);
+}
+
+@media (min-width: 720px) {
+  .eng-failures > div {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+
+.eng-failures dt {
+  font-weight: 600;
+}
+
+.eng-failures dd {
+  color: var(--muted);
+}
+
+/* Eval charts: small multiples, every point labelled. */
+.evalchart {
+  padding: 16px 18px 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.evalchart__axis {
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.evalchart__line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.evalchart__line--down {
+  stroke-dasharray: 7 5;
+}
+
+.evalchart__dot {
+  fill: var(--surface-solid);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.evalchart__dot--last {
+  fill: var(--accent);
+  stroke: var(--surface-solid);
+  stroke-width: 2.5;
+}
+
+.evalchart__value {
+  fill: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.evalchart__value--last {
+  fill: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.evalchart__tick {
+  fill: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* Code excerpts: a dark editor panel in both themes. */
+.codeblock {
+  overflow: hidden;
+  border-radius: 22px;
+  background: #0f1426;
+  color: #e6e9f5;
+  box-shadow: 0 1px 2px rgba(15, 18, 48, 0.2), 0 18px 40px -18px rgba(15, 18, 48, 0.5);
+}
+
+.codeblock__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.codeblock__file {
+  font-weight: 700;
+}
+
+.codeblock__meta {
+  color: #9aa3c2;
+}
+
+.codeblock__scroll {
+  overflow-x: auto;
+}
+
+.codeblock__scroll:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.codeblock pre {
+  margin: 0;
+  padding: 18px 20px 20px;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  font-variant-ligatures: none; /* show => and === as typed, not as arrows */
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.codeblock__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 14px 18px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #c5cbe0;
+  font-size: var(--text-14);
+}
+
+.codeblock__caption .link-arrow {
+  color: #ff8fb7;
+}
+
+.tok-comment {
+  color: #8790b0;
+  font-style: italic;
+}
+
+.tok-string {
+  color: #b5e3a1;
+}
+
+.tok-number {
+  color: #ffc887;
+}
+
+.tok-keyword {
+  color: #ff8fb7;
+}
+
+.tok-type {
+  color: #8fd0ff;
+}
+
+.tok-fn {
+  color: #d9c2ff;
 }
 
 /* The raw research artefact: the sticky notes from a session, clustered the way we sorted them. */
@@ -2326,6 +2560,62 @@
   background: #ffffff;
   box-shadow: 0 0 0 1px var(--ah-line);
   opacity: 0.7;
+}
+
+.ah-step {
+  margin-top: 0.85em;
+  color: var(--ah-muted);
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ah-draft {
+  margin-top: 0.4em;
+  padding: 0.6em 0.7em;
+  border-radius: 0.7em;
+  background: var(--ah-wash);
+}
+
+.ah-btn--off {
+  opacity: 0.45;
+}
+
+.ah-card--alert {
+  border-color: #f2c46d;
+  background: #fffaf0;
+}
+
+.ah-toggles {
+  display: grid;
+  gap: 0.15em;
+  margin-top: 0.5em;
+}
+
+.ah-toggles li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45em 0;
+  border-bottom: 1px solid var(--ah-line);
+  font-size: 0.86em;
+}
+
+.ah-switch {
+  min-width: 3.2em;
+  padding: 0.15em 0.6em;
+  border-radius: 1em;
+  background: var(--ah-wash);
+  color: var(--ah-muted);
+  font-size: 0.78em;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ah-switch[data-on] {
+  background: var(--ah-brand);
+  color: #ffffff;
 }
 
 .ah-lock {

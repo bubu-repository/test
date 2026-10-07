@@ -130,11 +130,11 @@ export function LintasCarriages() {
             Room to stand
           </span>
           <span>
-            <i style={{ background: "var(--ln-amber)" }} />
+            <i className="ln-car a" style={{ height: "0.7em" }} />
             Tight
           </span>
           <span>
-            <i style={{ background: "var(--ln-red)" }} />
+            <i className="ln-car r" style={{ height: "0.7em" }} />
             Packed
           </span>
         </p>

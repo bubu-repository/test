@@ -8,13 +8,14 @@ export function WorkTeaser() {
     <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16" data-xr="WorkTeaser · four case cards with real screens">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <div className="max-w-[46rem]">
-          <p className="type-eyebrow">Selected work · 2023–2025</p>
+          <p className="type-eyebrow">Selected work · 2024–2026</p>
           <h2 id="work-teaser-title" className="type-display mt-3">
             AI that shows its work.
           </h2>
         </div>
         <p className="max-w-[40ch] pb-2 text-muted">
-          Four shipped products. One in-house, in a squad of seven at an HR software startup. Three I started myself and have since handed to the people who run them.
+          Four AI products with real users: my thesis, my internship feature in a product squad, a product I co-founded in a campus incubator, and a side project. Each case shows the pipeline, the
+          evals and the design.
         </p>
       </div>
 

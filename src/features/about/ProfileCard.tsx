@@ -15,7 +15,7 @@ export function ProfileCard() {
       </span>
       <p className="mt-5 text-24 font-bold tracking-[-0.03em]">{identity.name}</p>
       <p className="text-16 text-muted">
-        {identity.role} · {identity.focus}
+        {identity.role} · {identity.cohort}
       </p>
       <p className="mt-3 inline-flex items-center gap-2 rounded-pill bg-surface-2 px-3 py-1.5 text-14">
         <span className="live-dot" aria-hidden="true" /> {identity.location} · <LiveClock zone={identity.timeZone} className="font-semibold tabular-nums" /> WIB

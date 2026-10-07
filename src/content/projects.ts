@@ -1,10 +1,11 @@
 /**
- * The four case studies: three products of her own and one in-house feature (under NDA).
+ * The four case studies: her thesis product, her internship feature (under NDA), a campus
+ * incubator product she co-founded, and a side project. This file is the single source of truth
+ * for every number: the cards, the case pages, About, the CV, the brief and the agent read it.
  *
  * CONTOH — ganti dengan data asli.
- * The real projects (titles, URLs, numbers) arrive later. These three are realistic samples so
- * every layout, the agent and the CV can be built and reviewed now. Replace field by field;
- * the pages, the trading cards, the agent knowledge and the CV PDF all read from this file.
+ * The real projects (titles, URLs, numbers) arrive later. These are realistic samples so every
+ * layout, the agent and the CV can be built and reviewed now. Replace field by field.
  */
 
 export type Tone = "magenta" | "cobalt" | "lime" | "sun" | "violet" | "mint" | "sky" | "ink" | "pink" | "red";
@@ -23,6 +24,29 @@ export type Metric = {
   label: string;
   /** How it was measured, in one line. */
   how: string;
+};
+
+/** One version of the system on the eval set: what changed, and the score on each series. */
+export type EvalPoint = { version: string; change: string; values: number[] };
+
+/** How it's built: the pipeline, the models and why, the evals, the budgets, the failure modes, code. */
+export type Engineering = {
+  summary: string;
+  pipeline: { step: string; detail: string }[];
+  models: { task: string; model: string; why: string }[];
+  evals: {
+    /** What the eval set is and where the labels come from. */
+    set: string;
+    /** How the evals are used (when they run, what blocks a release). */
+    gate: string;
+    series: { name: string; unit: string; better: "up" | "down" }[];
+    history: EvalPoint[];
+  };
+  budgets: { label: string; value: string; note: string }[];
+  failures: { when: string; then: string }[];
+  /** Real mistakes from the error log: what the system said, what was true, why, and the fix. */
+  errorLog: { said: string; truth: string; why: string; fix: string }[];
+  code: { file: string; lang: string; caption: string; source: string };
 };
 
 export type Project = {
@@ -49,6 +73,10 @@ export type Project = {
     with: { who: string; part: string }[];
   };
   team: string;
+  /** Whose product it was: hers alone, co-founded, or her part of a team's product as an intern. */
+  ownership: "Solo" | "Co-founded" | "Internship";
+  /** Where it came from, in two or three words (card chip, case header). */
+  context: string;
   timeline: string;
   stack: string[];
   /** Own products have a live link and code; in-house work under NDA has neither. */
@@ -87,6 +115,7 @@ export type Project = {
   /** A raw research artefact: the affinity map from the first round of research. */
   artifact: { title: string; clusters: { label: string; notes: string[] }[] };
   architecture: { nodes: ArchNode[]; edges: [string, string][] };
+  engineering: Engineering;
   beforeAfter: {
     before: { title: string; points: string[] };
     after: { title: string; points: string[] };
@@ -95,6 +124,8 @@ export type Project = {
     metrics: Metric[];
     body: string[];
     quote: { text: string; who: string };
+    /** What it meant for the business, in one honest line. */
+    business: string;
   };
   reflection: string;
   next: string;
@@ -106,7 +137,7 @@ export const projects: Project[] = [
     slug: "tenderlens",
     index: "01",
     name: "Tenderlens",
-    year: "2025",
+    year: "2026",
     kind: "AI brief for public tenders",
     tone: "magenta",
     rarity: "Holo rare",
@@ -116,34 +147,38 @@ export const projects: Project[] = [
     summary:
       "Tenderlens reads tender packages from public procurement portals and turns each one into a one-page brief: a bid / no-bid score, the three reasons behind it, and a link from every reason to the page it came from.",
     tldr: {
-      problem: "Small contractors spend 3 hours reading each 200-page tender, mostly to learn they never qualified.",
-      did: "I designed a one-page brief where the score is never shown without its reasons, every reason links to its page, and the AI says 'I can't tell' instead of guessing.",
-      outcome: "11 minutes per tender, 31 of 38 beta teams still using it weekly after 3 months, 12 teams pre-paying.",
+      problem: "Small contractors spend about 3 hours reading each 200-page tender, mostly to learn they never qualified.",
+      did: "My thesis: a pipeline where the model only reads and quotes, code checks every quote against its page, rules decide the verdict, and the brief says 'Can't tell yet' instead of guessing. Then I designed the one-page brief around it.",
+      outcome: "11 minutes per tender instead of about 3 hours, 31 of 38 beta teams still using it weekly after 3 months, and 2.2% wrong 'you qualify' calls on a frozen test set.",
     },
     role: {
-      title: "Founder and sole designer",
+      title: "Sole engineer and designer (thesis)",
       summary:
-        "I started Tenderlens and was its only designer: research, the brief and every screen, the trust and error states, the usability tests and the front end. Fajar, a freelance engineer, built the PDF parser; I built the app and the extraction agent. Bu Ratna, a former procurement officer, advised on the rules and labelled the test set with me.",
+        "Tenderlens was my final-year thesis, and I built all of it: the crawler, the extraction pipeline and its evals, the app, and the design, from shadowing bid teams to usability tests. Fajar, a classmate, helped with the OCR for scanned tables for six weeks. Bu Ratna, a former procurement officer, advised on the rules and labelled the eval set with me. My supervisor reviewed the evaluation method.",
       decisions: [
-        "Made 'score plus three cited reasons' the unit of the product, after a score on its own failed with every tester.",
-        "Designed an explicit 'Can't tell yet' state, and set the threshold so the AI abstains rather than risk a wrong 'you qualify'.",
-        "Put a 'That's wrong' button on every reason and routed it into the test set, so users improve the product instead of just losing trust in it.",
+        "Kept the model out of the verdict: it reads and quotes, and rules in code decide, so every score can be explained line by line.",
+        "Made a citation check in code the gate for every claim, after the model quoted pages that didn't say what it claimed.",
+        "Chose abstaining over guessing, set the threshold on a dev set, and reported it on a test set I never tuned on.",
       ],
       with: [
-        { who: "Bu Ratna, former procurement officer", part: "Domain rules; labelled the 240-field test set with me (94% agreement)" },
-        { who: "Fajar, freelance engineer (6 weeks)", part: "The PDF parser and OCR" },
-        { who: "9 bid teams", part: "Shadowing, three rounds of usability tests, the closed beta" },
+        { who: "Bu Ratna, former procurement officer", part: "Domain rules. Labelled the 610-field eval set with me, and we settled every disagreement together" },
+        { who: "Fajar, a classmate (6 weeks)", part: "OCR for scanned tables" },
+        { who: "My thesis supervisor", part: "Reviewed the evaluation design: the dev / test split and the intervals" },
+        { who: "9 bid teams", part: "Shadowing, three rounds of usability tests, then the closed beta" },
       ],
     },
-    team: "Me, a domain advisor and a freelance engineer",
-    timeline: "10 weeks · 2025",
-    status: "Handed over in mid-2025 to Bu Ratna's procurement consultancy, which runs it for 31 teams. I advise two hours a month.",
-    stack: ["Figma", "Next.js", "TypeScript", "PostgreSQL", "pgvector", "Claude API", "Playwright"],
+    team: "Me, a domain advisor, and a classmate for the OCR",
+    ownership: "Solo",
+    context: "Thesis project",
+    timeline: "7 months · thesis, Sep 2025 – Mar 2026",
+    status:
+      "Since April 2026, Bu Ratna's procurement consultancy runs it for 31 client teams: it already had the clients, and I couldn't sell it and finish a thesis at the same time. I maintain the pipeline and the eval set on a part-time contract.",
+    stack: ["TypeScript", "Next.js", "PostgreSQL", "pg-boss", "Claude API", "PaddleOCR", "Playwright"],
     links: { live: "https://example.com/tenderlens", repo: "https://github.com/example/tenderlens" },
     stats: [
       { label: "Read time", value: "3h → 11m" },
       { label: "Still weekly", value: "31/38" },
-      { label: "Pre-paying", value: "12 teams" },
+      { label: "Wrong 'qualify'", value: "2.2%" },
     ],
     problem: {
       body: [
@@ -154,17 +189,17 @@ export const projects: Project[] = [
         "A wrong 'you qualify' is worse than no answer: a disqualified bid wastes days of work and a bank guarantee",
         "Formal legal Indonesian, mixed with scanned tables",
         "Read on phones, between site visits",
-        "Deadlines are days, not weeks",
+        "A student budget: the whole thing had to run for well under Rp 2M a month",
       ],
     },
     research: {
       methods: [
         { label: "Shadowing", detail: "9 bid teams, 2 hours each, plus 2 full tender readings timed end to end" },
-        { label: "Usability tests", detail: "3 rounds × 5 people, paper then clickable, then coded with real tenders" },
-        { label: "Beta diary", detail: "38 teams for 12 weeks, a feedback button on every reason" },
+        { label: "Usability tests", detail: "3 rounds of 5 people: paper, then clickable, then coded with real tenders" },
+        { label: "Labelling", detail: "610 eligibility fields from 150 tenders, two labellers, every disagreement settled together" },
       ],
       insights: [
-        { title: "Everyone reads in the same order", body: "Eligibility first, then scope, then money. Nobody started at page 1. That order became the brief." },
+        { title: "Everyone reads in the same order", body: "Eligibility first, then scope, then money. Nobody started at page 1. That order became the brief, and the order the pipeline reads in." },
         { title: "A score without reasons is a rumour", body: "Owners wouldn't act on a number they couldn't argue with. They needed to check one claim to trust the rest." },
         { title: "Being wrong costs more than being slow", body: "A missed tender is a shrug. Bidding on one you don't qualify for costs a week of paperwork and a bank guarantee." },
       ],
@@ -176,23 +211,23 @@ export const projects: Project[] = [
         title: "Never show the score alone",
         options: ["A summary with the score at the end", "A big score up front", "The score with its three reasons, each linked to its page"],
         chose: "The score always arrives with three reasons, and each reason has a page chip that opens the source.",
-        why: "In round two, all five testers saw the big score and none of them trusted it ('why 82?'). With reasons, all five decided in under two minutes, and four tapped a page to check.",
-        cost: "Less room on the screen, so 'money' details moved one tap down. Nobody missed them in testing.",
+        why: "In round two, all five testers saw the big score and none of them trusted it ('why 82?'). With reasons, four of five decided in under two minutes, and three tapped a page to check.",
+        cost: "Less room on the screen, so the money details moved below the reasons. The fifth tester wanted money first; it moved up one slot.",
       },
       {
         title: "Abstain instead of guessing",
         options: ["Always show a score", "Show a score with a confidence percentage", "Say 'Can't tell yet', why, and who can check"],
-        chose: "When a key page is unreadable or a rule is ambiguous, the brief shows 'Can't tell yet', names the page, and offers to send it to a person on the team.",
-        why: "Testers ignored confidence percentages ('70% is basically yes'). A clear 'I won't guess' was read correctly every time.",
-        cost: "9% of briefs abstain, so some owners still open the PDF. Without abstaining, 16 of 240 eligibility calls wrongly said 'you qualify'; with it, 5 do.",
+        chose: "When a key page is unreadable or two clauses conflict, the brief shows 'Can't tell yet', names the page, and offers to send it to a person on the team.",
+        why: "Testers ignored confidence percentages ('70% is basically yes'). 'I won't guess, here's the page' was read correctly by all nine people who saw it.",
+        cost: "9% of briefs abstain, so some owners still open the PDF. On the frozen test set, abstaining cut wrong 'you qualify' calls from 25 of 370 to 8.",
         table: {
-          caption: "Each setting run on the same 60 tenders: 240 eligibility calls that Bu Ratna and I labelled by hand.",
+          caption: "Thresholds tuned on the dev set (240 fields). Reported on the frozen test set: 370 eligibility calls from 90 tenders I never tuned on.",
           head: ["Setting", "Briefs that abstain", "Wrongly said 'you qualify'"],
           rows: [
-            ["Always give a score", "0%", "6.7% (16)"],
-            ["Abstain on unreadable pages", "5%", "3.8% (9)"],
-            ["Abstain on unreadable pages or clauses that conflict", "9%", "2.1% (5)"],
-            ["Abstain below a 0.9 match", "17%", "1.7% (4)"],
+            ["Always give a score", "0%", "6.8% (25)"],
+            ["Abstain on unreadable pages", "5%", "3.8% (14)"],
+            ["Abstain on unreadable pages or clauses that conflict", "9%", "2.2% (8)"],
+            ["Abstain below a 0.9 match", "17%", "1.6% (6)"],
           ],
           chosen: 2,
         },
@@ -200,53 +235,43 @@ export const projects: Project[] = [
       {
         title: "Make disagreeing a feature",
         options: ["A thumbs down on the whole brief", "A 'That's wrong' on each reason, with three quick causes"],
-        chose: "Every reason has 'That's wrong'. Picking a cause takes one tap, and the correction goes into the test set after Bu Ratna reviews it.",
-        why: "Owners argued with the score anyway. Giving them a place to do it turned arguments into 118 corrections that raised field accuracy from 88% to 94%.",
-        cost: "A review queue I have to keep up with: about 20 minutes a week.",
+        chose: "Every reason has 'That's wrong'. Picking a cause takes one tap; the claim greys out at once, and the correction goes into the dev set after Bu Ratna reviews it.",
+        why: "Owners argued with the score anyway. Giving them a place to do it produced 118 reviewed corrections that exposed two systematic misreads: percentages in tables, and licence sub-codes. Fixing those raised field accuracy on the frozen test set from 88.6% to 92.2%.",
+        cost: "A review queue I keep up with: about 20 minutes a week. Corrections never touch the test set, so it stays honest.",
       },
     ],
     iterations: [
-      { name: "Summary first", finding: "2 of 5 testers found the score at the bottom. Everyone else gave up halfway through the summary.", kept: false },
-      { name: "Big score", finding: "5 of 5 saw it in a second. 0 of 5 trusted it: 'Why 82? Who says?'", kept: false },
-      { name: "Score + 3 cited reasons", finding: "5 of 5 decided in under 2 minutes. 4 of 5 tapped a page chip to check a claim first.", kept: true },
+      { name: "Summary first", finding: "2 of 5 testers found the score at the bottom. The other three gave up halfway through the summary.", kept: false },
+      { name: "Big score", finding: "5 of 5 saw it in a second. None trusted it: 'Why 82? Who says?'", kept: false },
+      { name: "Score + 3 cited reasons", finding: "4 of 5 decided in under 2 minutes, and 3 tapped a page chip first. The fifth wanted the money sooner.", kept: true },
     ],
     screens: [
-      { key: "tl-brief", title: "The brief", caption: "One page per tender. The score never appears without its reasons." },
-      { key: "tl-source", title: "Show the receipts", caption: "Tap a page chip: the source page opens with the sentence highlighted, next to the claim. Here it shows a misread 3%." },
+      { key: "tl-brief", title: "The brief", caption: "One page per tender. The score never appears without its reasons, and the money figures carry their page too." },
+      { key: "tl-source", title: "Show the receipts", caption: "Tap a page chip: the source page opens with the sentence highlighted, next to the claim. Here it exposes a misread: 3%, not 5%." },
       { key: "tl-unsure", title: "Can't tell yet", caption: "A different tender, with a blurry scan: it says so, names the page, and offers a person." },
-      { key: "tl-disagree", title: "That's wrong", caption: "One tap to say why. Reviewed corrections go into the test set." },
+      { key: "tl-disagree", title: "That's wrong", caption: "One tap to say why. The claim greys out and the score is recomputed without it." },
     ],
     process: [
-      {
-        stage: "Discover",
-        title: "Shadowed nine bid teams",
-        body: "Watched how people actually read a tender. Everyone looked for the same three things first: eligibility, scope, and money.",
-        duration: "Week 1–2",
-      },
-      { stage: "Define", title: "Framed it as one decision", body: "'Should we bid?' became the only question the first screen answers. Everything else moved behind it.", duration: "Week 2" },
+      { stage: "Discover", title: "Shadowed nine bid teams", body: "Everyone looked for the same three things first: eligibility, scope, and money.", duration: "Month 1" },
+      { stage: "Build", title: "The pipeline before any screen", body: "Crawler, OCR and extraction, measured on a 240-field dev set from the first week of code.", duration: "Month 2–3" },
       {
         stage: "Design",
         title: "Three rounds on the brief",
         body: "Paper, then clickable, then coded with real tenders. The score-only layout failed; the cited-reasons layout won.",
-        duration: "Week 3–6",
+        duration: "Month 3–4",
       },
-      {
-        stage: "Test",
-        title: "Tested the failures, not just the happy path",
-        body: "Blurry scans, contradictory clauses, a misread number. Each became a designed state with its own words.",
-        duration: "Week 6–9",
-      },
-      { stage: "Ship", title: "Closed beta with 38 teams", body: "A morning digest on WhatsApp and email, a brief per tender, and 'That's wrong' on every reason.", duration: "Week 10" },
+      { stage: "Test", title: "Tested the failures", body: "Blurry scans, contradictory clauses, misread numbers. Each became a designed state with its own words.", duration: "Month 4" },
+      { stage: "Ship", title: "Closed beta with 38 teams", body: "12 weeks, while Bu Ratna and I labelled the frozen 370-field test set for the final numbers.", duration: "Month 5–7" },
     ],
     deadEnd: {
       title: "Auto-filling the bid documents",
-      body: "Owners asked for it and I prototyped it in week 7. In testing, two owners signed a pre-filled form without reading it. I dropped it: a tool that makes people stop reading legal documents is the opposite of this product.",
+      body: "Owners asked for it and I prototyped it in month 4. In testing, two owners signed a pre-filled form without reading it. I dropped it: a tool that makes people stop reading legal documents is the opposite of this product.",
     },
     inclusion: [
       "Verdicts are words and icons, never colour alone: Bid, Check, No.",
       "Page chips are 44 px tap targets, and the brief reads in order with TalkBack: verdict, reasons, money.",
       "Tested at 200% text size on a Rp 2 million Android phone, the kind most owners carry.",
-      "Owners who read slowly can have the brief read aloud; the reasons were written to make sense heard, not just seen.",
+      "The brief is shown here in English; the product is in Indonesian, written so it makes sense read aloud.",
     ],
     artifact: {
       title: "From the shadowing sessions: what bid teams looked for first",
@@ -258,29 +283,126 @@ export const projects: Project[] = [
     },
     architecture: {
       nodes: [
-        { id: "portal", label: "Tender portals", x: 6, y: 12, kind: "service" },
-        { id: "crawler", label: "Crawler", x: 28, y: 12, kind: "service" },
-        { id: "parser", label: "Parser + OCR", x: 50, y: 12, kind: "service" },
-        { id: "agent", label: "Extraction agent", x: 72, y: 12, kind: "agent" },
-        { id: "checker", label: "Citation checker", x: 94, y: 12, kind: "agent" },
-        { id: "db", label: "Postgres + pgvector", x: 72, y: 46, kind: "data" },
-        { id: "app", label: "Next.js app", x: 44, y: 46, kind: "ui" },
-        { id: "user", label: "Bid team", x: 14, y: 46, kind: "user" },
+        { id: "portal", label: "LPSE portals", x: 11, y: 10, kind: "service" },
+        { id: "crawl", label: "Crawl + queue", x: 30, y: 10, kind: "service" },
+        { id: "ocr", label: "PDF + OCR", x: 49, y: 10, kind: "service" },
+        { id: "triage", label: "Page triage", x: 68, y: 10, kind: "agent" },
+        { id: "extract", label: "Extraction", x: 88, y: 10, kind: "agent" },
+        { id: "check", label: "Quote check", x: 88, y: 48, kind: "service" },
+        { id: "rules", label: "Verdict rules", x: 68, y: 48, kind: "service" },
+        { id: "db", label: "Postgres", x: 49, y: 48, kind: "data" },
+        { id: "app", label: "App + digest", x: 30, y: 48, kind: "ui" },
+        { id: "user", label: "Bid team", x: 11, y: 48, kind: "user" },
       ],
       edges: [
-        ["portal", "crawler"],
-        ["crawler", "parser"],
-        ["parser", "agent"],
-        ["agent", "checker"],
-        ["checker", "db"],
+        ["portal", "crawl"],
+        ["crawl", "ocr"],
+        ["ocr", "triage"],
+        ["triage", "extract"],
+        ["extract", "check"],
+        ["check", "rules"],
+        ["rules", "db"],
         ["db", "app"],
         ["app", "user"],
       ],
     },
+    engineering: {
+      summary:
+        "A nightly pipeline turns each new tender into a brief before owners wake up. The model reads and quotes; code decides. Every claim has to survive a citation check, and the verdict comes from rules in code, so every score can be explained line by line.",
+      pipeline: [
+        { step: "Crawl", detail: "Polls 14 LPSE portals at 02:00. New packages go into a job queue in Postgres (pg-boss), so a crash loses nothing." },
+        { step: "Read", detail: "The PDF's text layer where there is one; PaddleOCR for scanned pages, with a quality score per page." },
+        { step: "Triage", detail: "A small model labels each of ~200 pages: eligibility, scope, money, addendum or boilerplate. About 12 go further." },
+        { step: "Extract", detail: "A larger model fills a JSON schema. Every field has a value, the page it came from and the exact quote." },
+        { step: "Check", detail: "Code, not a model: the quote must be on the cited page (fuzzy match of 0.9 or more), or the claim is dropped." },
+        { step: "Decide", detail: "Rules in TypeScript compare the claims with the company profile. Unreadable or conflicting eligibility means 'Can't tell yet'." },
+        { step: "Deliver", detail: "The brief in the app and a WhatsApp and email digest at 06:30. 'That's wrong' feeds a review queue." },
+      ],
+      models: [
+        { task: "Page triage", model: "Claude Haiku", why: "About 200 pages per tender. Fast and cheap, and a wrong label only costs a second look by the next step." },
+        { task: "Field extraction", model: "Claude Sonnet", why: "Legal Indonesian and scanned tables. It only sees about 12 pages, so quality is worth the price here." },
+        { task: "Scanned pages", model: "PaddleOCR, self-hosted", why: "Read Indonesian table scans better than the two hosted options I tested, with no per-page cost." },
+        { task: "The verdict", model: "No model: rules in code", why: "Owners need to argue with the reason. A rule can be shown and tested; a model's judgement can't." },
+      ],
+      evals: {
+        set: "610 eligibility fields from 150 real tenders, labelled separately by Bu Ratna and me (94% raw agreement, Cohen's κ 0.87), then every disagreement settled together. 240 fields are the dev set I tune on. 370 are a frozen test set I don't look at while tuning. Reviewed user corrections only ever go into the dev set.",
+        gate: "Every prompt, model or rule change runs the whole suite in CI: about 6 minutes and Rp 38k. A release is blocked if wrong 'you qualify' calls rise above 2.5% or citation validity drops below 99%. With 370 calls, 8 errors means a 95% interval of roughly 1.1–4.2%, so I treat a change of one or two errors as noise.",
+        series: [
+          { name: "Field accuracy", unit: "%", better: "up" },
+          { name: "Wrong 'you qualify'", unit: "%", better: "down" },
+        ],
+        history: [
+          { version: "v1", change: "One prompt over the whole PDF", values: [71.4, 11.4] },
+          { version: "v2", change: "Page triage first", values: [79.2, 10.3] },
+          { version: "v3", change: "JSON schema with a quote per field", values: [84.1, 9.2] },
+          { version: "v4", change: "Citation check in code", values: [86.5, 6.8] },
+          { version: "v5", change: "Abstain on unreadable or conflicting pages", values: [88.6, 2.2] },
+          { version: "v6", change: "Fixes from 118 reviewed corrections", values: [92.2, 2.2] },
+        ],
+      },
+      budgets: [
+        { label: "Cost per brief", value: "Rp 420", note: "down from Rp 1,900 before page triage" },
+        { label: "Time per brief", value: "52 s p50", note: "2 min p95; it runs overnight, so nobody waits" },
+        { label: "Citation validity", value: "99.4%", note: "claims whose quote is really on the cited page" },
+        { label: "Monthly bill", value: "Rp 1.1M", note: "about 2,600 briefs for 31 teams, plus hosting" },
+      ],
+      failures: [
+        { when: "A page is a blurry scan", then: "Below an OCR quality of 0.6, the field is 'unreadable' and the brief says 'Can't tell yet', naming the page." },
+        { when: "A quote isn't on the cited page", then: "The claim is dropped. With fewer than three verified reasons, the brief abstains." },
+        { when: "Two clauses disagree", then: "Both are shown with their pages, and there's no verdict." },
+        { when: "A portal is down at 02:00", then: "Retried with backoff until 05:30. The digest says which portals couldn't be reached." },
+        { when: "The model API fails", then: "The job waits in the queue and retries; the app shows 'Still reading' instead of half a brief." },
+        { when: "An owner taps 'That's wrong'", then: "The claim greys out at once, the score is recomputed without it, and the money figures that came from it are flagged." },
+      ],
+      errorLog: [
+        {
+          said: "Needs a 5% bank guarantee",
+          truth: "Page 88 says 3% (tiga persen)",
+          why: "OCR read a faint 3 as a 5",
+          fix: "Numbers in claims are re-read from the page image at 2× when OCR confidence is below 0.8",
+        },
+        {
+          said: "You meet the SBU K1 qualification",
+          truth: "Needs sub-code BG004; the company has BG009",
+          why: "The model matched the class and ignored the sub-code",
+          fix: "Licence codes are compared as exact strings in the rules, not by the model",
+        },
+        { said: "Documents due 14 March", truth: "An addendum on page 212 moved it to 18 March", why: "Addenda were triaged as boilerplate", fix: "Addendum pages are always sent to extraction" },
+        { said: "HPS Rp 2.4 million", truth: "Rp 2.400.000.000,00 (2.4 billion)", why: "Indonesian thousand separators", fix: "Amounts are parsed in code with an id-ID parser, never by the model" },
+        { said: "Scope: road works", truth: "Road and drainage works", why: "The schema allowed one scope", fix: "The schema takes a list of scopes" },
+      ],
+      code: {
+        file: "pipeline/verify.ts",
+        lang: "ts",
+        caption: "The rule the product rests on: a claim reaches the brief only if its quote is really on the page it cites, and eligibility is never guessed.",
+        source: `const MIN_SIMILARITY = 0.9; // tuned on the dev set: below this, OCR noise and real misquotes look alike
+
+export function verifyCitation(claim: Claim, pages: PageText[]): Checked {
+  const page = pages[claim.page - 1];
+  if (!page) return { ...claim, status: "rejected", reason: "no_such_page" };
+
+  // Slide a window the length of the quote over the page and keep the best match,
+  // after normalising OCR quirks (spacing, dashes, "l" vs "1" in licence codes).
+  const similarity = bestWindowSimilarity(normalise(claim.quote), normalise(page.text));
+  if (similarity < MIN_SIMILARITY) return { ...claim, status: "rejected", reason: "not_on_page" };
+
+  return { ...claim, status: "verified", similarity };
+}
+
+export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
+  const eligibility = claims.filter((c) => c.field.group === "eligibility");
+  const problem = eligibility.find((c) => c.status === "rejected" || c.unreadable || conflicts(c, eligibility));
+  if (problem) return { kind: "cant_tell", page: problem.page }; // never guess on eligibility
+
+  const verified = claims.filter((c) => c.status === "verified");
+  return scoreWithRules(verified, profile); // every point of the score names the claim it came from
+}`,
+      },
+    },
     beforeAfter: {
       before: {
         title: "Before: a 214-page PDF and a highlighter",
-        points: ["3 hours per tender", "Eligibility found on page 87", "Decision made after the deadline, twice"],
+        points: ["About 3 hours per tender", "Eligibility found on page 87", "Decision made after the deadline, twice"],
       },
       after: {
         title: "After: one page, every claim cited",
@@ -294,32 +416,33 @@ export const projects: Project[] = [
           label: "median read time per tender, down from about 3 hours",
           how: "Timed on 46 tenders with 8 teams. Baseline: owners' own estimate, confirmed by timing 2 full readings (2 h 40 and 3 h 20)",
         },
-        { value: "31 / 38", label: "beta teams still using it weekly after 3 months", how: "Product analytics, weekly active teams, month 3" },
+        { value: "31 / 38", label: "beta teams still using it weekly after 3 months", how: "Weekly active teams in month 3 of the beta, from product analytics" },
         {
-          value: "2.1%",
-          label: "of eligibility calls wrongly said 'you qualify'",
-          how: "5 of 240 eligibility fields from 60 tenders, labelled by Bu Ratna and me (94% agreement). The automatic citation check flagged all 5 before they reached users",
+          value: "2.2%",
+          label: "of eligibility calls wrongly said 'you qualify' (8 of 370)",
+          how: "Frozen test set, never used for tuning; 95% interval about 1.1–4.2%. The citation check flagged 5 of the 8 before they reached anyone",
         },
-        { value: "12", label: "teams pre-paid for the paid plan before it existed", how: "Rp 450k per month, collected in week 12 of the beta" },
+        { value: "12", label: "teams paid in advance for a plan that didn't exist yet", how: "Rp 450k a month each, collected in week 12 of the beta" },
       ],
       body: [
-        "Beta teams now skim every relevant tender instead of the two or three they had time for, and they bid on 2.4 times as many. Seven tenders were won during the beta; owners say three of them they would have skipped.",
+        "Beta teams now skim every relevant tender instead of the two or three they had time for, and they bid on 2.4 times as many. Seven tenders were won during the beta; owners say they would have skipped three of them.",
       ],
       quote: {
         text: "I stopped printing tenders. If the score says no, I open the page it cites, and I agree or I don't. Five minutes.",
         who: "Owner, civil works contractor (beta user)",
       },
+      business: "12 teams × Rp 450k is about Rp 5.4M (US$330) a month: small, but proof that owners would pay, and the reason the consultancy took it on.",
     },
     reflection:
-      "The citation rule was the product. Accuracy got people to try it, but trust only arrived when every line could be checked in one tap, and when the product was willing to say 'I can't tell'.",
-    next: "Let teams write their own eligibility rules in plain Indonesian, and show which rule decided each score.",
+      "The citation rule was the product. Accuracy got people to try it, but trust only arrived when every line could be checked in one tap, and when the system was willing to say 'I can't tell'. Keeping the model away from the verdict made all of that possible.",
+    next: "Let teams write their own eligibility rules in plain Indonesian, compiled to the same rule engine, and show which rule decided each score.",
   },
   {
     slug: "ask-hr",
     index: "02",
     name: "Ask HR",
-    year: "2023",
-    kind: "AI answers inside an HR app (in-house)",
+    year: "2025",
+    kind: "AI answers inside an HR app (internship)",
     tone: "sun",
     rarity: "Rare",
     tagline: "Employees ask HR questions in the app: routine ones get an answer with its policy section, the rest go to HR as drafts, and sensitive ones go straight to a person.",
@@ -329,59 +452,63 @@ export const projects: Project[] = [
       "Ask HR lets employees ask HR questions inside the company's HR app. Routine topics get an automatic answer from the company's own policy, with the section it came from. Everything else becomes a draft that HR approves. Anything sensitive skips the AI and goes to a person.",
     tldr: {
       problem:
-        "HR teams at our 40 client companies spent up to half their week on the same questions, and leadership wanted a chatbot to answer everything. Its pilot gave three wrong policy answers in a week.",
-      did: "I led design in a squad of seven. I turned 'answer everything' into three lanes (answer with a source, draft for HR, never AI for sensitive topics) and designed the review queue HR uses to approve drafts.",
-      outcome: "Routine questions answered in a median 9 minutes instead of 4 hours, HR edits 18% of drafts (down from 41%), and no sensitive question has been answered by the AI.",
+        "HR teams at the startup's 40 client companies spent up to half their week on the same questions. Leadership's first chatbot pilot gave 11 wrong policy answers out of 212, one about maternity leave, and was paused.",
+      did: "As an intern in a squad of seven, I built the router that puts each question in a lane before any model writes a word, the answer writer and its retrieval, the HR review queue, and the test harness that showed which topics were safe to automate.",
+      outcome:
+        "41% of questions answered on the spot with their policy section, a median first reply of 38 minutes instead of 4 hours, and no sensitive question ever answered by the AI. Three were misrouted to HR's draft queue, and caught there.",
     },
     role: {
-      title: "Product designer, design lead for the feature",
+      title: "AI engineering intern",
       summary:
-        "I was one of three product designers at a Series A HR software startup in Jakarta, embedded in a squad with a product manager, four engineers and a data scientist. I led design for Ask HR from discovery to launch, ran the research with the PM, and built its components into our design system with two engineers. Our design lead critiqued the work every week.",
+        "I joined for six months as an intern, in a squad with a product manager, three engineers, a data scientist and a product designer. I built the router with the data scientist, the answer writer and its retrieval, and the HR review queue in React. Bayu, a senior engineer, reviewed every pull request and paired with me on retrieval. Sekar, the squad's product designer, led the interaction design; I prototyped the lanes in code so we could test them on real questions instead of mockups.",
       decisions: [
-        "Proposed the three-lane model and won it against the plan to auto-answer everything, using the pilot's own errors.",
-        "Designed the HR review queue: the question, the draft, its source, why it's in the queue, and approve or edit in one tap.",
-        "Lost the argument for showing the source paragraph inline: we shipped the section title only, and I wrote down what we'd measure to revisit it.",
+        "Built the harness that replayed the pilot's 212 answers by topic. It showed six topics were safe to automate, and the rest weren't.",
+        "Proposed routing before retrieval: a small classifier picks the lane first, so a sensitive question never reaches the answer model.",
+        "Wrote the weekly audit, which found that handbook updates, not the model, caused most wrong answers.",
       ],
       with: [
-        { who: "Nadia, product manager", part: "Owned the roadmap and pricing. We ran discovery together and co-wrote the launch plan" },
-        { who: "Four engineers and a data scientist", part: "Built the answer pipeline and the test set. I paired with the front-end engineers on the review queue" },
-        { who: "Legal, and the HR leads of two pilot clients", part: "Defined the sensitive-topics list and signed off on what the AI may answer" },
-        { who: "Arif, design lead", part: "Weekly critique. He pushed me to cut the confidence score" },
+        { who: "Nadia, product manager", part: "Owned the roadmap; took the harness results to leadership" },
+        { who: "Bayu, senior engineer (my mentor)", part: "Reviewed every pull request; paired with me on retrieval and on the queue's data model" },
+        { who: "Wulan, data scientist", part: "Trained the topic classifier with me and co-labelled the 1,200-question test set" },
+        { who: "Sekar, product designer", part: "Led the interaction design of the answer card and the queue; we iterated on it in code together" },
+        { who: "Legal, and two pilot clients", part: "Defined the sensitive-topics list and what the AI may answer" },
       ],
     },
-    team: "Squad of 7: PM, 4 engineers, a data scientist and me",
-    timeline: "5 months · 2023",
-    stack: ["Figma", "Our design system (React)", "Maze", "Amplitude"],
+    team: "Squad of 7: PM, 3 engineers, a data scientist, a product designer and me (intern)",
+    ownership: "Internship",
+    context: "Internship, in a squad",
+    timeline: "6 months · internship, Feb – Aug 2025",
+    stack: ["TypeScript", "React", "Node.js", "PostgreSQL + pgvector", "Claude API", "Python (classifier)", "Metabase"],
     links: {},
-    company: "Series A HR software startup, Jakarta (name under NDA). Screens redrawn from the shipped design, with client data removed.",
-    status: "Launched to all 40 clients in late 2023 and still running. I left in 2024 to work independently; the squad kept the design.",
+    company: "Series A HR software startup, Jakarta (name under NDA). Screens are redrawn from the shipped design with client data removed, and shown in English; the app is in Indonesian.",
+    status: "Launched to all 40 clients in May 2025 and still running. My internship ended in August; the squad kept the pipeline, the queue and the weekly audit.",
     stats: [
-      { label: "First reply", value: "4h → 9m" },
-      { label: "Drafts edited", value: "41→18%" },
-      { label: "Employees", value: "12k" },
+      { label: "First reply", value: "4h → 38m" },
+      { label: "Answered at once", value: "41%" },
+      { label: "Drafts edited", value: "37→18%" },
     ],
     problem: {
       body: [
-        "Our HR app served 40 client companies and about 12,000 employees. HR teams told us they spent up to half their week answering the same questions: leave balances, payslip dates, reimbursement rules.",
-        "Leadership's plan was a chatbot that answered everything. In its pilot week it gave three wrong policy answers, one about maternity leave. The pilot was paused, and the problem came to my squad.",
+        "The HR app served 40 client companies and about 12,000 employees. HR teams said they spent up to half their week answering the same questions: leave balances, payslip dates, reimbursement rules.",
+        "Leadership's plan was a chatbot that answered everything. In its pilot week it gave 11 wrong policy answers out of 212, one about maternity leave. The pilot was paused, and the problem came to the squad I joined.",
       ],
       constraints: [
-        "A wrong answer about pay or leave is a legal and trust problem for our client, not just for us",
+        "A wrong answer about pay or leave is a legal and trust problem for the client, not just for us",
         "Every client has its own handbook, in Indonesian, updated without telling us",
+        "Sensitive text must not leave our servers unless it has to",
         "Most clients have an HR team of one or two",
-        "Employees use the app on their phones, often between shifts",
       ],
     },
     research: {
       methods: [
-        { label: "Question audit", detail: "1,200 anonymised past questions from 6 clients, sorted into 31 topics with the PM" },
-        { label: "Interviews", detail: "14 HR admins and 10 employees, in Indonesian, remote and on site" },
-        { label: "Usability tests", detail: "3 rounds with 6 HR admins and 8 employees, on the queue and the answers" },
+        { label: "Question audit", detail: "1,200 anonymised past questions from 6 clients, sorted into 31 topics with the PM and the data scientist" },
+        { label: "Pilot replay", detail: "The pilot's 212 answers re-run and graded by topic, to see where the model went wrong" },
+        { label: "Planted-error tests", detail: "Wrong drafts hidden in HR's queue, monthly, to check reviewers actually read" },
       ],
       insights: [
         {
-          title: "Six topics were most of the work",
-          body: "Leave balance, payslip dates, reimbursement, holidays, attendance and BPJS made up 58% of questions, and their answers were in the handbook word for word.",
+          title: "The errors clustered by topic",
+          body: "The pilot was right on questions with one exact answer in the handbook and wrong on exceptions. Six topics (leave, payslip dates, holidays, attendance, BPJS, reimbursement rules) were 58% of questions and nearly always exact.",
         },
         {
           title: "HR wanted to stay the author",
@@ -390,7 +517,7 @@ export const projects: Project[] = [
         { title: "Some questions aren't questions", body: "About 4% were complaints, harassment reports or health disclosures phrased as questions. Those must never get an automatic reply." },
       ],
       ethics:
-        "Clients consented to the question audit, and we removed names and ID numbers before anyone read a question. Employees are told when an answer came from the AI, and every client can switch the feature off. Legal reviewed the sensitive-topics list.",
+        "Client companies consented to the audit, and employees were told in the app that past questions would be used. A script removed names, ID numbers and phone numbers before anyone read a question. Sensitive questions were read only by Legal and each client's HR lead, never by the squad. Employees see when an answer came from the AI, and every client can switch the feature off.",
     },
     decisions: [
       {
@@ -401,81 +528,176 @@ export const projects: Project[] = [
           "Auto-answer six routine topics with a source; drafts for HR on the rest; sensitive topics straight to a person",
         ],
         chose: "Six routine topics are answered automatically with their policy section. Everything else is drafted for HR to approve. Sensitive topics skip the AI.",
-        why: "The pilot showed a chatbot was too risky, and approving everything would have buried a one-person HR team. The six topics covered 58% of questions and had exact answers in the handbook.",
-        cost: "Leadership wanted a bigger number. We launched with 41% of questions answered automatically instead of 'all of them'. I took the pilot's real errors to the CEO to get there.",
+        why: "The replay showed where the model could be trusted: exact handbook answers, yes; exceptions, no. Approving everything would have buried a one-person HR team.",
+        cost: "Leadership wanted a bigger number. We launched with 41% answered automatically instead of 'all of them'. Nadia made the case with the replay numbers I produced.",
       },
       {
-        title: "A queue HR can clear over coffee",
-        options: ["Drafts inside the existing ticket inbox", "A separate queue: one draft per card with the question, the draft, its source, why it's here, approve or edit"],
-        chose: "A separate review queue, built from existing design-system parts.",
-        why: "With drafts in the inbox, admins opened every ticket to find them: 31 minutes for 20 questions. In the queue, 6 of 6 admins cleared 20 drafts in under 9 minutes.",
-        cost: "Another screen to maintain. Building it from the design system kept it to two weeks of front-end work.",
+        title: "Decide first, then reply",
+        options: [
+          "Drafts inside the existing ticket inbox",
+          "One card per draft with a single 'Approve and send'",
+          "One card per question: the decision first (approve the swap or not), then the reply",
+        ],
+        chose: "A separate review queue where HR makes the decision, then sends the reply. Drafts about pay or contracts can't be sent until the source has been opened.",
+        why: "In the inbox, admins opened every ticket to find the drafts: 31 minutes for 20 questions. With one button they cleared 20 in 6 minutes, but sent 3 of 5 planted wrong drafts. With the decision split out and the source check, they caught 5 of 5, in about 9 minutes.",
+        cost: "Slower than one tap, on purpose. Built from design-system parts, so it was two weeks of front-end work.",
       },
       {
         title: "Show the source, even if only its title",
         options: ["The source paragraph, inline in the answer", "The policy section title, linking to the handbook"],
         chose: "We shipped the section title and a link. I argued for the paragraph and lost.",
-        why: "Splitting 40 handbooks into reliable paragraphs would have added six weeks. Nadia and I agreed to ship titles and measure how often people still asked 'why?'.",
-        cost: "1 in 9 employees still taps through to the handbook. That number is now the case for the paragraph view on next year's roadmap.",
+        why: "Splitting 40 handbooks into reliable paragraphs would have added six weeks. Nadia and Bayu agreed to ship titles and measure how often people still asked 'why?'.",
+        cost: "1 in 9 employees still taps through to the handbook. That number is now the case for the paragraph view.",
       },
     ],
     iterations: [
-      { name: "One chatbot", finding: "Pilot week: 3 wrong policy answers out of 212, one about maternity leave. Leadership paused it.", kept: false },
-      { name: "Drafts in the inbox", finding: "6 of 6 admins opened every ticket to find the drafts: 31 minutes for 20 questions.", kept: false },
-      { name: "Three lanes and a queue", finding: "20 drafts cleared in under 9 minutes. Employees rated routine answers 4.6 out of 5.", kept: true },
+      { name: "The pilot chatbot (before I joined)", finding: "11 wrong policy answers out of 212 in its first week, one about maternity leave. Paused.", kept: false },
+      { name: "Drafts in the inbox", finding: "6 admins opened every ticket to find the drafts: 31 minutes for 20 questions.", kept: false },
+      { name: "A queue: decide, then reply", finding: "20 drafts in about 9 minutes, and 5 of 5 planted wrong drafts caught.", kept: true },
     ],
     screens: [
       { key: "ah-answer", title: "An answer with its source", caption: "Routine topics get an answer from the company's own policy, with the section it came from." },
-      { key: "ah-queue", title: "HR's review queue", caption: "One draft per card: the question, the draft, its source, and why it needs a person." },
-      { key: "ah-pending", title: "Waiting for HR", caption: "When HR needs to answer, the employee sees who and roughly when, not a spinner." },
-      { key: "ah-sensitive", title: "Never the AI", caption: "A complaint goes privately to a named person. No draft is written." },
+      { key: "ah-queue", title: "HR's review queue", caption: "The decision first, then the reply. Pay and contract drafts need the source opened before sending." },
+      { key: "ah-admin", title: "The admin side", caption: "Each client chooses which topics may be answered automatically, and sees when a handbook change needs a review." },
+      { key: "ah-sensitive", title: "Never the AI", caption: "A complaint goes privately to a named person, with an after-hours line. No draft is written." },
     ],
     process: [
-      { stage: "Discover", title: "Audited 1,200 real questions", body: "With the PM: 31 topics, six of them most of the work, and 4% that weren't questions at all.", duration: "Weeks 1–3" },
-      {
-        stage: "Define",
-        title: "Three lanes, agreed with leadership",
-        body: "I presented the pilot errors next to the topic audit, and we agreed what the AI may and may not do.",
-        duration: "Week 4",
-      },
-      { stage: "Design", title: "Answer card and review queue", body: "Designed in Figma, built into the design system with two engineers so other squads could reuse them.", duration: "Weeks 5–10" },
-      { stage: "Test", title: "Three rounds with HR and employees", body: "Inbox drafts, then the queue, then the answer card with and without a confidence score.", duration: "Weeks 8–14" },
-      { stage: "Ship", title: "Staged launch, 5 clients to 40", body: "A weekly legal audit of routed questions, and a 'handbook changed' alert for HR after month 1.", duration: "Weeks 15–20" },
+      { stage: "Discover", title: "Audited 1,200 questions and replayed the pilot", body: "31 topics, six of them most of the work, and 4% that weren't questions at all.", duration: "Weeks 1–3" },
+      { stage: "Define", title: "Three lanes, agreed with leadership", body: "Nadia presented the replay next to the topic audit, and we agreed what the AI may and may not do.", duration: "Week 4" },
+      { stage: "Build", title: "Router, retrieval, queue", body: "Pull requests reviewed by Bayu; the queue built from design-system parts with Sekar.", duration: "Weeks 5–11" },
+      { stage: "Test", title: "Planted errors and three rounds with HR", body: "The inbox, then one-tap approval, then the split decision.", duration: "Weeks 9–12" },
+      { stage: "Ship", title: "Staged launch, 5 clients to 40", body: "Then the weekly audit, and a 'handbook changed' alert after month 1.", duration: "Weeks 13–26" },
     ],
     deadEnd: {
-      title: "A confidence score for employees",
-      body: "I designed answers with a confidence percentage. In testing, employees read 72% as 'probably fine' and 90% as 'certain'. Arif pushed me to cut it. Now the lanes carry the uncertainty: if we're not sure, a person answers.",
+      title: "Fine-tuning a model on old replies",
+      body: "I spent two weeks fine-tuning a small model on 900 past HR replies. It learned the tone, and the mistakes: it repeated a leave rule that a client had changed in 2023. Retrieval from the current handbook won. The lesson: ask where the truth lives before training on history.",
     },
     inclusion: [
-      "Answers are written at a primary-school reading level in Indonesian, and checked with two employees who left school early.",
-      "The answer card works with TalkBack and at 200% text size, tested on a Rp 1.5 million Android phone.",
-      "Shift workers without app access can ask on WhatsApp, and the same three lanes apply.",
+      "Answers are written at a primary-school reading level in Indonesian, checked with two employees who left school early.",
+      "Shift workers without app access can ask on WhatsApp; the same three lanes apply.",
+      "The review queue works from the keyboard alone (J and K to move, D to decide, R to reply), because two admins work at a desktop all day.",
     ],
     artifact: {
-      title: "From the question audit: 1,200 questions, sorted with the PM",
+      title: "From the question audit: 1,200 questions, sorted with the PM and the data scientist",
       clusters: [
-        { label: "Routine (58%)", notes: ["'Sisa cuti saya berapa?'", "'Gajian tanggal berapa?'", "'Reimburse kacamata bisa?'"] },
-        { label: "Needs HR (38%)", notes: ["'Boleh tukar shift sama teman?'", "Exceptions, approvals, disputes"] },
+        { label: "Routine (58%)", notes: ["'Sisa cuti saya berapa?'", "'Gajian tanggal berapa?'", "'Kapan THR cair?'"] },
+        { label: "Needs HR (38%)", notes: ["'Boleh tukar shift sama teman?'", "'Reimburse kacamata bisa?' (depends on grade)", "Exceptions, approvals, disputes"] },
         { label: "Not a question (4%)", notes: ["Complaints about a manager", "Health disclosures", "Never answered by AI"] },
       ],
     },
     architecture: {
       nodes: [
-        { id: "employee", label: "Employee app", x: 8, y: 30, kind: "user" },
-        { id: "classify", label: "Topic + risk classifier", x: 30, y: 30, kind: "agent" },
-        { id: "policy", label: "Client policy index", x: 54, y: 10, kind: "data" },
-        { id: "writer", label: "Answer writer", x: 54, y: 46, kind: "agent" },
-        { id: "queue", label: "HR review queue", x: 78, y: 46, kind: "ui" },
-        { id: "hr", label: "HR admin", x: 94, y: 30, kind: "user" },
+        { id: "employee", label: "Employee", x: 10, y: 30, kind: "user" },
+        { id: "scrub", label: "Scrub PII", x: 28, y: 30, kind: "service" },
+        { id: "router", label: "Lane router", x: 47, y: 30, kind: "agent" },
+        { id: "index", label: "Handbook index", x: 67, y: 8, kind: "data" },
+        { id: "writer", label: "Answer writer", x: 67, y: 30, kind: "agent" },
+        { id: "check", label: "Section check", x: 88, y: 30, kind: "service" },
+        { id: "person", label: "HR in person", x: 47, y: 54, kind: "user" },
+        { id: "queue", label: "Review queue", x: 88, y: 54, kind: "ui" },
       ],
       edges: [
-        ["employee", "classify"],
-        ["classify", "writer"],
-        ["policy", "writer"],
-        ["writer", "queue"],
-        ["queue", "hr"],
-        ["writer", "employee"],
+        ["employee", "scrub"],
+        ["scrub", "router"],
+        ["router", "person"],
+        ["router", "writer"],
+        ["index", "writer"],
+        ["writer", "check"],
+        ["check", "queue"],
       ],
+    },
+    engineering: {
+      summary:
+        "Three lanes, in code. A classifier picks the lane before any model writes a word. Only the routine lane may answer on its own, only from the client's current handbook, and only if the sections it cites still exist.",
+      pipeline: [
+        { step: "Scrub", detail: "Names, ID numbers and phone numbers are masked before anything is stored or sent to a model." },
+        { step: "Route", detail: "A fine-tuned IndoBERT classifier gives a topic and a sensitivity score. Sensitive goes to a person; unsure goes to HR." },
+        { step: "Retrieve", detail: "Hybrid search (keywords and pgvector) over that client's handbook, re-indexed when HR uploads a new version." },
+        { step: "Write", detail: "Claude answers only from the retrieved sections, as JSON with the section IDs it used." },
+        { step: "Check", detail: "Code checks that every cited section exists in the current handbook version. If not, the answer becomes a draft." },
+        { step: "Review", detail: "HR decides, then replies. Pay and contract drafts need the source opened before they can be sent." },
+        { step: "Audit", detail: "Weekly: 400 random automatic answers checked against the handbook, and every routed question re-read." },
+      ],
+      models: [
+        { task: "Lane routing", model: "IndoBERT, fine-tuned (Python)", why: "40 ms in our own service, so sensitive text never leaves our servers just to be routed. Easy to audit." },
+        {
+          task: "Answers and drafts",
+          model: "Claude Sonnet, with retrieved sections",
+          why: "Handbook Indonesian is formal and long. Drafts are reviewed anyway; automatic answers are limited to six topics.",
+        },
+        { task: "Sensitive lane", model: "No model", why: "Complaints and health disclosures go to a named person. That was a legal rule, not a tuning choice." },
+      ],
+      evals: {
+        set: "The 1,200-question audit, labelled for lane by Wulan and me, plus 300 routine questions with reference answers checked by HR at two pilot clients. A 400-question slice, with 48 sensitive questions in it, is held out and only used before a release.",
+        gate: "Router changes must catch 48 of 48 sensitive questions in the held-out slice; one miss blocks the release. Answer changes are graded against the reference answers (right, partly right, wrong) by two people.",
+        series: [
+          { name: "Sensitive questions caught", unit: "%", better: "up" },
+          { name: "Routine answers wrong", unit: "%", better: "down" },
+        ],
+        history: [
+          { version: "v1", change: "Keyword router, pilot prompt", values: [83.3, 5.3] },
+          { version: "v2", change: "IndoBERT classifier", values: [95.8, 5.3] },
+          { version: "v3", change: "Retrieval from the current handbook", values: [95.8, 2.7] },
+          { version: "v4", change: "Separate sensitivity score, 3× examples", values: [100, 2.7] },
+          { version: "v5", change: "Section-ID check in code", values: [100, 1.0] },
+        ],
+      },
+      budgets: [
+        { label: "Routing", value: "40 ms p50", note: "in-house classifier, no external call" },
+        { label: "Automatic answer", value: "3.1 s p50", note: "6.8 s p95, streamed, first words in under a second" },
+        { label: "Cost per answer", value: "Rp 85", note: "down from Rp 240 with prompt caching on each handbook" },
+        { label: "Weekly audit", value: "2 hours", note: "400 answers, one person, one grading sheet" },
+      ],
+      failures: [
+        { when: "The router isn't sure (below 0.35)", then: "The question goes to HR as a draft, never to the automatic lane." },
+        { when: "A cited section isn't in the current handbook", then: "The answer is held back as a draft, and HR gets a 'handbook changed' alert." },
+        { when: "HR uploads a new handbook", then: "Re-indexed in about 2 minutes; recent answers that cited changed sections are flagged for review." },
+        { when: "The model API is slow or down", then: "The question falls back to HR's queue; the employee sees who will answer and when." },
+        { when: "A sensitive question is misrouted to drafts", then: "It's still never sent automatically. The audit caught 3, and each became a training example." },
+      ],
+      errorLog: [
+        {
+          said: "Maternity leave: 3 months, paid by the company (the pilot)",
+          truth: "This client pays it through BPJS rules",
+          why: "Answered from the model's general knowledge, not the handbook",
+          fix: "Answers come only from retrieved sections and must cite one",
+        },
+        {
+          said: "'Saya mau resign, gimana caranya?' → routine",
+          truth: "Resignation goes to HR",
+          why: "The keyword router matched 'gimana caranya'",
+          fix: "The classifier, with resignation in the HR lane",
+        },
+        {
+          said: "'Atasan saya suka marah-marah, wajar nggak?' → draft",
+          truth: "A complaint about a manager: sensitive",
+          why: "Polite phrasing lowered the topic score",
+          fix: "A separate sensitivity score with its own threshold, and three times the examples",
+        },
+        { said: "Payday is the 25th", truth: "The handbook was updated: the 28th", why: "The old handbook was still indexed", fix: "Re-index on upload, and the section-ID check" },
+      ],
+      code: {
+        file: "router/lane.py",
+        lang: "python",
+        caption: "Routing is the safety feature, so it's boring on purpose: a hard list, two thresholds, and no model output at all in the sensitive lane.",
+        source: `SENSITIVE = {"harassment", "health", "complaint_about_manager", "termination", "salary_dispute"}
+ROUTINE = {"leave_balance", "payslip_date", "holidays", "attendance", "bpjs", "reimbursement_rules"}
+
+MIN_CONFIDENCE = 0.35   # below this a person decides
+SENSITIVE_FLOOR = 0.20  # tuned so the held-out slice catches 48 of 48 sensitive questions
+
+def lane(question: str, client: Client) -> Lane:
+    topic, confidence, sensitivity = classifier.predict(scrub(question))
+
+    # Any hint of a sensitive topic wins, even over a confident routine label.
+    if topic in SENSITIVE or sensitivity >= SENSITIVE_FLOOR:
+        return Lane.PERSON
+
+    if confidence < MIN_CONFIDENCE or topic not in client.auto_topics:
+        return Lane.HR_DRAFT
+
+    return Lane.AUTO if topic in ROUTINE else Lane.HR_DRAFT`,
+      },
     },
     beforeAfter: {
       before: {
@@ -484,31 +706,43 @@ export const projects: Project[] = [
       },
       after: {
         title: "After: three lanes",
-        points: ["Routine answers in minutes, with the policy section", "Drafts HR approves over coffee", "Sensitive questions only ever reach a person"],
+        points: ["Routine answers in seconds, with the policy section", "Drafts HR decides on, then replies to", "Sensitive questions only ever reach a person"],
       },
     },
     results: {
       metrics: [
-        { value: "9 min", label: "median first reply for routine questions, down from 4 hours", how: "Ticket timestamps across 40 clients, 8 weeks before and after launch" },
-        { value: "18%", label: "of drafts edited by HR before sending, down from 41% at launch", how: "Review queue logs, months 1 and 4" },
-        { value: "0", label: "sensitive questions answered by the AI", how: "Weekly legal audit of every routed question. It caught 3 misroutes to HR's queue, fixed in the classifier" },
         {
-          value: "0.9%",
-          label: "of automatic answers wrong by month 4, down from 2.8%",
-          how: "Monthly audit of 400 random answers against the handbook; most errors came from handbooks updated without notice",
+          value: "38 min",
+          label: "median first reply across all questions, down from 4 hours (routine ones take seconds)",
+          how: "Ticket timestamps across 40 clients, 8 weeks before and 8 weeks after launch",
+        },
+        {
+          value: "18%",
+          label: "of drafts edited by HR before sending, down from 37% in month 1",
+          how: "Queue logs. A falling edit rate can also mean rubber-stamping, so we planted 15 wrong drafts over three months: HR caught 14",
+        },
+        {
+          value: "0",
+          label: "sensitive questions answered by the AI",
+          how: "Every routed question audited weekly. 3 were misrouted to HR's draft queue (not answered); each became a training example",
+        },
+        {
+          value: "1.0%",
+          label: "of automatic answers wrong in month 3 (4 of 400), down from 2.8% (11 of 400) in month 1",
+          how: "Weekly audit of 400 random answers against the current handbook; most errors came from handbooks changed without notice",
         },
       ],
-      body: [
-        "Two clients renewed early and named Ask HR in their renewal calls. HR admins at small clients got back about a day a week. The 'handbook changed' alert, added after the first audit, did more for accuracy than any model change.",
-      ],
+      body: ["HR admins at small clients got back about a day a week. The 'handbook changed' alert, added after the first audit, did more for accuracy than any model change."],
       quote: {
-        text: "I approve the drafts while I drink my coffee. Before, that was my whole morning.",
+        text: "The easy questions answer themselves now, with the page they came from. I spend my mornings on the ones that need me.",
         who: "HR admin at a retail client",
       },
+      business:
+        "Two clients renewed early and named Ask HR in the call, and it moved into the standard plan in Q3 2025. HR teams saved roughly 300 hours a month across the 40 clients (queue logs × time per question).",
     },
     reflection:
-      "Most of the design work was deciding what the AI wasn't allowed to do. Getting leadership to accept 41% instead of 100% was a design problem too, and I solved it with the pilot's real errors, not with mockups.",
-    next: "The source paragraph inline, now that we have the numbers showing people want it.",
+      "Most of the engineering was deciding what the AI wasn't allowed to do, and making that boring and testable: a router with a hard list, a check in code, an audit every week. As an intern, my most useful work wasn't a feature. It was the harness that turned an argument into numbers.",
+    next: "The source paragraph inline, now that the tap-through rate shows people want it.",
   },
   {
     slug: "catat",
@@ -524,34 +758,37 @@ export const projects: Project[] = [
     summary:
       "Catat (Indonesian for 'write it down') lets warung owners log sales, stock and customer debts by sending WhatsApp voice notes in everyday Indonesian. It answers in one line, asks when it isn't sure, and sends a summary every Sunday.",
     tldr: {
-      problem: "Warung owners serve a queue with one free hand. Every bookkeeping app we met had been abandoned within a week.",
-      did: "I designed the conversation: a one-line confirmation with one-tap undo, a single short question when a note is ambiguous, and the Sunday summary that kept people coming back.",
-      outcome: "140 shops in the pilot, 91% of voice notes logged with no fix, 83% still active weekly after 8 weeks.",
+      problem: "Warung owners serve a queue with one free hand. Every bookkeeping app we met in the field had been abandoned within a week.",
+      did: "With two classmates, in our campus incubator. I built the WhatsApp agent: speech-to-text tuned on warung audio, a slang normaliser, money parsed in code, and every write undoable in one tap. I also designed the conversation around it.",
+      outcome: "140 shops in an 8-week pilot. 87% of voice notes logged fully correctly in a hand check of 300, and 83% of shops still active in the last week.",
     },
     role: {
-      title: "Product designer, conversation and interaction",
+      title: "Co-founder: engineering and conversation design",
       summary:
-        "We were three. I owned the conversation design and the interaction model inside WhatsApp, ran half the field visits, and built the agent behind it. Dita, our visual designer, owned the brand, the onboarding cards and the small web dashboard; Raka ran recruitment and the other field visits.",
+        "We were three classmates in our campus incubator. I built the WhatsApp agent end to end (speech-to-text, the slang normaliser, the ledger tools, undo) and designed the conversation. Dita designed the brand, the onboarding cards and the small dashboard; Raka ran recruitment and half of the field visits. We made product calls together, and argued about most of them.",
       decisions: [
         "Kept the whole product inside WhatsApp, after our web-app prototype got four logins in two weeks.",
-        "Designed the one-line confirmation with ✓ and ✗ buttons, after the receipt-style version was ignored and the plain line couldn't be corrected.",
-        "Wrote the rule 'ask one short question, never guess' for money and debts, and the 23 questions it uses.",
+        "Parsed money in code, not with the model: the model only points at the amount, and a parser built on our slang dictionary turns it into a number.",
+        "Made every write reversible: the agent's tool calls create pending entries that ✓ confirms and ✗ removes.",
       ],
       with: [
-        { who: "Dita, visual designer", part: "Brand, onboarding cards, the web dashboard; we critiqued each other's work twice a week" },
-        { who: "Raka, field researcher", part: "Recruited the 27 shops and ran half the visits with me" },
-        { who: "A Bekasi cooperative", part: "Introduced us to owners and now distributes the pilot" },
+        { who: "Dita, co-founder and visual designer", part: "Brand, onboarding cards, the web dashboard; we critiqued each other's work twice a week" },
+        { who: "Raka, co-founder and field researcher", part: "Recruited the 27 shops for field visits, ran half of them, and labelled the eval notes with me" },
+        { who: "A Bekasi cooperative", part: "Introduced us to owners, and now runs the pilot" },
       ],
     },
-    team: "Team of 3: me, a visual designer, a field researcher",
-    timeline: "14 weeks · 2025",
-    status: "A Bekasi cooperative now runs the pilot with Dita and Raka. I handed over the agent and stay on call for fixes.",
-    stack: ["Figma", "WhatsApp Business API", "TypeScript", "Speech-to-text", "Claude tool use", "PostgreSQL"],
+    team: "Three co-founders: me, a visual designer, a field researcher",
+    ownership: "Co-founded",
+    context: "Co-founded, team of 3",
+    timeline: "16 weeks · campus incubator, 2025",
+    status:
+      "After the incubator, a Bekasi cooperative took over the pilot with Dita and Raka. None of us could run it full-time and the cooperative could. I handed over the agent and stay on call for fixes.",
+    stack: ["TypeScript", "WhatsApp Cloud API", "Whisper (fine-tuned)", "Claude tool use", "PostgreSQL", "Figma"],
     links: { live: "https://example.com/catat", repo: "https://github.com/example/catat" },
     stats: [
       { label: "Shops", value: "140" },
       { label: "Fully correct", value: "87%" },
-      { label: "Weekly, wk 8", value: "83%" },
+      { label: "Active, last wk", value: "83%" },
     ],
     problem: {
       body: [
@@ -560,7 +797,7 @@ export const projects: Project[] = [
       ],
       constraints: [
         "Must live inside WhatsApp, the one app every owner already uses",
-        "Voice notes are noisy and full of slang: 'goceng' is Rp5,000, 'ceban' is Rp10,000",
+        "Voice notes are noisy and full of slang: 'goceng' is Rp5.000, 'ceban' is Rp10.000",
         "Cheap Android phones and patchy data",
         "A mistake about someone's debt is personal: it has to be fixable in one tap",
       ],
@@ -573,11 +810,14 @@ export const projects: Project[] = [
       ],
       insights: [
         { title: "Hands are busy, mouths aren't", body: "Owners already talk while they serve: to customers, to family, to their phone. Voice notes cost them nothing." },
-        { title: "Money has its own language", body: "Gopek, seceng, goceng, ceban, and a nickname for every brand. We built a dictionary of 312 terms before designing a single message." },
+        {
+          title: "Money has its own language",
+          body: "Gopek, seceng, goceng, ceban, and a nickname for every brand. We built a dictionary of 312 terms before writing a single message, and it became code.",
+        },
         { title: "Debts are about people, not numbers", body: "Owners didn't want a total. They wanted 'who owes me, and since when', said kindly." },
       ],
       ethics:
-        "Consent forms were read aloud in Indonesian and signed before any recording. Voice notes are deleted after 30 days unless an owner opts in to help improve Catat; customers' names and debts are visible only to the owner.",
+        "Consent forms were read aloud in Indonesian and signed before any recording. Voice notes are deleted after 30 days unless an owner opts in to help improve Catat; only opted-in notes were used for tuning and evals. Customers' names and debts are visible only to the owner.",
     },
     decisions: [
       {
@@ -585,32 +825,25 @@ export const projects: Project[] = [
         options: ["A bookkeeping web app", "A Telegram bot", "WhatsApp, with interactive reply buttons"],
         chose: "Everything happens in a WhatsApp chat. The dashboard exists, for the few who want it.",
         why: "The web prototype got four logins in two weeks. The WhatsApp prototype got 1,900 voice notes in the same two weeks.",
-        cost: "WhatsApp limits us to three buttons and short messages. Most of the design became writing.",
+        cost: "WhatsApp allows three buttons and short messages, and its webhooks arrive twice now and then. Most of the design became writing; some of the engineering became deduplication.",
       },
       {
         title: "One line back, one tap to undo",
         options: ["A receipt with every field", "A single line, no buttons", "A single line with ✓ Benar and ✗ Batalkan"],
-        chose: "Every logged entry comes back as one line in plain Indonesian, with ✓ to keep it and ✗ to undo it.",
-        why: "Owners didn't read past line two of the receipt, so errors slipped through. The plain line was read, but fixing it meant typing. With the buttons, fixes take one tap.",
-        cost: "We can show less detail. Price per item lives in the Sunday summary instead.",
-      },
-      {
-        title: "Ask, don't guess",
-        options: ["Guess the most likely meaning", "Ask one short question with buttons"],
-        chose: "When a note about money or a debt is ambiguous, Catat asks one question with two answers. For anything else, it makes its best guess and shows it.",
-        why: "A wrong debt broke trust in a way a wrong sale didn't: one owner stopped after Catat booked her neighbour's payment as a new debt.",
-        cost: "About 1 in 12 notes now gets a question. Owners told us that felt careful, not annoying.",
+        chose: "Every entry comes back as one line in plain Indonesian, with ✓ to keep it and ✗ to undo it.",
+        why: "Owners didn't read past line two of the receipt, so errors slipped through. The plain line was read, but fixing it meant typing. With the buttons, a fix takes one tap.",
+        cost: "Less detail on screen. Price per item lives in the Sunday summary instead.",
       },
     ],
     iterations: [
       { name: "The receipt", finding: "3 of 8 owners never read past the second line. Two wrong amounts slipped through in one morning.", kept: false },
       { name: "One line, no buttons", finding: "Read every time, but owners couldn't fix a mistake without typing, so they didn't.", kept: false },
-      { name: "One line, ✓ and ✗", finding: "91% of notes needed no fix. When one did, it took one tap.", kept: true },
+      { name: "One line, ✓ and ✗", finding: "Owners kept 91% of entries with ✓. Our hand check found 87% fully correct: the gap is errors nobody noticed.", kept: true },
     ],
     screens: [
       { key: "ct-sale", title: "Say it, done", caption: "A voice note becomes one line with ✓ Benar (correct) and ✗ Batalkan (undo)." },
       { key: "ct-ask", title: "Ask, don't guess", caption: "'Ceban, Bu Sri' could be a new debt or a payment. Catat asks one question." },
-      { key: "ct-undo", title: "Undo in one tap", caption: "Nothing is written down, and it shows how to say it again." },
+      { key: "ct-undo", title: "Undo in one tap", caption: "The entry is removed, and it shows how to say it again." },
       { key: "ct-summary", title: "The Sunday summary", caption: "Takings, a profit estimate, best sellers and who still owes, every Sunday at 7 p.m." },
     ],
     process: [
@@ -618,21 +851,20 @@ export const projects: Project[] = [
         stage: "Discover",
         title: "Sat behind the counter at 27 warung",
         body: "Recorded (with consent) how owners actually say numbers and items, and built a dictionary of 312 terms.",
-        duration: "Week 1–3",
+        duration: "Weeks 1–3",
       },
       {
         stage: "Define",
         title: "Four actions, not forty",
-        body: "Sell, restock, someone owes, someone pays. Fewer actions meant fewer surprises and replies short enough to read at a glance.",
+        body: "Sell, restock, someone owes, someone pays. Four tools for the agent, and replies short enough to read at a glance.",
         duration: "Week 4",
       },
-      { stage: "Design", title: "Wrote the conversation", body: "Every message, button and question, tested on paper cards in shops before any of it was built.", duration: "Week 4–8" },
-      { stage: "Test", title: "Three rounds of confirmation copy", body: "Receipt, plain line, line with buttons, each with eight owners during their morning rush.", duration: "Week 6–10" },
-      { stage: "Ship", title: "Piloted with 140 warung", body: "The Sunday summary (best sellers, profit estimate, who owes what) became the reason people kept using it.", duration: "Week 11–14" },
+      { stage: "Build", title: "The agent, then the words", body: "Speech-to-text, normaliser and tools, while the confirmation copy was tested on paper cards in shops.", duration: "Weeks 4–8" },
+      { stage: "Ship", title: "An 8-week pilot with 140 warung", body: "The Sunday summary became the reason people kept using it.", duration: "Weeks 9–16" },
     ],
     deadEnd: {
       title: "The dashboard we designed first",
-      body: "We spent three weeks on a web dashboard before the field visits. In the pilot it got 4% of usage. Most of that design work was wasted, and it taught us to visit before we draw.",
+      body: "We spent three weeks on a web dashboard before the field visits. In the pilot it got 4% of usage. Most of that work was wasted, and it taught us to visit before we build.",
     },
     inclusion: [
       "Voice first works for owners who don't read much, and every reply is short enough for WhatsApp's read-aloud.",
@@ -643,30 +875,114 @@ export const projects: Project[] = [
     artifact: {
       title: "From the field notebook: how owners say money",
       clusters: [
-        { label: "Amounts", notes: ["gopek = 500", "seceng = 1.000", "goceng = 5.000", "ceban = 10.000", "'dua rebu' = 2.000"] },
+        { label: "Amounts", notes: ["gopek = 500", "seceng = 1.000", "goceng = 5.000", "ceban = 10.000", "'dua lima' = 2.500? or 25.000?"] },
         { label: "Items", notes: ["'indomi' / 'mi goreng'", "'aqua gelas' = any cup water", "'rokok' + brand nickname"] },
         { label: "Debts", notes: ["'ngebon' = buy on credit", "Names, never numbers: 'Bu Sri yang depan'"] },
       ],
     },
     architecture: {
       nodes: [
-        { id: "owner", label: "Warung owner", x: 8, y: 30, kind: "user" },
-        { id: "wa", label: "WhatsApp", x: 28, y: 30, kind: "service" },
-        { id: "stt", label: "Speech-to-text", x: 48, y: 10, kind: "service" },
-        { id: "norm", label: "Slang normaliser", x: 70, y: 10, kind: "agent" },
-        { id: "agent", label: "Ledger agent", x: 70, y: 46, kind: "agent" },
-        { id: "db", label: "Ledger DB", x: 92, y: 46, kind: "data" },
-        { id: "dash", label: "Web dashboard", x: 92, y: 10, kind: "ui" },
+        { id: "owner", label: "Shop owner", x: 10, y: 30, kind: "user" },
+        { id: "wa", label: "WhatsApp", x: 28, y: 10, kind: "service" },
+        { id: "stt", label: "Whisper", x: 47, y: 10, kind: "agent" },
+        { id: "norm", label: "Slang rules", x: 66, y: 10, kind: "service" },
+        { id: "agent", label: "Ledger agent", x: 66, y: 32, kind: "agent" },
+        { id: "money", label: "Money parser", x: 88, y: 32, kind: "service" },
+        { id: "pending", label: "Pending entry", x: 66, y: 54, kind: "data" },
+        { id: "ledger", label: "Ledger", x: 88, y: 54, kind: "data" },
       ],
       edges: [
         ["owner", "wa"],
         ["wa", "stt"],
         ["stt", "norm"],
         ["norm", "agent"],
-        ["agent", "db"],
-        ["db", "dash"],
+        ["agent", "money"],
+        ["agent", "pending"],
+        ["pending", "ledger"],
         ["agent", "wa"],
       ],
+    },
+    engineering: {
+      summary:
+        "An agent that writes to someone's books has to be undoable. Each voice note goes through speech-to-text tuned on warung audio, a slang normaliser, and a model with four tools. Money is parsed in code, and nothing is final until the owner taps ✓.",
+      pipeline: [
+        { step: "Receive", detail: "WhatsApp Cloud API webhook. The message ID is stored first, so a webhook delivered twice is ignored." },
+        { step: "Transcribe", detail: "Whisper large-v3, fine-tuned on 6 hours of consented warung audio, on a rented GPU." },
+        { step: "Normalise", detail: "The 312-term dictionary rewrites 'goceng' and brand nicknames before the model sees the text." },
+        { step: "Act", detail: "Claude with four tools: sale, restock, new debt, payment. Each call creates a pending entry, not a final one." },
+        { step: "Ask or confirm", detail: "Ambiguous money or debts get one question with two buttons. Everything else gets one line with ✓ and ✗." },
+        { step: "Commit", detail: "✓ makes the entry final, ✗ deletes it. No answer in 10 minutes keeps it, marked 'unconfirmed' on Sunday." },
+      ],
+      models: [
+        { task: "Speech-to-text", model: "Whisper large-v3, fine-tuned", why: "Off the shelf, the word error rate on our test notes was 31%. After fine-tuning on 6 hours of warung audio, 14%." },
+        { task: "Intent and tool calls", model: "Claude Haiku with tool use", why: "Four tools and short inputs: a small model was accurate enough and kept replies under 4 seconds." },
+        { task: "Amounts", model: "No model: a parser in code", why: "'Dua lima' can mean Rp2.500 or Rp25.000. That's a rule and a question, not a guess." },
+      ],
+      evals: {
+        set: "300 voice notes from opted-in pilot shops, transcribed and labelled by Raka and me: words, intent, item, amount and person. Frozen before we started tuning; a separate 200-note dev set was used for tuning.",
+        gate: "Every change to the normaliser, the prompt or the model runs on the 300 notes. A release needs amounts exactly right in at least 95% of notes, and no rise in silent errors.",
+        series: [
+          { name: "Fully correct entries", unit: "%", better: "up" },
+          { name: "Word error rate", unit: "%", better: "down" },
+        ],
+        history: [
+          { version: "v1", change: "Off-the-shelf Whisper and one prompt", values: [58.0, 31.0] },
+          { version: "v2", change: "Slang dictionary before the model", values: [69.3, 31.0] },
+          { version: "v3", change: "Fine-tuned Whisper", values: [79.7, 14.2] },
+          { version: "v4", change: "Amounts parsed in code", values: [84.3, 14.2] },
+          { version: "v5", change: "Ask on ambiguous money and debts", values: [87.0, 14.2] },
+        ],
+      },
+      budgets: [
+        { label: "Voice note to reply", value: "3.8 s p50", note: "7.9 s p95, on the pilot's real 3G and 4G" },
+        { label: "Cost per note", value: "Rp 31", note: "transcription on a rented GPU plus the model call" },
+        { label: "Pilot running cost", value: "Rp 1.6M", note: "8 weeks, about 31,000 notes, hosting included" },
+        { label: "Undo rate", value: "6%", note: "entries removed with ✗, mostly misheard amounts" },
+      ],
+      failures: [
+        { when: "WhatsApp delivers a webhook twice", then: "The message ID is the idempotency key; the second delivery is ignored." },
+        { when: "The note is noise, or just 'eh'", then: "Catat replies 'Maaf, belum kedengaran' (sorry, I didn't catch that) and logs nothing." },
+        { when: "'Dua lima' could be Rp2.500 or Rp25.000", then: "If the product's usual price doesn't settle it, Catat asks with two buttons." },
+        { when: "The owner never taps ✓ or ✗", then: "After 10 minutes the entry stays, marked 'unconfirmed' in the Sunday summary." },
+        { when: "The model call fails", then: "The note is queued and retried; the owner gets 'Sebentar ya' (one moment) instead of silence." },
+      ],
+      errorLog: [
+        { said: "'Rokok sebungkus, dua lima' → Rp2.500", truth: "A pack costs Rp25.000", why: "The shorthand was read the small way", fix: "Check against the product's usual price, otherwise ask" },
+        {
+          said: "'Indomie dua, goceng sama dua rebu' → 2 × Rp5.000",
+          truth: "Two packs for Rp7.000 in total",
+          why: "'Sama' (plus) was read as 'each'",
+          fix: "A normaliser rule: 'sama' between amounts means plus",
+        },
+        { said: "'Ceban, Bu Sri' → new debt", truth: "Bu Sri paid Rp10.000", why: "The direction of the money wasn't in the note", fix: "Ask on every debt note without 'bayar' or 'ngebon'" },
+        { said: "'Aqua gelas sedus' → stock +1", truth: "One carton is 48 cups", why: "The unit 'dus' wasn't known", fix: "A units table per product, learned from restocks" },
+      ],
+      code: {
+        file: "agent/money.ts",
+        lang: "ts",
+        caption: "Money is parsed in code, never by the model. The model only points at the phrase, and when the phrase is ambiguous, Catat asks.",
+        source: `const SLANG: Record<string, number> = { gopek: 500, seceng: 1_000, goceng: 5_000, ceban: 10_000, gocap: 50_000, cepek: 100_000 };
+const DIGIT: Record<string, number> = { se: 1, satu: 1, dua: 2, tiga: 3, empat: 4, lima: 5, enam: 6, tujuh: 7, delapan: 8, sembilan: 9 };
+
+/** "goceng" → 5000 · "dua rebu" → 2000 · "dua lima" → ask: 2500 or 25000? */
+export function parseAmount(phrase: string, usualPrice?: number): Amount {
+  const p = phrase.toLowerCase().replace(/\\b(ribu|rebu|rb)\\b/g, "ribu").trim();
+  if (p in SLANG) return { kind: "exact", value: SLANG[p] };
+
+  const thousands = p.match(/^(\\w+) ribu$/);
+  if (thousands && thousands[1] in DIGIT) return { kind: "exact", value: DIGIT[thousands[1]] * 1_000 };
+
+  // "dua lima": warung shorthand that means 2.500 for a snack and 25.000 for cigarettes.
+  const pair = p.match(/^(\\w+) (\\w+)$/);
+  if (pair && pair[1] in DIGIT && pair[2] in DIGIT) {
+    const [a, b] = [DIGIT[pair[1]], DIGIT[pair[2]]];
+    const options = [a * 1_000 + b * 100, a * 10_000 + b * 1_000];
+    const fit = usualPrice ? options.find((o) => Math.abs(o - usualPrice) / usualPrice < 0.3) : undefined;
+    return fit ? { kind: "exact", value: fit } : { kind: "ask", options }; // ask, never guess
+  }
+  return { kind: "unknown" };
+}`,
+      },
     },
     beforeAfter: {
       before: {
@@ -682,12 +998,12 @@ export const projects: Project[] = [
       metrics: [
         {
           value: "87%",
-          label: "of voice notes logged fully correctly",
-          how: "Raka and I listened to 300 random notes against the ledger. Owners' ✓ said 91%; 4% were silent errors nobody caught, mostly item counts",
+          label: "of voice notes logged fully correctly (261 of 300)",
+          how: "Raka and I listened to 300 random notes and checked the ledger. Owners' ✓ said 91%; the 4-point gap is silent errors nobody caught, mostly item counts",
         },
-        { value: "83%", label: "of shops still active every week after 8 weeks", how: "116 of 140 shops sent at least 10 notes in week 8" },
+        { value: "83%", label: "of shops still active in the last week of the pilot", how: "116 of 140 shops sent at least 10 notes in week 8" },
         { value: "1 in 12", label: "notes get a clarifying question", how: "Share of notes about money or debts where Catat asked instead of guessing" },
-        { value: "62%", label: "of owners said they would pay Rp15k a month", how: "Stated intent from an exit survey of all 140 shops, not purchases; a cooperative now distributes it" },
+        { value: "62%", label: "of owners said they would pay Rp15k a month", how: "Stated intent from an exit survey of all 140 shops, not purchases" },
       ],
       body: [
         "Owners kept using it because it never asked them to change how they work. It learned their words instead of teaching them ours. Of the 24 shops that stopped, 11 had a family member handling the phone, so the next version supports a second number.",
@@ -696,8 +1012,10 @@ export const projects: Project[] = [
         text: "Now I know which customer owes me, and since when. That alone paid for my phone credit.",
         who: "Warung owner, pilot participant",
       },
+      business: "Pre-revenue. 62% said they'd pay Rp15k a month, which is intent, not money; the cooperative now offers it to its 400 member shops.",
     },
-    reflection: "The best interface was almost no interface. I spent more time on the wording of a one-line confirmation than on the whole dashboard, and that was the right call.",
+    reflection:
+      "The best interface was almost no interface, and the best model call was the one I replaced with a parser. Most of the accuracy came from the dictionary and the rules around the model, not from the model.",
     next: "Support a second phone number per shop, and a monthly view owners can show the cooperative for a loan.",
   },
   {
@@ -715,29 +1033,31 @@ export const projects: Project[] = [
       "Lintas plans door-to-door commutes across Greater Jakarta's trains and buses, shows how crowded each leg will be, and replans live when a line is delayed, with one sentence explaining why.",
     tldr: {
       problem: "When one leg of a Bekasi–Jakarta commute is late, the whole trip changes, and existing apps answer with a map or a wall of alerts.",
-      did: "I designed the whole app around one number, 'leave by', and a replan message that says what changed, what to do and what it costs, in one sentence.",
-      outcome: "2.1k weekly riders at peak, all organic; adding the one-line reason doubled how often riders took a replan.",
+      did: "A side project for my own commute: a transit router, a crowding forecast from riders' one-tap reports, and a replan sentence written by a model but checked by code. The app is built around one number, 'leave by'.",
+      outcome: "1.4k weekly riders at peak, all by word of mouth. Adding the one-line reason doubled how often riders took a replan (62% against 31%).",
     },
     role: {
-      title: "Designer and builder (side project)",
-      summary: "A side project I designed and built alone, with a panel of twelve regular commuters who tested every version on their real morning trip.",
+      title: "Solo side project: design and engineering",
+      summary: "A side project I designed and built alone in my second year, for my own commute, with a panel of twelve regular commuters who tested every version on their real morning trip.",
       decisions: [
         "Replaced the map-first home with a single 'leave by' time, after only 1 of 6 riders used the map.",
-        "Limited push notifications to 'your plan changed', after riders muted the alert-for-every-delay version.",
-        "Wrote the replan template: what changed, what to do, what it costs, in under 25 words.",
+        "Wrote my own transit router (RAPTOR) instead of calling a maps API, because no API knew about crowding or the KRL's real delays.",
+        "Let a model write the replan sentence, but only through a validator that checks every time and station against the plan, with a template as the fallback.",
       ],
       with: [
         { who: "12 regular commuters", part: "A standing test panel: every version, on their real trip, for four months" },
-        { who: "Riders on the Bekasi line", part: "214 one-tap crowding reports a month that the forecasts are built on" },
+        { who: "Riders on the Bekasi line", part: "One-tap crowding reports, about 900 a month at peak, that the forecast is built on" },
       ],
     },
     team: "Solo, with a panel of 12 commuters",
-    timeline: "Evenings and weekends · 2024",
-    status: "Open-sourced in 2025 and now in maintenance: I fix what breaks and keep the push alerts running for the riders who still use it.",
-    stack: ["Figma", "Next.js (PWA)", "TypeScript", "Python", "Redis", "Web Push", "Claude API"],
+    ownership: "Solo",
+    context: "Side project",
+    timeline: "4 months · side project, 2nd year, 2024",
+    status: "Open-sourced in 2025 and in maintenance: I fix what breaks and keep the push alerts running for the riders who still use it.",
+    stack: ["Python (FastAPI)", "RAPTOR routing", "Next.js (PWA)", "TypeScript", "Redis", "Web Push", "Claude API"],
     links: { live: "https://example.com/lintas", repo: "https://github.com/example/lintas" },
     stats: [
-      { label: "Riders", value: "2.1k" },
+      { label: "Weekly riders", value: "1.4k" },
       { label: "Replans taken", value: "62%" },
       { label: "With a reason", value: "2×" },
     ],
@@ -746,7 +1066,11 @@ export const projects: Project[] = [
         "A Bekasi to Jakarta commute can mix a KRL train, a transfer, the MRT and a bus. When one leg is delayed, the whole trip changes, and existing apps either show a static route or a wall of alerts.",
         "Commuters don't need more data. They need one decision: leave now, wait, or go another way.",
       ],
-      constraints: ["Answers must arrive while you're walking to the station", "Schedule feeds are incomplete; crowding isn't published at all", "Installable and light on data"],
+      constraints: [
+        "Answers must arrive while you're walking to the station",
+        "Schedule feeds are incomplete; crowding isn't published at all",
+        "Installable, light on data, and cheap enough to run on a student budget",
+      ],
     },
     research: {
       methods: [
@@ -766,53 +1090,48 @@ export const projects: Project[] = [
         title: "One number on the home screen",
         options: ["A map with the route", "Three route options to compare", "One 'leave by' time, details a swipe away"],
         chose: "The home screen is a single 'leave by' time with crowding per leg. Alternatives appear only when they're better.",
-        why: "Only 1 of 6 riders used the map. With three options, riders took 40 seconds to choose at the door. With one time, they decided in about 4.",
+        why: "Only 1 of 6 riders used the map. With three options, riders took about 40 seconds to choose at the door. With one time, about 4.",
         cost: "Power users wanted the options back, so they live one swipe right.",
       },
       {
         title: "Push only when your plan changes",
-        options: ["An alert for every delay on your lines", "A push only when your plan changes"],
-        chose: "Lintas stays silent unless the best plan changes, and then says what to do.",
-        why: "In the first version, 5 of 12 panel riders muted the app within a week. After the change, none did.",
-        cost: "Riders sometimes hear about a delay elsewhere first. We decided that's fine.",
+        options: ["An alert for every delay on your lines", "A push only when the best plan changes"],
+        chose: "Lintas stays silent unless the new plan is at least 5 minutes better or swaps 'packed' for 'seat likely', and then it says what to do.",
+        why: "In the first version, 5 of the 12 panel riders muted the app within a week. After the change, none did.",
+        cost: "Riders sometimes hear about a delay somewhere else first. I decided that's fine.",
       },
       {
         title: "Every replan comes with a reason",
         options: ["Just show the new plan", "The new plan, plus one sentence: what changed, what to do, what it costs"],
-        chose: "Every replan includes one sentence under 25 words, written to a template I tested with the panel.",
-        why: "In the A/B test, replans with a reason were accepted twice as often (62% against 31%).",
-        cost: "The sentence is written by a model, so I test 300 of them every month against the template.",
+        chose: "Every replan includes one sentence under 25 words. A model writes it; code checks it; a template stands in when the check fails.",
+        why: "In the A/B test, replans with a reason were taken twice as often (62% against 31%).",
+        cost: "A model in the loop means a validator and a monthly check of 300 sentences. About 3% still fall back to the template.",
       },
     ],
     iterations: [
       { name: "Map first", finding: "1 of 6 riders used the map. 'I know where Manggarai is. I want to know when to leave.'", kept: false },
-      { name: "Three options", finding: "Riders took 40 seconds to choose, at the door, with shoes on.", kept: false },
-      { name: "One 'leave by' time", finding: "Decision in about 4 seconds. The panel asked to keep it.", kept: true },
+      { name: "Three options", finding: "Riders took about 40 seconds to choose, at the door, with shoes on.", kept: false },
+      { name: "One 'leave by' time", finding: "A decision in about 4 seconds. 11 of the 12 panel riders asked to keep it.", kept: true },
     ],
     screens: [
-      { key: "ln-home", title: "Leave by", caption: "One number, with crowding for each leg. Everything else is a swipe away." },
+      { key: "ln-home", title: "Leave by", caption: "One number, with crowding for each leg, labelled as well as coloured." },
       { key: "ln-replan", title: "A replan with a reason", caption: "What changed, what to do, what it costs, side by side with your plan." },
-      { key: "ln-cars", title: "Which carriage", caption: "Crowding front to back, from 214 rider reports a month." },
+      { key: "ln-cars", title: "Which carriage", caption: "Crowding front to back, from riders' one-tap reports." },
       { key: "ln-calm", title: "Nothing better", caption: "When there's no faster option, it says so once and stays quiet." },
     ],
     process: [
-      {
-        stage: "Discover",
-        title: "Rode along with twelve commuters",
-        body: "Door to desk, twice each. The decision that mattered happened at the front door, not on the platform.",
-        duration: "Month 1",
-      },
-      { stage: "Define", title: "One question: when do I leave?", body: "Everything on the home screen had to help answer it, or move away.", duration: "Month 1" },
+      { stage: "Discover", title: "Rode along with twelve commuters", body: "Door to desk, twice each. The decision that mattered happened at the front door.", duration: "Month 1" },
+      { stage: "Build", title: "A router and a crowding model", body: "RAPTOR over timetables I assembled myself, and an average of rider reports per carriage and hour.", duration: "Month 1–2" },
       { stage: "Design", title: "Map, then options, then one number", body: "Three home screens, each tested on the panel's real trips.", duration: "Month 2" },
       { stage: "Test", title: "A/B tested the replan reason", body: "1,800 replans over three weeks, with and without one sentence explaining why.", duration: "Month 3" },
-      { stage: "Ship", title: "Opened it to everyone", body: "An installable web app with push, light enough for patchy data. 2.1k weekly riders at peak, all by word of mouth.", duration: "Month 4" },
+      { stage: "Ship", title: "Opened it to everyone", body: "An installable web app with push, light enough for patchy data.", duration: "Month 4" },
     ],
     deadEnd: {
       title: "An alert for every delay",
       body: "The first version pushed every delay on your lines. Within a week, five of the twelve panel riders had muted it. Silence became a feature: now Lintas only speaks when your plan changes.",
     },
     inclusion: [
-      "Crowding is labelled (Packed, Tight, Room to stand) as well as coloured.",
+      "Crowding is labelled (Packed, Tight, Room to stand) and patterned, not just coloured.",
       "Women-only carriages are marked on every train view, because riders asked for it.",
       "The 'leave by' time is the first thing a screen reader announces, and the dark UI meets 4.5:1 contrast.",
     ],
@@ -826,21 +1145,101 @@ export const projects: Project[] = [
     },
     architecture: {
       nodes: [
-        { id: "feeds", label: "Schedules + delays", x: 8, y: 12, kind: "service" },
-        { id: "reports", label: "Crowd reports", x: 8, y: 46, kind: "user" },
-        { id: "forecast", label: "Crowding forecast", x: 36, y: 30, kind: "service" },
-        { id: "planner", label: "Route planner", x: 60, y: 30, kind: "service" },
-        { id: "agent", label: "Reason writer", x: 82, y: 12, kind: "agent" },
-        { id: "app", label: "PWA + push", x: 82, y: 46, kind: "ui" },
+        { id: "status", label: "Status pages", x: 12, y: 8, kind: "service" },
+        { id: "sched", label: "Timetables", x: 12, y: 30, kind: "data" },
+        { id: "reports", label: "Rider reports", x: 12, y: 52, kind: "user" },
+        { id: "crowd", label: "Crowding", x: 34, y: 52, kind: "service" },
+        { id: "router", label: "RAPTOR", x: 38, y: 30, kind: "service" },
+        { id: "decide", label: "Replan rule", x: 60, y: 30, kind: "service" },
+        { id: "writer", label: "Reason writer", x: 84, y: 8, kind: "agent" },
+        { id: "validate", label: "Validator", x: 84, y: 30, kind: "service" },
+        { id: "app", label: "PWA + push", x: 84, y: 52, kind: "ui" },
       ],
       edges: [
-        ["feeds", "forecast"],
-        ["reports", "forecast"],
-        ["forecast", "planner"],
-        ["planner", "agent"],
-        ["agent", "app"],
-        ["planner", "app"],
+        ["status", "router"],
+        ["sched", "router"],
+        ["reports", "crowd"],
+        ["crowd", "router"],
+        ["router", "decide"],
+        ["decide", "writer"],
+        ["writer", "validate"],
+        ["validate", "app"],
       ],
+    },
+    engineering: {
+      summary:
+        "A transit router, a crowding forecast built from riders' one-tap reports, and a replan sentence written by a model but checked by code. It all runs on one small server for about Rp 90k a month.",
+      pipeline: [
+        { step: "Timetables", detail: "Assembled for KRL, MRT and TransJakarta into one GTFS-style feed; operators only publish parts of it." },
+        { step: "Delays", detail: "Operators' public status pages, polled every 60 seconds and parsed into line, direction and minutes late." },
+        { step: "Crowding", detail: "One-tap reports averaged per carriage and hour, falling back to a timetable-based guess when reports are thin." },
+        { step: "Route", detail: "RAPTOR, a round-based transit routing algorithm, in Python: every door-to-door option in about 30 ms." },
+        { step: "Decide", detail: "A replan is pushed only if it's at least 5 minutes better or swaps 'packed' for 'seat likely'." },
+        { step: "Explain", detail: "A model writes one sentence; a validator checks it against the plan, or a template is sent instead." },
+      ],
+      models: [
+        { task: "The replan sentence", model: "Claude Haiku", why: "It writes friendlier Indonesian than my template did, and the validator keeps it honest." },
+        { task: "Routing and crowding", model: "No model: RAPTOR and averages", why: "Fast, predictable and explainable. The panel cared about being right, not about clever forecasts." },
+      ],
+      evals: {
+        set: "Each month, 300 generated sentences checked by hand against the plan they describe: times and stations must match, under 25 words, and it must say what changed, what to do and what it costs.",
+        gate: "The validator runs on every sentence in production; anything that fails it falls back to the template. The monthly sample measures how often that happens, and anything the validator missed.",
+        series: [
+          { name: "Sentences passing the validator", unit: "%", better: "up" },
+          { name: "Wrong time or station, by hand", unit: "%", better: "down" },
+        ],
+        history: [
+          { version: "v1", change: "Prompt with the plan as prose", values: [81.0, 6.3] },
+          { version: "v2", change: "Plan passed as JSON", values: [92.3, 2.0] },
+          { version: "v3", change: "12 panel-approved examples", values: [96.7, 0.7] },
+          { version: "v4", change: "Validator and template in production", values: [96.7, 0] },
+        ],
+      },
+      budgets: [
+        { label: "Delay to push", value: "42 s p50", note: "95 s p95, from the operator's post to the rider's phone" },
+        { label: "Route search", value: "30 ms", note: "RAPTOR over about 1,900 stops" },
+        { label: "Cost per sentence", value: "Rp 0.6", note: "a small model and a short prompt" },
+        { label: "Server bill", value: "Rp 90k/mo", note: "one small VPS, Redis and web push" },
+      ],
+      failures: [
+        { when: "A status page changes its layout", then: "The parser fails closed: no replans for that line, and I get an alert." },
+        { when: "A generated sentence gets a time or station wrong", then: "The validator rejects it and the template sentence goes out instead." },
+        { when: "Too few crowding reports for a train", then: "The forecast falls back to the timetable guess and says 'likely', never 'certain'." },
+        { when: "The phone is offline", then: "The last plan stays on screen with the time it was worked out." },
+      ],
+      errorLog: [
+        { said: "Leave at 07:10", truth: "The plan says 07:01", why: "Digits swapped when the plan was passed as prose", fix: "Plan passed as JSON; times checked against it" },
+        { said: "Switch at Manggarai", truth: "The plan switches at Jatinegara", why: "The model 'knew' the usual transfer", fix: "Every station in the sentence must be in the plan" },
+        { said: "You'll save 15 minutes", truth: "It saves 12", why: "It repeated the delay instead of the saving", fix: "Examples with both numbers; the saving is checked" },
+      ],
+      code: {
+        file: "lintas/reason.py",
+        lang: "python",
+        caption: "The model writes the sentence; code decides whether a rider ever sees it.",
+        source: `MAX_WORDS = 25
+
+def problems(sentence: str, plan: Replan) -> list[str]:
+    """What's wrong with a generated replan sentence. An empty list means it's safe to send."""
+    found = []
+    if len(sentence.split()) > MAX_WORDS:
+        found.append("too_long")
+
+    # Every time and station in the sentence must exist in the plan it describes.
+    for t in re.findall(r"\\b\\d{2}[.:]\\d{2}\\b", sentence):
+        if t.replace(".", ":") not in plan.times():
+            found.append(f"unknown_time:{t}")
+    for station in STATIONS.find_all(sentence):
+        if station not in plan.stations():
+            found.append(f"unknown_station:{station}")
+
+    if plan.minutes_saved and str(plan.minutes_saved) not in sentence:
+        found.append("missing_saving")  # riders need to know what switching buys them
+    return found
+
+def reason(plan: Replan) -> str:
+    sentence = write_with_model(plan.as_json())
+    return sentence if not problems(sentence, plan) else template(plan)`,
+      },
     },
     beforeAfter: {
       before: {
@@ -854,18 +1253,20 @@ export const projects: Project[] = [
     },
     results: {
       metrics: [
-        { value: "2.1k", label: "weekly riders at peak, all organic", how: "Weekly active installs, October 2024; no paid promotion" },
-        { value: "62%", label: "of replans accepted when they came with a reason", how: "A/B test over 3 weeks, 1,800 replans; 31% without the reason" },
-        { value: "0 / 12", label: "panel riders muted it after the quiet-push change", how: "Down from 5 of 12 in the alert-for-everything version" },
-        { value: "38 min", label: "saved per rider per week", how: "Self-reported median, survey of 212 riders; treat it as a feeling, not a fact" },
+        { value: "1.4k", label: "weekly riders at peak, all by word of mouth", how: "Weekly active installs, October 2024; no paid promotion" },
+        { value: "62%", label: "of replans taken when they came with a reason", how: "A/B test over 3 weeks, 1,800 replans; 31% without the reason" },
+        { value: "0 of 12", label: "panel riders muted it after the quiet-push change", how: "Down from 5 of 12 with the alert-for-everything version" },
+        { value: "38 min", label: "saved per rider per week", how: "Self-reported median from a survey of 212 riders; treat it as a feeling, not a fact" },
       ],
       body: ["Riders came for the crowding bar and stayed for the replans. The one-sentence reason doubled how often people actually took the suggested alternative."],
       quote: {
         text: "It told me to take the earlier train from the next station over, and why. I sat down for the first time in months.",
         who: "Rider, Bekasi line",
       },
+      business: "No revenue, and it was never meant to make any. It costs about Rp 90k a month to run, and it taught me routing, push and evals on a real audience.",
     },
-    reflection: "A prediction without a reason is just a notification. Adding 'why' to every replan changed behaviour more than any accuracy gain did.",
+    reflection:
+      "A prediction without a reason is just a notification. Adding 'why' to every replan changed behaviour more than any accuracy gain did, and putting code between the model and the rider is what made the 'why' safe to send.",
     next: "Let riders tell Lintas what they care about most (a seat, or speed) and plan around it.",
   },
 ];

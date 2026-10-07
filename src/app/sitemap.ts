@@ -3,7 +3,7 @@ import { identity } from "@/content/profile";
 import { projects } from "@/content/projects";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const pages = ["/", "/work", ...projects.map((p) => `/work/${p.slug}`), "/lab", "/about", "/guestbook", "/play"];
+  const pages = ["/", "/work", ...projects.map((p) => `/work/${p.slug}`), "/lab", "/about", "/colophon", "/guestbook", "/play"];
   return pages.map((path) => ({
     url: `${identity.url}${path === "/" ? "" : path}`,
     changeFrequency: path === "/guestbook" ? "daily" : "monthly",
