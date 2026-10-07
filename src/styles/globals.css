@@ -61,6 +61,12 @@
   --color-term-link: var(--term-link);
   --color-term-ok: var(--term-ok);
   --color-term-warn: var(--term-warn);
+  --color-screen: var(--screen);
+  --color-screen-ink: var(--screen-ink);
+  --color-screen-muted: var(--screen-muted);
+  --color-screen-accent: var(--screen-accent);
+  --color-mat: var(--mat);
+  --color-led: var(--led);
   --color-white: #ffffff;
   --color-transparent: transparent;
 
@@ -117,6 +123,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
+    background-image: var(--grain);
   }
 
   @media (width >= 64rem) {
@@ -240,10 +247,10 @@
 
 /* The small letter-spaced label above a headline ("CASE STUDY", "SELECTED WORK"). */
 @utility type-eyebrow {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: var(--text-12);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   line-height: 1.3;
   text-transform: uppercase;
   color: var(--muted);
@@ -260,10 +267,10 @@
 
 /* Small caps label: tiny metadata only ("BEKASI · WIB", "STEP 02"). Never more than a few words. */
 @utility type-pixel {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   line-height: 1.3;
   text-transform: uppercase;
 }
@@ -348,32 +355,69 @@
 
 /* Frosted glass: translucent white, heavy blur, a light rim and a hairline. */
 @utility glass {
-  background: var(--glass);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  background: var(--sheen), var(--glass);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-line);
   box-shadow:
-    inset 0 1px 0 var(--glass-edge),
+    var(--bevel),
     var(--glass-shadow);
 }
 
 @utility glass-strong {
-  background: var(--glass-strong);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  background: var(--sheen), var(--glass-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-line);
   box-shadow:
-    inset 0 1px 0 var(--glass-edge),
+    var(--bevel),
     var(--glass-shadow);
 }
 
-/* A card: the reference's barely-grey fill and a hairline. Flat on the page. */
+/* A plastic panel sitting on the desk: sheen on top, bevelled edge, soft drop shadow, grain. */
 @utility widget {
   position: relative;
   min-width: 0;
-  border-radius: 22px;
+  border-radius: 24px;
+  background: var(--sheen), var(--grain), var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  box-shadow:
+    var(--bevel),
+    var(--lift);
+}
+
+/* A recessed well: inputs, trays, the space a screen sits in. */
+@utility well {
   background: var(--surface-2);
-  border: 1px solid var(--line);
+  box-shadow: var(--recess);
+  border: 0;
+}
+
+/* An LCD: dark glass, recessed, with a faint reflection across the top. */
+@utility screen {
+  position: relative;
+  color: var(--screen-ink);
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 38%),
+    radial-gradient(120% 90% at 30% 0%, color-mix(in srgb, var(--screen) 80%, #3a3f38), var(--screen));
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 0 0 4px color-mix(in srgb, var(--surface-2) 70%, #000 6%),
+    0 1px 0 4px rgba(255, 255, 255, 0.5);
+}
+
+/* The cutting mat: blue, with a 24px grid and stronger lines every 5 squares. */
+@utility mat {
+  background-color: var(--mat);
+  background-image:
+    linear-gradient(var(--mat-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--mat-line) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--mat-line) 50%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--mat-line) 50%, transparent) 1px, transparent 1px),
+    var(--grain);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px, auto;
+  background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px, 0 0;
 }
 
 /* White die-cut sticker edge + soft lift. */
@@ -393,14 +437,15 @@
 /* ---------- Components ---------- */
 @layer components {
   /*
-   * Pill button: frosted glass by default. Primary = magenta (white text on --accent-strong).
-   * The colour variants stay glass and show their colour as a small dot: colour as an accent.
+   * A key: moulded plastic with a top sheen and a bottom edge, that presses in when you click it.
+   * Primary = magenta (white text on --accent-strong). Colour variants show their colour as a
+   * small LED dot.
    */
   .pill {
-    --pill-bg: var(--surface);
+    --pill-bg: var(--sheen), var(--surface);
     --pill-fg: var(--ink);
-    --pill-edge: var(--line);
-    --pill-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+    --pill-edge: color-mix(in srgb, var(--line) 80%, transparent);
+    --pill-shadow: var(--bevel), var(--key-edge), var(--lift-sm);
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -421,24 +466,24 @@
     border: 1px solid var(--pill-edge);
     box-shadow: var(--pill-shadow);
     transition:
-      transform var(--dur-micro) var(--ease-out),
-      background-color var(--dur-micro) var(--ease-out),
-      box-shadow var(--dur-short) var(--ease-out);
+      transform 90ms var(--ease-out),
+      box-shadow 90ms var(--ease-out),
+      background-color var(--dur-micro) var(--ease-out);
     -webkit-tap-highlight-color: transparent;
   }
 
   .pill[data-variant="magenta"] {
-    --pill-bg: var(--accent-strong);
+    --pill-bg: linear-gradient(180deg, #ff4fa8, var(--accent-strong) 70%);
     --pill-fg: var(--on-accent);
-    --pill-edge: transparent;
-    --pill-shadow: none;
+    --pill-edge: color-mix(in srgb, var(--accent-strong) 70%, #000);
+    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.15), 0 2px 0 #8f0050, 0 4px 10px rgba(214, 8, 122, 0.3);
   }
 
   .pill[data-variant="ink"] {
-    --pill-bg: var(--ink);
+    --pill-bg: linear-gradient(180deg, color-mix(in srgb, var(--ink) 82%, var(--bg)), var(--ink));
     --pill-fg: var(--bg);
     --pill-edge: transparent;
-    --pill-shadow: none;
+    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 2px 0 #000, var(--lift-sm);
   }
 
   .pill[data-variant="ghost"] {
@@ -493,7 +538,9 @@
     height: 8px;
     border-radius: 999px;
     background: var(--dot);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--dot) 22%, transparent);
+    box-shadow:
+      0 0 6px color-mix(in srgb, var(--dot) 70%, transparent),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.25);
   }
 
   .pill[data-size="sm"] {
@@ -532,26 +579,19 @@
     }
 
     .pill[data-variant="magenta"]:hover {
-      --pill-bg: color-mix(in srgb, var(--accent-strong) 88%, #000);
-      --pill-edge: transparent;
-    }
-
-    .pill[data-variant="ink"]:hover {
-      --pill-bg: color-mix(in srgb, var(--ink) 82%, var(--bg));
-      --pill-edge: transparent;
+      --pill-bg: linear-gradient(180deg, #ff5fb2, #c4006f 70%);
     }
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    @media (hover: hover) {
-      .pill:hover {
-        transform: translateY(-1px);
-      }
-    }
+  /* Pressed: the key travels down onto its edge. */
+  .pill:active:not(:disabled),
+  .pill[aria-pressed="true"]:not([data-variant="ghost"]) {
+    transform: translateY(2px);
+    --pill-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.14), 0 0 0 transparent;
+  }
 
-    .pill:active {
-      transform: scale(0.97);
-    }
+  .pill[data-variant="magenta"]:active:not(:disabled) {
+    --pill-shadow: inset 0 2px 5px rgba(80, 0, 40, 0.45);
   }
 
   .pill:disabled,
@@ -596,14 +636,14 @@
     min-height: 26px;
     padding: 0 0.75em;
     border-radius: var(--radius-pill);
-    background: var(--surface);
+    background: var(--sheen), var(--surface);
     color: var(--ink);
     font-size: var(--text-12);
     font-weight: 500;
     line-height: 1;
     white-space: nowrap;
-    border: 1px solid var(--line);
-    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+    border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+    box-shadow: var(--bevel), 0 1px 2px rgba(40, 34, 24, 0.08);
   }
 
   .chip[data-tone] {
@@ -616,6 +656,7 @@
     height: 6px;
     border-radius: 999px;
     background: var(--tone);
+    box-shadow: 0 0 5px color-mix(in srgb, var(--tone) 70%, transparent);
   }
 
   .chip[data-tone="magenta"] {
@@ -1541,6 +1582,402 @@ html[data-theme-swap]::view-transition-new(root) {
   --app-bg: #f5f5f7;
 }
 
+}
+
+/* ---------- Hardware parts ---------- */
+@layer components {
+  /* An LED: a lit dot with a glow, or a dark one when off. */
+  .led {
+    display: inline-block;
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--led-color, var(--led));
+    box-shadow:
+      0 0 0 1.5px color-mix(in srgb, #000 18%, transparent),
+      0 0 8px color-mix(in srgb, var(--led-color, var(--led)) 80%, transparent),
+      inset 0 -1px 1px rgba(0, 0, 0, 0.25),
+      inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  }
+
+  .led[data-off="true"] {
+    --led-color: #6b6b66;
+    box-shadow:
+      0 0 0 1.5px color-mix(in srgb, #000 18%, transparent),
+      inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Speaker grille: a field of drilled holes. */
+  .grille {
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--ink) 30%, transparent) 1.3px, transparent 1.6px);
+    background-size: 7px 7px;
+    border-radius: 6px;
+  }
+
+  /* Screws in the corners of a panel. */
+  .screw {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background:
+      linear-gradient(135deg, transparent 44%, rgba(0, 0, 0, 0.35) 45% 55%, transparent 56%),
+      radial-gradient(circle at 35% 30%, var(--metal-from), var(--metal-to));
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  /* A toggle switch: a recessed track and a metal lever. */
+  .toggle {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--muted);
+  }
+
+  .toggle__track {
+    position: relative;
+    display: block;
+    width: 46px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    box-shadow: var(--recess);
+    transition: background-color var(--dur-short) var(--ease-out);
+  }
+
+  .toggle__thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 35% 30%, var(--metal-from), var(--metal-to));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      0 1px 2px rgba(0, 0, 0, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: transform var(--dur-short) var(--ease-out);
+  }
+
+  .toggle[aria-checked="true"] .toggle__track {
+    background: color-mix(in srgb, var(--accent) 85%, #000);
+  }
+
+  .toggle[aria-checked="true"] .toggle__thumb {
+    transform: translateX(22px);
+  }
+
+  /* A machined knob with a magenta pointer. */
+  .knob {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--knob, 84px);
+    height: var(--knob, 84px);
+    border-radius: 999px;
+    background:
+      repeating-conic-gradient(from 0deg, rgba(0, 0, 0, 0.05) 0deg 2deg, rgba(255, 255, 255, 0.05) 2deg 4deg),
+      radial-gradient(circle at 35% 28%, var(--metal-from), var(--metal-to) 75%);
+    box-shadow:
+      inset 0 2px 1px rgba(255, 255, 255, 0.7),
+      inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+      0 3px 0 color-mix(in srgb, var(--metal-to) 70%, #000),
+      0 8px 16px rgba(40, 34, 24, 0.25);
+    touch-action: none;
+    transition: rotate 380ms var(--ease-jelly);
+  }
+
+  .knob::after {
+    content: "";
+    position: absolute;
+    top: 9%;
+    left: 50%;
+    width: 4px;
+    height: 22%;
+    translate: -50% 0;
+    border-radius: 4px;
+    background: var(--accent);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+
+  .knob__cap {
+    width: 46%;
+    height: 46%;
+    border-radius: 999px;
+    background: radial-gradient(circle at 40% 30%, var(--metal-from), color-mix(in srgb, var(--metal-to) 85%, #fff));
+    box-shadow:
+      inset 0 1px 2px rgba(0, 0, 0, 0.25),
+      0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  /* A polaroid: white frame, thicker bottom, a little paper texture. */
+  .polaroid {
+    display: block;
+    padding: 10px 10px 0;
+    background: var(--grain), #fdfcfa;
+    border-radius: 4px;
+    box-shadow:
+      0 1px 1px rgba(0, 0, 0, 0.12),
+      0 6px 14px rgba(0, 0, 0, 0.18),
+      0 18px 40px rgba(0, 0, 0, 0.18);
+    color: #1b1a18;
+  }
+
+  .polaroid__caption {
+    display: block;
+    padding: 10px 2px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* A sticky note, slightly curled at the corner. */
+  .sticky-note {
+    position: relative;
+    padding: 16px 16px 18px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 30%),
+      var(--grain),
+      #ffe58a;
+    color: #2a2410;
+    border-radius: 2px 2px 14px 2px;
+    box-shadow:
+      0 1px 1px rgba(0, 0, 0, 0.1),
+      0 10px 20px rgba(0, 0, 0, 0.18);
+  }
+
+  /* A strip of matte tape holding something down. */
+  .tape {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    width: 78px;
+    height: 24px;
+    translate: -50% 0;
+    rotate: -4deg;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(245, 241, 230, 0.5));
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    mask: linear-gradient(90deg, transparent 0 2px, #000 2px calc(100% - 2px), transparent calc(100% - 2px)) center / 100% 100%;
+    pointer-events: none;
+  }
+
+  /* Desk objects: tilted in a row on small screens, laid out freely on wide ones. */
+  .desk-item {
+    position: relative;
+    rotate: var(--tilt, 0deg);
+  }
+
+  @media (min-width: 1280px) {
+    .desk-item {
+      position: absolute;
+      top: var(--t);
+      left: var(--l);
+      right: var(--r);
+    }
+  }
+
+  /* Draggable desk objects (only where the desk is laid out freely). */
+  @media (min-width: 1280px) and (pointer: fine) {
+    [data-desk-item] {
+      touch-action: none;
+      cursor: grab;
+      translate: var(--dx, 0) var(--dy, 0);
+    }
+
+    [data-desk-item][data-dragging="true"] {
+      cursor: grabbing;
+      z-index: 30;
+    }
+
+    [data-desk-item][data-dragging="true"] > * {
+      scale: 1.03;
+      box-shadow:
+        0 2px 2px rgba(0, 0, 0, 0.12),
+        0 24px 48px rgba(0, 0, 0, 0.28);
+    }
+  }
+}
+
+/* A big latching key (the case study's "how do you want to read it"): plastic when up, pressed in when chosen. */
+.mode-key {
+  background: var(--sheen), var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  box-shadow: var(--bevel), var(--key-edge), var(--lift-sm);
+  transition:
+    transform 120ms var(--ease-out),
+    box-shadow 120ms var(--ease-out),
+    background-color 120ms var(--ease-out);
+}
+
+.mode-key:hover {
+  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+.mode-key[aria-pressed="true"],
+.mode-key:active {
+  transform: translateY(2px);
+  background: var(--surface-2);
+  box-shadow: var(--recess);
+}
+
+/* ---------- The spec plate (footer) ---------- */
+.spec-plate {
+  position: relative;
+  padding: 28px 28px 18px;
+  border-radius: 22px;
+  font-size: var(--text-14);
+  color: var(--muted);
+  background: var(--sheen), var(--grain), var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  box-shadow: var(--bevel), var(--lift);
+}
+
+@media (min-width: 768px) {
+  .spec-plate {
+    padding: 32px 40px 20px;
+  }
+}
+
+.spec-label {
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- The device (home hero) ---------- */
+.device {
+  position: relative;
+  border-radius: 34px;
+  padding: 18px;
+  background: var(--sheen), var(--grain), var(--surface);
+  box-shadow:
+    var(--bevel),
+    0 0 0 1px color-mix(in srgb, var(--line) 80%, transparent),
+    var(--lift-lg);
+}
+
+.device__screen {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+/* Boot sequence: plays once per session, before the screen content shows. */
+.device__boot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  padding: 22px;
+  font: 500 13px/1.7 var(--font-mono);
+  color: var(--screen-muted);
+  background: var(--screen);
+  pointer-events: none;
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  html[data-boot="run"] .device__boot {
+    display: block;
+    animation: boot-out 300ms ease-in 1300ms forwards;
+  }
+
+  html[data-boot="run"] .device__boot > span {
+    opacity: 0;
+    animation: fade-in 80ms linear forwards;
+    animation-delay: calc(var(--i) * 260ms);
+  }
+}
+
+@keyframes boot-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Screen off (the power key, or P). */
+.device[data-power="off"] .device__content {
+  opacity: 0;
+}
+
+.device[data-power="off"] .device__screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--screen);
+}
+
+.device__content {
+  transition: opacity 240ms var(--ease-out);
+}
+
+/* Controls: dial + switches + go key, keys underneath on phones; three columns from 640px. */
+.device__controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "dial switches"
+    "keys keys"
+    "go go";
+  align-items: center;
+  gap: 20px 18px;
+}
+
+@media (min-width: 640px) {
+  .device__controls {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "dial switches keys"
+      "dial go keys";
+    gap: 16px 28px;
+  }
+}
+
+.screen .hero-name {
+  font-size: clamp(46px, 6.4vw, 86px);
+}
+
+.screen .resample-sentence {
+  font-size: clamp(17px, 1.6vw, 21px);
+  color: color-mix(in srgb, var(--screen-ink) 88%, transparent);
+}
+
+/* Printed ruler along the mat's edges. */
+.mat-ruler {
+  position: absolute;
+  display: flex;
+  font: 500 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  user-select: none;
+}
+
+.mat-ruler > span {
+  flex: none;
+  width: 120px;
+  padding-left: 5px;
+}
+
+.screen .hero-name__letter {
+  color: color-mix(in oklab, var(--screen-ink), var(--screen-accent) calc(var(--k) * 100%));
+}
+
+.screen .resample-token {
+  color: var(--screen-ink);
+  text-decoration-color: color-mix(in srgb, var(--screen-ink) 40%, transparent);
+}
+
+.screen .resample-token:hover,
+.screen .resample-token[aria-expanded="true"] {
+  background-color: rgba(255, 255, 255, 0.08);
+  text-decoration-color: var(--screen-accent);
 }
 
 /* ---------- Hero ---------- */

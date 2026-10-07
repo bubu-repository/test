@@ -3,9 +3,11 @@
  * The single source of truth for adelia.cc and every *.adelia.cc experiment.
  * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
  *
- * World: white paper, near-black ink, light grey cards with hairlines, and type that does the
- * talking (Bricolage Grotesque). Colour lives in real objects (the dock's app icons, a live dot,
- * a link) and nowhere else. Magenta #F41B8D is the anchor: the one colour you always feel.
+ * World: modern skeuomorphism. A warm putty desk, light plastic panels with real bevels and soft
+ * shadows, recessed LCD screens, keys that press in, toggles, a rotary dial, LEDs and a little
+ * grain, like well-made hardware (Braun, Teenage Engineering). Type is Bricolage Grotesque, with
+ * JetBrains Mono for the labels printed on the hardware. Magenta #F41B8D is the anchor: the power
+ * LED, the primary key, the dial pointer. The one colour you always feel.
  *
  * Contrast rules (checked on /styleguide):
  * - White text sits on --accent-strong (5.0:1), never on --accent (3.9:1).
@@ -18,23 +20,41 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: #FFFFFF;          /* page: white paper */
-  --surface: #FFFFFF;     /* sheets, inputs, chips */
-  --surface-2: #F8F9FB;   /* cards: the reference's barely-grey fill */
-  --ink: #111111;         /* text (18.9:1 on --bg) */
-  --muted: #666666;       /* secondary text (5.7:1 on --bg, 5.5:1 on --surface-2) */
-  --line: #E7E8EC;        /* hairlines */
-  --accent: #F41B8D;      /* MAGENTA, the anchor: glows, dots, marks */
-  --accent-strong: #D6087A; /* magenta fill behind white text (5.0:1) */
-  --accent-ink: #C8006E;  /* magenta as small text (5.2:1 on --bg) */
+  --bg: #EDE9E2;          /* the desk: warm cream putty */
+  --surface: #F7F6F3;     /* plastic panels, keys, cards */
+  --surface-2: #EEECE7;   /* recessed wells, inputs, seams */
+  --ink: #1B1A18;         /* text (13.9:1 on --bg) */
+  --muted: #5F5C55;       /* secondary text (5.4:1 on --bg, 6.2:1 on --surface) */
+  --line: #D8D5CE;        /* panel seams and hairlines */
+  --accent: #F41B8D;      /* MAGENTA, the anchor: LEDs, pointers, marks */
+  --accent-strong: #D6087A; /* magenta key behind white text (5.0:1) */
+  --accent-ink: #B8006A;  /* magenta as small text (5.2:1 on --bg) */
 
-  /* Floating chrome (dock, popovers, dialogs): near-solid white with a light blur */
-  --glass: rgba(255, 255, 255, .88);
-  --glass-strong: rgba(255, 255, 255, .94);
-  --glass-edge: rgba(255, 255, 255, 1);
-  --glass-line: rgba(17, 17, 17, .08);
-  --glass-shadow: 0 1px 2px rgba(17, 17, 17, .04), 0 12px 32px rgba(17, 17, 17, .06);
-  --glass-blur: 20px;
+  /* Materials */
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 46%);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 -1px 0 rgba(40, 34, 24, .08);
+  --lift-sm: 0 1px 1px rgba(40, 34, 24, .1), 0 2px 4px rgba(40, 34, 24, .07);
+  --lift: 0 1px 1px rgba(40, 34, 24, .08), 0 4px 10px rgba(40, 34, 24, .07), 0 18px 36px rgba(40, 34, 24, .09);
+  --lift-lg: 0 2px 2px rgba(40, 34, 24, .08), 0 10px 24px rgba(40, 34, 24, .1), 0 40px 80px rgba(40, 34, 24, .16);
+  --recess: inset 0 2px 5px rgba(40, 34, 24, .16), inset 0 0 0 1px rgba(40, 34, 24, .08), 0 1px 0 rgba(255, 255, 255, .8);
+  --key-edge: 0 2px 0 #C9C5BC;
+  --screen: #141513;      /* LCD glass */
+  --screen-ink: #EAF0E6;  /* lit segments (15.8:1) */
+  --screen-muted: #9AA396; /* dim segments (7.0:1) */
+  --screen-accent: #FF6FB8; /* magenta on the screen (7.2:1) */
+  --metal-from: #FBFBF9;
+  --metal-to: #B9B7B1;
+  --led: #34C759;
+  --mat: #2864A3;         /* cutting mat blue */
+  --mat-line: rgba(255, 255, 255, .16);
+
+  /* Floating chrome (dock, popovers, dialogs): plastic, slightly translucent */
+  --glass: rgba(247, 246, 243, .9);
+  --glass-strong: rgba(247, 246, 243, .96);
+  --glass-edge: rgba(255, 255, 255, .95);
+  --glass-line: rgba(40, 34, 24, .1);
+  --glass-shadow: 0 1px 1px rgba(40, 34, 24, .08), 0 8px 20px rgba(40, 34, 24, .1), 0 24px 48px rgba(40, 34, 24, .1);
+  --glass-blur: 16px;
 
   --stage-from: #8DBEFF;  /* sky fallback gradient, top (the live sky lives in the weather widget) */
   --stage-to: #EAF3FF;    /* sky fallback gradient, bottom */
@@ -42,29 +62,46 @@
   --cloud: rgba(255, 255, 255, .9);
   --dot: rgba(29, 29, 31, .07);
   --glow: rgba(244, 27, 141, .22);
-  --check-a: #F3F4F6;     /* checkerboard pair (badge, reveal card) */
-  --check-b: #E7E8EC;
+  --check-a: #EFEDE8;     /* checkerboard pair (badge, reveal card) */
+  --check-b: #E2DFD8;
 }
 
 /* ---------- Color: night (dark) ---------- */
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #0C0C0D;
-  --surface: #161618;
-  --surface-2: #19191B;
-  --ink: #F2F2F2;         /* text (17.6:1 on --bg) */
-  --muted: #9C9CA1;       /* secondary text (7.1:1 on --bg) */
-  --line: #2A2A2E;
+  --bg: #18181A;          /* graphite desk */
+  --surface: #262628;     /* graphite plastic */
+  --surface-2: #1E1E20;   /* wells */
+  --ink: #EDEDEA;         /* text (12.9:1 on --surface) */
+  --muted: #A6A39D;       /* secondary text (7.1:1 on --bg, 6.0:1 on --surface) */
+  --line: #36363A;
   --accent: #F41B8D;      /* magenta stays the anchor */
   --accent-strong: #D6087A;
-  --accent-ink: #FF5FB2;  /* magenta as small text (7.1:1 on --bg) */
+  --accent-ink: #FF6FB8;  /* magenta as small text (6.9:1 on --bg) */
 
-  --glass: rgba(24, 24, 26, .88);
-  --glass-strong: rgba(24, 24, 26, .94);
-  --glass-edge: rgba(255, 255, 255, .06);
-  --glass-line: rgba(255, 255, 255, .08);
-  --glass-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .5);
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, 0) 46%);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 -1px 0 rgba(0, 0, 0, .45);
+  --lift-sm: 0 1px 1px rgba(0, 0, 0, .4), 0 2px 4px rgba(0, 0, 0, .3);
+  --lift: 0 1px 1px rgba(0, 0, 0, .4), 0 4px 10px rgba(0, 0, 0, .3), 0 18px 36px rgba(0, 0, 0, .35);
+  --lift-lg: 0 2px 2px rgba(0, 0, 0, .4), 0 10px 24px rgba(0, 0, 0, .4), 0 40px 80px rgba(0, 0, 0, .5);
+  --recess: inset 0 2px 5px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 255, 255, .05);
+  --key-edge: 0 2px 0 #0E0E0F;
+  --screen: #0D0E0D;
+  --screen-ink: #EAF0E6;
+  --screen-muted: #9AA396;
+  --screen-accent: #FF6FB8;
+  --metal-from: #6A6A6E;
+  --metal-to: #2E2E31;
+  --led: #34C759;
+  --mat: #163A60;
+  --mat-line: rgba(255, 255, 255, .1);
+
+  --glass: rgba(38, 38, 40, .9);
+  --glass-strong: rgba(38, 38, 40, .96);
+  --glass-edge: rgba(255, 255, 255, .08);
+  --glass-line: rgba(0, 0, 0, .5);
+  --glass-shadow: 0 1px 1px rgba(0, 0, 0, .4), 0 8px 20px rgba(0, 0, 0, .4), 0 24px 48px rgba(0, 0, 0, .4);
 
   --stage-from: #060814;
   --stage-to: #1A1230;
@@ -72,8 +109,8 @@
   --cloud: rgba(140, 120, 200, .25);
   --dot: rgba(245, 245, 247, .06);
   --glow: rgba(244, 27, 141, .45);
-  --check-a: #1C1C1F;
-  --check-b: #26262A;
+  --check-a: #222224;
+  --check-b: #2C2C2F;
 }
 
 /* ---------- Accent colours (theme-independent; used in small doses) ---------- */
@@ -122,9 +159,12 @@
   --radius-lg: 36px;
   --radius-pill: 999px;
 
-  /* Depth: almost none on the page; floating things get one soft shadow */
-  --shadow-sm: 0 1px 2px rgba(17, 17, 17, .04), 0 4px 12px rgba(17, 17, 17, .04);
-  --shadow-lg: 0 2px 8px rgba(17, 17, 17, .06), 0 24px 64px rgba(17, 17, 17, .14);
+  /* Depth: things sit on the desk (see --lift*, --bevel and --recess per theme) */
+  --shadow-sm: var(--lift-sm);
+  --shadow-lg: var(--lift-lg);
+
+  /* A little grain so plastic and paper don't look like flat vectors */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --shadow-glow: 0 8px 24px rgba(214, 8, 122, .22);
   --gloss: inset 0 1px 0 rgba(255, 255, 255, .5);
   --hard: 0 4px 12px rgba(17, 17, 17, .12); /* sticker lift */

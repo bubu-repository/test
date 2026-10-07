@@ -34,7 +34,7 @@ export function SiteFooter() {
   const here = useLive((s) => s.count);
 
   return (
-    <footer className="mt-auto border-t border-line" data-xr="SiteFooter · live clocks + one-click email">
+    <footer id="contact" className="mt-auto scroll-mt-20" data-xr="SiteFooter · live clocks + one-click email">
       <div className="container-page py-24 text-center md:py-32">
         <p className="type-eyebrow">Say hello</p>
         <h2 className="type-display mx-auto mt-4 max-w-[15ch]">
@@ -57,59 +57,83 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-line">
-        <div className="container-page flex flex-wrap items-center gap-x-6 gap-y-3 py-6 text-14 text-muted">
-          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span>
-              Bekasi <LiveClock zone={identity.timeZone} className="text-ink tabular-nums" />, <Status />
-            </span>
-            <VisitorClock />
-            {here > 1 && (
-              <span className="inline-flex items-center gap-1.5">
-                <span className="live-dot" aria-hidden="true" /> {here} here now
-              </span>
-            )}
-          </p>
-          <nav aria-label="Footer">
-            <ul className="flex flex-wrap gap-x-5 gap-y-2">
-              <li>
-                <Link href="/" className="hover:text-ink">
-                  Home
-                </Link>
-              </li>
-              {nav.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="hover:text-ink">
-                    {item.label}
+      {/* The spec plate: a printed label panel, like the back of a device. */}
+      <div className="container-page pb-10">
+        <div className="spec-plate">
+          <span className="screw absolute top-3 left-3" aria-hidden="true" />
+          <span className="screw absolute top-3 right-3" aria-hidden="true" />
+          <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_auto]">
+            <div>
+              <p className="spec-label">Base</p>
+              <p className="mt-2 text-ink">
+                {identity.location} · {identity.timeZoneLabel}
+              </p>
+              <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+                <span>
+                  <LiveClock zone={identity.timeZone} className="text-ink tabular-nums" /> there, <Status />
+                </span>
+                <VisitorClock />
+                {here > 1 && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="live-dot" aria-hidden="true" /> {here} here now
+                  </span>
+                )}
+              </p>
+            </div>
+            <div>
+              <p className="spec-label">Focus</p>
+              <p className="mt-2 text-ink">AI products, end to end</p>
+              <p className="mt-1">Interfaces, agents, evals</p>
+            </div>
+            <nav aria-label="Footer">
+              <p className="spec-label">Index</p>
+              <ul className="mt-2 grid grid-cols-2 gap-x-5 gap-y-1">
+                <li>
+                  <Link href="/" className="hover:text-ink">
+                    Home
                   </Link>
                 </li>
-              ))}
-              {socials
-                .filter((s) => s.href)
-                .map((s) => (
-                  <li key={s.label}>
-                    <a href={s.href!} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
-                      {s.label} ↗<span className="sr-only"> (opens in a new tab)</span>
-                    </a>
+                {nav.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className="hover:text-ink">
+                      {item.label}
+                    </Link>
                   </li>
                 ))}
-            </ul>
-          </nav>
-          <div className="flex flex-wrap items-center gap-1 md:ml-auto">
-            <button type="button" className="pill js-only" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "stickers" })}>
-              Stickers {collected}/{STICKERS.length}
-            </button>
-            <button type="button" className="pill js-only" data-variant="ghost" data-size="sm" aria-pressed={xray} onClick={() => dispatch({ type: "xray" })}>
-              X-ray {xray ? "on" : "off"}
-            </button>
-            <button type="button" className="pill js-only" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "shortcuts" })}>
-              <kbd aria-hidden="true">?</kbd> Shortcuts
-            </button>
+                {socials
+                  .filter((s) => s.href)
+                  .map((s) => (
+                    <li key={s.label}>
+                      <a href={s.href!} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+                        {s.label} ↗<span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    </li>
+                  ))}
+              </ul>
+            </nav>
+            <div className="js-only">
+              <p className="spec-label">System</p>
+              <div className="mt-1 -ml-3 flex flex-wrap items-center gap-1 lg:flex-col lg:items-start">
+                <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "stickers" })}>
+                  Stickers {collected}/{STICKERS.length}
+                </button>
+                <button type="button" className="pill" data-variant="ghost" data-size="sm" aria-pressed={xray} onClick={() => dispatch({ type: "xray" })}>
+                  X-ray {xray ? "on" : "off"}
+                </button>
+                <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "shortcuts" })}>
+                  <kbd aria-hidden="true">?</kbd> Shortcuts
+                </button>
+              </div>
+            </div>
           </div>
+          <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-dashed border-line pt-4 font-mono text-[10px] tracking-[0.14em] uppercase">
+            <span>
+              © {edition} {identity.name}
+            </span>
+            <span>Designed &amp; built in {identity.city}</span>
+            <span className="sm:ml-auto">Model AT-26 · Rev. {edition}</span>
+          </p>
         </div>
-        <p className="container-page pb-8 text-12 text-muted">
-          © {edition} {identity.name}. Designed and built in {identity.city}.
-        </p>
       </div>
     </footer>
   );

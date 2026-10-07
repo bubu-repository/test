@@ -140,7 +140,7 @@ export function Gumball() {
             </div>
           </div>
         ) : (
-          <div className="rounded-[28px] border border-dashed border-line p-8 text-muted">
+          <div className="well rounded-[28px] p-8 text-muted">
             <p className="type-pixel">Capsule slot</p>
             <p className="mt-3 max-w-[36ch] text-18">
               {phase === "idle" ? "Can't choose? Turn the knob and a capsule rolls out with a random experiment inside." : "Rolling…"}

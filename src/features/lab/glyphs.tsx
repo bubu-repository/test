@@ -24,6 +24,8 @@ const GLYPHS: Record<string, string> = {
   brief: "40",
   jd: "JD",
   xray: "◎",
+  "at-26": "◉",
+  desk: "▧",
   dock: "▭",
   "case-chat": "❝",
   ticker: "⏱",

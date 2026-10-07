@@ -40,7 +40,7 @@ Live presence and cursors use server-sent events from `/api/live` with an in-mem
 
 | Route | What it is |
 | --- | --- |
-| `/` | Name, role, city and live Bekasi time above the fold; an ask box for Moci; two ways in (the work, or a 40-second autopilot tour); three case studies; six live widgets (Bekasi weather with a WebGL sky shader driven by real weather, working-hours overlap ring, Ask Moci, swipe-up availability card, the lab, the game). |
+| `/` | A blue cutting mat with the AT-26, a small device: its LCD shows the name, role and city, the live Bekasi time next to yours, today's Bekasi weather and an ask line for Moci. A dial picks where to go (work, lab, about, contact), switches turn on night and sound, keys start the tour, the brief, the CV and ⌘K, and the power key (or `P`) puts the screen to sleep. The three projects lie around it as polaroids, with a sticky note on how to use the desk; on wide screens you can drag everything around (positions are remembered; "Tidy up" resets them). Below: the three case studies and six live widgets (Bekasi weather with a WebGL sky shader driven by real weather, working-hours overlap ring, Ask Moci, swipe-up availability card, the lab, the game). |
 | `/work` | The three projects as cards in a booster pack you tear open. |
 | `/work/[slug]` | Case study: problem, role, process, architecture, before/after, results, reflection, plus live and repo links. Read it as an article or chat through it: the story unfolds message by message with verified numbers, and you can ask your own questions. |
 | `/lab` | Gumball machine, the five subdomain experiments with live previews, and every feature built into the site with a button that runs it. |
@@ -50,7 +50,7 @@ Live presence and cursors use server-sent events from `/api/live` with an in-mem
 | `/play` | Context Window: snake, but you're an LLM. |
 | 404 | Moci confidently writes the missing page, then fact-checks itself and suggests real pages. |
 
-Everywhere: a dock of app icons as navigation (magnifies under the cursor, live calendar tile), ⌘K command palette (navigate, run actions, answer questions), terminal (`` ` ``), autopilot tour, 40-second brief for recruiters (`b`), sticker collection (`s`), X-ray mode showing how each part is built (`x`), live cursors, synthesised sound effects (off by default), light/dark theme, view transitions between pages, and a Konami code. Press `?` for every shortcut; single-key shortcuts can be turned off.
+Everywhere: a spec-plate footer (base, focus, index, system), a dock of app icons as navigation (magnifies under the cursor, live calendar tile), ⌘K command palette (navigate, run actions, answer questions), terminal (`` ` ``), autopilot tour, 40-second brief for recruiters (`b`), sticker collection (`s`), X-ray mode showing how each part is built (`x`), live cursors, synthesised sound effects (off by default), light/dark theme, view transitions between pages, and a Konami code. Press `?` for every shortcut; single-key shortcuts can be turned off.
 
 ## Stack
 
@@ -75,10 +75,11 @@ src/proxy.ts                 routes <slug>.adelia.cc to its lab
 
 ## Design rules
 
-- White paper, near-black ink, light grey cards with hairlines; type does the talking.
-- Magenta `#F41B8D` is the one colour you always feel. White text sits on `--accent-strong` (5.0:1), never on `--accent` (3.9:1). Other colours appear only as small accents (the dock's app icons, a dot, a chart line).
-- No gradient text, glass-everything, glossy orbs, sparkles or decorative emoji.
-- Every motion has a `prefers-reduced-motion` path. Everything is reachable by keyboard; contrast pairs are checked on `/styleguide`.
+- Modern skeuomorphism, in the spirit of Braun and Teenage Engineering: warm putty desk, moulded plastic panels with a top sheen and a soft lift, keys that press in, recessed wells for inputs, a dark LCD, metal knobs and screws. Materials live as tokens (`--sheen`, `--bevel`, `--lift*`, `--recess`, `--key-edge`, `--screen*`, `--metal-*`, `--mat`, `--grain`) and as utilities/components in `src/styles/globals.css` (`widget`, `well`, `screen`, `mat`, `.pill`, `.toggle`, `.knob`, `.led`, `.polaroid`, `.sticky-note`, `.device`, `.spec-plate`).
+- Type does the talking: Bricolage Grotesque for words, JetBrains Mono for printed labels (uppercase, letter-spaced).
+- Magenta `#F41B8D` is the one colour you always feel. White text sits on `--accent-strong` (5.0:1), never on `--accent` (3.9:1). Other colours appear only as small accents (the dock's app icons, an LED, a chart line).
+- No gradient text, glossy orbs, sparkles or decorative emoji.
+- Every motion has a `prefers-reduced-motion` path (the boot sequence is skipped). Everything is reachable by keyboard: the dial is a slider (arrow keys), switches are `role="switch"`, single-key shortcuts can be turned off. Contrast pairs are checked on `/styleguide`.
 
 ## Placeholders to replace
 

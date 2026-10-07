@@ -177,7 +177,7 @@ export function JdMatcher() {
             )}
           </div>
         ) : (
-          <div className="grid h-full min-h-[280px] place-items-center rounded-[28px] border border-dashed border-line p-8 text-center text-muted">
+          <div className="well grid h-full min-h-[280px] place-items-center rounded-[28px] p-8 text-center text-muted">
             <p className="max-w-[34ch]">Paste a job description and I&apos;ll show what matches, with the project that proves it, and where the gaps are.</p>
           </div>
         )}

@@ -21,7 +21,7 @@ const SINGLE: Record<string, SiteAction> = {
   x: { type: "xray" },
 };
 
-function isEditable(target: EventTarget | null) {
+export function isEditable(target: EventTarget | null) {
   const el = target as HTMLElement | null;
   if (!el) return false;
   return el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.closest("[role='application']") !== null;

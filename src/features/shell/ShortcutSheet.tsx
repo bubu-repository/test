@@ -23,6 +23,7 @@ const GROUPS: { title: string; items: { keys: string[]; label: string }[] }[] = 
       { keys: ["S"], label: "Sticker book" },
       { keys: ["D"], label: "Day / night sky" },
       { keys: ["X"], label: "X-ray mode" },
+      { keys: ["P"], label: "Power the home device on or off" },
       { keys: ["?"], label: "This sheet" },
     ],
   },
@@ -77,8 +78,8 @@ export function ShortcutSheet() {
                 {group.items.map((item) => (
                   <li key={item.label} className="flex items-center gap-3 text-14">
                     <span className="flex shrink-0 gap-1">
-                      {item.keys.map((k) => (
-                        <kbd key={k}>{k}</kbd>
+                      {item.keys.map((k, i) => (
+                        <kbd key={i}>{k}</kbd>
                       ))}
                     </span>
                     <span>{item.label}</span>

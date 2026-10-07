@@ -3,7 +3,6 @@
 import { ViewTransition, useRef, useState, type ReactNode } from "react";
 import { ArrowRightIcon } from "@/components/icons";
 import type { Project } from "@/content/projects";
-import { cn } from "@/lib/cn";
 import { sfx } from "@/lib/sound";
 import { ProjectIcon } from "../work/ProjectIcon";
 import { CaseChat, type CaseChatHandle } from "./CaseChat";
@@ -64,7 +63,7 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
 
         <div className="js-only mx-auto mt-12 max-w-[760px]">
           <form
-            className="flex items-center gap-2 rounded-pill border border-line bg-glass-strong py-2 pr-2 pl-6 shadow-[0_10px_30px_rgba(16,18,40,0.08)] backdrop-blur-xl focus-within:border-accent"
+            className="well flex items-center gap-2 rounded-pill py-2 pr-2 pl-6 focus-within:shadow-[var(--recess),0_0_0_3px_color-mix(in_srgb,var(--accent)_30%,transparent)]"
             onSubmit={(e) => {
               e.preventDefault();
               const q = draft.trim();
@@ -84,7 +83,7 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
               className="min-w-0 flex-1 bg-transparent py-2 text-18 outline-none placeholder:text-muted"
               autoComplete="off"
             />
-            <button type="submit" aria-label="Ask" disabled={!draft.trim()} className="grid size-11 shrink-0 place-items-center rounded-full bg-ink text-bg transition-opacity disabled:opacity-35">
+            <button type="submit" aria-label="Ask" disabled={!draft.trim()} className="pill size-11 shrink-0 p-0" data-variant="magenta" data-shape="icon">
               <ArrowRightIcon width={20} height={20} className="-rotate-90" />
             </button>
           </form>
@@ -105,16 +104,11 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
                   data-tour={m.id === "chat" ? "case-chat" : undefined}
                   aria-pressed={on}
                   onClick={() => go(m.id)}
-                  className={cn(
-                    "rounded-[22px] border p-5 text-left transition-[background-color,border-color,box-shadow] duration-300 md:p-6",
-                    on ? "border-cobalt/35 bg-cobalt/[0.06] shadow-[0_0_0_4px_color-mix(in_srgb,var(--cobalt)_8%,transparent)]" : "border-line bg-glass hover:border-ink/15",
-                  )}
+                  className="mode-key rounded-[22px] p-5 text-left md:p-6"
                 >
                   <span className="flex items-center justify-between gap-3">
                     <span className="text-18 font-semibold tracking-[-0.015em]">{m.title}</span>
-                    <span aria-hidden="true" className={cn("grid size-5 place-items-center rounded-full border-2", on ? "border-cobalt bg-cobalt" : "border-line")}>
-                      {on && <span className="size-1.5 rounded-full bg-white" />}
-                    </span>
+                    <span aria-hidden="true" className="led" data-off={!on} style={on ? { ["--led-color" as string]: "var(--accent)" } : undefined} />
                   </span>
                   <span className="mt-1.5 block text-14 leading-relaxed text-muted">{m.body}</span>
                 </button>

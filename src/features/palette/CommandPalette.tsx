@@ -233,8 +233,8 @@ export function CommandPalette() {
                       </span>
                       {item.command.keys && (
                         <span className="hidden shrink-0 gap-1 sm:flex" aria-hidden="true">
-                          {item.command.keys.map((k) => (
-                            <kbd key={k}>
+                          {item.command.keys.map((k, i) => (
+                            <kbd key={i}>
                               {k}
                             </kbd>
                           ))}

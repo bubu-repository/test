@@ -42,7 +42,9 @@ export function OverlapRing() {
         {Array.from({ length: 24 }, (_, h) => {
           const a = (h / 24) * Math.PI * 2 - Math.PI / 2;
           const r1 = h % 6 === 0 ? 34 : 38;
-          return <line key={h} x1={100 + Math.cos(a) * r1} y1={100 + Math.sin(a) * r1} x2={100 + Math.cos(a) * 42} y2={100 + Math.sin(a) * 42} stroke="var(--muted)" strokeWidth={h % 6 === 0 ? 2 : 1} opacity={0.6} />;
+          // Rounded: Math.cos/sin can differ in the last digit between the server and the browser.
+          const p = (v: number) => (100 + v).toFixed(2);
+          return <line key={h} x1={p(Math.cos(a) * r1)} y1={p(Math.sin(a) * r1)} x2={p(Math.cos(a) * 42)} y2={p(Math.sin(a) * 42)} stroke="var(--muted)" strokeWidth={h % 6 === 0 ? 2 : 1} opacity={0.6} />;
         })}
         {state && (
           <>
