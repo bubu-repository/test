@@ -1,0 +1,177 @@
+/*
+ * @adelia/tokens
+ * The single source of truth for adelia.cc and every *.adelia.cc experiment.
+ * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
+ *
+ * World: white paper, near-black ink, light grey cards with hairlines, and type that does the
+ * talking (Bricolage Grotesque). Colour lives in real objects (the dock's app icons, a live dot,
+ * a link) and nowhere else. Magenta #F41B8D is the anchor: the one colour you always feel.
+ *
+ * Contrast rules (checked on /styleguide):
+ * - White text sits on --accent-strong (5.0:1), never on --accent (3.9:1).
+ * - Text on a bright fill (lime, sun, pink, mint, cyan, sky, violet, orange) uses --on-fill.
+ * - Magenta as small text: --accent-ink.
+ */
+
+/* ---------- Color: day (light) ---------- */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #FFFFFF;          /* page: white paper */
+  --surface: #FFFFFF;     /* sheets, inputs, chips */
+  --surface-2: #F8F9FB;   /* cards: the reference's barely-grey fill */
+  --ink: #111111;         /* text (18.9:1 on --bg) */
+  --muted: #666666;       /* secondary text (5.7:1 on --bg, 5.5:1 on --surface-2) */
+  --line: #E7E8EC;        /* hairlines */
+  --accent: #F41B8D;      /* MAGENTA, the anchor: glows, dots, marks */
+  --accent-strong: #D6087A; /* magenta fill behind white text (5.0:1) */
+  --accent-ink: #C8006E;  /* magenta as small text (5.2:1 on --bg) */
+
+  /* Floating chrome (dock, popovers, dialogs): near-solid white with a light blur */
+  --glass: rgba(255, 255, 255, .88);
+  --glass-strong: rgba(255, 255, 255, .94);
+  --glass-edge: rgba(255, 255, 255, 1);
+  --glass-line: rgba(17, 17, 17, .08);
+  --glass-shadow: 0 1px 2px rgba(17, 17, 17, .04), 0 12px 32px rgba(17, 17, 17, .06);
+  --glass-blur: 20px;
+
+  --stage-from: #8DBEFF;  /* sky fallback gradient, top (the live sky lives in the weather widget) */
+  --stage-to: #EAF3FF;    /* sky fallback gradient, bottom */
+  --sky-image: url("/sky/day.webp");
+  --cloud: rgba(255, 255, 255, .9);
+  --dot: rgba(29, 29, 31, .07);
+  --glow: rgba(244, 27, 141, .22);
+  --check-a: #F3F4F6;     /* checkerboard pair (badge, reveal card) */
+  --check-b: #E7E8EC;
+}
+
+/* ---------- Color: night (dark) ---------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0C0C0D;
+  --surface: #161618;
+  --surface-2: #19191B;
+  --ink: #F2F2F2;         /* text (17.6:1 on --bg) */
+  --muted: #9C9CA1;       /* secondary text (7.1:1 on --bg) */
+  --line: #2A2A2E;
+  --accent: #F41B8D;      /* magenta stays the anchor */
+  --accent-strong: #D6087A;
+  --accent-ink: #FF5FB2;  /* magenta as small text (7.1:1 on --bg) */
+
+  --glass: rgba(24, 24, 26, .88);
+  --glass-strong: rgba(24, 24, 26, .94);
+  --glass-edge: rgba(255, 255, 255, .06);
+  --glass-line: rgba(255, 255, 255, .08);
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .5);
+
+  --stage-from: #060814;
+  --stage-to: #1A1230;
+  --sky-image: url("/sky/night.webp");
+  --cloud: rgba(140, 120, 200, .25);
+  --dot: rgba(245, 245, 247, .06);
+  --glow: rgba(244, 27, 141, .45);
+  --check-a: #1C1C1F;
+  --check-b: #26262A;
+}
+
+/* ---------- Accent colours (theme-independent; used in small doses) ---------- */
+:root {
+  --red: #FF3B30;
+  --lime: #D4F53C;
+  --cobalt: #2860F0;
+  --sun: #FFCC00;
+  --pink: #FFB2DC;
+  --mint: #34C759;
+  --cyan: #32D4E8;
+  --violet: #8E7CFF;
+  --orange: #FF9500;
+  --sky: #7CC4FF;
+  --charcoal: #2C2C2E;
+  --lcd: #1D1D1F;         /* the recessed screen of the clock widget */
+  --ok: #34C759;
+
+  --on-fill: #1D1D1F;     /* text on every bright fill */
+  --on-accent: #FFFFFF;   /* text on --accent-strong */
+  --on-cobalt: #FFFFFF;   /* text on blue (5.2:1) and charcoal */
+  --on-ink: #FFFFFF;
+
+  /* Jelly shading for the small glossy mascot */
+  --jelly-light: #FF8CC8;
+  --jelly-deep: #C2006B;
+  --jelly-core: #A0007A;
+  --jelly-ink: #1A0614;
+
+  /* Terminal: always a night console */
+  --term-bg: #141416;
+  --term-ink: #F5F5F7;
+  --term-muted: #A1A1A6;
+  --term-accent: #FF5FB2;
+  --term-link: #7CC4FF;
+  --term-ok: #D4F53C;
+  --term-warn: #FFCC00;
+}
+
+/* ---------- Shape, depth, space, motion, type ---------- */
+:root {
+  /* Shape: soft continuous corners, full pills */
+  --radius-xs: 8px;
+  --radius-sm: 14px;
+  --radius-card: 28px;
+  --radius-lg: 36px;
+  --radius-pill: 999px;
+
+  /* Depth: almost none on the page; floating things get one soft shadow */
+  --shadow-sm: 0 1px 2px rgba(17, 17, 17, .04), 0 4px 12px rgba(17, 17, 17, .04);
+  --shadow-lg: 0 2px 8px rgba(17, 17, 17, .06), 0 24px 64px rgba(17, 17, 17, .14);
+  --shadow-glow: 0 8px 24px rgba(214, 8, 122, .22);
+  --gloss: inset 0 1px 0 rgba(255, 255, 255, .5);
+  --hard: 0 4px 12px rgba(17, 17, 17, .12); /* sticker lift */
+
+  /* Space */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --content-max: 1120px;
+  --gutter: clamp(16px, 4vw, 48px); /* 16px at 360px wide */
+
+  /* Motion */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --ease-jelly: cubic-bezier(.34, 1.56, .64, 1);
+  --dur-micro: 160ms;
+  --dur-short: 300ms;
+  --dur-macro: 700ms;
+  --dur-reduced: 150ms;
+
+  /* Type: Bricolage Grotesque for everything (optical sizes 12–96 do the display/text split) */
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: "Pixelify Sans Variable", "Pixelify Sans", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-32: 32px;
+  --text-48: 48px;
+  --text-64: 64px;
+  --text-96: 96px;
+  --text-hero: clamp(52px, 7.6vw, 104px);
+
+  --leading-display: .98;
+  --tracking-display: -0.035em;
+  --leading-body: 1.5;
+  --tracking-label: 0.06em;
+}

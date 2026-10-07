@@ -1,0 +1,232 @@
+/*
+ * Shared chrome for every *.adelia.cc experiment.
+ * tokens.css and fonts/ are copied in by scripts/build-labs.mjs from packages/tokens and
+ * node_modules, so every experiment uses the exact same design tokens as adelia.cc.
+ */
+@import url("./tokens.css");
+
+@font-face {
+  font-family: "Bricolage Grotesque Variable";
+  src: url("./fonts/bricolage.woff2") format("woff2-variations");
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono Variable";
+  src: url("./fonts/jetbrains-mono.woff2") format("woff2-variations");
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Silkscreen";
+  src: url("./fonts/silkscreen.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  background: var(--bg);
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-fill);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Top bar ---------- */
+.lab-bar {
+  position: fixed;
+  inset: 12px 12px auto;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  max-width: calc(100vw - 24px);
+}
+
+.lab-bar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 650;
+  font-size: var(--text-14);
+  white-space: nowrap;
+}
+
+.lab-bar__back:hover {
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+
+.lab-bar__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-fill);
+  font: 800 13px/1 var(--font-display);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.lab-bar__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 600 13px/1 var(--font-body);
+  letter-spacing: -0.005em;
+  padding-inline: 4px;
+}
+
+/* ---------- Buttons and controls ---------- */
+.lab-btn {
+  --b-bg: var(--surface);
+  --b-fg: var(--ink);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--b-edge, var(--line));
+  background: var(--b-bg);
+  color: var(--b-fg);
+  font: 600 var(--text-14) / 1 var(--font-body);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+  transition:
+    border-color var(--dur-micro) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out);
+  white-space: nowrap;
+}
+
+.lab-btn[data-variant="magenta"] {
+  --b-bg: var(--accent-strong);
+  --b-fg: var(--on-accent);
+  --b-edge: transparent;
+  box-shadow: none;
+}
+
+.lab-btn[data-variant="ghost"] {
+  --b-bg: transparent;
+  --b-edge: transparent;
+  box-shadow: none;
+}
+
+/* Pressed = ink pill; text uses the page colour so it reads in both themes. */
+.lab-btn[aria-pressed="true"] {
+  --b-bg: var(--ink);
+  --b-fg: var(--bg);
+  --b-edge: transparent;
+}
+
+/* Ghost toggles (like the theme switch) stay ghost when pressed. */
+.lab-btn[data-variant="ghost"][aria-pressed="true"] {
+  --b-bg: transparent;
+  --b-fg: var(--ink);
+}
+
+.lab-btn--icon {
+  width: 40px;
+  padding: 0;
+}
+
+@media (hover: hover) {
+  .lab-btn:hover {
+    --b-edge: color-mix(in srgb, var(--ink) 24%, transparent);
+  }
+
+  .lab-btn[data-variant="magenta"]:hover {
+    --b-bg: color-mix(in srgb, var(--accent-strong) 88%, #000);
+    --b-edge: transparent;
+  }
+
+  .lab-btn[data-variant="ghost"]:hover {
+    --b-bg: color-mix(in srgb, var(--ink) 6%, transparent);
+    --b-edge: transparent;
+  }
+}
+
+.lab-panel {
+  background: var(--surface-2);
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  padding: 16px;
+}
+
+.lab-label {
+  font: 600 11px / 1.3 var(--font-body);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lab-range {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+/* Kept as a hook for older markup: stages are plain paper now, like adelia.cc. */
+.lab-sky {
+  background: var(--surface-2);
+}
+
+[data-theme="dark"] .lab-theme-sun,
+[data-theme="light"] .lab-theme-moon {
+  display: none;
+}

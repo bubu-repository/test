@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Agent Swarm — Adelia Tiara Lab</title>
+  <meta name="description" content="Two hundred tiny agents with goals, messages and a shared memory. Drop a task and watch them self-organise, gossip and hand off work. A multi-agent experiment by Adelia Tiara." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Agent Swarm — Adelia Tiara Lab" />
+  <meta property="og:description" content="Two hundred tiny agents with goals, messages and a shared memory. Drop a task and watch them self-organise, gossip and hand off work." />
+  <meta property="og:url" content="https://swarm.adelia.cc" />
+  <meta property="og:site_name" content="Adelia Tiara Lab" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0C0C0D" media="(prefers-color-scheme: dark)" />
+  <link rel="canonical" href="https://swarm.adelia.cc" />
+  <link rel="stylesheet" href="./_shared/lab.css" />
+  <link rel="stylesheet" href="./style.css" />
+  <script src="./_shared/lab.js" data-title="Agent Swarm"></script>
+  <script type="module" src="./main.js"></script>
+</head>
+<body>
+  <div class="page">
+    <header class="intro">
+      <p class="eyebrow lab-label">Lab experiment · Multi-agent</p>
+      <h1 class="title">Agent Swarm</h1>
+      <p class="lede"><strong>Two hundred tiny agents with goals, messages and a shared memory.</strong> Drop a task and watch them self-organise, gossip and hand off work.</p>
+    </header>
+
+    <main class="layout" id="main">
+      <section class="play" aria-labelledby="stage-heading">
+        <h2 id="stage-heading" class="sr-only">Simulation</h2>
+        <div class="stage" id="stage" data-state="running">
+          <canvas id="swarm-canvas" role="img" aria-label="Agent Swarm simulation. Agents drawn as small magenta dots flock across the stage. Tasks you drop are spotted, gossiped about along blue message lines and carried, hand to hand, to the magenta Done hub at the bottom."></canvas>
+          <div class="hud" aria-hidden="true">
+            <span class="chip chip--status"><span class="chip__dot"></span><span id="status-text">Live</span><span class="chip__extra" id="status-agents"></span></span>
+            <span class="chip chip--hint"><span><span class="hint-touch">Tap</span><span class="hint-mouse">Click</span> the stage to drop a task</span></span>
+          </div>
+          <div class="stage__gate" id="gate" hidden>
+            <button type="button" class="lab-btn gate__btn" data-variant="magenta" id="gate-play">
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>
+              Play the swarm
+            </button>
+            <p class="gate__note">Reduced motion is on, so the swarm moves slower and leaves no trails.</p>
+          </div>
+        </div>
+
+        <div class="dock" role="group" aria-label="Simulation controls">
+          <button type="button" class="lab-btn" id="btn-play" aria-keyshortcuts="Space">
+            <svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.5" fill="currentColor"/></svg>
+            <svg class="i-play" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>
+            <span id="btn-play-label">Pause</span>
+          </button>
+          <button type="button" class="lab-btn" data-variant="magenta" id="btn-drop" aria-keyshortcuts="T">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Drop task
+          </button>
+          <button type="button" class="lab-btn" id="btn-burst">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="6" cy="6.5" r="2.2"/><circle cx="17.5" cy="5.5" r="2.2"/><circle cx="12" cy="12.5" r="2.2"/><circle cx="5.5" cy="18" r="2.2"/><circle cx="18" cy="17.5" r="2.2"/></svg>
+            Burst <span class="btn__sub" aria-hidden="true">×5</span><span class="sr-only">: drop 5 tasks</span>
+          </button>
+          <button type="button" class="lab-btn btn-toggle" id="btn-msgs" aria-pressed="true">
+            <span class="switch" aria-hidden="true"></span>
+            Show messages
+          </button>
+          <button type="button" class="lab-btn" data-variant="ghost" id="btn-reset" aria-keyshortcuts="R">
+            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg>
+            Reset
+          </button>
+          <p class="keys"><span class="sr-only">Keyboard shortcuts: </span><kbd>Space</kbd> pause <span aria-hidden="true">·</span> <kbd>T</kbd> drop task <span aria-hidden="true">·</span> <kbd>R</kbd> reset</p>
+        </div>
+
+        <ul class="legend" aria-label="Legend">
+          <li><span class="sw sw--agent" aria-hidden="true"></span>Agent</li>
+          <li><span class="sw sw--informed" aria-hidden="true"></span>Heard about a task</li>
+          <li><span class="sw sw--carrier" aria-hidden="true"></span>Carrying a task</li>
+          <li><span class="sw sw--task" aria-hidden="true"></span>Task</li>
+          <li><span class="sw sw--msg" aria-hidden="true"></span>Message</li>
+          <li><span class="sw sw--hub" aria-hidden="true"></span>Done hub</li>
+        </ul>
+      </section>
+
+      <aside class="side" aria-label="Swarm readouts and tuning">
+        <section class="stats" aria-labelledby="stats-heading">
+          <h2 id="stats-heading" class="sr-only">Stats</h2>
+          <dl class="tiles">
+            <div class="tile">
+              <dt>Tasks done</dt>
+              <dd><span id="stat-done">0</span></dd>
+            </div>
+            <div class="tile">
+              <dt>Messages / sec<svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true"><path id="spark-area" class="sparkline__area" d=""/><polyline id="spark-line" class="sparkline__line" points=""/></svg></dt>
+              <dd><span id="stat-mps">0</span></dd>
+            </div>
+            <div class="tile">
+              <dt>Average hops</dt>
+              <dd><span id="stat-hops">–</span></dd>
+            </div>
+            <div class="tile">
+              <dt>Avg delivery</dt>
+              <dd><span id="stat-time">–</span><small id="stat-time-unit"></small></dd>
+            </div>
+            <div class="tile">
+              <dt>Agents</dt>
+              <dd><span id="stat-agents">0</span></dd>
+            </div>
+            <div class="tile">
+              <dt>In flight</dt>
+              <dd><span id="stat-flight">0</span></dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="lab-panel memory" aria-labelledby="memory-heading">
+          <div class="panel-head">
+            <h2 id="memory-heading" class="lab-label">Shared memory</h2>
+            <span class="panel-tag lab-label">Last 6</span>
+          </div>
+          <ol class="memory__list" id="memory-list">
+            <li class="ev ev--info ev--empty"><span class="ev__glyph" aria-hidden="true">·</span><span class="ev__text">Empty. Drop a task to write the first line.</span></li>
+          </ol>
+        </section>
+
+        <section class="lab-panel tuning" aria-labelledby="tuning-heading">
+          <div class="panel-head">
+            <h2 id="tuning-heading" class="lab-label">Tuning</h2>
+          </div>
+          <div class="field">
+            <div class="field__row">
+              <label for="in-agents">Agent count</label>
+              <output id="out-agents" for="in-agents">220</output>
+            </div>
+            <input class="range" type="range" id="in-agents" min="20" max="300" step="10" value="220" aria-describedby="hint-agents" />
+            <p class="field__hint" id="hint-agents">More agents means denser gossip and more handoffs.</p>
+          </div>
+          <div class="field">
+            <div class="field__row">
+              <label for="in-radius">Gossip radius</label>
+              <output id="out-radius" for="in-radius">70 px</output>
+            </div>
+            <input class="range" type="range" id="in-radius" min="30" max="140" step="5" value="70" aria-describedby="hint-radius" />
+            <p class="field__hint" id="hint-radius">How far one message reaches. Each agent tells up to four neighbours.</p>
+          </div>
+          <div class="field">
+            <div class="field__row">
+              <label for="in-chaos">Chaos</label>
+              <output id="out-chaos" for="in-chaos">30%</output>
+            </div>
+            <input class="range" type="range" id="in-chaos" min="0" max="100" step="5" value="30" aria-describedby="hint-chaos" />
+            <p class="field__hint" id="hint-chaos">Random noise on top of the flocking rules.</p>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <section class="cards" aria-label="About this experiment">
+      <article class="card how">
+        <h2 class="card__title">How it works</h2>
+        <ol class="steps">
+          <li>
+            <span class="step__n" aria-hidden="true">1</span>
+            <div><strong>Local rules.</strong> Every agent only sees its neighbours. It keeps its distance, matches their heading and drifts toward the group, plus a pinch of chaos.</div>
+          </li>
+          <li>
+            <span class="step__n" aria-hidden="true">2</span>
+            <div><strong>Gossip.</strong> An agent that spots a task tells the agents inside its gossip radius, and they pass it on. The closest one picks the task up.</div>
+          </li>
+          <li>
+            <span class="step__n" aria-hidden="true">3</span>
+            <div><strong>Handoffs.</strong> Carriers head for the Done hub and pass the task to any neighbour that is closer to it. Every carrier counts as one hop.</div>
+          </li>
+        </ol>
+      </article>
+      <article class="card note">
+        <p class="lab-label note__label"><span class="note__mark" aria-hidden="true">a</span>A note from Adelia</p>
+        <p class="note__text">This is how I design multi-agent systems: small agents with local rules, a shared memory they all read and write, and clean handoffs whenever someone else is better placed to finish the job. The messages are drawn on purpose. If I can’t see who told whom what, I can’t debug the swarm, so observability ships on day one, not after the first incident.</p>
+        <p class="note__sig">Adelia Tiara · AI Product Engineer, Bekasi</p>
+      </article>
+    </section>
+
+    <footer class="credit">
+      <a href="https://adelia.cc"><span class="credit__dot" aria-hidden="true"></span>Built by Adelia Tiara · adelia.cc</a>
+    </footer>
+  </div>
+
+  <p class="sr-only" id="live" aria-live="polite" aria-atomic="true"></p>
+  <noscript><p class="noscript">This experiment needs JavaScript to run the swarm.</p></noscript>
+</body>
+</html>

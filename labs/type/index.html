@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Loud Type — Adelia Tiara Lab</title>
+  <meta name="description" content="Variable type that listens. Speak, hum or clap and the letters swell in weight and width. No microphone? Your cursor works too." />
+  <meta property="og:title" content="Loud Type — Adelia Tiara Lab" />
+  <meta property="og:description" content="Variable type that listens. Speak, hum or clap and the letters swell in weight and width. No microphone? Your cursor works too." />
+  <meta property="og:url" content="https://type.adelia.cc" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0C0C0D" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23F41B8D'/%3E%3Ctext x='32' y='45' font-family='system-ui,sans-serif' font-size='38' font-weight='800' text-anchor='middle' fill='%23FFFFFF'%3Ea%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./_shared/lab.css" />
+  <link rel="stylesheet" href="./style.css" />
+  <script src="./_shared/lab.js" data-title="Loud Type"></script>
+  <script type="module" src="./main.js"></script>
+</head>
+<body>
+  <main class="lt" id="main">
+    <section class="lt-intro" aria-labelledby="lt-title">
+      <p class="lt-kicker lab-label">Lab · Type × Sound</p>
+      <h1 class="lt-title" id="lt-title">Loud Type</h1>
+      <p class="lt-lede">Variable type that listens. Speak, hum or clap and the letters swell in weight and width. No microphone? Your cursor works too.</p>
+    </section>
+
+    <section
+      class="lt-stage"
+      id="stage"
+      data-colourway="paper"
+      data-mode="cursor"
+      tabindex="0"
+      role="group"
+      aria-roledescription="type stage"
+      aria-labelledby="stage-name word-text"
+      aria-describedby="stage-keys"
+    >
+      <span class="sr-only" id="stage-name">Type stage:</span>
+      <span class="sr-only" id="word-text">Hello, Bekasi</span>
+      <span class="sr-only" id="stage-keys">Left and right arrow keys move the swell across the letters. Space claps. F freezes.</span>
+
+      <div class="lt-stage__bar">
+        <span class="lt-badge lab-label" id="mode-badge"><span class="lt-badge__dot" aria-hidden="true"></span><span id="mode-badge-text">Cursor</span></span>
+        <span class="lt-badge lt-badge--frozen lab-label" id="frozen-badge" hidden>
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1" fill="currentColor" /><rect x="7" y="1" width="3" height="10" rx="1" fill="currentColor" /></svg>
+          Frozen
+        </span>
+        <div class="lt-listen" id="listen-badge" hidden>
+          <span class="lt-live" aria-hidden="true"></span>
+          <span class="lab-label">Listening</span>
+          <button type="button" class="lt-stop" id="stop-stage">Stop<span class="sr-only"> listening</span></button>
+        </div>
+        <span class="lt-range-note lab-label">wght 200–800 · wdth 75–100</span>
+      </div>
+
+      <div class="lt-wordbox" id="wordbox">
+        <div class="lt-word" id="word" aria-hidden="true">
+          <div class="lt-layer" id="word-fill"></div>
+        </div>
+        <p class="lt-empty lab-label" id="word-empty" hidden>Type a phrase below</p>
+      </div>
+
+      <div class="lt-burst" id="burst" aria-hidden="true"></div>
+      <span class="lt-lens" id="lens" aria-hidden="true"></span>
+      <span class="lt-kb" id="kb-cursor" aria-hidden="true"></span>
+
+      <div class="lt-stage__foot">
+        <p class="lt-hint" id="stage-hint">Move your cursor across the letters. Click to clap.</p>
+        <p class="lt-keys lab-label" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd> swell <kbd>Space</kbd> clap <kbd>F</kbd> freeze</p>
+      </div>
+    </section>
+
+    <section class="lt-controls" aria-label="Controls">
+      <div class="lt-card lt-card--mode" role="group" aria-labelledby="mode-title">
+        <div class="lt-card__head">
+          <h2 class="lt-card__title lab-label" id="mode-title">Mode</h2>
+        </div>
+        <div class="lt-seg">
+          <button type="button" class="lt-seg__btn" data-mode="cursor" aria-pressed="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5 19 11l-6.2 1.6L10 19 5 3.5Z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+            Cursor
+          </button>
+          <button type="button" class="lt-seg__btn" data-mode="mic" aria-pressed="false" aria-describedby="privacy-note">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="8.5" y="3" width="7" height="12" rx="3.5" fill="currentColor" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" /></svg>
+            Microphone
+          </button>
+          <button type="button" class="lt-seg__btn" data-mode="demo" aria-pressed="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M2.5 12c2.4-6 4.8-6 7.1 0s4.8 6 7.2 0 3.5-4.5 4.7-2.6" /></svg>
+            Demo
+          </button>
+        </div>
+        <div class="lt-status-row">
+          <p class="lt-status" id="mic-status" role="status" aria-live="polite">Microphone is off. Cursor mode needs no permissions.</p>
+          <button type="button" class="lab-btn lt-status__stop" data-variant="magenta" id="stop-card" hidden>Stop listening</button>
+        </div>
+        <p class="lt-privacy" id="privacy-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="3" /><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" /></svg>
+          <span>Audio never leaves your device. Nothing is recorded or uploaded.</span>
+        </p>
+      </div>
+
+      <div class="lt-card lt-card--phrase">
+        <div class="lt-card__head">
+          <label class="lt-card__title lab-label" for="phrase">Phrase</label>
+          <span class="lt-count lab-label" id="phrase-count" aria-live="off">13/24</span>
+        </div>
+        <div class="lt-field">
+          <input class="lt-input" id="phrase" name="phrase" type="text" maxlength="24" value="Hello, Bekasi" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-describedby="phrase-help" />
+        </div>
+        <p class="lt-help" id="phrase-help">Up to 24 characters. Each letter becomes one band.</p>
+
+        <div class="lt-card__head lt-card__head--sub">
+          <label class="lt-card__title lab-label" for="sens">Sensitivity</label>
+          <output class="lt-count lab-label" id="sens-out" for="sens">60%</output>
+        </div>
+        <input class="lab-range lt-range" id="sens" name="sensitivity" type="range" min="0" max="100" step="1" value="60" aria-describedby="sens-help" />
+        <p class="lt-help" id="sens-help">Higher reacts to quieter sounds and gives the cursor a wider reach.</p>
+      </div>
+
+      <fieldset class="lt-card lt-card--colour">
+        <legend class="lt-card__title lab-label">Colourway</legend>
+        <div class="lt-pills">
+          <label class="lt-pill">
+            <input class="sr-only" type="radio" name="colourway" value="paper" checked />
+            <span class="lt-swatch" data-swatch="paper" aria-hidden="true">Aa</span>
+            <span>Ink on paper</span>
+          </label>
+          <label class="lt-pill">
+            <input class="sr-only" type="radio" name="colourway" value="ink" />
+            <span class="lt-swatch" data-swatch="ink" aria-hidden="true">Aa</span>
+            <span>Inverted</span>
+          </label>
+          <label class="lt-pill">
+            <input class="sr-only" type="radio" name="colourway" value="magenta" />
+            <span class="lt-swatch" data-swatch="magenta" aria-hidden="true">Aa</span>
+            <span>White on magenta</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="lt-card lt-card--meter">
+        <div class="lt-card__head">
+          <h2 class="lt-card__title lab-label">Level</h2>
+          <span class="lt-readout lab-label" aria-hidden="true"><span id="meter-mode">Cur</span> <span id="meter-level">000</span></span>
+        </div>
+        <div class="lt-screen">
+          <canvas class="lt-meter" id="meter" aria-hidden="true"></canvas>
+        </div>
+        <p class="sr-only">A level meter with one bar per letter.</p>
+      </div>
+
+      <div class="lt-card lt-card--freeze">
+        <div class="lt-card__head">
+          <h2 class="lt-card__title lab-label" id="freeze-title">Freeze frame</h2>
+          <div class="lt-actions">
+            <button type="button" class="lab-btn" data-variant="magenta" id="freeze" aria-pressed="false">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5" /></svg>
+              Freeze
+            </button>
+            <button type="button" class="lab-btn" id="copy" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="3" /><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" /></svg>
+              <span id="copy-label">Copy CSS</span>
+            </button>
+          </div>
+        </div>
+        <p class="lt-help" id="freeze-hint">Freeze to read each letter's weight and width, then copy them as CSS.</p>
+        <ol class="lt-axes" id="axes" aria-labelledby="freeze-title"></ol>
+        <details class="lt-css" id="css-details" hidden>
+          <summary class="lab-label">Show CSS</summary>
+          <pre class="lt-css__code" tabindex="0" aria-label="Frozen CSS"><code id="css-out"></code></pre>
+        </details>
+        <p class="sr-only" id="copy-status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <noscript><p class="lt-noscript">Loud Type needs JavaScript to listen and move.</p></noscript>
+  </main>
+
+  <footer class="lt-foot">
+    <a class="lt-credit" href="https://adelia.cc">Built by Adelia Tiara · adelia.cc</a>
+  </footer>
+</body>
+</html>

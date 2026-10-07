@@ -1,0 +1,2041 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* `dark:` follows the data-theme attribute (set before paint), not the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Tailwind theme: defaults are cleared so only token values can be used.
+ * `inline reference`: utilities read the live custom property (so they follow data-theme).
+ */
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+
+  --default-transition-duration: var(--dur-micro);
+  --default-transition-timing-function: var(--ease-out);
+}
+
+@theme inline reference {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+  --color-glass: var(--glass);
+  --color-glass-strong: var(--glass-strong);
+  --color-cobalt: var(--cobalt);
+  --color-sky: var(--sky);
+  --color-lime: var(--lime);
+  --color-sun: var(--sun);
+  --color-violet: var(--violet);
+  --color-mint: var(--mint);
+  --color-red: var(--red);
+  --color-pink: var(--pink);
+  --color-cyan: var(--cyan);
+  --color-orange: var(--orange);
+  --color-charcoal: var(--charcoal);
+  --color-ok: var(--ok);
+  --color-on-fill: var(--on-fill);
+  --color-on-accent: var(--on-accent);
+  --color-on-cobalt: var(--on-cobalt);
+  --color-on-ink: var(--on-ink);
+  --color-stage-from: var(--stage-from);
+  --color-stage-to: var(--stage-to);
+  --color-term-bg: var(--term-bg);
+  --color-term-ink: var(--term-ink);
+  --color-term-muted: var(--term-muted);
+  --color-term-accent: var(--term-accent);
+  --color-term-link: var(--term-link);
+  --color-term-ok: var(--term-ok);
+  --color-term-warn: var(--term-warn);
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-pixel: var(--font-pixel);
+  --font-mono: var(--font-mono);
+
+  --text-11: var(--text-11);
+  --text-12: var(--text-12);
+  --text-14: var(--text-14);
+  --text-16: var(--text-16);
+  --text-18: var(--text-18);
+  --text-20: var(--text-20);
+  --text-24: var(--text-24);
+  --text-32: var(--text-32);
+  --text-48: var(--text-48);
+  --text-64: var(--text-64);
+  --text-96: var(--text-96);
+  --text-hero: var(--text-hero);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-card: var(--radius-card);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-glow: var(--shadow-glow);
+
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+  --ease-jelly: var(--ease-jelly);
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-optical-sizing: auto;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 96px;
+    hanging-punctuation: first;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-16);
+    line-height: var(--leading-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  @media (width >= 64rem) {
+    body {
+      font-size: var(--text-18);
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.7em;
+    height: 1.7em;
+    padding: 0 0.4em;
+    border-radius: 6px;
+    border: 1px solid var(--glass-line);
+    background: color-mix(in srgb, var(--ink) 6%, transparent);
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 24%, transparent);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  img,
+  svg,
+  canvas {
+    display: block;
+  }
+}
+
+/* ---------- Type utilities (sentence case, tight tracking, Display optical size) ---------- */
+@utility type-hero {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+}
+
+@utility type-display {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5.4vw, 72px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+@utility type-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+
+@utility type-subtitle {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 1.8vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* The small letter-spaced label above a headline ("CASE STUDY", "SELECTED WORK"). */
+@utility type-eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@utility type-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+/* Small caps label: tiny metadata only ("BEKASI · WIB", "STEP 02"). Never more than a few words. */
+@utility type-pixel {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+/* The bitmap face, kept for the LCD clock and the odd easter egg. */
+@utility type-bitmap {
+  font-family: var(--font-pixel);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+@utility type-code {
+  font-family: var(--font-mono);
+  font-size: var(--text-14);
+  letter-spacing: 0;
+  line-height: 1.6;
+  text-transform: none;
+}
+
+@utility type-lead {
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* One word in the brand colour. (Kept as a name for older markup; no gradients anywhere.) */
+@utility iris-text {
+  color: var(--accent);
+}
+
+/* ---------- Layout ---------- */
+@utility container-page {
+  width: 100%;
+  max-width: calc(var(--content-max) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility section-y {
+  padding-block: clamp(96px, 13vw, 176px);
+}
+
+/* ---------- Surfaces ---------- */
+/* The sky: a frame of the live sky shader, saved as an image (public/sky). */
+@utility sky-stage {
+  background-color: var(--stage-from);
+  background-image: var(--sky-image), linear-gradient(180deg, var(--stage-from), var(--stage-to));
+  background-size: cover;
+  background-position: center;
+}
+
+/* Checkerboard, from the ID badges and transparency grids of the references. */
+@utility checker {
+  background-color: var(--check-a);
+  background-image: conic-gradient(var(--check-b) 25%, transparent 0 50%, var(--check-b) 0 75%, transparent 0);
+  background-size: var(--check-size, 16px) var(--check-size, 16px);
+}
+
+/* Scalloped top edge, after the "EMAIL >" bars. */
+@utility scallop-top {
+  --r: var(--scallop, 14px);
+  -webkit-mask:
+    radial-gradient(var(--r) at 50% var(--r), #000 97%, #0000 100%) 0 0 / calc(2 * var(--r)) calc(2 * var(--r)) repeat-x,
+    linear-gradient(#000 0 0) 0 var(--r) / 100% 100% no-repeat;
+  mask:
+    radial-gradient(var(--r) at 50% var(--r), #000 97%, #0000 100%) 0 0 / calc(2 * var(--r)) calc(2 * var(--r)) repeat-x,
+    linear-gradient(#000 0 0) 0 var(--r) / 100% 100% no-repeat;
+  padding-top: var(--r);
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(circle, var(--dot) 1.2px, transparent 1.3px);
+  background-size: 22px 22px;
+}
+
+/* The dashed "stitched" outline from the references. */
+@utility stitched {
+  outline: 1.5px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+  outline-offset: -8px;
+}
+
+/* Frosted glass: translucent white, heavy blur, a light rim and a hairline. */
+@utility glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-line);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    var(--glass-shadow);
+}
+
+@utility glass-strong {
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-line);
+  box-shadow:
+    inset 0 1px 0 var(--glass-edge),
+    var(--glass-shadow);
+}
+
+/* A card: the reference's barely-grey fill and a hairline. Flat on the page. */
+@utility widget {
+  position: relative;
+  min-width: 0;
+  border-radius: 22px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+/* White die-cut sticker edge + soft lift. */
+@utility sticker {
+  box-shadow:
+    0 0 0 4px #ffffff,
+    var(--hard);
+}
+
+/* Visible only when JS is running (the control does nothing without it). */
+@utility js-only {
+  @media (scripting: none) {
+    display: none;
+  }
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  /*
+   * Pill button: frosted glass by default. Primary = magenta (white text on --accent-strong).
+   * The colour variants stay glass and show their colour as a small dot: colour as an accent.
+   */
+  .pill {
+    --pill-bg: var(--surface);
+    --pill-fg: var(--ink);
+    --pill-edge: var(--line);
+    --pill-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    min-height: 44px;
+    padding: 0 1.2em;
+    border-radius: var(--radius-pill);
+    background: var(--pill-bg);
+    color: var(--pill-fg);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--text-16);
+    letter-spacing: -0.005em;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    border: 1px solid var(--pill-edge);
+    box-shadow: var(--pill-shadow);
+    transition:
+      transform var(--dur-micro) var(--ease-out),
+      background-color var(--dur-micro) var(--ease-out),
+      box-shadow var(--dur-short) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pill[data-variant="magenta"] {
+    --pill-bg: var(--accent-strong);
+    --pill-fg: var(--on-accent);
+    --pill-edge: transparent;
+    --pill-shadow: none;
+  }
+
+  .pill[data-variant="ink"] {
+    --pill-bg: var(--ink);
+    --pill-fg: var(--bg);
+    --pill-edge: transparent;
+    --pill-shadow: none;
+  }
+
+  .pill[data-variant="ghost"] {
+    --pill-bg: transparent;
+    --pill-edge: transparent;
+    --pill-shadow: none;
+  }
+
+  .pill[data-variant="cobalt"] {
+    --dot: var(--cobalt);
+  }
+
+  .pill[data-variant="red"] {
+    --dot: var(--red);
+  }
+
+  .pill[data-variant="sun"] {
+    --dot: var(--sun);
+  }
+
+  .pill[data-variant="lime"] {
+    --dot: var(--lime);
+  }
+
+  .pill[data-variant="sky"] {
+    --dot: var(--sky);
+  }
+
+  .pill[data-variant="violet"] {
+    --dot: var(--violet);
+  }
+
+  .pill[data-variant="mint"] {
+    --dot: var(--mint);
+  }
+
+  .pill[data-variant="pink"] {
+    --dot: var(--accent);
+  }
+
+  .pill[data-variant="cobalt"]::before,
+  .pill[data-variant="red"]::before,
+  .pill[data-variant="sun"]::before,
+  .pill[data-variant="lime"]::before,
+  .pill[data-variant="sky"]::before,
+  .pill[data-variant="violet"]::before,
+  .pill[data-variant="mint"]::before,
+  .pill[data-variant="pink"]::before {
+    content: "";
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--dot);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--dot) 22%, transparent);
+  }
+
+  .pill[data-size="sm"] {
+    min-height: 36px;
+    padding: 0 0.95em;
+    font-size: var(--text-14);
+  }
+
+  .pill[data-size="lg"] {
+    min-height: 54px;
+    padding: 0 1.6em;
+    font-size: var(--text-18);
+  }
+
+  .pill[data-shape="icon"] {
+    padding: 0;
+    width: 44px;
+  }
+
+  .pill[data-shape="icon"][data-size="sm"] {
+    width: 36px;
+  }
+
+  .pill[data-shape="icon"]::before {
+    display: none;
+  }
+
+  @media (hover: hover) {
+    .pill:hover {
+      --pill-edge: color-mix(in srgb, var(--ink) 22%, transparent);
+    }
+
+    .pill[data-variant="ghost"]:hover {
+      --pill-bg: color-mix(in srgb, var(--ink) 6%, transparent);
+      --pill-shadow: none;
+    }
+
+    .pill[data-variant="magenta"]:hover {
+      --pill-bg: color-mix(in srgb, var(--accent-strong) 88%, #000);
+      --pill-edge: transparent;
+    }
+
+    .pill[data-variant="ink"]:hover {
+      --pill-bg: color-mix(in srgb, var(--ink) 82%, var(--bg));
+      --pill-edge: transparent;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @media (hover: hover) {
+      .pill:hover {
+        transform: translateY(-1px);
+      }
+    }
+
+    .pill:active {
+      transform: scale(0.97);
+    }
+  }
+
+  .pill:disabled,
+  .pill[aria-disabled="true"] {
+    opacity: 0.45;
+    transform: none;
+  }
+
+  /* Apple-style text link: "Learn more ›" */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2em;
+    color: var(--accent-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .link-arrow::after {
+    content: "›";
+    font-size: 1.2em;
+    line-height: 1;
+    transform: translateY(-0.04em);
+    transition: transform var(--dur-micro) var(--ease-out);
+  }
+
+  .link-arrow:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .link-arrow:hover::after {
+    transform: translate(0.15em, -0.04em);
+  }
+
+  /* Small tag chip: neutral glass, or a soft tint of its tone with a dot. */
+  .chip {
+    --tone: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    min-height: 26px;
+    padding: 0 0.75em;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: var(--text-12);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+  }
+
+  .chip[data-tone] {
+    background: var(--surface);
+  }
+
+  .chip[data-tone]::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--tone);
+  }
+
+  .chip[data-tone="magenta"] {
+    --tone: var(--accent);
+  }
+
+  .chip[data-tone="lime"] {
+    --tone: #8DB800;
+  }
+
+  .chip[data-tone="sun"] {
+    --tone: #F2A900;
+  }
+
+  .chip[data-tone="sky"] {
+    --tone: var(--cobalt);
+  }
+
+  .chip[data-tone="cobalt"] {
+    --tone: var(--cobalt);
+  }
+
+  .chip[data-tone="violet"] {
+    --tone: var(--violet);
+  }
+
+  .chip[data-tone="mint"] {
+    --tone: var(--mint);
+  }
+
+  .chip[data-tone="red"] {
+    --tone: var(--red);
+  }
+
+  .chip[data-tone="ink"] {
+    --tone: var(--ink);
+  }
+
+  /* Highlighted phrase in a headline: one flat brand colour, no effects. */
+  .sticker-text {
+    color: var(--accent);
+  }
+
+  /* Sparkle glyph that twinkles. */
+  .sparkle {
+    display: inline-block;
+    color: var(--sparkle-color, #ffffff);
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--sparkle-color, #ffffff) 70%, transparent));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sparkle[data-twinkle] {
+      animation: twinkle var(--twinkle-dur, 2.8s) var(--ease-in-out) var(--twinkle-delay, 0s) infinite;
+    }
+  }
+
+  /* Live dot. */
+  .live-dot {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--ok);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .live-dot::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: inherit;
+      animation: ping 1.8s var(--ease-out) infinite;
+    }
+  }
+
+  /* Underlined link with a magenta marker that grows on hover. */
+  .link {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.22em;
+    text-decoration-color: color-mix(in srgb, var(--accent) 70%, transparent);
+    transition:
+      text-decoration-thickness var(--dur-micro) var(--ease-out),
+      text-decoration-color var(--dur-micro) var(--ease-out);
+  }
+
+  .link:hover {
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2.5px;
+  }
+
+  /*
+   * Reveal: children fade up the first time they are seen. Hidden only while scripting is on,
+   * so the HTML is readable without JS. A failsafe shows everything after 3s.
+   */
+  @media (scripting: enabled) {
+    [data-reveal] > [data-reveal-item]:not([data-revealed]) {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    [data-reveal]:not([data-reveal-ready]) > [data-reveal-item] {
+      animation: reveal-failsafe 1ms linear 3s forwards;
+    }
+  }
+
+  [data-reveal] > [data-reveal-item] {
+    transition:
+      opacity var(--dur-macro) var(--ease-out),
+      transform var(--dur-macro) var(--ease-out);
+    transition-delay: calc(var(--reveal-i, 0) * 70ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] > [data-reveal-item]:not([data-revealed]) {
+      transform: none;
+      filter: none;
+    }
+
+    [data-reveal] > [data-reveal-item] {
+      transition: opacity var(--dur-reduced) linear;
+    }
+  }
+
+  /* Theme and sound icons follow the <html> attributes, so they are right before hydration. */
+  [data-theme="dark"] .icon-when-light,
+  [data-theme="light"] .icon-when-dark,
+  [data-sound="on"] .icon-when-sound-off,
+  [data-sound="off"] .icon-when-sound-on {
+    display: none;
+  }
+
+  /* Overlay panels shared by palette, terminal, agent, brief. */
+  .scrim {
+    position: fixed;
+    inset: 0;
+    background: color-mix(in srgb, var(--ink) 18%, transparent);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pop-in {
+      animation: pop-in var(--dur-short) var(--ease-out) both;
+    }
+
+    .fade-in {
+      animation: fade-in var(--dur-short) var(--ease-out) both;
+    }
+
+    .slide-up {
+      animation: slide-up var(--dur-short) var(--ease-out) both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pop-in,
+    .fade-in,
+    .slide-up {
+      animation: fade-in var(--dur-reduced) linear both;
+    }
+  }
+}
+
+/* ---------- X-ray mode: shows how the page is built ---------- */
+[data-xray="on"] [data-xr] {
+  outline: 1.5px dashed var(--cobalt) !important;
+  outline-offset: 2px;
+  position: relative;
+}
+
+[data-xray="on"] [data-xr]::after {
+  content: attr(data-xr);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-100%);
+  z-index: 60;
+  padding: 2px 6px;
+  border-radius: 4px 4px 0 0;
+  background: var(--cobalt);
+  color: var(--on-cobalt);
+  font: 600 10px/1.3 var(--font-mono);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+[data-xray="on"] body {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--cobalt) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--cobalt) 10%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ---------- Rave mode (Konami code) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  [data-rave="on"] main {
+    animation: rave-hue 3s linear infinite;
+  }
+}
+
+/* ---------- Custom cursor: hide the native one only where ours is drawn ---------- */
+@media (pointer: fine) {
+  [data-cursor="on"],
+  [data-cursor="on"] a,
+  [data-cursor="on"] button,
+  [data-cursor="on"] [role="button"],
+  [data-cursor="on"] label,
+  [data-cursor="on"] summary {
+    cursor: none;
+  }
+
+  [data-cursor="on"] input,
+  [data-cursor="on"] textarea,
+  [data-cursor="on"] [contenteditable="true"] {
+    cursor: text;
+  }
+}
+
+/* ---------- View transitions between pages ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0s;
+}
+
+::view-transition-group(.card-morph) {
+  animation-duration: 560ms;
+  animation-timing-function: var(--ease-out);
+}
+
+::view-transition-image-pair(.card-morph) {
+  animation-name: via-blur;
+}
+
+::view-transition-old(.page-forward) {
+  animation: 180ms var(--ease-in-out) both vt-fade reverse, 380ms var(--ease-in-out) both vt-slide-left;
+}
+
+::view-transition-new(.page-forward) {
+  animation: 240ms var(--ease-out) 120ms both vt-fade, 420ms var(--ease-out) both vt-slide-from-right;
+}
+
+::view-transition-old(.page-back) {
+  animation: 180ms var(--ease-in-out) both vt-fade reverse, 380ms var(--ease-in-out) both vt-slide-right;
+}
+
+::view-transition-new(.page-back) {
+  animation: 240ms var(--ease-out) 120ms both vt-fade, 420ms var(--ease-out) both vt-slide-from-left;
+}
+
+::view-transition-old(.page-fade) {
+  animation: 160ms var(--ease-out) both vt-fade reverse;
+}
+
+::view-transition-new(.page-fade) {
+  animation: 300ms var(--ease-out) 80ms both vt-fade, 520ms var(--ease-out) both vt-rise;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: var(--dur-reduced) !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes reveal-failsafe {
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(0.6) rotate(0deg);
+    opacity: 0.35;
+  }
+
+  50% {
+    transform: scale(1.1) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(var(--wobble-from, -2deg));
+  }
+
+  50% {
+    transform: rotate(var(--wobble-to, 2deg));
+  }
+}
+
+@keyframes jiggle {
+  0%,
+  100% {
+    transform: rotate(-0.8deg);
+  }
+
+  50% {
+    transform: rotate(0.8deg);
+  }
+}
+
+@keyframes rave-hue {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes via-blur {
+  30% {
+    filter: blur(4px);
+  }
+}
+
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes vt-rise {
+  from {
+    transform: translateY(14px);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes vt-slide-left {
+  to {
+    transform: translateX(-48px);
+  }
+}
+
+@keyframes vt-slide-right {
+  to {
+    transform: translateX(48px);
+  }
+}
+
+@keyframes vt-slide-from-right {
+  from {
+    transform: translateX(48px);
+  }
+}
+
+@keyframes vt-slide-from-left {
+  from {
+    transform: translateX(-48px);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 0% 50%;
+  }
+
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Native dialog shell (palette, terminal, brief, stickers, shortcuts) ---------- */
+.site-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  max-width: min(720px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  width: 100%;
+  overflow: visible;
+}
+
+/* The dialog box itself is not a control: focus rings belong to what's inside it. */
+.site-dialog:focus-visible {
+  outline: none;
+}
+
+.site-dialog[data-placement="top"] {
+  margin-top: min(12vh, 120px);
+}
+
+.site-dialog[data-placement="bottom"] {
+  margin-bottom: 12px;
+  max-width: min(980px, calc(100vw - 24px));
+}
+
+.site-dialog::backdrop {
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-dialog[open] > * {
+    animation: pop-in var(--dur-short) var(--ease-out) both;
+  }
+
+  .site-dialog[data-placement="bottom"][open] > * {
+    animation: slide-up var(--dur-short) var(--ease-out) both;
+  }
+}
+
+/* The custom cursor can't sit above the top layer, so modals get the native cursor back. */
+html:has(dialog:modal) .cursor-layer {
+  display: none;
+}
+
+@media (pointer: fine) {
+  html[data-cursor="on"]:has(dialog:modal),
+  html[data-cursor="on"]:has(dialog:modal) a,
+  html[data-cursor="on"]:has(dialog:modal) button,
+  html[data-cursor="on"]:has(dialog:modal) [role="button"],
+  html[data-cursor="on"]:has(dialog:modal) label {
+    cursor: auto;
+  }
+
+  html[data-cursor="on"]:has(dialog:modal) a,
+  html[data-cursor="on"]:has(dialog:modal) button,
+  html[data-cursor="on"]:has(dialog:modal) [role="option"] {
+    cursor: pointer;
+  }
+}
+
+/* ---------- Theme swap: a circular reveal from the toggle ---------- */
+html[data-theme-swap]::view-transition-old(root) {
+  animation: none;
+}
+
+html[data-theme-swap]::view-transition-new(root) {
+  animation: theme-reveal 700ms var(--ease-in-out) both;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--swap-x, 50%) var(--swap-y, 0%));
+  }
+
+  to {
+    clip-path: circle(150vmax at var(--swap-x, 50%) var(--swap-y, 0%));
+  }
+}
+
+/* ---------- Moci, the small CSS jelly ---------- */
+.moci-avatar__body {
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  background:
+    radial-gradient(60% 42% at 34% 26%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 60%),
+    radial-gradient(90% 80% at 50% 110%, var(--jelly-core) 0%, transparent 60%),
+    radial-gradient(120% 120% at 30% 20%, var(--jelly-light) 0%, var(--accent) 45%, var(--jelly-deep) 100%);
+  box-shadow:
+    inset 0 -4px 10px rgba(80, 0, 60, 0.35),
+    inset 0 2px 0 rgba(255, 255, 255, 0.6),
+    0 6px 16px var(--glow);
+}
+
+.moci-avatar__eyes {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  display: flex;
+  gap: 22%;
+  width: 46%;
+  transform: translateX(-50%);
+  justify-content: center;
+}
+
+.moci-avatar__eyes span {
+  display: block;
+  width: 18%;
+  aspect-ratio: 0.75;
+  min-width: 3px;
+  border-radius: 999px;
+  background: var(--jelly-ink);
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .moci-avatar__eyes span {
+    animation: blink 5.5s infinite;
+  }
+
+  .moci-avatar[data-mood="think"] .moci-avatar__body {
+    animation: wobble 1.2s var(--ease-in-out) infinite;
+    --wobble-from: -5deg;
+    --wobble-to: 5deg;
+  }
+}
+
+.moci-avatar__mouth {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: 16%;
+  height: 8%;
+  transform: translateX(-50%);
+  border-bottom: 2px solid var(--jelly-ink);
+  border-radius: 0 0 999px 999px;
+}
+
+.moci-avatar[data-mood="oops"] .moci-avatar__mouth {
+  top: 64%;
+  height: 10%;
+  border: 2px solid var(--jelly-ink);
+  border-radius: 999px;
+}
+
+/* ---------- Autopilot tour ---------- */
+.tour-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 200;
+  color: var(--ink);
+}
+
+.tour-ghost {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 40px;
+  margin: -3px 0 0 -3px;
+  transition: opacity var(--dur-short) var(--ease-out);
+  will-change: transform;
+}
+
+.tour-ghost__moci {
+  position: absolute;
+  left: 22px;
+  top: 26px;
+}
+
+.tour-ghost__label {
+  position: absolute;
+  left: 52px;
+  top: 34px;
+  padding: 3px 7px;
+  border-radius: 7px;
+  background: var(--accent-strong);
+  color: var(--on-accent);
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.tour-bubble {
+  position: fixed;
+  top: 0;
+  left: 0;
+  max-width: min(320px, calc(100vw - 24px));
+  padding: 12px 16px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
+}
+
+.tour-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(640px, calc(100vw - 24px));
+  padding: 8px 8px 8px 16px;
+  border-radius: var(--radius-pill);
+  pointer-events: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+/* ---------- Jelly cursor ---------- */
+.cursor-layer {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+}
+
+.cursor-dot,
+.cursor-blob {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow: 0 0 0 1.5px var(--surface);
+}
+
+.cursor-blob {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 35%, transparent);
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out),
+    opacity var(--dur-micro) var(--ease-out);
+}
+
+.cursor-blob[data-mode="hover"] {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.cursor-blob[data-mode="hover"][data-label="on"] {
+  background: var(--ink);
+  border-color: transparent;
+}
+
+.cursor-blob[data-mode="text"] {
+  background: var(--accent);
+  border-color: transparent;
+  border-radius: 2px;
+}
+
+.cursor-label {
+  font: 600 11px/1 var(--font-body);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--bg);
+  opacity: 0;
+}
+
+.cursor-blob[data-label="on"] .cursor-label {
+  opacity: 1;
+}
+
+.cursor-spark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  z-index: 191;
+  pointer-events: none;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+}
+
+/* ---------- The dock (primary navigation) ---------- */
+/* In the components layer so responsive utilities (max-sm:hidden …) can still hide items. */
+@layer components {
+.dock {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 24px;
+}
+
+.dock-item {
+  --m: 1;
+  position: relative;
+  display: block;
+  flex: none;
+  border-radius: 28%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dock-item:focus-visible {
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+/* An iOS-style app icon: a squircle with its own colour, a top gloss and a soft drop. */
+.app-icon {
+  --size: 44px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--size) * var(--m, 1));
+  height: calc(var(--size) * var(--m, 1));
+  border-radius: 28%;
+  background: var(--app-bg, var(--surface));
+  color: var(--app-fg, #fff);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(16, 18, 40, 0.12),
+    0 4px 10px rgba(16, 18, 40, 0.1);
+  transition:
+    width 180ms var(--ease-out),
+    height 180ms var(--ease-out),
+    transform var(--dur-micro) var(--ease-out);
+  overflow: hidden;
+}
+
+.app-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 52%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.app-icon > svg {
+  width: 56%;
+  height: 56%;
+}
+
+@media (width < 40rem) {
+  .app-icon {
+    --size: 40px;
+  }
+
+  .dock {
+    gap: 6px;
+    padding: 6px;
+    border-radius: 22px;
+  }
+}
+
+.dock[data-magnify="on"] .app-icon {
+  transition:
+    width 70ms linear,
+    height 70ms linear;
+}
+
+.dock-item:active .app-icon {
+  transform: scale(0.92);
+}
+
+/* The running-app dot under the current page. */
+.dock-dot {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 4px;
+  height: 4px;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.dock-label {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  translate: -50% -4px;
+  padding: 5px 10px;
+  border-radius: 9px;
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-micro) var(--ease-out),
+    translate var(--dur-micro) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .dock-item:hover .dock-label {
+    opacity: 1;
+    translate: -50% 0;
+  }
+}
+
+.dock-item:focus-visible .dock-label {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+.dock-sep {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 30px;
+  margin-inline: 2px;
+  background: var(--glass-line);
+  box-shadow: 1px 0 0 var(--glass-edge);
+}
+
+/* The calendar app icon: weekday in red over a big date, live from Bekasi. */
+.app-icon--calendar {
+  --app-bg: #ffffff;
+  --app-fg: #1d1d1f;
+  align-content: center;
+  gap: 0;
+  line-height: 1;
+}
+
+[data-theme="dark"] .app-icon--calendar {
+  --app-bg: #f5f5f7;
+}
+
+}
+
+/* ---------- Hero ---------- */
+.hero-name {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: 0.92;
+}
+
+.hero-name__letter {
+  --k: 0;
+  display: inline-block;
+  color: color-mix(in oklab, var(--ink), var(--accent) calc(var(--k) * 100%));
+  translate: 0 calc(var(--k) * -0.03em);
+  transition:
+    color 360ms var(--ease-out),
+    translate 360ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-name__letter {
+    animation: rise-in 700ms var(--ease-out) both;
+    animation-delay: calc(var(--i) * 28ms + 80ms);
+  }
+
+  .hero-rise {
+    animation: rise-in 700ms var(--ease-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+}
+
+/* ---------- Resampled headline ---------- */
+.resample-sentence {
+  font-size: clamp(19px, 1.9vw, 26px);
+  font-weight: 450;
+  line-height: 1.5;
+  letter-spacing: -0.018em;
+}
+
+/* A token you can resample: the word in ink with a soft tinted underline in its own colour. */
+.resample-token {
+  --tok: var(--accent);
+  position: relative;
+  display: inline;
+  padding: 0.02em 0.06em;
+  margin: 0 -0.06em;
+  border: 0;
+  border-radius: 0.3em;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    text-decoration-color var(--dur-micro) var(--ease-out);
+}
+
+.resample-token:hover,
+.resample-token[aria-expanded="true"] {
+  background-color: var(--surface-2);
+  text-decoration-color: var(--accent);
+}
+
+/* ---------- The ID badge on its lanyard ---------- */
+.badge-strap {
+  width: 22px;
+  height: var(--strap, 120px);
+  margin: 0 auto;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0 2px, transparent 2px 6px),
+    linear-gradient(90deg, var(--accent-strong), var(--accent));
+  border-radius: 0 0 4px 4px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.badge-clip {
+  width: 40px;
+  height: 46px;
+  margin: -6px auto -16px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f2f2f5, #c9c9d0);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.14),
+    0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.badge-clip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 9px;
+  width: 16px;
+  height: 5px;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: #9a9aa2;
+}
+
+.badge {
+  display: block;
+  width: 224px;
+  perspective: 900px;
+  transform-origin: 50% -30px;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: grab;
+}
+
+.badge:active {
+  cursor: grabbing;
+}
+
+.badge__card {
+  position: relative;
+  display: block;
+  aspect-ratio: 0.74;
+  transform-style: preserve-3d;
+  transition: transform 620ms var(--ease-jelly);
+}
+
+.badge__card[data-flipped="true"] {
+  transform: rotateY(180deg);
+}
+
+.badge__face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 8px;
+  border-radius: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.badge__face--back {
+  transform: rotateY(180deg);
+}
+
+.badge__inner {
+  position: relative;
+  display: block;
+  height: 100%;
+  padding: 14px 14px 12px;
+  border-radius: 21px;
+  color: var(--ink);
+  text-align: left;
+  overflow: hidden;
+}
+
+/* A checker strip across the top of the card: the reference touch, in pastel. */
+.badge__strip {
+  --check-size: 10px;
+  display: block;
+  height: 20px;
+  margin: -14px -14px 12px;
+  opacity: 0.9;
+}
+
+.badge__stat {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 78px;
+  padding: 8px 10px 7px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tone) 26%, transparent);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge__card {
+    transition: none;
+  }
+}
+
+/* ---------- Swipe up to reveal ---------- */
+.reveal {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  height: 100%;
+}
+
+.reveal__under {
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-short) var(--ease-out) 120ms,
+    visibility 0s linear var(--dur-short);
+}
+
+.reveal[data-revealed="true"] .reveal__under {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--dur-short) var(--ease-out) 120ms;
+}
+
+.reveal[data-revealed="true"] .reveal__stack {
+  opacity: 0;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+.reveal__card,
+.reveal__stack {
+  --check-a: color-mix(in srgb, var(--surface) 92%, var(--ink));
+  --check-b: var(--surface);
+  --check-size: 18px;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(100%, 200px);
+  aspect-ratio: 1;
+  height: auto;
+  border-radius: 40px;
+  border: 5px solid var(--surface);
+  box-shadow:
+    inset 0 0 0 1px var(--glass-line),
+    0 12px 30px rgba(16, 18, 40, 0.12);
+}
+
+.reveal__stack--1 {
+  transform: translate(6px, 6px) rotate(4deg);
+}
+
+.reveal__stack--2 {
+  transform: translate(12px, 12px) rotate(8deg);
+}
+
+.reveal__card {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: grab;
+}
+
+.reveal__glyph {
+  font-family: var(--font-display);
+  font-size: 80px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* Pixel sparkle, from the board. */
+.sparkle-px {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background:
+    linear-gradient(#fff 0 0) 50% 0 / 5px 100% no-repeat,
+    linear-gradient(#fff 0 0) 0 50% / 100% 5px no-repeat;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sparkle-px {
+    animation: twinkle 2.6s var(--ease-in-out) infinite;
+    animation-delay: var(--twinkle-delay, 0s);
+  }
+}
+
+/* Scalloped email bar (the footer's last word). */
+.email-bar {
+  --scallop: 12px;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+/* ---------- Widget board edit mode ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .widget-jiggle {
+    animation: jiggle 0.28s ease-in-out infinite;
+    animation-delay: var(--jiggle-delay, 0s);
+  }
+}
+
+.widget-jiggle {
+  outline: 1.5px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 4px;
+}
+
+/* ---------- Holographic trading cards (white glass, iridescent only under the pointer) ---------- */
+.holo-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 50%;
+  --o: 0;
+  --frame: var(--accent);
+  perspective: 1000px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.holo-card[data-tone="cobalt"] {
+  --frame: var(--cobalt);
+}
+
+.holo-card[data-tone="sun"] {
+  --frame: #F2A900;
+}
+
+.holo-card[data-tone="lime"] {
+  --frame: #8DB800;
+}
+
+.holo-card__inner {
+  position: relative;
+  display: flex;
+  height: 100%;
+  padding: 8px;
+  border-radius: 32px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition:
+    transform 500ms var(--ease-out),
+    box-shadow var(--dur-short) var(--ease-out);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.holo-card:hover .holo-card__inner {
+  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+
+.holo-card__face {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 18px;
+  border-radius: 25px;
+}
+
+/* Glare: a soft light where the pointer is. */
+.holo-card__inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.5), transparent 45%);
+  mix-blend-mode: soft-light;
+  opacity: calc(var(--o) * 0.6);
+  transition: opacity 400ms var(--ease-out);
+}
+
+.holo-card:focus-visible {
+  outline: none;
+}
+
+.holo-card:focus-visible .holo-card__inner {
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 6px var(--accent),
+    var(--shadow-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-card__inner {
+    transform: none;
+  }
+}
+
+/* ---------- Gumball capsule: drops out of the chute and rolls to a stop ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .gb-capsule {
+    animation: gb-roll 900ms var(--ease-out) both;
+  }
+}
+
+@keyframes gb-roll {
+  0% {
+    transform: translate(0, -26px);
+    opacity: 0;
+  }
+
+  30% {
+    transform: translate(0, 4px);
+    opacity: 1;
+  }
+
+  45% {
+    transform: translate(4px, -6px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* ---------- Booster pack ---------- */
+.pack {
+  display: none;
+}
+
+@media (scripting: enabled) {
+  html[data-pack="sealed"] .pack {
+    display: grid;
+  }
+
+  html[data-pack="sealed"] .cards-grid,
+  html[data-pack="sealed"] .reseal {
+    display: none;
+  }
+}
+
+.pack__foil {
+  position: relative;
+  width: min(300px, 74vw);
+  aspect-ratio: 5 / 8;
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 60% at 30% 8%, rgba(255, 255, 255, 0.28), transparent 55%),
+    linear-gradient(160deg, #FF4FA6, #D6087A 60%, #A8005F);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  -webkit-mask:
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 16px 51% repeat-x,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 16px 51% repeat-x;
+  mask:
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 16px 51% repeat-x,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 16px 51% repeat-x;
+}
+
+.pack__foil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0) 0 12px, rgba(255, 255, 255, 0.22) 12px 14px);
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pack__foil {
+    animation: float-y 3.6s var(--ease-in-out) infinite;
+  }
+}
+
+/* ---------- Architecture packets ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .arch-packet {
+    display: none;
+  }
+}
+
+/* Tile tones are plain cards now; only the night-console tile (clock) is dark. */
+.tone-lime,
+.tone-pink,
+.tone-sun,
+.tone-sky,
+.tone-accent,
+.tone-red,
+.tone-violet,
+.tone-mint,
+.tone-grey {
+  --tone: transparent;
+}
+
+/* One dark tile per screen at most: the night-console widgets (clock, terminal). */
+.tone-charcoal {
+  --bg: #1C1C1E;
+  --ink: #F5F5F7;
+  --muted: #A1A1A6;
+  --surface: #2C2C2E;
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.1);
+  --glass-line: rgba(255, 255, 255, 0.08);
+  --glass-edge: rgba(255, 255, 255, 0.12);
+  --glass-strong: rgba(255, 255, 255, 0.1);
+  --accent-ink: #FF5FB2;
+  background: rgba(28, 28, 30, 0.88) !important;
+  color: var(--ink);
+}
+

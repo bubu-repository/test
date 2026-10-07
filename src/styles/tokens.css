@@ -1,0 +1,14 @@
+/*
+ * Design tokens for the main site.
+ * The values live in packages/tokens (shared with every *.adelia.cc experiment).
+ * Do not declare tokens here; edit packages/tokens/tokens.css instead.
+ */
+@import "@adelia/tokens/tokens.css";
+
+/* Bind the token font families to the self-hosted next/font faces (see src/lib/fonts.ts). */
+:root {
+  --font-display: var(--font-sans-face);
+  --font-body: var(--font-sans-face);
+  --font-pixel: var(--font-pixel-face);
+  --font-mono: var(--font-mono-face);
+}

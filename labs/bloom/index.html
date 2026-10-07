@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bloom — Adelia Tiara Lab</title>
+  <meta name="description" content="A reaction–diffusion garden. Paint magenta chemicals with your cursor and watch glossy jelly coral, spots and stripes grow on the GPU, live in your browser." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bloom — a reaction–diffusion garden" />
+  <meta property="og:description" content="Paint magenta chemicals with your cursor and watch coral, spots and stripes grow. A Gray–Scott simulation by Adelia Tiara." />
+  <meta property="og:url" content="https://bloom.adelia.cc" />
+  <meta name="twitter:card" content="summary" />
+  <!-- --bg (light); main.js swaps it to the active theme's token -->
+  <meta name="theme-color" content="#FFFFFF" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23F41B8D'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./_shared/lab.css" />
+  <link rel="stylesheet" href="./style.css" />
+  <script src="./_shared/lab.js" data-title="Bloom"></script>
+  <script type="module" src="./main.js"></script>
+</head>
+<body>
+  <main class="bloom" id="main">
+    <header class="intro">
+      <p class="intro__kicker lab-label">Lab · Reaction–diffusion</p>
+      <div class="intro__heading">
+        <h1 class="intro__title">Bloom</h1>
+        <p class="intro__tag">a jelly garden</p>
+      </div>
+      <p class="intro__lead">Paint magenta chemicals with your cursor and watch coral, spots and stripes grow. Every shape here comes from two simple rules, repeated thousands of times a second on your GPU.</p>
+    </header>
+
+    <section class="stage" aria-labelledby="stage-title">
+      <h2 id="stage-title" class="sr-only">Simulation canvas</h2>
+      <div class="stage__frame">
+        <div
+          class="stage__canvas"
+          id="canvas-wrap"
+          tabindex="0"
+          role="application"
+          aria-roledescription="painting canvas"
+          aria-label="Bloom painting canvas"
+          aria-describedby="canvas-help"
+        >
+          <canvas id="bloom-canvas" role="img" aria-label="A reaction–diffusion simulation: magenta jelly patterns growing across a plain background."></canvas>
+          <div class="brush-ring" id="brush-ring" aria-hidden="true"></div>
+
+          <div class="stage__chips" aria-hidden="true">
+            <span class="chip chip--state" id="chip-state"><span class="chip__dot"></span><span id="chip-state-text">Growing</span></span>
+            <span class="chip chip--gen">Gen <span id="chip-gen">0</span></span>
+          </div>
+          <span class="chip chip--recipe" id="chip-recipe" aria-hidden="true">F .0545 · K .0620</span>
+          <span class="chip chip--lowres" id="chip-lowres" aria-hidden="true" hidden>Low-res mode</span>
+
+          <p class="stage__hint" id="stage-hint" aria-hidden="true"><span id="hint-text">Drag to paint</span></p>
+
+          <div class="stage__notice" id="stage-notice" hidden>
+            <p class="lab-label">Heads up</p>
+            <p id="stage-notice-text"></p>
+          </div>
+        </div>
+      </div>
+      <p id="canvas-help" class="sr-only">Arrow keys move the brush ring, hold Shift to move faster. Enter paints a drop; hold Enter while moving to draw a line. Space plays or pauses. E toggles the eraser, S drops random seeds, and the square bracket keys change the brush size. Number keys 1 to 6 pick a recipe.</p>
+    </section>
+
+    <section class="controls lab-panel" aria-labelledby="controls-title">
+      <h2 id="controls-title" class="sr-only">Controls</h2>
+
+      <div class="group">
+        <p class="group__label lab-label" id="presets-label">Recipe</p>
+        <div class="presets" id="presets" role="group" aria-labelledby="presets-label"></div>
+      </div>
+
+      <div class="group group--sliders">
+        <div class="field">
+          <div class="field__row">
+            <label class="field__label" for="brush">Brush size</label>
+            <output class="field__value" id="brush-out" for="brush">18 px</output>
+          </div>
+          <input class="range" type="range" id="brush" min="6" max="60" step="1" value="18" />
+        </div>
+        <div class="field">
+          <div class="field__row">
+            <label class="field__label" for="speed">Speed</label>
+            <output class="field__value" id="speed-out" for="speed">12 steps</output>
+          </div>
+          <input class="range" type="range" id="speed" min="1" max="32" step="1" value="12" />
+        </div>
+      </div>
+
+      <div class="group actions">
+        <button type="button" class="lab-btn action action--play" id="play" data-variant="magenta">
+          <svg class="icon icon--pause" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.5" fill="currentColor"/></svg>
+          <svg class="icon icon--play" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" fill="currentColor"/></svg>
+          <span id="play-label">Pause</span>
+        </button>
+        <button type="button" class="lab-btn action" id="seeds">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="7" cy="7.5" r="2.2"/><circle cx="16.5" cy="6" r="1.6"/><circle cx="12.5" cy="12.5" r="2.6"/><circle cx="6" cy="17" r="1.6"/><circle cx="17.5" cy="17.5" r="2.2"/></svg>
+          Drop seeds
+        </button>
+        <button type="button" class="lab-btn action" id="eraser" aria-pressed="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 21-4.3-4.3a1.5 1.5 0 0 1 0-2.1l10-10a1.5 1.5 0 0 1 2.1 0l5.6 5.6a1.5 1.5 0 0 1 0 2.1L12 21"/><path d="M7 21h14"/><path d="m5.5 12.5 6 6"/></svg>
+          Eraser
+        </button>
+        <button type="button" class="lab-btn action" id="clear">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+          Clear
+        </button>
+        <button type="button" class="lab-btn action" id="snapshot">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.2l1.1-1.6A1 1 0 0 1 9.6 4h4.8a1 1 0 0 1 .8.4L16.3 6h1.2A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5Z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+          Snapshot<span class="sr-only">, download a PNG</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="about lab-panel" aria-labelledby="about-title">
+      <h2 class="panel__title" id="about-title">What is this?</h2>
+      <p>Bloom runs the <strong>Gray–Scott model</strong>: two imaginary chemicals, A and B, spread across a grid. A is poured in everywhere at a steady <em>feed</em> rate, B eats A to make more of itself, and B is removed at a steady <em>kill</em> rate. Because A spreads twice as fast as B, tiny bumps snowball into coral, spots and stripes, and nudging feed or kill by a thousandth grows a completely different garden.</p>
+
+      <div class="recipe">
+        <svg class="recipe__map" id="recipe-map" viewBox="0 0 132 112" role="img" aria-labelledby="recipe-map-title">
+          <title id="recipe-map-title">Feed and kill map of all recipes</title>
+        </svg>
+        <div class="recipe__text">
+          <p class="lab-label recipe__label">This recipe</p>
+          <p class="recipe__name" id="recipe-name">Coral</p>
+          <p class="recipe__values" id="recipe-values"><span>feed 0.0545</span><span>kill 0.0620</span></p>
+          <p class="recipe__blurb" id="recipe-blurb"></p>
+        </div>
+      </div>
+      <p class="about__tech"><span class="lab-label">Engine</span> <span id="engine-label">Starting…</span></p>
+    </section>
+
+    <section class="keys lab-panel" aria-labelledby="keys-title">
+      <h2 class="panel__title" id="keys-title">Keyboard</h2>
+      <p class="keys__intro">No mouse needed: focus the canvas (Tab) and paint with the keys.</p>
+      <dl class="keys__list">
+        <div><dt><kbd>Space</kbd></dt><dd>Play or pause</dd></div>
+        <div><dt><kbd>1</kbd>–<kbd>6</kbd></dt><dd>Pick a recipe</dd></div>
+        <div><dt><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd></dt><dd>Move the brush ring (Shift for bigger steps)</dd></div>
+        <div><dt><kbd>Enter</kbd></dt><dd>Paint a drop; hold it while moving to draw</dd></div>
+        <div><dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Smaller or bigger brush</dd></div>
+        <div><dt><kbd>E</kbd></dt><dd>Toggle the eraser</dd></div>
+        <div><dt><kbd>S</kbd></dt><dd>Drop random seeds</dd></div>
+      </dl>
+      <p class="keys__note">Canvas-only keys work while the canvas has focus. Space works anywhere except on buttons and form fields.</p>
+    </section>
+
+  </main>
+
+  <footer class="credit">
+    <span class="credit__mark" aria-hidden="true"></span>
+    Built by Adelia Tiara · <a href="https://adelia.cc">adelia.cc</a>
+  </footer>
+
+  <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
