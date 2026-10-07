@@ -359,14 +359,14 @@ export function HeroDevice() {
 
         <div className="[grid-area:go]">
           {dest.href.startsWith("#") ? (
-            <a href={dest.href} className="pill w-full justify-between" data-variant="magenta" data-size="lg" data-cursor="Go">
+            <a href={dest.href} className="pill w-full justify-between px-5" data-variant="magenta" data-size="lg" data-cursor="Go">
               {dest.key}
-              <ArrowRightIcon width={20} height={20} />
+              <ArrowRightIcon width={20} height={20} className="shrink-0" />
             </a>
           ) : (
-            <Link href={dest.href} className="pill w-full justify-between" data-variant="magenta" data-size="lg" data-cursor="Go" data-tour="go">
+            <Link href={dest.href} className="pill w-full justify-between px-5" data-variant="magenta" data-size="lg" data-cursor="Go" data-tour="go">
               {dest.key}
-              <ArrowRightIcon width={20} height={20} />
+              <ArrowRightIcon width={20} height={20} className="shrink-0" />
             </Link>
           )}
         </div>
