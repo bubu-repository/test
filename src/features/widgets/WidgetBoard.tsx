@@ -8,11 +8,12 @@ import { readJSON, writeJSON } from "@/lib/storage";
 import { createStore, useStore } from "@/lib/store";
 import { ui, useUI, type Lens } from "@/lib/ui";
 import { RevealCard } from "../hero/RevealCard";
+import { FindTimeWidget, KeycapsWidget, WorkspaceWidget } from "./demos";
 import { AskWidget, GameWidget, LabWidget, NowWidget, OverlapWidget } from "./widgets";
 
-type WidgetId = "now" | "overlap" | "ask" | "reveal" | "lab" | "game";
+type WidgetId = "now" | "overlap" | "ask" | "reveal" | "lab" | "game" | "findtime" | "workspace" | "keys";
 
-/** Six calm widgets: plain cards, except the weather tile, which carries the live sky. */
+/** Nine widgets: live data, Moci, the lab and the game, plus three playable UI demos (after marco.fyi). */
 const WIDGETS: Record<WidgetId, { label: string; Component: ComponentType; span: string; tone?: string }> = {
   now: { label: "Bekasi now", Component: NowWidget, span: "sm:col-span-1 lg:col-span-4" },
   overlap: { label: "Working hours overlap", Component: OverlapWidget, span: "sm:col-span-1 lg:col-span-4", tone: "tone-sky" },
@@ -20,18 +21,21 @@ const WIDGETS: Record<WidgetId, { label: string; Component: ComponentType; span:
   reveal: { label: "Availability", Component: RevealCard, span: "sm:col-span-1 lg:col-span-4" },
   lab: { label: "The lab", Component: LabWidget, span: "sm:col-span-1 lg:col-span-4", tone: "tone-violet" },
   game: { label: "Context Window", Component: GameWidget, span: "sm:col-span-2 lg:col-span-4", tone: "tone-lime" },
+  findtime: { label: "Find a time", Component: FindTimeWidget, span: "sm:col-span-1 lg:col-span-4" },
+  workspace: { label: "Workspaces", Component: WorkspaceWidget, span: "sm:col-span-1 lg:col-span-4" },
+  keys: { label: "Keyboard", Component: KeycapsWidget, span: "sm:col-span-2 lg:col-span-4" },
 };
 
-const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "reveal", "lab", "game"];
+const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "findtime", "workspace", "keys", "reveal", "lab", "game"];
 
 const LENSES: { id: Lens; label: string; order: WidgetId[] }[] = [
-  { id: "recruiter", label: "Recruiter", order: ["reveal", "ask", "overlap", "now", "lab", "game"] },
-  { id: "engineer", label: "Engineer", order: ["ask", "lab", "game", "now", "overlap", "reveal"] },
-  { id: "designer", label: "Designer", order: ["lab", "reveal", "game", "ask", "now", "overlap"] },
-  { id: "curious", label: "Just curious", order: ["game", "lab", "reveal", "ask", "now", "overlap"] },
+  { id: "recruiter", label: "Recruiter", order: ["findtime", "reveal", "ask", "overlap", "workspace", "now", "keys", "lab", "game"] },
+  { id: "engineer", label: "Engineer", order: ["workspace", "ask", "lab", "keys", "game", "now", "overlap", "findtime", "reveal"] },
+  { id: "designer", label: "Designer", order: ["lab", "keys", "reveal", "workspace", "game", "ask", "now", "overlap", "findtime"] },
+  { id: "curious", label: "Just curious", order: ["game", "keys", "lab", "reveal", "ask", "now", "overlap", "workspace", "findtime"] },
 ];
 
-const KEY = "adelia:widgets:v2";
+const KEY = "adelia:widgets:v3";
 
 function valid(order: unknown): order is WidgetId[] {
   return Array.isArray(order) && order.length === DEFAULT_ORDER.length && DEFAULT_ORDER.every((id) => order.includes(id));

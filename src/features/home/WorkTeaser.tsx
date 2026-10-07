@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { projects } from "@/content/projects";
 import { HoloCard } from "../work/HoloCard";
+import { ProjectIcon } from "../work/ProjectIcon";
 
-/** Home: the three case studies as calm glass cards, with plenty of air around them. */
+/** Home: the three case studies as cards, with the app icons tucked into the headline (after Ossai). */
 export function WorkTeaser() {
   return (
     <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y" data-xr="WorkTeaser · the three cards">
@@ -10,7 +11,19 @@ export function WorkTeaser() {
         <div className="max-w-[44rem]">
           <p className="type-eyebrow">Selected work</p>
           <h2 id="work-teaser-title" className="type-display mt-3">
-            Three products, shipped <span className="sticker-text">end to end</span>.
+            Three{" "}
+            <span className="whitespace-nowrap">
+              products
+              <span className="inline-icons" aria-hidden="true">
+                {projects.map((p, i) => (
+                  <span key={p.slug} style={{ ["--i" as string]: i }}>
+                    <ProjectIcon project={p} size={52} />
+                  </span>
+                ))}
+              </span>
+              ,
+            </span>{" "}
+            shipped <span className="sticker-text">end to end</span>.
           </h2>
         </div>
         <div className="max-w-[36ch] pb-2">

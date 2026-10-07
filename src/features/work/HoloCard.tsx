@@ -62,8 +62,15 @@ export function HoloCard({ project, total, morph = true, level = 2 }: { project:
             <p className="mt-1.5 text-14 text-muted">
               {project.kind} · {project.year}
             </p>
-            <div className="mt-5 aspect-[4/3] overflow-hidden rounded-[18px]">
-              <ProjectMockup project={project} />
+            <div className="relative mt-5">
+              <div className="aspect-[4/3] overflow-hidden rounded-[18px]">
+                <ProjectMockup project={project} />
+              </div>
+              {/* A proof badge floating over the screenshot (after Finansiologi's annotated mockups). */}
+              <span className="proof-badge" aria-hidden="true">
+                <span className="led" />
+                {project.stats[1].value} {project.stats[1].label.toLowerCase()}
+              </span>
             </div>
             <p className="mt-5 text-16 leading-snug">{project.tagline}</p>
             <dl className="mt-auto grid grid-cols-3 divide-x divide-line pt-6">

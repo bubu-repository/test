@@ -2845,6 +2845,189 @@ html[data-theme-swap]::view-transition-new(root) {
   color: var(--ink);
 }
 
+/* App icons tucked into a headline, overlapping like a little stack. */
+.inline-icons {
+  display: inline-flex;
+  vertical-align: -0.12em;
+  margin: 0 0.02em 0 0.18em;
+}
+
+.inline-icons > span {
+  display: inline-block;
+  margin-left: -14px;
+  rotate: calc((var(--i) - 1) * 7deg);
+  transition: rotate 300ms var(--ease-jelly), translate 300ms var(--ease-jelly);
+}
+
+.inline-icons > span:first-child {
+  margin-left: 0;
+}
+
+.inline-icons:hover > span {
+  translate: calc((var(--i) - 1) * 8px) -4px;
+}
+
+@media (max-width: 640px) {
+  .inline-icons {
+    zoom: 0.7;
+  }
+}
+
+/* A proof badge floating over a product screenshot. */
+.proof-badge {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--sheen), var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  box-shadow: var(--bevel), var(--lift);
+  rotate: 3deg;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .proof-badge {
+    animation: float-y 4.2s var(--ease-in-out) infinite;
+  }
+}
+
+/* ---------- Playable UI demos in the widget board (after marco.fyi) ---------- */
+.demo-corner {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--sheen), var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  box-shadow: var(--bevel), var(--lift-sm);
+  transition:
+    color var(--dur-micro) var(--ease-out),
+    transform 120ms var(--ease-out);
+}
+
+.demo-corner:hover {
+  color: var(--accent-ink);
+  transform: translate(1px, -1px);
+}
+
+.demo-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  box-shadow: var(--recess);
+}
+
+.demo-bar:focus-within {
+  box-shadow:
+    var(--recess),
+    0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.demo-bar__mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--accent-strong);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.demo-option {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: var(--text-14);
+  cursor: pointer;
+}
+
+.demo-option--on {
+  background: linear-gradient(180deg, #ff4fa8, var(--accent-strong) 80%);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 2px 0 #8f0050;
+}
+
+.demo-tab {
+  flex: none;
+  min-width: 132px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  text-align: left;
+  background: var(--sheen), var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  box-shadow: var(--bevel), var(--lift-sm);
+  transition:
+    transform 120ms var(--ease-out),
+    box-shadow 120ms var(--ease-out);
+}
+
+.demo-tab--on {
+  transform: translateY(1px);
+  background: var(--surface-2);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow:
+    var(--recess),
+    0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* A keycap: sculpted top, deep edge; it travels down when you press the real key. */
+.keycap {
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 9px;
+  border-radius: 10px;
+  font: 600 16px/1 var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(90% 70% at 50% 35%, color-mix(in srgb, var(--surface) 100%, #fff 30%), var(--surface) 70%),
+    var(--surface);
+  border: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -3px 0 color-mix(in srgb, var(--line) 70%, transparent),
+    0 4px 0 color-mix(in srgb, var(--line) 90%, #000 12%),
+    0 6px 10px rgba(40, 34, 24, 0.18);
+  transition:
+    transform 70ms var(--ease-out),
+    box-shadow 70ms var(--ease-out);
+}
+
+.keycap--space {
+  height: 44px;
+}
+
+.keycap:active,
+.keycap[data-down="true"] {
+  transform: translateY(4px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 color-mix(in srgb, var(--line) 70%, transparent),
+    0 0 0 color-mix(in srgb, var(--line) 90%, #000 12%),
+    0 1px 3px rgba(40, 34, 24, 0.2);
+  color: var(--accent-ink);
+}
+
 /* ---------- Widget board edit mode ---------- */
 @media (prefers-reduced-motion: no-preference) {
   .widget-jiggle {
