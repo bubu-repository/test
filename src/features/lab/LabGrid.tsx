@@ -25,7 +25,7 @@ function SubdomainCard({ item }: { item: Extract<LabItem, { where: "subdomain" }
               sfx.pop();
               setPreview(true);
             }} className="group absolute inset-0 grid place-items-center" aria-label={`Load a live preview of ${item.name}`} data-cursor="Preview">
-            <span aria-hidden="true" className="absolute inset-0 opacity-70" style={{ background: `radial-gradient(70% 90% at 30% 20%, color-mix(in srgb, var(--${item.tone}) 26%, transparent), transparent 70%), radial-gradient(60% 80% at 80% 90%, color-mix(in srgb, var(--violet) 16%, transparent), transparent 70%)` }} />
+            <span aria-hidden="true" className="absolute inset-0 opacity-70" style={{ background: `radial-gradient(70% 90% at 30% 20%, color-mix(in srgb, var(--${item.tone === "magenta" ? "accent" : item.tone}) 26%, transparent), transparent 70%), radial-gradient(60% 80% at 80% 90%, color-mix(in srgb, var(--violet) 16%, transparent), transparent 70%)` }} />
             <span className="relative grid justify-items-center gap-4">
               <AppIcon tone={item.tone} size={88} className="transition-transform duration-300 group-hover:scale-105">
                 {labGlyph(item.slug)}

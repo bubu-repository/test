@@ -15,7 +15,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 const DOT: Record<string, string> = {
-  magenta: "bg-magenta",
+  magenta: "bg-accent",
   cobalt: "bg-cobalt",
   lime: "bg-lime",
   sun: "bg-sun",

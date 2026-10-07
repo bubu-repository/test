@@ -79,7 +79,7 @@ export const labItems: LabItem[] = [
     name: "Magenta Machine",
     where: "subdomain",
     subdomain: "palette",
-    blurb: "A palette generator that starts from #F41B8D and never lets you ship a colour pair that fails contrast. Exports CSS tokens.",
+    blurb: "A palette generator that starts from #FF3F86 and never lets you ship a colour pair that fails contrast. Exports CSS tokens.",
     tags: ["Tool", "Data"],
     tone: "lime",
     year: "2026",

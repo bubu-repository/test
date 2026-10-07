@@ -72,8 +72,8 @@ const G = {
 const TINT = {
   work: "linear-gradient(180deg, #6CC4FF, #2F7BFF)",
   lab: "linear-gradient(180deg, #C4A8FF, #8B5CF6)",
-  about: "linear-gradient(180deg, #8CE6F5, #12A8CC)",
-  guestbook: "linear-gradient(180deg, #8EF0DE, #14B8A6)",
+  about: "linear-gradient(180deg, #FFE680, #FFC21F)",
+  guestbook: "linear-gradient(180deg, #5BD98A, #15803D)",
   contact: "linear-gradient(180deg, #C2CAFF, #6D7CF5)",
   moci: "radial-gradient(45% 35% at 32% 26%, rgba(255, 255, 255, 0.95), transparent 70%), radial-gradient(130% 120% at 50% 100%, #4DB3FF 0%, #BFE3FF 55%, #F4FAFF 100%)",
   grey: "linear-gradient(180deg, #F8FBFF, #DCE6F2)",
@@ -243,7 +243,7 @@ export function SiteNav() {
         <DockItem href="/lab" label="Lab" bg={TINT.lab} active={isActive(pathname, "/lab")} tour="nav-lab">
           <Glyph>{G.sparkles}</Glyph>
         </DockItem>
-        <DockItem href="/about" label="About" bg={TINT.about} active={isActive(pathname, "/about")} tour="nav-about">
+        <DockItem href="/about" label="About" bg={TINT.about} fg="#D81B60" active={isActive(pathname, "/about")} tour="nav-about">
           <Glyph>{G.heart}</Glyph>
         </DockItem>
         <DockItem href="/guestbook" label={count > 1 ? `Guestbook · ${count} here now` : "Guestbook"} bg={TINT.guestbook} active={isActive(pathname, "/guestbook")} tour="nav-guestbook" className="max-sm:hidden">

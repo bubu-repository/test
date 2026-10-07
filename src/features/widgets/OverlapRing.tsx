@@ -21,7 +21,7 @@ function arc(r: number, startH: number, endH: number) {
 
 /**
  * A 24-hour ring in the visitor's local time: Adelia's working day (magenta, outer),
- * the visitor's 9–18 (violet, inner) and where they overlap (lime).
+ * the visitor's 9–18 (cobalt, inner) and where they overlap (lime).
  */
 export function OverlapRing() {
   const zone = useVisitorZone();
@@ -49,7 +49,7 @@ export function OverlapRing() {
         {state && (
           <>
             <path d={arc(R_OUT, state.o.hersInYours.start, state.o.hersInYours.end)} fill="none" stroke="var(--accent)" strokeWidth="18" strokeLinecap="round" />
-            <path d={arc(R_IN, 9, 18)} fill="none" stroke="var(--violet)" strokeWidth="12" strokeLinecap="round" />
+            <path d={arc(R_IN, 9, 18)} fill="none" stroke="var(--cobalt)" strokeWidth="12" strokeLinecap="round" />
             {state.o.ranges.map((r, i) => (
               <path key={i} d={arc(R_OUT, r.start, r.end)} fill="none" stroke="var(--lime)" strokeWidth="8" strokeLinecap="round" />
             ))}
@@ -75,7 +75,7 @@ export function OverlapRing() {
               Adelia: {formatHour(state.o.hersInYours.start)}–{formatHour(state.o.hersInYours.end)} your time
             </li>
             <li className="flex items-center gap-2">
-              <span className="size-2.5 shrink-0 rounded-full bg-violet" aria-hidden="true" />
+              <span className="size-2.5 shrink-0 rounded-full bg-cobalt" aria-hidden="true" />
               You ({zoneCity(state.zone)}): 09:00–18:00
             </li>
             {state.o.ranges.length > 0 && (

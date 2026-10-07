@@ -37,31 +37,33 @@ export function SiteFooter() {
 
   return (
     <footer id="contact" className="mt-auto scroll-mt-20" data-xr="SiteFooter · live clocks + one-click email">
-      <div className="container-page grid items-center gap-16 pt-24 pb-4 md:pt-32 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-24">
-        <div className="text-center lg:text-left">
-          <p className="type-eyebrow">Say hello</p>
-          <h2 className="type-display mx-auto mt-4 max-w-[15ch] lg:mx-0">
-            Let&apos;s build something people <span className="sticker-text">actually</span> use.
-          </h2>
-          <p className="mx-auto mt-5 max-w-[46ch] text-muted lg:mx-0">{bio.availability} Replies within a day.</p>
-          <p className="mt-6">
-            <a href={`mailto:${identity.email}`} className="link text-[clamp(20px,2.2vw,28px)] font-semibold tracking-[-0.015em] break-all">
-              {identity.email}
-            </a>
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-            <CopyEmail size="lg" tour />
-            <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill" data-size="lg">
-              <DownloadIcon width={18} height={18} /> Download CV
-            </a>
-            <button type="button" className="link-arrow js-only ml-1 text-16" onClick={() => dispatch({ type: "open", panel: "brief" })}>
-              The 40-second brief
-            </button>
+      <div className="footer-sky">
+        <div className="container-page grid items-center gap-16 pt-24 pb-14 md:pt-32 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-24">
+          <div className="text-center lg:text-left">
+            <p className="type-eyebrow">Say hello</p>
+            <h2 className="type-display mx-auto mt-4 max-w-[15ch] lg:mx-0">
+              Let&apos;s build something people <span className="sticker-text">actually</span> use.
+            </h2>
+            <p className="mx-auto mt-5 max-w-[46ch] text-muted lg:mx-0">{bio.availability} Replies within a day.</p>
+            <p className="mt-6">
+              <a href={`mailto:${identity.email}`} className="link text-[clamp(20px,2.2vw,28px)] font-semibold tracking-[-0.015em] break-all">
+                {identity.email}
+              </a>
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+              <CopyEmail size="lg" tour />
+              <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill" data-size="lg">
+                <DownloadIcon width={18} height={18} /> Download CV
+              </a>
+              <button type="button" className="link-arrow js-only ml-1 text-16" onClick={() => dispatch({ type: "open", panel: "brief" })}>
+                The 40-second brief
+              </button>
+            </div>
           </div>
-        </div>
-        {/* The 24:QW poster, taped up next to the email: tap its strip to copy the address. */}
-        <div className="mx-auto rotate-[3deg] lg:mx-0">
-          <Poster />
+          {/* The 24:QW poster, taped up next to the email: tap its strip to copy the address. */}
+          <div className="mx-auto rotate-[3deg] lg:mx-0">
+            <Poster />
+          </div>
         </div>
       </div>
 

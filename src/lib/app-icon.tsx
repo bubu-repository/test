@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 
 const bold = readFile(join(process.cwd(), "node_modules/@fontsource/bricolage-grotesque/files/bricolage-grotesque-latin-700-normal.woff"));
 
-/** The dock's home icon: a white squircle with "a." and the blue dot. */
+/** The dock's home icon: a white squircle with "a." and the magenta dot. */
 export async function renderAppIcon(size: number) {
   return new ImageResponse(
     (
@@ -24,7 +24,7 @@ export async function renderAppIcon(size: number) {
           color: "#111111",
         }}
       >
-        a<span style={{ color: "#1E9BE0" }}>.</span>
+        a<span style={{ color: "#FF3F86" }}>.</span>
       </div>
     ),
     { width: size, height: size, fonts: [{ name: "Bricolage", data: await bold, weight: 700, style: "normal" }] },
