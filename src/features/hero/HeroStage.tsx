@@ -10,7 +10,13 @@ import { MociBubble } from "./MociBubble";
  */
 export function HeroStage({ children }: { children: ReactNode }) {
   return (
-    <section id="hero" aria-labelledby="hero-name" data-tilt-zone className="hero-stage relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-28 pb-14 sm:px-6 md:pt-32" data-xr="HeroStage · one glass device on the sky, tilting toward the pointer">
+    <section
+      id="hero"
+      aria-labelledby="hero-name"
+      data-tilt-zone
+      className="hero-stage relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-28 pb-14 sm:px-6 md:pt-32"
+      data-xr="HeroStage · one glass device on the sky, tilting toward the pointer"
+    >
       <SkyBackdrop />
       <HeroScreens />
       <div className="relative w-full max-w-[600px]" data-tilt>

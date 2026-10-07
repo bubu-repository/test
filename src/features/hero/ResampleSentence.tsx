@@ -180,10 +180,7 @@ function Token({ slot, choice, onChoose, first, color }: { slot: Slot; choice: n
                   wrapRef.current?.querySelector("button")?.focus();
                 }
               }}
-              className={cn(
-                "flex cursor-pointer items-center gap-2 rounded-xs px-2 py-1.5 outline-none hover:bg-surface-2 focus-visible:bg-surface-2",
-                i === choice && "font-semibold",
-              )}
+              className={cn("flex cursor-pointer items-center gap-2 rounded-xs px-2 py-1.5 outline-none hover:bg-surface-2 focus-visible:bg-surface-2", i === choice && "font-semibold")}
             >
               <span className="min-w-0 flex-1 truncate">{o.text}</span>
               <span aria-hidden="true" className="h-2 w-16 overflow-hidden rounded-pill bg-surface-2">

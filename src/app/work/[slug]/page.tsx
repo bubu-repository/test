@@ -116,6 +116,29 @@ function Cover({ project }: { project: Project }) {
           <dd className="mt-0.5 max-w-[80ch] text-16">{project.status}</dd>
         </div>
       </dl>
+      <div className="case-receipts" aria-labelledby={`receipts-${project.slug}`}>
+        <p id={`receipts-${project.slug}`} className="type-pixel text-muted">
+          Check the receipts
+        </p>
+        <ul>
+          {project.evidence.map((e) => (
+            <li key={e.label}>
+              {e.href ? (
+                <a href={e.href} target="_blank" rel="noopener noreferrer" className="case-receipt">
+                  <span className="font-semibold">{e.label} ↗</span>
+                  <span className="text-12 text-muted">{e.note}</span>
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              ) : (
+                <span className="case-receipt" data-static="">
+                  <span className="font-semibold">{e.label}</span>
+                  <span className="text-12 text-muted">{e.note}</span>
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
@@ -124,6 +147,10 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
+  // Short cases skip the wireframe rounds, the raw notes and the states grid, so the four cases don't read as one template.
+  const full = project.depth === "full";
+  const steps = full ? STEPS : STEPS.filter((s) => s.id !== "iterations");
+  const no = (id: string) => steps.findIndex((s) => s.id === id) + 1;
   const { prev, next } = adjacentProjects(project.slug);
   const i = projects.findIndex((p) => p.slug === project.slug) + 1;
   const wires: ComponentType[] = WIRES[project.slug] ?? [];
@@ -133,12 +160,12 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
       {/* CONTOH — ganti dengan data asli (all copy comes from src/content/projects.ts, the screens from features/screens) */}
       <CaseStudyShell project={project} next={next} index={i} total={projects.length} cover={<Cover project={project} />}>
         <div className="container-page grid gap-10 py-16 md:py-24 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20">
-          <TraceRail steps={STEPS} slug={project.slug} />
+          <TraceRail steps={steps} slug={project.slug} />
 
           <article id="case-body" className="min-w-0 space-y-24 md:space-y-36">
             {/* 01 Problem */}
             <section id="problem" aria-labelledby="problem-title" className="scroll-mt-28">
-              <SectionHead index={1} eyebrow="Problem" title="The problem" id="problem" />
+              <SectionHead index={no("problem")} eyebrow="Problem" title="The problem" id="problem" />
               <figure className="widget relative max-w-[640px] p-5 md:p-6">
                 <blockquote className="text-24 leading-snug font-semibold tracking-[-0.02em] md:text-32">“{project.prompt}”</blockquote>
                 <figcaption className="mt-3 text-14 text-muted">— {project.promptBy}</figcaption>
@@ -160,7 +187,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
 
             {/* 02 Role */}
             <section id="role" aria-labelledby="role-title" className="scroll-mt-28">
-              <SectionHead index={2} eyebrow="Role" title="My role" id="role" />
+              <SectionHead index={no("role")} eyebrow="Role" title="My role" id="role" />
               <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
                 <div className="space-y-3 text-18">
                   <p className="text-24 font-bold tracking-[-0.025em]">{project.role.title}</p>
@@ -204,7 +231,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
 
             {/* 03 Research */}
             <section id="research" aria-labelledby="research-title" className="scroll-mt-28">
-              <SectionHead index={3} eyebrow="Research" title="What I learned in the field" id="research" />
+              <SectionHead index={no("research")} eyebrow="Research" title="What I learned in the field" id="research" />
               <ul className="grid gap-3 md:grid-cols-3">
                 {project.research.methods.map((m) => (
                   <li key={m.label} className="widget p-5">
@@ -226,26 +253,28 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   </li>
                 ))}
               </ol>
-              <figure className="case-board mt-12">
-                <figcaption className="text-14 text-muted">
-                  <span className="type-pixel mr-2 text-ink">Raw notes</span>
-                  {project.artifact.title}
-                </figcaption>
-                <div className="case-board__cols">
-                  {project.artifact.clusters.map((c, k) => (
-                    <section key={c.label} className="case-board__col" data-k={k}>
-                      <h3 className="case-board__label">{c.label}</h3>
-                      <ul className="case-board__notes">
-                        {c.notes.map((n) => (
-                          <li key={n} className="case-note">
-                            {n}
-                          </li>
-                        ))}
-                      </ul>
-                    </section>
-                  ))}
-                </div>
-              </figure>
+              {full && (
+                <figure className="case-board mt-12">
+                  <figcaption className="text-14 text-muted">
+                    <span className="type-pixel mr-2 text-ink">Raw notes</span>
+                    {project.artifact.title}
+                  </figcaption>
+                  <div className="case-board__cols">
+                    {project.artifact.clusters.map((c, k) => (
+                      <section key={c.label} className="case-board__col" data-k={k}>
+                        <h3 className="case-board__label">{c.label}</h3>
+                        <ul className="case-board__notes">
+                          {c.notes.map((n) => (
+                            <li key={n} className="case-note">
+                              {n}
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    ))}
+                  </div>
+                </figure>
+              )}
               <p className="mt-10 flex max-w-[72ch] gap-3 rounded-[20px] border border-line px-5 py-4 text-14 text-muted">
                 <span className="type-pixel shrink-0 pt-0.5 text-ink">Consent &amp; data</span>
                 {project.research.ethics}
@@ -254,7 +283,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
 
             {/* 04 Decisions */}
             <section id="decisions" aria-labelledby="decisions-title" className="scroll-mt-28">
-              <SectionHead index={4} eyebrow="Decisions" title="The decisions that shaped it" id="decisions" lead="What I considered, what I chose, why, and what it cost." />
+              <SectionHead index={no("decisions")} eyebrow="Decisions" title="The decisions that shaped it" id="decisions" lead="What I considered, what I chose, why, and what it cost." />
               <ol className="space-y-5">
                 {project.decisions.map((d, n) => (
                   <li key={d.title} className="widget p-6 md:p-8">
@@ -339,49 +368,65 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
               </ol>
             </section>
 
-            {/* 05 Iterations */}
-            <section id="iterations" aria-labelledby="iterations-title" className="scroll-mt-28">
-              <SectionHead index={5} eyebrow="Iterations" title="Three rounds of the key screen" id="iterations" lead="Wireframes from each round of testing, and what people did with them." />
-              <ol className="case-rounds">
-                {project.iterations.map((it, n) => {
-                  const Wire = wires[n];
-                  return (
-                    <li key={it.name} className="case-round" data-kept={it.kept || undefined}>
-                      <div className="case-round__phone">
-                        {Wire && (
-                          <Phone className="dp--wire" android={project.slug === "catat"} label={`Round ${n + 1} wireframe: ${it.name}`}>
-                            <Wire />
-                          </Phone>
-                        )}
-                      </div>
-                      <p className="mt-5 flex items-center gap-2">
-                        <span className="type-pixel text-muted">Round {n + 1}</span>
-                        <span className="chip" data-tone={it.kept ? "lime" : "red"}>
-                          {it.kept ? "Shipped" : "Dropped"}
-                        </span>
-                      </p>
-                      <h3 className="mt-2 text-24 leading-tight font-bold tracking-[-0.025em]">{it.name}</h3>
-                      <p className="mt-2 text-16">{it.finding}</p>
-                    </li>
-                  );
-                })}
-              </ol>
-            </section>
+            {/* 05 Iterations (full cases only) */}
+            {full && (
+              <section id="iterations" aria-labelledby="iterations-title" className="scroll-mt-28">
+                <SectionHead
+                  index={no("iterations")}
+                  eyebrow="Iterations"
+                  title="Three rounds of the key screen"
+                  id="iterations"
+                  lead="Wireframes from each round of testing, and what people did with them."
+                />
+                <ol className="case-rounds">
+                  {project.iterations.map((it, n) => {
+                    const Wire = wires[n];
+                    return (
+                      <li key={it.name} className="case-round" data-kept={it.kept || undefined}>
+                        <div className="case-round__phone">
+                          {Wire && (
+                            <Phone className="dp--wire" android={project.slug === "catat"} label={`Round ${n + 1} wireframe: ${it.name}`}>
+                              <Wire />
+                            </Phone>
+                          )}
+                        </div>
+                        <p className="mt-5 flex items-center gap-2">
+                          <span className="type-pixel text-muted">Round {n + 1}</span>
+                          <span className="chip" data-tone={it.kept ? "lime" : "red"}>
+                            {it.kept ? "Shipped" : "Dropped"}
+                          </span>
+                        </p>
+                        <h3 className="mt-2 text-24 leading-tight font-bold tracking-[-0.025em]">{it.name}</h3>
+                        <p className="mt-2 text-16">{it.finding}</p>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
+            )}
 
             {/* 06 The shipped design */}
             <section id="design" aria-labelledby="design-title" className="scroll-mt-28">
-              <SectionHead index={6} eyebrow="Design" title="The shipped design" id="design" lead="The screens people use, including the ones for when the AI isn't sure or gets it wrong." />
+              <SectionHead
+                index={no("design")}
+                eyebrow="Design"
+                title="The shipped design"
+                id="design"
+                lead="The screens people use, including the ones for when the AI isn't sure or gets it wrong."
+              />
               <FlowPlayer slug={project.slug} name={project.name} />
-              <p className="type-pixel mt-16 mb-6 text-muted">Every state, side by side</p>
-              <ol className="case-screens">
-                {project.screens.map((sc) => (
-                  <li key={sc.key} className="case-screen">
-                    <Screen id={sc.key} label={`${sc.title}. ${sc.caption}`} />
-                    <h3 className="mt-5 text-18 font-bold tracking-[-0.02em]">{sc.title}</h3>
-                    <p className="mt-1 text-14 text-muted">{sc.caption}</p>
-                  </li>
-                ))}
-              </ol>
+              {full && <p className="type-pixel mt-16 mb-6 text-muted">Every state, side by side</p>}
+              {full && (
+                <ol className="case-screens">
+                  {project.screens.map((sc) => (
+                    <li key={sc.key} className="case-screen">
+                      <Screen id={sc.key} label={`${sc.title}. ${sc.caption}`} />
+                      <h3 className="mt-5 text-18 font-bold tracking-[-0.02em]">{sc.title}</h3>
+                      <p className="mt-1 text-14 text-muted">{sc.caption}</p>
+                    </li>
+                  ))}
+                </ol>
+              )}
               <div className="mt-12 grid gap-3 lg:grid-cols-2">
                 <div className="widget p-6 md:p-8">
                   <p className="type-pixel text-muted">What didn&apos;t work</p>
@@ -405,13 +450,13 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
 
             {/* 07 Engineering */}
             <section id="engineering" aria-labelledby="engineering-title" className="scroll-mt-28">
-              <SectionHead index={7} eyebrow="Engineering" title="How it's built" id="engineering" lead={project.engineering.summary} />
+              <SectionHead index={no("engineering")} eyebrow="Engineering" title="How it's built" id="engineering" lead={project.engineering.summary} />
               <Engineering project={project} />
             </section>
 
             {/* 08 Results */}
             <section id="results" aria-labelledby="results-title" className="scroll-mt-28">
-              <SectionHead index={8} eyebrow="Results" title="What happened" id="results" />
+              <SectionHead index={no("results")} eyebrow="Results" title="What happened" id="results" />
               <dl className="grid gap-3 sm:grid-cols-2">
                 {project.results.metrics.map((m, n) => (
                   <div key={m.label} className={n === 0 ? `widget ${TONE_TINT[project.tone] ?? "tone-accent"} p-7` : "widget p-7"}>
@@ -446,7 +491,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
 
             {/* 09 Reflection */}
             <section id="reflection" aria-labelledby="reflection-title" className="scroll-mt-28">
-              <SectionHead index={9} eyebrow="Reflection" title="What I'd tell my past self" id="reflection" />
+              <SectionHead index={no("reflection")} eyebrow="Reflection" title="What I'd tell my past self" id="reflection" />
               <p className="max-w-[40ch] text-32 leading-[1.2] font-semibold tracking-[-0.025em]">{project.reflection}</p>
               <p className="mt-6 max-w-[60ch] text-18">
                 <span className="font-semibold">Next: </span>

@@ -10,9 +10,8 @@ type Row = { pass: boolean; answer: BrainAnswer; ms: number };
 function describe(a: BrainAnswer): string {
   const action = a.actions[0];
   if (action) return action.type === "navigate" ? `navigate → ${action.href}` : `action: ${action.type}`;
-  if (a.confidence <= 0.2) return "abstained";
-  const text = a.text.length > 96 ? `${a.text.slice(0, 96).trimEnd()}…` : a.text;
-  return a.href ? `${text} [${a.href}]` : text;
+  if (a.confidence <= 0.2) return `abstained: "${a.text}"`;
+  return a.href ? `${a.text} [source: ${a.href}]` : a.text;
 }
 
 /**

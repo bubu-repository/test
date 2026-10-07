@@ -3,7 +3,6 @@
 import qrcode from "qrcode-generator";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { identity } from "@/content/profile";
-import { projects } from "@/content/projects";
 import { sfx } from "@/lib/sound";
 
 function QrCode({ text, size = 132 }: { text: string; size?: number }) {
@@ -53,11 +52,11 @@ function Barcode({ code }: { code: string }) {
 /* CONTOH — ganti dengan data asli (ID no., dept., masa berlaku) */
 const FIELDS = [
   { k: "ID No.", v: "AT-0x24" },
-  { k: "Dept.", v: "Product × AI" },
+  { k: "Dept.", v: "AI × Product" },
   { k: "Base", v: "Bekasi, ID" },
   { k: "Zone", v: "WIB · UTC+7" },
-  { k: "Shipped", v: `${String(projects.length).padStart(2, "0")} products` },
-  { k: "Valid thru", v: "12 / 2027" },
+  { k: "Degree", v: "B.Sc. Informatics" },
+  { k: "Class", v: "2026" },
 ];
 
 /**
@@ -157,7 +156,11 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
         data-tour="badge"
         data-cursor={flipped ? "Flip" : "Drag · Flip"}
         aria-pressed={flipped}
-        aria-label={flipped ? `ID card, back: QR code to ${identity.domain} and ${identity.email}. Press to flip to the front.` : `ID card: ${identity.name}, ${identity.role}, ${identity.city}. Open to work. Press to flip for a QR code. Left and right arrows swing it.`}
+        aria-label={
+          flipped
+            ? `ID card, back: QR code to ${identity.domain} and ${identity.email}. Press to flip to the front.`
+            : `ID card: ${identity.name}, ${identity.role}, ${identity.city}. Open to work. Press to flip for a QR code. Left and right arrows swing it.`
+        }
         className="badge touch-none select-none"
         onClick={() => {
           if (motion.current.moved) {
@@ -264,7 +267,7 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
                 </span>
               </span>
               <span className="idc__return">
-                If found, please return to {identity.name}, {identity.location}. Or just hire her.
+                If found, please return to {identity.name}, {identity.location}.
               </span>
               <span className="idc__sig">
                 <span className="idc__label">Authorised signature</span>

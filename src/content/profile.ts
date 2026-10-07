@@ -95,13 +95,13 @@ export type Experience = { period: string; title: string; org: string; summary: 
 /* CONTOH — ganti dengan data asli */
 export const experience: Experience[] = [
   {
-    period: "2026 — now",
-    title: "AI Product Engineer (independent)",
-    org: "Bekasi",
-    summary: "Maintaining Tenderlens for the procurement consultancy that runs it: the eval set, the extraction pipeline and fixes, while I look for a full-time role.",
+    period: "Apr 2026 — now",
+    title: "Part-time contract engineer, Tenderlens",
+    org: "Bu Ratna's procurement consultancy, Bekasi · about 8 hours a week",
+    summary: "Maintaining the pipeline I built in my thesis for the 31 teams it now serves, while I look for a full-time role.",
     highlights: [
-      "Grew the eval set from 240 to 610 hand-labelled fields; every release runs against it in CI",
-      "Cut the cost per brief from Rp 1,900 to Rp 420 by sending easy pages to a smaller model",
+      "Labelled a 180-field regression set of 2026 tenders; CI runs it on every change",
+      "Caught a portal's broken PDF text layer through the rejected-claims alert (March 2026) and sent those pages through OCR",
     ],
   },
   {
@@ -111,8 +111,8 @@ export const experience: Experience[] = [
     summary:
       "Six months in a product squad with a PM, three engineers, a data scientist and a product designer. I built most of Ask HR's answer pipeline and the HR review queue, with a senior engineer reviewing every pull request.",
     highlights: [
-      "Built the topic-and-risk router and its 1,200-question test set with the data scientist",
-      "Built the HR review queue in React from the design system; HR clears 20 drafts in under 9 minutes",
+      "Built the topic-and-risk router with the data scientist, and the harness that replayed the pilot by topic",
+      "Built the HR review queue in React from the design system; HR clears 20 drafts in about 9 minutes and caught 14 of 15 planted errors",
       "Wrote the weekly accuracy audit the squad still runs",
     ],
   },
@@ -121,8 +121,12 @@ export const experience: Experience[] = [
     title: "B.Sc. Informatics, AI and HCI track",
     org: "University, West Java · GPA 3.78 / 4.00",
     summary:
-      "Thesis: 'Answer or abstain: citation-grounded extraction from Indonesian tender documents', the research behind Tenderlens. Teaching assistant for Human–Computer Interaction; ran the campus design and web club.",
-    highlights: ["Built Lintas (2024) and Catat (2025, campus incubator) during my studies", "Published the thesis eval set so other students can test against it"],
+      "Thesis (Sep 2025 – Mar 2026): 'Answer or abstain: citation-grounded extraction from Indonesian tender documents', the research behind Tenderlens. Teaching assistant for Human–Computer Interaction; ran the campus design and web club.",
+    highlights: [
+      "Thesis: a 610-field eval set (dev and held-out test, κ 0.87), and cost per brief cut from Rp 1,900 to Rp 420 with page triage",
+      "Built Lintas (Mar – Jun 2024) and Catat (campus incubator, Sep – Dec 2024) during my studies",
+      "Published the dev set and part of the test set so other students can test against it",
+    ],
   },
 ];
 
@@ -130,12 +134,13 @@ export const experience: Experience[] = [
 export const practical: { label: string; value: string }[] = [
   { label: "Looking for", value: "A full-time AI Product Engineer role (new grad or junior) on an AI product" },
   { label: "Graduated", value: "B.Sc. Informatics, AI and HCI track, 2026" },
-  { label: "Experience", value: "A 6-month AI engineering internship in a product squad, and three AI products of my own with real users" },
+  { label: "Experience", value: "A 6-month AI engineering internship in a product squad (2025), a part-time contract maintaining Tenderlens (2026), and three AI products with real users" },
   { label: "Where", value: "Bekasi, Indonesia (GMT+7). Remote, or hybrid in Jakarta up to 3 days a week" },
-  { label: "Time zones", value: "4+ hours of overlap with anything from GMT+4 (Dubai) to GMT+10 (Sydney)" },
+  { label: "Time zones", value: "Usual hours 09:00–18:00 WIB (GMT+7): 4+ hours of overlap from Dubai to Sydney. For European teams, 12:00–21:00 WIB gives about 6 hours with CET" },
+  { label: "Work setup", value: "Indonesian citizen. Teams abroad can hire me as a contractor or through an employer of record; open to relocating to Singapore or Dubai" },
   { label: "Start", value: "Within 2 weeks of an offer" },
   { label: "Languages", value: "Indonesian (native), English (full professional)" },
-  { label: "References", value: "My internship mentor and PM, my thesis supervisor, and Bu Ratna (Tenderlens). On request" },
+  { label: "References", value: "Bayu (my internship mentor, senior engineer), Nadia (PM), my thesis supervisor, and Bu Ratna (Tenderlens). On request" },
   { label: "Why a team now", value: "I've shipped three products mostly alone. I want to learn how a team ships AI at scale, and I'll bring the field research, the evals and the front end with me." },
 ];
 
@@ -158,7 +163,7 @@ export const modelCard = {
   outOfScope: ["Designing an AI feature nobody asked for", "Shipping an agent without testing its mistakes with real people", "Dark patterns"],
   limitations: ["New grad: hasn't worked on a system with millions of users yet", "Will ask 'what's the eval?' more than once", "Strong opinions about loading states and empty states"],
   evals: [
-    { name: "AI products shipped", score: "3 + 1 at work" },
+    { name: "AI products with real users", score: "3 + 1 internship" },
     { name: "Hand-labelled eval cases", score: "2,100+" },
     { name: "Languages", score: "Indonesian, English" },
     { name: "Response time to email", score: "< 24h" },
@@ -169,8 +174,8 @@ export type Social = { label: string; href: string | null };
 
 /* CONTOH — ganti dengan data asli: isi href (null = disembunyikan) */
 export const socials: Social[] = [
-  { label: "GitHub", href: null },
-  { label: "LinkedIn", href: null },
+  { label: "GitHub", href: "https://github.com/example" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/example" },
   { label: "Read.cv", href: null },
 ];
 

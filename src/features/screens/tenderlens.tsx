@@ -208,7 +208,7 @@ export function TenderlensDisagree() {
           <span className="tl-btn">Cancel</span>
           <span className="tl-btn tl-btn--go">Send</span>
         </div>
-        <p className="tl-note">Every correction is reviewed and added to the test set.</p>
+        <p className="tl-note">Bu Ratna reviews each correction before it joins the dev set.</p>
       </div>
     </div>
   );

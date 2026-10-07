@@ -128,7 +128,7 @@ export function CatatAsk({ before = false }: { before?: boolean }) {
 export const CatatSaleBefore = () => <CatatSale before />;
 export const CatatAskBefore = () => <CatatAsk before />;
 
-/** Undo, in one tap, and nothing is written down. */
+/** Undo, in one tap: a misheard count is removed, and it shows how to say it again. */
 export function CatatUndo() {
   return (
     <Chat>
@@ -137,17 +137,17 @@ export function CatatUndo() {
         <Voice length="0:05" />
       </Out>
       <In time="11:02">
-        <span className="ct-quiet">&ldquo;Rokok sebungkus, dua lima&rdquo;</span>
-        <br />✓ <strong>Terjual 1 Rokok · Rp2.500</strong>
+        <span className="ct-quiet">&ldquo;Teh botol dua, delapan rebu&rdquo;</span>
+        <br />✓ <strong>Terjual 3 Teh Botol · Rp8.000</strong>
       </In>
       <div className="ct-btns ct-btns--two">
         <span>✓ Benar</span>
         <span data-picked="">✗ Batalkan</span>
       </div>
       <In time="11:02">
-        Oke, dibatalkan. Catatannya sudah dihapus.
+        Oke, dihapus. Tidak masuk ke catatan.
         <br />
-        Mau ulang? Kirim lagi aja, misalnya <em>&ldquo;rokok sebungkus, dua lima rebu&rdquo;</em>.
+        Mau ulang? Kirim lagi aja, misalnya <em>&ldquo;teh botol dua, delapan rebu&rdquo;</em>.
       </In>
     </Chat>
   );

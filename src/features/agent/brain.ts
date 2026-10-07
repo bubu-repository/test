@@ -90,8 +90,10 @@ export function retrieve(query: string, k = 3): { doc: Doc; score: number; cover
 
 /** First n sentences of a text. */
 function sentences(text: string, n: number): string {
-  const parts = text.match(/[^.!?]+[.!?]+(\s|$)/g) ?? [text];
-  return parts.slice(0, n).join("").trim();
+  // Split only where a sentence really ends: punctuation, then a space, then a capital, digit or
+  // quote. Decimals ("κ 0.87", "Rp 1.1M") and abbreviations ("B.Sc.") stay inside their sentence.
+  const parts = text.split(/(?<=[.!?])\s+(?=[A-Z0-9"'“‘(])/);
+  return parts.slice(0, n).join(" ").trim();
 }
 
 /** Things you can navigate to, for "open …" / "show me …" / "go to …". */

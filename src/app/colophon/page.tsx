@@ -21,6 +21,11 @@ const ONLINE = [
   { step: "Act", detail: "Claude can call 7 tools (navigate, theme, tour, copy email, CV, panels, lens). Every tool input is checked against an allow-list on the server before your screen changes." },
   { step: "Stream", detail: "Text and tool events stream back as NDJSON, at most 4 tool turns per answer. A refusal is answered politely instead of erroring." },
   { step: "Cite", detail: "Every factual answer ends with the page it came from, shown as a link. Only internal paths are linked, so a prompt can't inject a URL." },
+  {
+    step: "Sign",
+    detail:
+      "Each answer is signed (HMAC) when it's sent. The browser sends the conversation back each turn, and the server drops any earlier answer whose signature doesn't match, so nobody can put words in Moci's mouth.",
+  },
 ];
 
 const OFFLINE = [
@@ -124,10 +129,17 @@ export default function ColophonPage() {
           Moci&apos;s eval, in your browser
         </h2>
         <p className="mt-4 mb-8 max-w-[62ch] text-18 text-muted">
-          {MOCI_CASES.length} questions visitors actually ask, with what a good answer has to do: facts with the right source, actions, saying &ldquo;I don&apos;t know&rdquo;, and not being talked
-          into exaggerating. It runs the offline brain, which is deterministic, so you can run it here. A known failure stays in the list until it&apos;s fixed.
+          {MOCI_CASES.length} questions visitors actually ask, with what a good answer has to do: facts from the right source as whole sentences, actions, saying &ldquo;I don&apos;t know&rdquo;, and
+          not being talked into exaggerating. It runs the offline brain, which is deterministic, so you can run it here. A known failure stays in the list until it&apos;s fixed.
         </p>
         <MociEval />
+        <p className="mt-6 flex max-w-[80ch] gap-3 rounded-[20px] border border-line px-5 py-4 text-16">
+          <span className="type-pixel shrink-0 pt-1 text-ink">Not covered</span>
+          <span>
+            The online brain (Claude) isn&apos;t in this eval yet: grading it costs a model call per case, so it can&apos;t run free in your browser, and the honesty cases above can&apos;t fail on a
+            brain that only retrieves. Next: the same cases plus prompt-injection and forged-history attempts, graded against the Claude path in CI, with the pass rate published here.
+          </span>
+        </p>
       </section>
 
       <section aria-labelledby="stack-title" className="container-page pb-[clamp(96px,13vw,176px)]">

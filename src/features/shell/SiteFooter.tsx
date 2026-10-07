@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { CopyEmail } from "@/components/CopyEmail";
 import { DownloadIcon } from "@/components/icons";
 import { LiveClock } from "@/components/LiveClock";
@@ -28,8 +29,40 @@ function VisitorClock() {
   );
 }
 
+/** Under the case studies and the colophon: a quiet contact strip, so the work ends on the work. */
+function CompactFooter() {
+  return (
+    <footer id="contact" className="mt-auto scroll-mt-20 border-t border-line" data-xr="SiteFooter · compact on reading pages">
+      <div className="container-page flex flex-col gap-6 py-12 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-18 font-bold tracking-[-0.02em]">
+            {identity.name} · {identity.role}
+          </p>
+          <p className="mt-1 text-14 text-muted">{bio.availability} Replies within a day.</p>
+        </div>
+        <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-3 md:flex-nowrap">
+          <CopyEmail />
+          <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill">
+            <DownloadIcon width={18} height={18} /> CV
+          </a>
+          {socials
+            .filter((s) => s.href)
+            .map((s) => (
+              <a key={s.label} href={s.href!} target="_blank" rel="noopener noreferrer" className="link-arrow text-16">
+                {s.label}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            ))}
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export function SiteFooter() {
   const here = useLive((s) => s.count);
+  const path = usePathname();
+  if (path.startsWith("/work/") || path === "/colophon") return <CompactFooter />;
 
   return (
     <footer id="contact" className="mt-auto scroll-mt-20" data-xr="SiteFooter · live clocks + one-click email">

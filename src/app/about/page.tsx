@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
 import { PageHeader } from "@/components/PageHeader";
-import { bio, experience, identity, practical, skills } from "@/content/profile";
+import { bio, experience, identity, practical, skills, socials } from "@/content/profile";
 import { IdBadge } from "@/features/hero/IdBadge";
 import { ProfileCard } from "@/features/about/ProfileCard";
 import { OffTheClock } from "@/features/about/music/OffTheClock";
@@ -113,6 +113,14 @@ export default function AboutPage() {
           <a href={`mailto:${identity.email}`} className="pill">
             {identity.email}
           </a>
+          {/* CONTOH — ganti dengan profil asli (src/content/profile.ts → socials) */}
+          {socials
+            .filter((s) => s.href)
+            .map((s) => (
+              <a key={s.label} href={s.href!} target="_blank" rel="noopener noreferrer" className="pill" data-variant="ghost">
+                {s.label} ↗<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            ))}
         </p>
       </section>
 

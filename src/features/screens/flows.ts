@@ -18,7 +18,7 @@ export const FLOWS: Record<string, FlowStep[]> = {
     {
       key: "tl-brief-misread",
       title: "The brief",
-      note: "One page per tender: a verdict, three reasons, and the page each one comes from.",
+      note: "A brief from the error log, before the fix: the scan of page 88 was misread, so it says 5% (and Rp 120 M) where the page says 3%.",
       tap: { target: ".tl-reasons li:nth-child(3) .tl-page", label: "Check the bank guarantee on p. 88" },
     },
     {
@@ -30,7 +30,7 @@ export const FLOWS: Record<string, FlowStep[]> = {
     {
       key: "tl-disagree",
       title: "Disagreeing is a feature",
-      note: "Three quick causes and a note. Bu Ratna reviews each correction before it joins the test set.",
+      note: "Three quick causes and a note. Bu Ratna reviews each correction before it joins the dev set (never the test set).",
     },
   ],
   "ask-hr": [

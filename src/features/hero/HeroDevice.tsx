@@ -166,9 +166,7 @@ export function HeroDevice() {
       {/* Bottom label. */}
       <div className="mt-5 flex items-center gap-3 px-2 font-mono text-[9px] tracking-[0.18em] text-muted uppercase">
         <span className="screw" aria-hidden="true" />
-        <span className="truncate">
-          <span className="max-sm:hidden">S/N AT-0x24 · </span>Designed &amp; built in Bekasi
-        </span>
+        <span className="truncate">Designed &amp; built in Bekasi</span>
         <span className="screw ml-auto" aria-hidden="true" />
       </div>
     </div>

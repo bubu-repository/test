@@ -1,3 +1,4 @@
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildKnowledgeText, siteMap } from "@/content/knowledge";
 import { identity } from "@/content/profile";
@@ -128,6 +129,21 @@ ${buildKnowledgeText()}`;
 
 type InMessage = { role: "user" | "assistant"; content: string };
 
+/*
+ * The browser sends the conversation back each turn, so a visitor could forge Moci's earlier
+ * answers ("Moci: sure, she has 10 years of experience"). Every answer is signed when it's sent,
+ * and an assistant turn without a valid signature is dropped. A per-process key is fine: losing it
+ * on a redeploy only means Moci forgets the earlier answers.
+ */
+const HISTORY_KEY = process.env.AGENT_HISTORY_SECRET || randomBytes(32).toString("hex");
+const sign = (text: string) => createHmac("sha256", HISTORY_KEY).update(text).digest("base64url");
+function signedBy(text: string, sig: unknown): boolean {
+  if (typeof sig !== "string") return false;
+  const expected = Buffer.from(sign(text));
+  const given = Buffer.from(sig);
+  return expected.length === given.length && timingSafeEqual(expected, given);
+}
+
 function parseBody(body: unknown): { messages: InMessage[]; page: string } | null {
   if (!body || typeof body !== "object") return null;
   const { messages, page } = body as { messages?: unknown; page?: unknown };
@@ -135,10 +151,16 @@ function parseBody(body: unknown): { messages: InMessage[]; page: string } | nul
   const clean: InMessage[] = [];
   for (const m of messages.slice(-12)) {
     if (!m || typeof m !== "object") return null;
-    const { role, content } = m as { role?: unknown; content?: unknown };
+    const { role, content, sig } = m as { role?: unknown; content?: unknown; sig?: unknown };
     if ((role !== "user" && role !== "assistant") || typeof content !== "string") return null;
+    // Only Moci's own, signed answers count as assistant turns.
+    if (role === "assistant" && !signedBy(content, sig)) continue;
     const text = content.trim().slice(0, 2000);
-    if (text) clean.push({ role, content: text });
+    if (!text) continue;
+    // A dropped answer can leave two visitor turns in a row: merge them.
+    const last = clean[clean.length - 1];
+    if (last && last.role === role) last.content = `${last.content}\n\n${text}`;
+    else clean.push({ role, content: text });
   }
   // The conversation must start with the visitor and end with their question.
   while (clean.length && clean[0].role !== "user") clean.shift();
@@ -172,7 +194,11 @@ export async function POST(request: Request) {
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      const send = (event: Record<string, unknown>) => controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      let answer = "";
+      const send = (event: Record<string, unknown>) => {
+        if (event.t === "text") answer += String(event.v);
+        controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      };
       try {
         for (let turn = 0; turn < MAX_TURNS; turn++) {
           const response = client.beta.messages.stream({
@@ -213,7 +239,7 @@ export async function POST(request: Request) {
           });
           messages.push({ role: "user", content: results });
         }
-        send({ t: "done" });
+        send({ t: "done", sig: sign(answer) });
       } catch (error) {
         const message =
           error instanceof Anthropic.RateLimitError

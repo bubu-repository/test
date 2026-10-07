@@ -61,9 +61,7 @@ export default function WorkPage() {
           <li>
             <Link href="/colophon" className="widget block h-full p-6">
               <span className="text-18 font-bold">How this site is built</span>
-              <span className="mt-1 block text-14 text-muted">
-                Its AI agent (tool use, validation, an offline fallback), performance budgets and the design system, written up like the case studies.
-              </span>
+              <span className="mt-1 block text-14 text-muted">Its AI agent (tool use, server-side validation, signed history, an offline fallback) and the eval you can run in your browser.</span>
             </Link>
           </li>
           <li>

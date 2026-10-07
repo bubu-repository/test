@@ -14,6 +14,8 @@ export type AgentMessage = {
   tools: ToolChip[];
   followups: string[];
   source?: "claude" | "offline";
+  /** The server's signature over an online answer, sent back with the history so it can't be forged. */
+  sig?: string;
   href?: string;
   pending?: boolean;
 };
@@ -96,13 +98,14 @@ export type StreamEvents = {
   onText: (chunk: string) => void;
   onTool?: (action: SiteAction) => void;
   onFollowups?: (followups: string[]) => void;
+  onDone?: (sig?: string) => void;
 };
 
 /**
  * Streams one answer from /api/agent (NDJSON). Throws on any failure (no key, rate limit,
  * network, empty answer) so the caller can fall back to the offline brain.
  */
-export async function streamFromApi(messages: { role: "user" | "assistant"; content: string }[], page: string, events: StreamEvents) {
+export async function streamFromApi(messages: { role: "user" | "assistant"; content: string; sig?: string }[], page: string, events: StreamEvents) {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 45_000);
   try {
@@ -131,7 +134,7 @@ export async function streamFromApi(messages: { role: "user" | "assistant"; cont
           | { t: "tool"; name: string; input: Record<string, unknown> }
           | { t: "followups"; v: string[] }
           | { t: "error"; message: string }
-          | { t: "done" };
+          | { t: "done"; sig?: string };
         if (event.t === "text") {
           gotText = true;
           events.onText(event.v);
@@ -142,6 +145,8 @@ export async function streamFromApi(messages: { role: "user" | "assistant"; cont
           events.onFollowups?.(event.v);
         } else if (event.t === "error") {
           throw new Error(event.message);
+        } else if (event.t === "done") {
+          events.onDone?.(event.sig);
         }
       }
     }
@@ -168,11 +173,12 @@ export async function askAgent(question: string) {
   unlock("curious");
   bump("questions", 9999, "curious");
 
+  // Moci's own earlier answers go back with the server's signature; the server ignores any it didn't sign.
   const history = agentStore
     .get()
     .messages.filter((m) => !m.pending && m.text)
     .slice(-10)
-    .map((m) => ({ role: m.role, content: m.text }));
+    .map((m) => ({ role: m.role, content: m.text, ...(m.role === "assistant" && m.sig ? { sig: m.sig } : {}) }));
 
   const userMsg: AgentMessage = { id: uid(), role: "user", text: q, tools: [], followups: [] };
   const botMsg: AgentMessage = { id: uid(), role: "assistant", text: "", tools: [], followups: [], pending: true };
@@ -188,6 +194,7 @@ export async function askAgent(question: string) {
         void Promise.resolve(dispatch(action)).then(() => patchMessage(botMsg.id, (m) => ({ tools: m.tools.map((t) => (t.label === label ? { ...t, done: true } : t)) })));
       },
       onFollowups: (v) => patchMessage(botMsg.id, { followups: v.slice(0, 3) }),
+      onDone: (sig) => patchMessage(botMsg.id, { sig }),
     });
     agentStore.set({ mode: "online" });
     // Follow-up suggestions come from the offline brain's intent map: instant and on-topic.
