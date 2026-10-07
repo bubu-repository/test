@@ -31,9 +31,10 @@ export function SeaSoundToggle({ className }: { className?: string }) {
 type Ripple = { id: number; x: number; y: number };
 
 /**
- * The sea at the bottom of every page: the horizon, lines of swell drifting at different speeds,
- * the sun's glitter (the moon's at night), a little island with palms, a paper boat and gulls. Tap the water and it ripples, plops,
- * and the boat sails over. The footer's spec plate floats on it.
+ * The ocean card at the bottom of every page: a strip of summer sky with drifting clouds, the
+ * horizon with a little island (palms, a beach umbrella), lines of swell drifting at different
+ * speeds, glitter on the water, a paper boat and gulls. Tap the water and it ripples, plops, and the
+ * boat sails over. The footer's spec plate floats on it.
  */
 export function Sea({ children }: { children: ReactNode }) {
   const [ripples, setRipples] = useState<Ripple[]>([]);
@@ -43,7 +44,7 @@ export function Sea({ children }: { children: ReactNode }) {
 
   const splash = (e: React.PointerEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    if (target.closest(".sea__content, button, a")) return;
+    if (target.closest(".sea__content, .sea__sky, button, a")) return;
     const r = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - r.left;
     const y = e.clientY - r.top;
@@ -55,7 +56,10 @@ export function Sea({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="sea" onPointerDown={splash} data-cursor="Splash" data-xr="Sea · CSS mask swell + Web Audio ambience">
+    <div className="sea" onPointerDown={splash} data-cursor="Splash" data-xr="Sea · ocean card: CSS mask swell + Web Audio ambience">
+      <div className="sea__sky" aria-hidden="true">
+        <div className="sky__clouds sky__clouds--far" />
+      </div>
       <span className="sea__gull" aria-hidden="true" style={{ "--y": "-92px", "--t": "26s", "--d": "2s" } as CSSProperties} />
       <span className="sea__gull" aria-hidden="true" style={{ "--y": "-58px", "--t": "34s", "--d": "11s" } as CSSProperties} />
       {/* A little island on the horizon: sand, two palms, a beach umbrella. */}

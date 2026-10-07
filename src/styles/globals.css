@@ -1284,70 +1284,59 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-/* ---------- Moci, a drop of clear water ---------- */
+/* ---------- Moci, a little jelly of summer water ---------- */
 /*
- * The body is clear: it blurs and brightens what is behind it (like a lens of water), with a bright
- * rim, two glints, a blue refraction pooling at the bottom and a soft caustic under it.
+ * Translucent sky blue, deeper at the bottom, with an iridescent glow inside (pink, yellow, mint)
+ * and a bright highlight; two small arms; dark blue eyes and smile. The same in both themes.
  */
 .moci-avatar {
-  --drop-ink: #1d2a4d;
-  --drop-blush: rgba(255, 150, 196, 0.55);
-}
-
-[data-theme="dark"] .moci-avatar {
-  --drop-ink: #eaf0fa;
-  --drop-blush: rgba(255, 150, 196, 0.45);
+  --jelly-ink: #2a64ad;
 }
 
 .moci-avatar__body {
   position: absolute;
   inset: 0;
-  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
   background:
-    radial-gradient(34% 22% at 33% 24%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 72%),
-    radial-gradient(14% 8% at 72% 80%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 75%),
-    radial-gradient(95% 60% at 50% 108%, rgba(120, 190, 255, 0.55), rgba(120, 190, 255, 0) 70%),
-    radial-gradient(120% 120% at 30% 18%, rgba(255, 255, 255, 0.5), rgba(214, 236, 255, 0.22) 55%, rgba(160, 205, 255, 0.4) 100%);
-  -webkit-backdrop-filter: blur(1.5px) saturate(1.8) brightness(1.08);
-  backdrop-filter: blur(1.5px) saturate(1.8) brightness(1.08);
+    radial-gradient(15% 10% at 33% 20%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 100%),
+    radial-gradient(34% 26% at 36% 34%, rgba(255, 168, 212, 0.85), rgba(255, 168, 212, 0) 100%),
+    radial-gradient(34% 26% at 62% 42%, rgba(255, 236, 150, 0.9), rgba(255, 236, 150, 0) 100%),
+    radial-gradient(40% 28% at 48% 64%, rgba(86, 236, 214, 0.8), rgba(86, 236, 214, 0) 100%),
+    radial-gradient(130% 110% at 50% 12%, #e4f6ff 0%, #a6defa 42%, #62c6f2 78%, #45b6ec 100%);
   box-shadow:
-    inset 0 0 0 1.5px rgba(255, 255, 255, 0.9),
-    inset 0 -5px 9px rgba(80, 150, 235, 0.3),
-    inset 3px 5px 8px rgba(255, 255, 255, 0.55),
-    0 5px 12px rgba(60, 120, 210, 0.2);
+    inset 0 -5px 9px rgba(30, 140, 215, 0.35),
+    inset 0 2px 3px rgba(255, 255, 255, 0.85),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45),
+    0 5px 12px rgba(40, 150, 225, 0.28);
 }
 
-[data-theme="dark"] .moci-avatar__body {
-  background:
-    radial-gradient(34% 22% at 33% 24%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 72%),
-    radial-gradient(14% 8% at 72% 80%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 75%),
-    radial-gradient(95% 60% at 50% 108%, rgba(120, 190, 255, 0.5), rgba(120, 190, 255, 0) 70%),
-    radial-gradient(120% 120% at 30% 18%, rgba(200, 225, 255, 0.32), rgba(150, 190, 255, 0.16) 55%, rgba(120, 170, 255, 0.3) 100%);
-  box-shadow:
-    inset 0 0 0 1.5px rgba(220, 235, 255, 0.6),
-    inset 0 -5px 9px rgba(80, 150, 235, 0.35),
-    0 5px 14px rgba(80, 150, 255, 0.25);
-}
-
-/* Blush under the eyes. */
-.moci-avatar__body::after {
-  content: "";
+/* Little arms, held out from the sides. */
+.moci-avatar__arm {
   position: absolute;
-  left: 22%;
-  right: 22%;
-  top: 56%;
-  height: 9%;
-  background:
-    radial-gradient(closest-side, var(--drop-blush), transparent) left / 24% 100% no-repeat,
-    radial-gradient(closest-side, var(--drop-blush), transparent) right / 24% 100% no-repeat;
+  top: 50%;
+  width: 24%;
+  height: 30%;
+  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+  background: linear-gradient(180deg, #b7e7fb, #5ec4f1);
+  box-shadow: inset 0 -2px 3px rgba(30, 140, 215, 0.3);
+}
+
+.moci-avatar__arm--l {
+  left: -10%;
+  rotate: 38deg;
+}
+
+.moci-avatar__arm--r {
+  right: -10%;
+  rotate: -38deg;
 }
 
 .moci-avatar__eyes {
   position: absolute;
-  left: 50%;
-  top: 42%;
+  left: 53%;
+  top: 34%;
   display: flex;
-  gap: 22%;
+  gap: 26%;
   width: 46%;
   transform: translateX(-50%);
   justify-content: center;
@@ -1356,28 +1345,12 @@ html[data-theme-swap]::view-transition-new(root) {
 .moci-avatar__eyes span {
   position: relative;
   display: block;
-  width: 18%;
-  aspect-ratio: 0.75;
-  min-width: 3px;
+  width: 13%;
+  aspect-ratio: 0.55;
+  min-width: 2px;
   border-radius: 999px;
-  background: var(--drop-ink);
+  background: var(--jelly-ink);
   transform-origin: center;
-}
-
-/* A catchlight in each eye. */
-.moci-avatar__eyes span::after {
-  content: "";
-  position: absolute;
-  top: 18%;
-  left: 22%;
-  width: 36%;
-  height: 28%;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-[data-theme="dark"] .moci-avatar__eyes span::after {
-  background: rgba(29, 42, 77, 0.7);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1396,33 +1369,34 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-/* Water never sits perfectly still. */
+/* Jelly never sits perfectly still. */
 @keyframes drop-wobble {
   0%,
   100% {
-    border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+    border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
   }
 
   50% {
-    border-radius: 48% 52% 44% 48% / 55% 60% 40% 45%;
+    border-radius: 48% 52% 43% 47% / 57% 62% 38% 43%;
   }
 }
 
 .moci-avatar__mouth {
   position: absolute;
-  left: 50%;
-  top: 60%;
-  width: 16%;
-  height: 8%;
+  left: 53%;
+  top: 50%;
+  width: 24%;
+  height: 9%;
   transform: translateX(-50%);
-  border-bottom: 2px solid var(--drop-ink);
+  border-bottom: 2px solid var(--jelly-ink);
   border-radius: 0 0 999px 999px;
 }
 
 .moci-avatar[data-mood="oops"] .moci-avatar__mouth {
-  top: 62%;
-  height: 10%;
-  border: 2px solid var(--drop-ink);
+  top: 50%;
+  width: 14%;
+  height: 12%;
+  border: 2px solid var(--jelly-ink);
   border-radius: 999px;
 }
 
@@ -1723,17 +1697,6 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 /* The calendar app icon: weekday in red over a big date, live from Bekasi. */
-.app-icon--calendar {
-  --app-bg: #ffffff;
-  --app-fg: #1d1d1f;
-  align-content: center;
-  gap: 0;
-  line-height: 1;
-}
-
-[data-theme="dark"] .app-icon--calendar {
-  --app-bg: #f5f5f7;
-}
 
 }
 
@@ -2352,13 +2315,9 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 /* ---------- The hero stage ---------- */
-/* The sky, with a soft light behind the device so the glass glows. */
+/* The hero holds its own sky window (with a soft light behind the device so the glass glows). */
 .hero-stage {
-  background: radial-gradient(50% 40% at 50% 52%, rgba(255, 255, 255, 0.45), transparent 70%);
-}
-
-[data-theme="dark"] .hero-stage {
-  background: radial-gradient(60% 46% at 50% 52%, rgba(64, 96, 180, 0.16), transparent 70%);
+  isolation: isolate;
 }
 
 .scroll-cue {
@@ -2841,6 +2800,15 @@ html[data-theme-swap]::view-transition-new(root) {
   .spec-plate {
     padding: 32px 40px 20px;
   }
+}
+
+/* On the ocean card the plate is a white card, like a widget on a photo. */
+[data-theme="light"] .sea .spec-plate {
+  background:
+    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.5), transparent 45%),
+    rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 18px 40px rgba(5, 60, 140, 0.22);
 }
 
 .spec-label {
@@ -4855,29 +4823,34 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   color: var(--ink);
 }
 
-/* ---------- The world: a summer sky at the top of every page ---------- */
+/* ---------- The world: a window onto the summer sky ---------- */
 /*
- * A band of vivid summer blue behind the top of the page, with real clouds (the sky photo, laid
- * over the blue with luminosity so it keeps the blue), drifting cloud strips, a grid, glints and
- * the sun. It fades into the white page before the text starts; on the home page it fills the
- * whole first screen behind the device.
+ * The page stays white; the sky lives in rounded windows (here, behind the home hero, and over the
+ * sea in the footer). Vivid summer blue with real clouds (the sky photo, laid over the blue with
+ * luminosity so it keeps the blue), drifting cloud strips, a grid and glints. No sun; the moon and
+ * stars at night.
  */
 .sky {
-  --sky-h: 520px;
+  --win-inset: clamp(8px, 1.1vw, 16px);
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: var(--win-inset);
   z-index: -1;
-  height: var(--sky-h);
   overflow: hidden;
   pointer-events: none;
-  background: linear-gradient(180deg, var(--sky-top) 0, var(--sky-mid) 120px, var(--sky-low) 230px, color-mix(in srgb, var(--sky-low) 35%, var(--bg)) 320px, var(--bg) 470px);
+  border-radius: clamp(28px, 3vw, 44px);
+  background:
+    radial-gradient(46% 40% at 50% 52%, rgba(255, 255, 255, 0.32), transparent 70%),
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 42%, var(--sky-low) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 1px 2px rgba(16, 40, 90, 0.06);
 }
 
-html:has(#hero) .sky {
-  --sky-h: max(1040px, 128svh);
-  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 34%, var(--sky-low) 62%, color-mix(in srgb, var(--sky-low) 40%, var(--bg)) 78%, var(--bg) 96%);
+[data-theme="dark"] .sky {
+  background:
+    radial-gradient(50% 42% at 50% 52%, rgba(64, 96, 180, 0.18), transparent 70%),
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-low) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .sky__image {
@@ -4886,13 +4859,6 @@ html:has(#hero) .sky {
   background: var(--sky-image) center top / cover no-repeat;
   mix-blend-mode: luminosity;
   opacity: 0.35;
-  -webkit-mask: linear-gradient(180deg, #000 30%, transparent 62%);
-  mask: linear-gradient(180deg, #000 30%, transparent 62%);
-}
-
-html:has(#hero) .sky__image {
-  -webkit-mask: linear-gradient(180deg, #000 55%, transparent 82%);
-  mask: linear-gradient(180deg, #000 55%, transparent 82%);
 }
 
 [data-theme="dark"] .sky__image {
@@ -4900,31 +4866,20 @@ html:has(#hero) .sky__image {
   opacity: 0.7;
 }
 
-/* The last stretch of the fade, so the band ends exactly on the page colour. */
-.sky__veil {
+/* The moon, at night only. */
+.sky__moon {
   position: absolute;
-  inset: auto 0 0;
-  height: 18%;
-  background: linear-gradient(180deg, transparent, var(--bg));
-}
-
-/* The sun, top right, with slow rays. At night it is the moon. */
-.sky__sun {
-  position: absolute;
-  top: -150px;
-  right: -110px;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fffdf2 0 13%, rgba(255, 244, 180, 0.95) 15%, rgba(255, 228, 120, 0.45) 26%, rgba(255, 240, 190, 0.18) 44%, transparent 66%);
-}
-
-[data-theme="dark"] .sky__sun {
   top: 70px;
   right: 9vw;
+  display: none;
   width: 220px;
   height: 220px;
+  border-radius: 50%;
   background: radial-gradient(circle, #fbf8ee 0 19%, #ece6d2 21%, rgba(230, 232, 255, 0.45) 23%, rgba(170, 175, 255, 0.16) 42%, transparent 70%);
+}
+
+[data-theme="dark"] .sky__moon {
+  display: block;
 }
 
 .sky__stars {
@@ -4963,7 +4918,7 @@ html:has(#hero) .sky__image {
 
 .sky__clouds--near {
   --tile: 2400px;
-  bottom: 24%;
+  bottom: -8%;
   height: 520px;
   opacity: 0.72;
   background: url("/sky/clouds-near.webp") 0 0 / var(--tile) 100% repeat-x;
@@ -4985,8 +4940,8 @@ html:has(#hero) .sky__image {
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 72px 72px;
-  -webkit-mask: linear-gradient(180deg, #000 20%, transparent 70%);
-  mask: linear-gradient(180deg, #000 20%, transparent 70%);
+  -webkit-mask: linear-gradient(180deg, #000 20%, transparent 80%);
+  mask: linear-gradient(180deg, #000 20%, transparent 80%);
 }
 
 .sky__glint {
@@ -5073,23 +5028,63 @@ html:has(#hero) .sky__image {
   }
 }
 
-/* ---------- The world: the sea at the bottom of every page ---------- */
+/* ---------- The world: the ocean card at the bottom of every page ---------- */
+/* A rounded window like the hero's: a strip of summer sky, the horizon, then the sea. */
 .sea {
+  --horizon: clamp(130px, 14vw, 190px);
   position: relative;
   isolation: isolate;
-  overflow-x: clip;
-  overflow-y: visible;
-  padding: clamp(170px, 19vw, 240px) 0 clamp(40px, 5vw, 64px);
-  background: linear-gradient(180deg, var(--sea-from) 0%, var(--sea-mid) 26%, var(--sea-to) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  overflow: clip;
+  margin: 0 clamp(8px, 1.1vw, 16px) clamp(8px, 1.1vw, 16px);
+  border-radius: clamp(28px, 3vw, 44px);
+  padding: calc(var(--horizon) + clamp(150px, 16vw, 210px)) 0 clamp(40px, 5vw, 64px);
+  background: linear-gradient(
+    180deg,
+    var(--sky-top) 0,
+    var(--sky-mid) calc(var(--horizon) * 0.55),
+    var(--sky-low) var(--horizon),
+    var(--sea-from) var(--horizon),
+    var(--sea-mid) calc(var(--horizon) + 150px),
+    var(--sea-to) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
   touch-action: manipulation;
+}
+
+/* The sky strip: clouds drifting above the horizon (tapping it does not splash). */
+.sea__sky {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  height: var(--horizon);
+  overflow: hidden;
+}
+
+.sea__sky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--sky-image) center 30% / cover no-repeat;
+  mix-blend-mode: luminosity;
+  opacity: 0.3;
+}
+
+[data-theme="dark"] .sea__sky::before {
+  mix-blend-mode: normal;
+  opacity: 0.6;
+}
+
+.sea__sky .sky__clouds--far {
+  top: auto;
+  bottom: -30%;
+  height: 100%;
 }
 
 /* Haze on the horizon, where the sea meets the sky. */
 .sea::before {
   content: "";
   position: absolute;
-  inset: 0 0 auto;
+  inset: var(--horizon) 0 auto;
   z-index: 0;
   height: 64px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
@@ -5110,10 +5105,10 @@ html:has(#hero) .sky__image {
 /* The sun's glitter on the water (the moon's at night): broken streaks that shimmer. */
 .sea__glare {
   position: absolute;
-  top: 0;
+  top: var(--horizon);
   right: 12%;
   width: min(380px, 46vw);
-  height: 100%;
+  height: calc(100% - var(--horizon));
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.45) 35%, rgba(255, 255, 255, 0) 80%);
   -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27320%27%20height=%27120%27%20viewBox=%270%200%20320%20120%27%3E%3Cg%20fill=%27black%27%3E%3Cellipse%20cx=%2730%27%20cy=%2720%27%20rx=%2714%27%20ry=%271.6%27/%3E%3Cellipse%20cx=%27120%27%20cy=%2748%27%20rx=%2722%27%20ry=%272%27/%3E%3Cellipse%20cx=%27210%27%20cy=%2714%27%20rx=%2710%27%20ry=%271.4%27/%3E%3Cellipse%20cx=%27270%27%20cy=%2780%27%20rx=%2718%27%20ry=%271.8%27/%3E%3Cellipse%20cx=%2770%27%20cy=%2796%27%20rx=%2712%27%20ry=%271.5%27/%3E%3Cellipse%20cx=%27170%27%20cy=%27104%27%20rx=%2726%27%20ry=%272.2%27/%3E%3C/g%3E%3C/svg%3E") 0 0 / 320px 120px repeat;
   mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27320%27%20height=%27120%27%20viewBox=%270%200%20320%20120%27%3E%3Cg%20fill=%27black%27%3E%3Cellipse%20cx=%2730%27%20cy=%2720%27%20rx=%2714%27%20ry=%271.6%27/%3E%3Cellipse%20cx=%27120%27%20cy=%2748%27%20rx=%2722%27%20ry=%272%27/%3E%3Cellipse%20cx=%27210%27%20cy=%2714%27%20rx=%2710%27%20ry=%271.4%27/%3E%3Cellipse%20cx=%27270%27%20cy=%2780%27%20rx=%2718%27%20ry=%271.8%27/%3E%3Cellipse%20cx=%2770%27%20cy=%2796%27%20rx=%2712%27%20ry=%271.5%27/%3E%3Cellipse%20cx=%27170%27%20cy=%27104%27%20rx=%2726%27%20ry=%272.2%27/%3E%3C/g%3E%3C/svg%3E") 0 0 / 320px 120px repeat;
@@ -5139,28 +5134,28 @@ html:has(#hero) .sky__image {
 
 .sea__swell--1 {
   --tile: 110px;
-  top: 16px;
+  top: calc(var(--horizon) + 16px);
   height: 10px;
   opacity: 0.4;
 }
 
 .sea__swell--2 {
   --tile: 170px;
-  top: 40px;
+  top: calc(var(--horizon) + 40px);
   height: 15px;
   opacity: 0.45;
 }
 
 .sea__swell--3 {
   --tile: 240px;
-  top: 76px;
+  top: calc(var(--horizon) + 76px);
   height: 22px;
   opacity: 0.5;
 }
 
 .sea__swell--4 {
   --tile: 340px;
-  top: 126px;
+  top: calc(var(--horizon) + 126px);
   height: 30px;
   opacity: 0.4;
 }
@@ -5178,7 +5173,7 @@ html:has(#hero) .sky__image {
 
 .sea__boat {
   position: absolute;
-  top: 58px;
+  top: calc(var(--horizon) + 58px);
   z-index: 1;
   width: 72px;
   padding: 0;
@@ -5299,19 +5294,6 @@ html:has(#hero) .sky__image {
   }
 }
 
-/* Dawn and dusk only tint the horizon (lilac in the morning, peach in the evening); the top stays summer blue. */
-html[data-theme="light"][data-daypart="dawn"] .sky {
-  --sky-top: #2C86FF;
-  --sky-mid: #5AAAFF;
-  --sky-low: #DCD8FF;
-}
-
-html[data-theme="light"][data-daypart="dusk"] .sky {
-  --sky-top: #1C86F5;
-  --sky-mid: #4AA8FF;
-  --sky-low: #FFD3C2;
-}
-
 /* ---------- The sea widget: a little sea as tall and quick as the real one ---------- */
 .seawidget {
   --amp: 1;
@@ -5424,24 +5406,21 @@ html[data-theme="light"][data-daypart="dusk"] .sky {
   }
 }
 
-/* Moci's bubble on the corner of the hero device: a glass sphere with sky in it, so the drop shows. */
+/* Moci's bubble on the corner of the hero device: a white die-cut sticker, so the blue jelly shows. */
 .moci-sticker {
-  background:
-    radial-gradient(40% 30% at 32% 24%, rgba(255, 255, 255, 0.95), transparent 70%),
-    radial-gradient(circle at 50% 70%, #a9d6ff, #dcefff 60%, #f6fbff);
+  background: radial-gradient(60% 50% at 50% 30%, #ffffff, #f1f6fb);
   box-shadow:
-    0 0 0 4px rgba(255, 255, 255, 0.9),
-    inset 0 -6px 12px rgba(80, 150, 235, 0.25),
-    0 10px 24px rgba(40, 90, 160, 0.22);
+    inset 0 0 0 1px rgba(29, 42, 77, 0.06),
+    inset 0 -4px 8px rgba(29, 42, 77, 0.05),
+    0 2px 3px rgba(29, 42, 77, 0.08),
+    0 12px 26px rgba(29, 42, 77, 0.16);
 }
 
 [data-theme="dark"] .moci-sticker {
-  background:
-    radial-gradient(40% 30% at 32% 24%, rgba(255, 255, 255, 0.5), transparent 70%),
-    radial-gradient(circle at 50% 70%, #3a5ea8, #22356b 60%, #1a2550);
+  background: radial-gradient(60% 50% at 50% 30%, #2c3a66, #1d2850);
   box-shadow:
-    0 0 0 4px rgba(200, 215, 255, 0.25),
-    0 10px 24px rgba(0, 0, 0, 0.35);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 12px 26px rgba(0, 0, 0, 0.4);
 }
 
 /* ---------- The MP3 player (About) ---------- */
@@ -6110,7 +6089,7 @@ html[data-theme="light"][data-daypart="dusk"] .sky {
 /* Gulls over the horizon. */
 .sea__gull {
   position: absolute;
-  top: var(--y);
+  top: calc(var(--horizon) + var(--y));
   left: 0;
   z-index: 0;
   width: 22px;
@@ -6372,18 +6351,10 @@ html[data-theme="light"][data-daypart="dusk"] .sky {
   background: linear-gradient(rgba(255, 255, 255, 0.4), #ffffff);
 }
 
-/* ---------- Summer: the sky meets the sea above the footer, an island on the horizon ---------- */
-.footer-sky {
-  background: linear-gradient(180deg, transparent 0, transparent 30%, color-mix(in srgb, var(--sky-low) 55%, var(--bg)) 100%);
-}
-
-[data-theme="dark"] .footer-sky {
-  background: linear-gradient(180deg, transparent 0, transparent 30%, var(--sky-low) 100%);
-}
-
+/* ---------- The island on the ocean card's horizon ---------- */
 .sea__island {
   position: absolute;
-  top: -52px;
+  top: calc(var(--horizon) - 52px);
   left: 5%;
   z-index: 0;
   width: clamp(110px, 12vw, 170px);
@@ -6418,7 +6389,106 @@ html[data-theme="light"][data-daypart="dusk"] .sky {
   }
 }
 
-/* The sun's glitter on a summer sea is warm. */
-.sea__glare {
-  background: linear-gradient(180deg, rgba(255, 250, 220, 1), rgba(255, 244, 190, 0.5) 35%, rgba(255, 255, 255, 0) 80%);
+
+/* ---------- Illustrated app icons (the dock) ---------- */
+/* One shaded object on a white or vivid tile; the art fills the tile and the tile clips it. */
+.app-icon--art > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-icon--art::after {
+  inset: 0;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 42%);
+}
+
+.app-icon--white {
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 0 0 1px rgba(29, 42, 77, 0.07),
+    inset 0 -3px 6px rgba(29, 42, 77, 0.05),
+    0 1px 2px rgba(16, 18, 40, 0.1),
+    0 4px 10px rgba(16, 18, 40, 0.08);
+}
+
+.app-icon--white::after {
+  background: none;
+}
+
+/* The calendar: a pink band with the weekday, the date below. */
+.app-icon--calendar {
+  grid-template-rows: 34% 1fr;
+  align-content: stretch;
+  place-items: center;
+  gap: 0;
+  line-height: 1;
+}
+
+.app-icon--calendar > span:first-child {
+  align-self: stretch;
+  justify-self: stretch;
+  display: grid;
+  place-items: center;
+  padding-top: 1px;
+  background: linear-gradient(180deg, #ff5c98, #e8246e);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- The keys to the site, on a hook beside the laptop (home) ---------- */
+.laptop-keys {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 56px;
+  padding-top: 14px;
+}
+
+/* The hook: a small metal peg the carabiner hangs from. */
+.laptop-keys::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, var(--metal-to) 70%);
+  box-shadow:
+    inset 0 -2px 3px rgba(29, 42, 77, 0.2),
+    0 3px 6px rgba(29, 42, 77, 0.18);
+}
+
+@media (min-width: 1400px) {
+  .laptop-keys {
+    position: absolute;
+    top: -6px;
+    left: -250px;
+    margin: 0;
+  }
+}
+
+.keychain {
+  transform-origin: 50% 8px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .keychain {
+    animation: key-sway 4.6s var(--ease-in-out) infinite alternate;
+  }
+
+  .keychain:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes key-sway {
+  from {
+    rotate: -3deg;
+  }
+
+  to {
+    rotate: 3deg;
+  }
 }

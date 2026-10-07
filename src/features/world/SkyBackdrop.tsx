@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-/** Where the little four-point glints sit in the sky (percent of the viewport) and when they twinkle. */
+/** Where the little four-point glints sit in the sky (percent of the window) and when they twinkle. */
 const GLINTS = [
   { x: 8, y: 14, s: 14, d: 0 },
   { x: 22, y: 62, s: 10, d: 1.6 },
@@ -12,17 +12,15 @@ const GLINTS = [
 ];
 
 /**
- * The sky behind every page: a frame of the live sky shader, veiled so text stays readable,
- * two layers of clouds drifting at different speeds, a faint game-UI grid, the sun (or the moon
- * and stars at night) and a few glints. It sits behind everything and moves a little as you
- * scroll. Purely decorative.
+ * A window onto the summer sky: a rounded panel of vivid blue with real clouds (the sky photo laid
+ * over the blue with luminosity), two layers of drifting clouds, a faint game-UI grid and a few
+ * glints; the moon and stars at night. The page around it stays white. Purely decorative.
  */
 export function SkyBackdrop() {
   return (
-    <div className="sky" aria-hidden="true" data-xr="SkyBackdrop · sky frame + drifting cloud masks + grid">
+    <div className="sky" aria-hidden="true" data-xr="SkyBackdrop · sky window: photo + drifting cloud strips + grid">
       <div className="sky__image" />
-      <div className="sky__veil" />
-      <div className="sky__sun" />
+      <div className="sky__moon" />
       <div className="sky__stars" />
       <div className="sky__clouds sky__clouds--far" />
       <div className="sky__clouds sky__clouds--near" />

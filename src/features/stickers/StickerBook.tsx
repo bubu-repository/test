@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useId } from "react";
 import { Dialog } from "@/components/Dialog";
+import { Medal, medalTier } from "@/components/Medal";
 import { Sticker } from "@/components/Sticker";
 import { sfx } from "@/lib/sound";
 import { hydrateStickers, placeSticker, STICKERS, useStickers } from "@/lib/stickers";
@@ -51,15 +52,25 @@ export function StickerBook() {
             </h2>
             <p className="mt-2 max-w-[52ch] text-16">Explore the site to unlock stickers. Then peel them off and stick them anywhere: they stay where you put them.</p>
           </div>
-          <div className="w-full sm:w-56">
-            <p className="type-pixel flex justify-between">
-              <span>Collected</span>
-              <span>
-                {count}/{STICKERS.length}
-              </span>
-            </p>
-            <div className="mt-2 h-4 overflow-hidden rounded-pill bg-surface p-0.5" role="progressbar" aria-valuemin={0} aria-valuemax={STICKERS.length} aria-valuenow={count} aria-label="Stickers collected">
-              <div className="h-full rounded-pill bar-fill transition-[width] duration-700" style={{ width: `${(count / STICKERS.length) * 100}%` }} />
+          <div className="flex w-full items-center gap-3 sm:w-72">
+            <Medal count={count} total={STICKERS.length} size={56} />
+            <div className="min-w-0 flex-1">
+              <p className="type-pixel flex justify-between">
+                <span>{medalTier(count, STICKERS.length).name} medal</span>
+                <span>
+                  {count}/{STICKERS.length}
+                </span>
+              </p>
+              <div
+                className="mt-2 h-4 overflow-hidden rounded-pill bg-surface p-0.5"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={STICKERS.length}
+                aria-valuenow={count}
+                aria-label="Stickers collected"
+              >
+                <div className="h-full rounded-pill bar-fill transition-[width] duration-700" style={{ width: `${(count / STICKERS.length) * 100}%` }} />
+              </div>
             </div>
           </div>
         </header>
@@ -68,7 +79,7 @@ export function StickerBook() {
             const has = unlocked.includes(s.id);
             return (
               <li key={s.id} className="stitched flex flex-col items-center gap-2 rounded-card bg-surface-2 px-3 pt-5 pb-4 text-center">
-                <Sticker shape={s.shape} tone={s.tone} emoji={s.emoji} locked={!has} size={76} className={has ? "rotate-[-6deg]" : undefined} />
+                <Sticker id={s.id} locked={!has} size={76} className={has ? "rotate-[-6deg]" : undefined} />
                 <p className="font-display text-18 leading-tight font-bold">{has ? s.name : "Locked"}</p>
                 <p className="text-12 text-muted">{s.hint}</p>
                 {has && (
@@ -81,9 +92,11 @@ export function StickerBook() {
           })}
           {STICKERS.some((s) => s.secret && !unlocked.includes(s.id)) && (
             <li className="stitched flex flex-col items-center justify-center gap-2 rounded-card bg-surface-2 px-3 py-5 text-center">
-              <Sticker shape="star" tone="magenta" emoji="" locked size={76} />
+              <Sticker id="konami" locked size={76} />
               <p className="font-display text-18 font-bold">???</p>
-              <p className="text-12 text-muted">A secret. Try the terminal: <code>ls -a</code></p>
+              <p className="text-12 text-muted">
+                A secret. Try the terminal: <code>ls -a</code>
+              </p>
             </li>
           )}
         </ul>

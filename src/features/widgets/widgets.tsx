@@ -118,7 +118,7 @@ export function StickersWidget() {
           const has = unlocked.includes(s.id);
           return (
             <li key={s.id} className="grid place-items-center" title={has ? s.name : s.hint}>
-              <Sticker shape={s.shape} tone={s.tone} emoji={s.emoji} locked={!has} size={44} />
+              <Sticker id={s.id} locked={!has} size={44} />
               <span className="sr-only">{has ? `${s.name}, unlocked` : `Locked: ${s.hint}`}</span>
             </li>
           );

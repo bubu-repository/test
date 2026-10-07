@@ -3,8 +3,9 @@
  * The single source of truth for adelia.cc and every *.adelia.cc experiment.
  * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
  *
- * World: summer. A vivid summer-blue sky at the top of every page fades into a neutral white page,
- * and the summer sea waits at the bottom. Panels are frosted glass with a fine edge; real objects
+ * World: summer, seen through windows. The page is mostly white; the vivid summer-blue sky lives in
+ * a rounded window behind the home hero, and the sea in an ocean card at the bottom of every page
+ * (sky strip, horizon, island). Panels are frosted glass with a fine edge; real objects
  * (packs of cards, a PSP, a laptop, an MP3 player, an ID card) sit on top. Colour has a hierarchy:
  * large surfaces stay calm and pale; the small things that guide the eye are vivid. Watermelon pink
  * #FF3F86 is the brand (the primary key, highlighted words), with summer blue, leaf green and sun
@@ -12,7 +13,7 @@
  * Type is Bricolage Grotesque, with JetBrains Mono for printed labels.
  *
  * Contrast rules (checked on /styleguide):
- * - Text sits on glass, on the white page, or where the sky has faded; never on the vivid sky.
+ * - Text sits on glass or on the white page; on the vivid sky only white display labels.
  * - White text sits on --accent-strong (5.0:1), never on --accent (2.9:1).
  * - Text on a bright fill (yellow, green, aqua, sky, pale pink) uses --on-fill.
  * - Pink as small text: --accent-ink. Highlighted headline words: --accent-display (display size only).
@@ -23,8 +24,8 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: #F4F5F7;          /* neutral white: the page below the sky */
-  --sky-tone: #E4F2FD;    /* where the sky has faded behind page titles, for contrast checks */
+  --bg: #F4F5F7;          /* neutral white: the page */
+  --sky-tone: #E4F2FD;    /* the palest sky, for contrast checks */
   --glass-tone: #FBFBFC;  /* what a glass panel averages to, for contrast checks */
   --surface: rgba(255, 255, 255, .7);   /* frosted glass: panels, keys, cards */
   --surface-solid: #FFFFFF; /* where a panel must be opaque (menus over moving content) */
@@ -67,7 +68,7 @@
   --glass-shadow: 0 0 0 1px rgba(29, 42, 77, .06), 0 1px 2px rgba(29, 42, 77, .06), 0 10px 26px rgba(29, 42, 77, .09), 0 28px 56px rgba(29, 42, 77, .08);
   --glass-blur: 22px;
 
-  /* The sky and the sea (SkyBackdrop, the footer): a summer blue */
+  /* The sky and the sea (the hero window, the ocean card): a summer blue */
   --stage-from: #1A94FF;
   --stage-to: #E7F3FD;
   --sky-top: #1590FF;

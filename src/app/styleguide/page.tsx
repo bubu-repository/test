@@ -15,13 +15,13 @@ type Theme = "light" | "dark";
 const colorNames = Array.from(new Set([...tokens.light, ...tokens.dark].map((t) => t.name))).filter((n) => !n.startsWith("--font"));
 
 const contrastPairs = [
-  { fg: "--ink", bg: "--sky-tone", use: "Body text on the veiled sky", min: 4.5 },
+  { fg: "--ink", bg: "--bg", use: "Body text on the page", min: 4.5 },
   { fg: "--ink", bg: "--glass-tone", use: "Text on glass", min: 4.5 },
-  { fg: "--muted", bg: "--sky-tone", use: "Secondary text on the sky", min: 4.5 },
+  { fg: "--muted", bg: "--bg", use: "Secondary text on the page", min: 4.5 },
   { fg: "--muted", bg: "--glass-tone", use: "Secondary text on glass", min: 4.5 },
-  { fg: "--accent-ink", bg: "--sky-tone", use: "Pink as text", min: 4.5 },
+  { fg: "--accent-ink", bg: "--bg", use: "Pink as text", min: 4.5 },
   { fg: "--accent-ink", bg: "--glass-tone", use: "Pink text on glass", min: 4.5 },
-  { fg: "--accent-display", bg: "--sky-tone", use: "Highlighted headline words (display size)", min: 3 },
+  { fg: "--accent-display", bg: "--bg", use: "Highlighted headline words (display size)", min: 3 },
   { fg: "--on-fill", bg: "--accent-soft", use: "Label on a pale pink fill", min: 4.5 },
   { fg: "--on-accent", bg: "--accent-strong", use: "White on the pink key", min: 4.5 },
   { fg: "--on-cobalt", bg: "--cobalt", use: "Label on blue", min: 4.5 },
@@ -74,7 +74,7 @@ export default function StyleguidePage() {
         </div>
       </header>
 
-      <Section index="01" title="Colour" lead="White paper and navy ink under a summer sky. Watermelon pink is the one colour you always feel; summer blue, palm green and sunshine yellow are the accents.">
+      <Section index="01" title="Colour" lead="White paper and navy ink, with the summer sky and sea in windows. Watermelon pink is the one colour you always feel; summer blue, palm green and sunshine yellow are the accents.">
         <div className="grid gap-5 md:grid-cols-2">
           {(["light", "dark"] as const).map((theme) => (
             <div key={theme} data-theme={theme} className="widget bg-surface p-5 text-ink">
@@ -170,13 +170,13 @@ export default function StyleguidePage() {
           ))}
         </div>
         <div className="mt-8 flex flex-wrap items-center gap-6">
-          <Sticker shape="circle" tone="sky" emoji="👋" />
-          <Sticker shape="star" tone="violet" emoji="🦉" />
-          <Sticker shape="heart" tone="lime" emoji="💬" />
-          <Sticker shape="scallop" tone="magenta" emoji="🃏" />
-          <Sticker shape="blob" tone="mint" emoji="🍡" />
-          <Sticker shape="ticket" tone="sun" emoji="🎴" />
-          <Sticker shape="circle" tone="sky" emoji="" locked />
+          <Sticker id="hello" />
+          <Sticker id="night" />
+          <Sticker id="curious" />
+          <Sticker id="collector" />
+          <Sticker id="gacha" />
+          <Sticker id="pack" />
+          <Sticker id="hello" locked />
           <p className="type-display">
             One <span className="sticker-text">accent</span> word
           </p>

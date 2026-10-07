@@ -132,6 +132,10 @@ export const sfx = {
   },
   /** Gumball knob click. */
   click: () => tone({ type: "square", from: 300, to: 120, duration: 0.04, gain: 0.12 }),
+  /** Keys on a ring: a few small metal clinks. */
+  jingle: () => {
+    [3150, 4280, 3720, 5100].forEach((f, i) => tone({ type: "triangle", from: f + Math.random() * 180, to: f * 0.97, duration: 0.07, gain: 0.05, delay: i * 0.045 + Math.random() * 0.02 }));
+  },
 };
 
 type Ambience = { stop: () => void };

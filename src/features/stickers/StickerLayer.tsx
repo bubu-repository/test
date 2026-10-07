@@ -107,7 +107,7 @@ function PlacedSticker({ placement, route }: { placement: Placement; route: stri
         removeSticker(route, placement.id);
       }}
     >
-      <Sticker shape={def.shape} tone={def.tone} emoji={def.emoji} size={84} />
+      <Sticker id={def.id} size={84} />
     </button>
   );
 }

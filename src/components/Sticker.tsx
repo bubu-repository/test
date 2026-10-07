@@ -1,63 +1,66 @@
-import type { StickerShape } from "@/lib/stickers";
+"use client";
+
+import { useId } from "react";
 import { cn } from "@/lib/cn";
-
-function scallopPath(bumps = 14, r = 40, depth = 5) {
-  const points: string[] = [];
-  for (let i = 0; i <= bumps * 8; i++) {
-    const a = (i / (bumps * 8)) * Math.PI * 2;
-    const rr = r + Math.cos(a * bumps) * depth;
-    points.push(`${(50 + Math.cos(a) * rr).toFixed(2)},${(50 + Math.sin(a) * rr).toFixed(2)}`);
-  }
-  return `M${points.join("L")}Z`;
-}
-
-function starPath(spikes = 10, outer = 45, inner = 33) {
-  const points: string[] = [];
-  for (let i = 0; i < spikes * 2; i++) {
-    const r = i % 2 === 0 ? outer : inner;
-    const a = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
-    points.push(`${(50 + Math.cos(a) * r).toFixed(2)},${(50 + Math.sin(a) * r).toFixed(2)}`);
-  }
-  return `M${points.join("L")}Z`;
-}
-
-const SHAPES: Record<StickerShape, string> = {
-  circle: "M50 8a42 42 0 1 1 0 84a42 42 0 1 1 0-84Z",
-  star: starPath(),
-  heart: "M50 86C20 66 8 50 8 33C8 19 19 9 32 9c8 0 14 4 18 10c4-6 10-10 18-10c13 0 24 10 24 24c0 17-12 33-42 53Z",
-  scallop: scallopPath(),
-  blob: "M52 9c18 0 33 9 37 25c4 15-2 26-6 36c-5 12-16 21-32 21c-17 0-30-8-36-21C9 58 6 44 12 31C18 17 33 9 52 9Z",
-  ticket: "M14 18h72a4 4 0 0 1 4 4v18a10 10 0 0 0 0 20v18a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V60a10 10 0 0 0 0-20V22a4 4 0 0 1 4-4Z",
-};
+import { STICKER_ART } from "./StickerArt";
 
 type StickerProps = {
-  shape: StickerShape;
-  tone: string;
-  emoji: string;
+  /** Which sticker (its id in the sticker book). */
+  id: string;
   size?: number;
   locked?: boolean;
   className?: string;
 };
 
-/** A die-cut sticker: coloured shape, thick white edge, soft shadow, emoji on top. */
-export function Sticker({ shape, tone, emoji, size = 72, locked = false, className }: StickerProps) {
+/**
+ * A die-cut vinyl sticker: the illustration, a thick white edge cut around its silhouette, a thin
+ * grey edge underneath where the vinyl has thickness, and a soft shadow. The edge comes from an SVG
+ * filter that grows the silhouette and rounds it off, so every drawing gets its own cut line.
+ * Locked stickers are a dashed outline with a question mark.
+ */
+export function Sticker({ id, size = 72, locked = false, className }: StickerProps) {
+  const uid = useId();
+  const filter = `${uid}cut`;
   return (
     <span aria-hidden="true" className={cn("relative inline-grid shrink-0 place-items-center", className)} style={{ width: size, height: size }}>
-      <svg viewBox="0 0 100 100" width={size} height={size} className={cn("absolute inset-0 overflow-visible", !locked && "drop-shadow-[0_6px_10px_rgba(15,18,48,0.22)]")}>
-        <path
-          d={SHAPES[shape]}
-          fill={locked ? "transparent" : `var(--${tone === "magenta" ? "accent" : tone})`}
-          stroke={locked ? "color-mix(in srgb, var(--ink) 30%, transparent)" : "#ffffff"}
-          strokeWidth={locked ? 3 : 7}
-          strokeDasharray={locked ? "6 6" : undefined}
-          strokeLinejoin="round"
-          paintOrder="stroke"
-        />
-        {!locked && <ellipse cx="38" cy="30" rx="18" ry="9" fill="#ffffff" opacity="0.35" />}
+      <svg viewBox="0 0 100 100" width={size} height={size} className="absolute inset-0 overflow-visible">
+        {locked ? (
+          <>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="color-mix(in srgb, var(--ink) 30%, transparent)" strokeWidth="3" strokeDasharray="6 6" />
+            <text x="50" y="62" textAnchor="middle" fontSize="34" fontWeight="700" fill="var(--muted)" style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}>
+              ?
+            </text>
+          </>
+        ) : (
+          <>
+            <defs>
+              <filter id={filter} x="-30%" y="-30%" width="160%" height="170%" colorInterpolationFilters="sRGB">
+                <feMorphology in="SourceAlpha" operator="dilate" radius="4.5" result="grown" />
+                <feGaussianBlur in="grown" stdDeviation="1.6" result="soft" />
+                <feComponentTransfer in="soft" result="cut">
+                  <feFuncA type="linear" slope="6" intercept="-1.8" />
+                </feComponentTransfer>
+                <feFlood floodColor="#FFFFFF" result="white" />
+                <feComposite in="white" in2="cut" operator="in" result="edge" />
+                <feOffset in="cut" dy="2.2" result="cutDown" />
+                <feFlood floodColor="#C7D0DE" result="grey" />
+                <feComposite in="grey" in2="cutDown" operator="in" result="thickness" />
+                <feGaussianBlur in="cutDown" stdDeviation="3.2" result="blur" />
+                <feOffset in="blur" dy="2.5" result="blurDown" />
+                <feFlood floodColor="#0F1230" floodOpacity="0.24" result="ink" />
+                <feComposite in="ink" in2="blurDown" operator="in" result="shadow" />
+                <feMerge>
+                  <feMergeNode in="shadow" />
+                  <feMergeNode in="thickness" />
+                  <feMergeNode in="edge" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <g filter={`url(#${filter})`}>{STICKER_ART[id] ?? STICKER_ART.hello}</g>
+          </>
+        )}
       </svg>
-      <span className={cn("relative leading-none", locked && "font-display font-bold text-muted")} style={{ fontSize: size * 0.42 }}>
-        {locked ? "?" : emoji}
-      </span>
     </span>
   );
 }

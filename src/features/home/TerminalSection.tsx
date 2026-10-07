@@ -1,3 +1,4 @@
+import { Keychain } from "../objects/Keychain";
 import { Laptop, TerminalScreen } from "../terminal/Terminal";
 
 const TRY = [
@@ -8,7 +9,7 @@ const TRY = [
   { cmd: "sudo hire adelia", what: "you'll see" },
 ];
 
-/** Home: for engineers. A real little shell, running on a laptop, with a sticky note of things to try. */
+/** Home: for engineers. A real little shell, running on a laptop, with a sticky note of things to try and the keys to the site on a hook beside it. */
 export function TerminalSection() {
   return (
     <section id="terminal" aria-labelledby="terminal-title" className="container-page section-y scroll-mt-16" data-xr="TerminalSection · the shell on a laptop">
@@ -33,6 +34,10 @@ export function TerminalSection() {
               </li>
             ))}
           </ul>
+        </div>
+        {/* The keys to the site, hanging on a hook next to the laptop: one acrylic tag per page. */}
+        <div className="laptop-keys">
+          <Keychain />
         </div>
       </div>
     </section>

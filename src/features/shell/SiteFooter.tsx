@@ -37,7 +37,7 @@ export function SiteFooter() {
 
   return (
     <footer id="contact" className="mt-auto scroll-mt-20" data-xr="SiteFooter · live clocks + one-click email">
-      <div className="footer-sky">
+      <div>
         <div className="container-page grid items-center gap-16 pt-24 pb-14 md:pt-32 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-24">
           <div className="text-center lg:text-left">
             <p className="type-eyebrow">Say hello</p>

@@ -6,15 +6,15 @@ import { sfx } from "@/lib/sound";
 const TAGS = [
   { label: "Work", href: "/work", tint: "var(--accent)" },
   { label: "Lab", href: "/lab", tint: "var(--violet)" },
-  { label: "About", href: "/about", tint: "var(--sky)" },
-  { label: "Guestbook", href: "/guestbook", tint: "var(--sun)" },
-  { label: "Play", href: "/play", tint: "var(--lime)" },
+  { label: "About", href: "/about", tint: "var(--sun)" },
+  { label: "Guestbook", href: "/guestbook", tint: "var(--green)" },
+  { label: "Play", href: "/play", tint: "var(--sky)" },
 ];
 
-/** A carabiner with acrylic tags, one per page (after Wildy Riftian). Hover to fan them out. */
+/** A carabiner with acrylic tags, one per page (after Wildy Riftian). It sways a little; hover to fan the tags out (they jingle). */
 export function Keychain() {
   return (
-    <nav aria-label="Keychain" className="keychain select-none" data-xr="Keychain · acrylic tags as navigation (after Wildy Riftian)">
+    <nav aria-label="Keychain" className="keychain select-none" onPointerEnter={() => sfx.jingle()} data-xr="Keychain · acrylic tags as navigation (after Wildy Riftian)">
       <svg className="keychain__biner" viewBox="0 0 120 64" width="120" height="64" aria-hidden="true">
         <defs>
           <linearGradient id="biner-metal" x1="0" y1="0" x2="0" y2="1">
