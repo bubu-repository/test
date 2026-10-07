@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { isLiteDevice } from "@/lib/lite";
 import { cn } from "@/lib/cn";
 import { unlock } from "@/lib/stickers";
 import { useWeather } from "../widgets/weather";
@@ -36,6 +37,8 @@ export function SkyCanvas({ className }: { className?: string }) {
 
   useEffect(() => {
     const canvas = canvasRef.current!;
+    // Cheap phones and metered data keep the still frame underneath.
+    if (isLiteDevice()) return;
     const gl = canvas.getContext("webgl", { alpha: false, antialias: false, powerPreference: "low-power", preserveDrawingBuffer: false });
     if (!gl) return;
     let program: WebGLProgram;

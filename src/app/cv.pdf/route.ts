@@ -100,18 +100,15 @@ async function buildCv() {
     if (w.y > startY - 20) w.y = startY - 20;
   }
 
-  w.label("Selected work");
+  w.label(`Selected work · case studies at ${identity.domain}/work`);
   for (const p of projects) {
-    w.text(`${p.name} — ${p.kind} (${p.context.toLowerCase()}), ${p.year}`, { size: 11, bold: true, leading: 1.3 });
-    w.text(`${p.role.title}. Built with ${p.stack.slice(0, 5).join(", ")}.`, { size: 9.5, color: INK, leading: 1.45 });
-    w.text(
-      `${p.results.metrics
-        .slice(0, 2)
-        .map((m) => `${m.value} ${m.label}`)
-        .join("; ")}.`,
-      { size: 9, color: MUTED, leading: 1.45 },
-    );
-    w.text(`${identity.url}/work/${p.slug}`, { size: 8.5, color: ACCENT, after: 5 });
+    w.text(`${p.name} — ${p.kind.replace(/\s*\(.*\)$/, "")} (${p.context.toLowerCase()}), ${p.year}`, { size: 10.5, bold: true, leading: 1.3 });
+    w.text(`${p.role.title}. Built with ${p.stack.slice(0, 5).join(", ")}. ${p.results.metrics[0].value} ${p.results.metrics[0].label}.`, {
+      size: 9,
+      color: MUTED,
+      leading: 1.4,
+      after: 4,
+    });
   }
 
   w.label("Skills");

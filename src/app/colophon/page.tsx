@@ -37,6 +37,7 @@ const STACK = [
   ["Product screens", "The phones in the case studies are coded components, not images, so they stay sharp and readable at any size"],
   ["Live bits", "Presence and cursors over Server-Sent Events; weather and sea data from Open-Meteo, hidden when unavailable"],
   ["Accessibility", "Keyboard paths for everything, visible focus, reduced-motion versions of every animation, contrast checked on both themes"],
+  ["Cheap phones", "With Save-Data on, or on phones that report 2 GB of memory or less, the WebGL sky stays a still image"],
 ];
 
 const VALIDATOR = `function validToolInput(name: string, input: unknown): input is Record<string, unknown> {

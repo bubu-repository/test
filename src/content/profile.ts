@@ -74,7 +74,7 @@ export const skills: SkillGroup[] = [
     ],
   },
   {
-    name: "Product engineering",
+    name: "Full-stack",
     tone: "sun",
     items: ["TypeScript", "React and Next.js", "Python (FastAPI)", "PostgreSQL", "Testing (Vitest, Playwright)", "Queues and background jobs", "CI, Docker, Vercel"],
   },
