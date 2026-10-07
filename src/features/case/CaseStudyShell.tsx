@@ -98,9 +98,9 @@ export function CaseStudyShell({ project, next, index, total, cover, children }:
               <ArrowRightIcon width={20} height={20} className="-rotate-90" />
             </button>
           </form>
-          <p className="mt-3 px-2 text-12 text-muted">The scripted part of the conversation carries the verified numbers. Live answers only use facts from this site.</p>
+          <p className="mt-3 px-2 text-12 text-muted max-sm:hidden">The scripted part of the conversation carries the verified numbers. Live answers only use facts from this site.</p>
 
-          <div role="group" aria-label="How do you want to read it?" className="mt-5 grid gap-3 sm:grid-cols-2">
+          <div role="group" aria-label="How do you want to read it?" className="mt-5 grid grid-cols-2 gap-3">
             {(
               [
                 { id: "chat", title: "Chat through it", body: "The story unfolds message by message. You decide when to continue, and you can ask your own questions anytime." },
@@ -115,13 +115,13 @@ export function CaseStudyShell({ project, next, index, total, cover, children }:
                   data-tour={m.id === "chat" ? "case-chat" : undefined}
                   aria-pressed={on}
                   onClick={() => go(m.id)}
-                  className="mode-key rounded-[20px] p-5 text-left"
+                  className="mode-key rounded-[20px] p-4 text-left sm:p-5"
                 >
                   <span className="flex items-center justify-between gap-3">
-                    <span className="text-18 font-semibold tracking-[-0.015em]">{m.title}</span>
+                    <span className="text-16 font-semibold tracking-[-0.015em] sm:text-18">{m.title}</span>
                     <span aria-hidden="true" className="led" data-off={!on} style={on ? { ["--led-color" as string]: "var(--accent)" } : undefined} />
                   </span>
-                  <span className="mt-1.5 block text-14 leading-relaxed text-muted">{m.body}</span>
+                  <span className="mt-1.5 block text-14 leading-relaxed text-muted max-sm:hidden">{m.body}</span>
                 </button>
               );
             })}

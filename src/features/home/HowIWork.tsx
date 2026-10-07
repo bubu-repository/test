@@ -20,6 +20,9 @@ export function HowIWork() {
             <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill">
               <DownloadIcon width={18} height={18} /> CV (PDF)
             </a>
+            <Link href="/styleguide" className="link-arrow ml-1 text-16">
+              The design system behind this site
+            </Link>
           </div>
         </div>
         {/* CONTOH — ganti dengan data asli */}

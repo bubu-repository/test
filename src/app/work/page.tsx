@@ -26,7 +26,7 @@ export default function WorkPage() {
         lead="Each one started as somebody's messy request and shipped to real people. Every case study shows the research, the decisions, the rounds that failed and the numbers."
       />
 
-      <section aria-label="Case studies" className="container-page pb-[clamp(96px,13vw,176px)]">
+      <section aria-label="Case studies" className="container-page pt-12 pb-[clamp(96px,13vw,176px)] md:pt-16">
         {/* CONTOH — ganti dengan data asli */}
         <WorkCards projects={projects} />
       </section>

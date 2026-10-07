@@ -87,6 +87,16 @@ export default function AboutPage() {
                     <p className="text-18 font-bold tracking-[-0.02em]">{e.title}</p>
                     <p className="text-14 text-muted">{e.org}</p>
                     <p className="mt-2 text-16">{e.summary}</p>
+                    {e.highlights && (
+                      <ul className="mt-3 space-y-1.5 text-14 text-muted">
+                        {e.highlights.map((h) => (
+                          <li key={h} className="flex gap-2.5">
+                            <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-accent" />
+                            {h}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </li>
               ))}

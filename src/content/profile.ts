@@ -78,7 +78,7 @@ export const skills: SkillGroup[] = [
   },
 ];
 
-export type Experience = { period: string; title: string; org: string; summary: string };
+export type Experience = { period: string; title: string; org: string; summary: string; highlights?: string[] };
 
 /* CONTOH — ganti dengan data asli */
 export const experience: Experience[] = [
@@ -87,12 +87,18 @@ export const experience: Experience[] = [
     title: "Product Designer (independent)",
     org: "Self-employed, Bekasi",
     summary: "Designing AI products from research to release for small teams, and three of my own: Tenderlens, Catat and Lintas. I prototype and ship the front end myself.",
+    highlights: ["Three products from first interview to real users", "130+ research sessions in Indonesian and English"],
   },
   {
     period: "2022 — 2024",
     title: "Product Designer, then Design Engineer",
-    org: "Product startup, Jakarta",
-    summary: "Designed customer-facing flows in a squad of six, led design for the company's first LLM features, and rebuilt our component library in code with the engineers.",
+    org: "Series A HR software startup, Jakarta · 60 people",
+    summary: "One of three product designers, in a squad with a PM and four engineers. I owned the employee app and led design for the company's first LLM feature.",
+    highlights: [
+      "Led design of AI reply drafts for HR teams: first replies 28% faster across 40 client companies",
+      "Rebuilt the component library in code with two engineers; three squads adopted it within a quarter",
+      "Ran the weekly design critique and onboarded two junior designers",
+    ],
   },
   {
     period: "2018 — 2022",
