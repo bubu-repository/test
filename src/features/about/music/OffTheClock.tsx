@@ -7,7 +7,7 @@ export function OffTheClock() {
     <section id="off-the-clock" aria-labelledby="otc-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
       <p className="type-eyebrow">Off the clock</p>
       <h2 id="otc-title" className="type-title mt-3">
-        What&apos;s on <span className="sticker-text">repeat</span>
+        What&apos;s on repeat
       </h2>
       <p className="mt-4 max-w-[54ch] text-muted">
         The songs I code to and the games that taught me the most about design. Turn the wheel, pull a disc off the shelf, or drop your own song on the player.

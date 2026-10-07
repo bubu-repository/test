@@ -17,10 +17,7 @@ export type LabItem = {
   year: string;
   tech: string[];
   status: "live" | "wip";
-} & (
-  | { where: "subdomain"; subdomain: string }
-  | { where: "site"; action: SiteAction; actionLabel: string }
-);
+} & ({ where: "subdomain"; subdomain: string } | { where: "site"; action: SiteAction; actionLabel: string });
 
 export const labDomain = "adelia.cc";
 
@@ -159,7 +156,8 @@ export const labItems: LabItem[] = [
     where: "site",
     action: { type: "navigate", href: "/lab#widgets" },
     actionLabel: "Part the clouds",
-    blurb: "The sky in the Bekasi weather widget is a fragment shader, not a photo. Cloud cover follows Bekasi's real weather right now, the horizon warms at dawn and dusk, and your cursor parts the clouds.",
+    blurb:
+      "The sky in the Bekasi weather widget is a fragment shader, not a photo. Cloud cover follows Bekasi's real weather right now, the horizon warms at dawn and dusk, and your cursor parts the clouds.",
     tags: ["WebGL", "Data"],
     tone: "sky",
     year: "2026",
@@ -172,7 +170,8 @@ export const labItems: LabItem[] = [
     where: "site",
     action: { type: "highlight", target: ".sea" },
     actionLabel: "Go to the sea",
-    blurb: "The bottom of every page is the sea: swell drifting at different speeds, the sun's glitter, a paper boat. Tap the water and it ripples and plops; press the button and it plays the sea, synthesised live.",
+    blurb:
+      "The bottom of every page is the sea: swell drifting at different speeds, the sun's glitter, a paper boat. Tap the water and it ripples and plops; press the button and it plays the sea, synthesised live.",
     tags: ["Sound"],
     tone: "sky",
     year: "2026",
@@ -198,7 +197,8 @@ export const labItems: LabItem[] = [
     where: "site",
     action: { type: "theme" },
     actionLabel: "Switch day and night",
-    blurb: "Behind every page: a frame of the live sky, veiled so text stays readable, two layers of clouds drifting at different speeds, glints, and the sun. At night the moon and the stars come out; at dawn and dusk the sky tints.",
+    blurb:
+      "Behind every page: a frame of the live sky, veiled so text stays readable, two layers of clouds drifting at different speeds, glints, and the sun. At night the moon and the stars come out; at dawn and dusk the sky tints.",
     tags: ["WebGL"],
     tone: "sky",
     year: "2026",
@@ -211,7 +211,8 @@ export const labItems: LabItem[] = [
     where: "site",
     action: { type: "highlight", target: ".ipod" },
     actionLabel: "Turn the wheel",
-    blurb: "A pearl-glass MP3 player with a click wheel. The songs are original loops, synthesised live by a tiny Web Audio sequencer, with a visualizer that reads the real output. Drop your own song on it and it plays that too, locally.",
+    blurb:
+      "A pearl-glass MP3 player with a click wheel. The songs are original loops, synthesised live by a tiny Web Audio sequencer, with a visualizer that reads the real output. Drop your own song on it and it plays that too, locally.",
     tags: ["Sound"],
     tone: "pink",
     year: "2026",
@@ -248,9 +249,10 @@ export const labItems: LabItem[] = [
     slug: "booster",
     name: "Booster pack",
     where: "site",
-    action: { type: "navigate", href: "/work?pack=fresh" },
+    action: { type: "navigate", href: "/lab?pack=fresh#packs" },
     actionLabel: "Open a pack",
-    blurb: "My work comes in three booster packs, one product in each: a holo rare, a reverse holo and an etched card. Tap a pack or drag across its crimp to tear it; the card pops out face down and flips over, and the foil follows your cursor.",
+    blurb:
+      "My own products come in three booster packs, one in each: a holo rare, a reverse holo and an etched card. Tap a pack or drag across its crimp to tear it; the card pops out face down and flips over, and the foil follows your cursor.",
     tags: ["Physics"],
     tone: "sun",
     year: "2026",
@@ -378,7 +380,7 @@ export const labItems: LabItem[] = [
     slug: "jd",
     name: "JD matcher",
     where: "site",
-    action: { type: "navigate", href: "/about#match" },
+    action: { type: "navigate", href: "/lab#match" },
     actionLabel: "Paste a JD",
     blurb: "Paste a job description and see which of my skills and projects match it, scored and highlighted.",
     tags: ["AI", "Tool"],
@@ -406,7 +408,8 @@ export const labItems: LabItem[] = [
     where: "site",
     action: { type: "navigate", href: "/" },
     actionLabel: "Turn the dial",
-    blurb: "The home page opens on one small device: an LCD with her clock next to yours and Bekasi's weather, a dial that picks where to go, switches for night and sound, keys for the tour, the brief and the CV, and a power key (or P) that puts the screen to sleep. It boots once per visit.",
+    blurb:
+      "The home page opens on one small device: an LCD with her clock next to yours and Bekasi's weather, a dial that picks where to go, switches for night and sound, keys for the tour, the brief and the CV, and a power key (or P) that puts the screen to sleep. It boots once per visit.",
     tags: ["Physics", "Data"],
     tone: "magenta",
     year: "2026",
@@ -445,7 +448,8 @@ export const labItems: LabItem[] = [
     where: "site",
     action: { type: "navigate", href: "/" },
     actionLabel: "Hover the name",
-    blurb: "The first version of this hero, printed and taped up next to the email at the bottom of every page: the name as a die-cut sticker whose letters widen near your cursor, a live data stack with your session timer and screen size, and an email strip that copies on tap.",
+    blurb:
+      "The first version of this hero, printed and taped up next to the email at the bottom of every page: the name as a die-cut sticker whose letters widen near your cursor, a live data stack with your session timer and screen size, and an email strip that copies on tap.",
     tags: ["Type", "Data"],
     tone: "pink",
     year: "2026",
@@ -523,7 +527,8 @@ export const labItems: LabItem[] = [
     where: "site",
     action: { type: "navigate", href: "/work/tenderlens" },
     actionLabel: "Chat through one",
-    blurb: "Every case study can be read as an article or told as a conversation: the story unfolds message by message, with diagrams and numbers inline, and you can interrupt with your own questions.",
+    blurb:
+      "Every case study can be read as an article or told as a conversation: the story unfolds message by message, with diagrams and numbers inline, and you can interrupt with your own questions.",
     tags: ["AI", "Realtime"],
     tone: "violet",
     year: "2026",

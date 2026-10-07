@@ -16,7 +16,7 @@ export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string })
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    collect("cases", slug, 3, "collector");
+    collect("cases", slug, 4, "collector");
     const article = document.getElementById("case-body");
     const words = article?.innerText.split(/\s+/).length ?? 0;
     const sections = steps.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
@@ -66,10 +66,7 @@ export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string })
             const isActive = step.id === active;
             return (
               <li key={step.id} className="relative">
-                <span
-                  aria-hidden="true"
-                  className={cn("absolute top-3 -left-[27px] size-3 rounded-full border-2 border-surface transition-transform", isActive ? "scale-125 bg-accent" : "bg-line")}
-                />
+                <span aria-hidden="true" className={cn("absolute top-3 -left-[27px] size-3 rounded-full border-2 border-surface transition-transform", isActive ? "scale-125 bg-accent" : "bg-line")} />
                 <a
                   href={`#${step.id}`}
                   aria-current={isActive ? "step" : undefined}

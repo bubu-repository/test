@@ -16,7 +16,7 @@ export function TerminalSection() {
       <div className="mx-auto max-w-[44rem] text-center">
         <p className="type-eyebrow">For engineers</p>
         <h2 id="terminal-title" className="type-display mt-3">
-          Poke around from a <span className="sticker-text">terminal</span>.
+          Poke around from a terminal.
         </h2>
         <p className="type-lead mx-auto mt-5 max-w-[44ch] text-muted">A small shell with a virtual filesystem that maps to this site. It also opens anywhere with the backtick key.</p>
       </div>

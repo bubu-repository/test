@@ -10,9 +10,9 @@ export function HowIWork() {
         <div>
           <p className="type-eyebrow">How I work</p>
           <h2 id="how-title" className="type-display mt-3">
-            Four rules I <span className="sticker-text">design</span> by.
+            Four rules I design by.
           </h2>
-          <p className="mt-6 max-w-[48ch] text-18 leading-relaxed text-muted">{bio.long[1]}</p>
+          <p className="mt-6 max-w-[48ch] text-18 leading-relaxed text-muted">{bio.team}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href="/about" className="pill" data-variant="magenta">
               More about me
@@ -28,7 +28,7 @@ export function HowIWork() {
         {/* CONTOH — ganti dengan data asli */}
         <ol className="grid gap-3 sm:grid-cols-2">
           {principles.map((p, i) => (
-            <li key={p.title} className="widget p-6" data-rv="" style={{ ["--rv-i" as string]: i }}>
+            <li key={p.title} className="widget p-6">
               <p className="font-mono text-12 font-semibold text-accent-ink">0{i + 1}</p>
               <h3 className="mt-3 text-24 leading-tight font-bold tracking-[-0.025em]">{p.title}</h3>
               <p className="mt-2 text-16 text-muted">{p.body}</p>

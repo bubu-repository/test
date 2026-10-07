@@ -14,6 +14,14 @@ function Glyph({ slug }: { slug: string }) {
           <path d="m14.8 16.3 2.4 2.4" stroke="var(--glyph-ink)" strokeWidth="1.8" strokeLinecap="round" />
         </>
       );
+    case "ask-hr":
+      return (
+        <>
+          <path d="M5.5 5h13a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6.2L8 20.5V17H5.5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="#1D2A4D" />
+          <path d="M10 9.4a2 2 0 1 1 2.8 1.9c-.5.2-.8.6-.8 1.1v.5" stroke="#FFFFFF" strokeWidth="1.7" strokeLinecap="round" fill="none" />
+          <circle cx="12" cy="14.7" r="0.95" fill="#FFFFFF" />
+        </>
+      );
     case "catat":
       return (
         <>

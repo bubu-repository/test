@@ -4,11 +4,31 @@ import { projects } from "./projects";
 
 /** Pages an agent or command may navigate to. */
 export const siteMap = [
-  { path: "/", title: "Home", description: "One small frosted-glass device, the AT-26, on a white page with a hint of sky: its screen shows her name, role, city, her time next to yours and an ask line for Moci; a dial picks where to go; switches and keys run night mode, sound, the tour, the brief and the CV; P turns the screen off. Scroll down for three sealed booster packs, one project in each: tap one or tear its strip and the card pops out and flips over as a holographic trading card (they reseal on every visit). Then a live board (her phone with the Bekasi sky, the live sea off Jakarta with a button that plays the sea, working-hours overlap, Ask Moci, find a time, workspaces, keycaps, the lab, and a pocket console that opens the game on /play) and a terminal on a laptop. Every page sits on a drifting sky and ends at the sea, where you can tap the water and sail a paper boat." },
-  { path: "/work", title: "Work", description: "Three products in three booster packs you tear open: a holo rare, a reverse holo and an etched card, each popping out face down and flipping over. Every case study reads as an article or plays out as a chat." },
+  {
+    path: "/",
+    title: "Home",
+    description:
+      "A small frosted-glass device with her name, 'Product Designer for AI products', Bekasi and one line on what she designs, plus three buttons: open the work, the CV and email. On wide screens the key screens of her products float in the sky beside it. Below: four case cards (Tenderlens, Ask HR, Catat, Lintas) with real screens and numbers, the four rules she designs by, and a door to the lab. Every page ends at the sea, where you can tap the water and sail a paper boat.",
+  },
+  {
+    path: "/work",
+    title: "Work",
+    description:
+      "Four case studies (Tenderlens, Ask HR, Catat, Lintas) with a reading guide: which case answers which hiring question. Each case reads as an article, and can also play out as a chat at the end.",
+  },
   ...projects.map((p) => ({ path: `/work/${p.slug}`, title: `${p.name} case study`, description: p.tagline })),
-  { path: "/lab", title: "Lab", description: "Every experiment: subdomain experiments and features built into this site. Has a gumball machine." },
-  { path: "/about", title: "About", description: "About Adelia: her ID card on a lanyard, the short story and path, an MP3 player of the songs she codes to (original synth loops; you can drop your own song on it), a CD shelf of the games that taught her about design (Story of Seasons, Kingdom Hearts, Stardew Valley, Animal Crossing, Persona 5) with what each one taught her, a model card, the CV and a job-description matcher." },
+  {
+    path: "/lab",
+    title: "Lab",
+    description:
+      "Every experiment: a gumball machine, a live board from Bekasi, a terminal, her own products as booster packs of trading cards, a job-description matcher, her model card, subdomain experiments and features built into this site.",
+  },
+  {
+    path: "/about",
+    title: "About",
+    description:
+      "About Adelia: her ID card on a lanyard, the short story and path, an MP3 player of the songs she codes to (original synth loops; you can drop your own song on it), a CD shelf of the games that taught her about design (Story of Seasons, Kingdom Hearts, Stardew Valley, Animal Crossing, Persona 5) with what each one taught her, the practical details for hiring teams (level, location, notice, languages, references) and the CV.",
+  },
   { path: "/guestbook", title: "Guestbook", description: "A live scrapbook wall of notes from visitors." },
   { path: "/play", title: "Context Window (game)", description: "Snake, but you're an LLM eating tokens." },
 ] as const;
@@ -103,16 +123,14 @@ export function buildDocs(): Doc[] {
     {
       id: "projects",
       title: "Projects overview",
-      text: `Three featured products: ${projects.map((p) => `${p.name} (${p.kind}): ${p.tagline}`).join(" ")}`,
+      text: `Four featured products: ${projects.map((p) => `${p.name} (${p.kind}): ${p.tagline}`).join(" ")}`,
       keywords: ["projects", "work", "portfolio", "built", "shipped", "products", "case", "studies", "best"],
       href: "/work",
     },
     {
       id: "agents",
       title: "Designing AI products",
-      text: `She designs how AI shows its work: sources, uncertainty, and a cheap way to fix mistakes. ${projects
-        .map((p) => `${p.name}: ${p.decisions[0].title}. ${p.decisions[0].why}`)
-        .join(" ")}`,
+      text: `She designs how AI shows its work: sources, uncertainty, and a cheap way to fix mistakes. ${projects.map((p) => `${p.name}: ${p.decisions[0].title}. ${p.decisions[0].why}`).join(" ")}`,
       keywords: ["agent", "agents", "agentic", "tool", "tools", "llm", "ai", "evals", "eval", "trust", "uncertainty", "design", "claude"],
       href: "/work",
     },
@@ -193,7 +211,8 @@ export function buildKnowledgeText(): string {
     lines.push(`Process: ${p.process.map((s) => `${s.title} (${s.duration}): ${s.body}`).join(" ")}`);
     lines.push(`Results: ${p.results.metrics.map((m) => `${m.value} ${m.label}`).join("; ")}. ${p.results.body.join(" ")}`);
     lines.push(`Reflection: ${p.reflection}`);
-    lines.push(`Links: live ${p.links.live}, repo ${p.links.repo}`);
+    lines.push(p.links.live ? `Links: live ${p.links.live}${p.links.repo ? `, repo ${p.links.repo}` : ""}` : `Where: ${p.company ?? "in-house"}`);
+    lines.push(`Status: ${p.status}`);
   }
 
   lines.push("", "## Lab");

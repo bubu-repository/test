@@ -14,11 +14,14 @@ const Bar = ({ title, back = "Today" }: { title: string; back?: string }) => (
   </div>
 );
 
-const Head = () => (
+const ROAD = { meta: "LPSE Kab. Bekasi · closes in 4 days", title: "Road rehabilitation, Tambun Selatan", sub: "HPS Rp 2.4 billion · construction · 214 pages" };
+const DRAIN = { meta: "LPSE Kab. Bekasi · closes in 3 days", title: "Drainage works, Cikarang Barat", sub: "HPS Rp 1.1 billion · construction · 168 pages" };
+
+const Head = ({ t = ROAD }: { t?: typeof ROAD }) => (
   <>
-    <p className="tl-meta">LPSE Kab. Bekasi · closes in 4 days</p>
-    <h3 className="tl-title">Road rehabilitation, Tambun Selatan</h3>
-    <p className="tl-sub">HPS Rp 2.4 billion · construction · 214 pages</p>
+    <p className="tl-meta">{t.meta}</p>
+    <h3 className="tl-title">{t.title}</h3>
+    <p className="tl-sub">{t.sub}</p>
   </>
 );
 
@@ -88,13 +91,13 @@ export function TenderlensBrief({ hot = false }: { hot?: boolean }) {
   );
 }
 
-/** When it can't tell: no score, the reason it won't guess, and a way to get a person to look. */
+/** When it can't tell (a different tender, with a blurry scan): no score, why it won't guess, and a person to ask. */
 export function TenderlensUnsure() {
   return (
     <div className="tl">
       <Bar title="Brief" />
       <div className="tl-scroll">
-        <Head />
+        <Head t={DRAIN} />
         <div className="tl-score tl-score--unsure">
           <div className="tl-ring tl-ring--unsure">
             <b>?</b>
@@ -108,29 +111,32 @@ export function TenderlensUnsure() {
           <li>
             <i className="warn">?</i>
             <span>Eligibility table unreadable</span>
-            <em className="tl-page tl-page--hot">p. 41</em>
+            <em className="tl-page tl-page--hot">p. 19</em>
           </li>
           <li>
             <i className="ok">✓</i>
-            <span>Scope matches your last 4 road jobs</span>
-            <em className="tl-page">p. 12</em>
+            <span>You&apos;ve done 2 drainage jobs like it</span>
+            <em className="tl-page">p. 34</em>
           </li>
           <li>
             <i className="ok">✓</i>
-            <span>Documents due Friday, 14:00</span>
-            <em className="tl-page">p. 7</em>
+            <span>Documents due Thursday, 14:00</span>
+            <em className="tl-page">p. 6</em>
           </li>
         </ul>
       </div>
       <div className="tl-cta">
-        <span className="tl-btn tl-btn--check">Read page 41 myself</span>
+        <span className="tl-btn tl-btn--check">Read page 19 myself</span>
         <span className="tl-btn">Ask Pak Budi to check it</span>
       </div>
     </div>
   );
 }
 
-/** Tap a page chip: the page the claim came from, the sentence highlighted, and a way to say it's wrong. */
+/**
+ * Tap a page chip: the page the claim came from, the sentence highlighted, next to the claim, and a
+ * way to say it's wrong. Here the scan was misread: the brief says 5%, the page says 3%.
+ */
 export function TenderlensSource() {
   return (
     <div className="tl">
@@ -141,23 +147,22 @@ export function TenderlensSource() {
       <span className="dp-dim" />
       <div className="tl-sheet">
         <span className="tl-grab" />
-        <p className="tl-meta">Page 23 of 214 · Dokumen Pemilihan</p>
+        <p className="tl-meta">Page 88 of 214 · Syarat jaminan</p>
         <div className="tl-doc">
           <div className="tl-lines">
             <i style={{ width: "92%" }} />
             <i style={{ width: "84%" }} />
           </div>
           <p>
-            Peserta wajib memiliki <mark>SBU Kualifikasi Kecil (K1) subklasifikasi BG004</mark> yang masih berlaku.
+            Besaran Jaminan Pelaksanaan adalah <mark>3% (tiga persen) dari nilai kontrak</mark>, diserahkan sebelum penandatanganan.
           </p>
           <div className="tl-lines">
             <i style={{ width: "88%" }} />
-            <i style={{ width: "95%" }} />
             <i style={{ width: "60%" }} />
           </div>
         </div>
         <p className="tl-match">
-          Matched to your profile: <b>SBU K1 · BG004, valid to 2027</b>
+          The brief says: <b>Needs a 5% bank guarantee</b>
         </p>
         <div className="tl-row">
           <span className="tl-btn tl-btn--go">✓ Looks right</span>
@@ -188,7 +193,7 @@ export function TenderlensDisagree() {
           <span data-on="">It misread a number</span>
           <span>That rule doesn&apos;t apply to us</span>
         </div>
-        <p className="tl-input">It&apos;s 3%, not 5%. See the table…</p>
+        <p className="tl-input">The page says 3%, not 5%.</p>
         <div className="tl-row">
           <span className="tl-btn">Cancel</span>
           <span className="tl-btn tl-btn--go">Send</span>

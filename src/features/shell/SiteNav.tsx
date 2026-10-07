@@ -7,15 +7,13 @@ import { Dialog } from "@/components/Dialog";
 import { CloseIcon } from "@/components/icons";
 import { SoundToggle } from "@/components/SoundToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { identity } from "@/content/profile";
 import { dispatch } from "@/lib/actions";
 import { cn } from "@/lib/cn";
-import { useNow } from "@/lib/hooks";
 import { applySound, applyTheme, getSound, getTheme, subscribePreferences } from "@/lib/preferences";
 import { sfx } from "@/lib/sound";
 import { unlock } from "@/lib/stickers";
 import { useLive } from "../live/live-store";
-import { BoxArt, BubbleArt, CloudArt, MociArt, MoonArt, MoreArt, PlaneArt, SearchArt, SmileyArt, SparkleArt, SpeakerArt, TILE } from "./DockIcons";
+import { BoxArt, BubbleArt, CalendarArt, CloudArt, CvArt, MociArt, MoonArt, MoreArt, PlaneArt, SearchArt, SmileyArt, SparkleArt, SpeakerArt, TILE } from "./DockIcons";
 
 type ItemProps = {
   label: string;
@@ -71,27 +69,6 @@ function DockItem({ label, caption, bg, fg, ink, active, className, iconClassNam
   );
 }
 
-/** A desk calendar icon (a pink band with the weekday over the date), showing today in Bekasi (blank until the clock is known). */
-function CalendarGlyph() {
-  const now = useNow();
-  const date = now ? new Date(now * 1000) : null;
-  const day = date ? new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: identity.timeZone }).format(date).toUpperCase() : "";
-  const num = date ? new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: identity.timeZone }).format(date) : "";
-  return (
-    <>
-      <span className="text-[calc(8.5px*var(--m,1))] font-bold tracking-[0.06em] text-white">{day || " "}</span>
-      <span className="text-[calc(20px*var(--m,1))] leading-none font-semibold tracking-[-0.04em]">{num || " "}</span>
-    </>
-  );
-}
-
-function useCalendarLabel() {
-  const now = useNow();
-  if (!now) return "Today in Bekasi · the 40-second brief";
-  const d = new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: identity.timeZone }).format(new Date(now * 1000));
-  return `${d} in Bekasi · the 40-second brief`;
-}
-
 function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -111,7 +88,6 @@ export function SiteNav() {
   const theme = useSyncExternalStore(subscribePreferences, getTheme, serverTheme);
   const sound = useSyncExternalStore(subscribePreferences, getSound, serverSound);
   const count = useLive((s) => s.count);
-  const calendarLabel = useCalendarLabel();
 
   // Magnification, like the macOS dock: icons near the pointer grow, pushing their neighbours aside.
   useEffect(() => {
@@ -188,14 +164,11 @@ export function SiteNav() {
   }, []);
 
   const isDark = theme === "dark";
+  // The theme swap grows from the top of the screen, where the menu opened.
   const toggleTheme = () => {
-    const el = dockRef.current?.querySelector<HTMLElement>('[data-tour="theme"]');
-    const rect = el?.getBoundingClientRect();
     const root = document.documentElement;
-    if (rect) {
-      root.style.setProperty("--swap-x", `${rect.left + rect.width / 2}px`);
-      root.style.setProperty("--swap-y", `${rect.top + rect.height / 2}px`);
-    }
+    root.style.setProperty("--swap-x", `${window.innerWidth / 2}px`);
+    root.style.setProperty("--swap-y", "40px");
     sfx.pop();
     applyTheme(isDark ? "light" : "dark", { persist: true });
     if (!isDark) unlock("night");
@@ -213,59 +186,20 @@ export function SiteNav() {
         <DockItem href="/work" label="Work" bg={TILE.white} active={isActive(pathname, "/work")} tour="nav-work">
           <BoxArt />
         </DockItem>
-        <DockItem href="/lab" label="Lab" bg={TILE.purple} active={isActive(pathname, "/lab")} tour="nav-lab">
-          <SparkleArt />
-        </DockItem>
         <DockItem href="/about" label="About" bg={TILE.white} active={isActive(pathname, "/about")} tour="nav-about">
           <SmileyArt />
         </DockItem>
-        <DockItem
-          href="/guestbook"
-          label={count > 1 ? `Guestbook · ${count} here now` : "Guestbook"}
-          bg={TILE.lime}
-          active={isActive(pathname, "/guestbook")}
-          tour="nav-guestbook"
-          className="max-sm:hidden"
-        >
-          <BubbleArt />
+        <DockItem href="/lab" label="Lab" bg={TILE.purple} active={isActive(pathname, "/lab")} tour="nav-lab">
+          <SparkleArt />
         </DockItem>
-        <DockItem
-          label={calendarLabel}
-          caption="Brief"
-          bg={TILE.white}
-          fg="#1D2A4D"
-          iconClassName="app-icon--calendar"
-          className="max-md:hidden"
-          onClick={() => dispatch({ type: "open", panel: "brief" })}
-          cursor="Brief"
-        >
-          <CalendarGlyph />
+        <span className="dock-sep" aria-hidden="true" />
+        <DockItem label="Download the CV" caption="CV" bg={TILE.white} onClick={() => dispatch({ type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" })} cursor="CV">
+          <CvArt />
         </DockItem>
         <DockItem label="Copy email" caption="Email" bg={TILE.blue} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
           <PlaneArt />
         </DockItem>
-        <DockItem label="Ask Moci (/)" caption="Moci" bg={TILE.white} onClick={() => dispatch({ type: "open", panel: "agent" })} cursor="Ask">
-          <MociArt />
-        </DockItem>
-        <span className="dock-sep max-sm:hidden" aria-hidden="true" />
-        <DockItem label="Search and commands (⌘K)" caption="Search" bg={TILE.white} className="max-sm:hidden" onClick={() => dispatch({ type: "open", panel: "palette" })} cursor="⌘K">
-          <SearchArt />
-        </DockItem>
-        <DockItem label={isDark ? "Day sky" : "Night sky"} caption={isDark ? "Day" : "Night"} bg={isDark ? TILE.blue : TILE.navy} pressed={isDark} className="max-md:hidden" onClick={toggleTheme} tour="theme">
-          {isDark ? <CloudArt /> : <MoonArt />}
-        </DockItem>
-        <DockItem
-          label={sound ? "Sound on" : "Sound off"}
-          caption="Sound"
-          bg={TILE.white}
-          pressed={sound}
-          className="max-lg:hidden"
-          onClick={() => applySound(!sound, { persist: true })}
-          cursor={sound ? "Mute" : "Sound"}
-        >
-          <SpeakerArt on={sound} />
-        </DockItem>
-        <DockItem label="More" bg={TILE.white} className="md:hidden" pressed={menu} onClick={() => setMenu(true)}>
+        <DockItem label="More: guestbook, brief, Moci, search, night, sound" caption="More" bg={TILE.white} pressed={menu} onClick={() => setMenu(true)}>
           <MoreArt />
         </DockItem>
       </nav>
@@ -278,12 +212,16 @@ export function SiteNav() {
               <CloseIcon width={18} height={18} />
             </button>
           </div>
-          <ul className="grid grid-cols-4 gap-y-4 text-center text-12 font-medium">
+          <ul className="grid grid-cols-4 gap-x-2 gap-y-4 text-center text-12 font-medium">
             {[
               { label: "Guestbook", bg: TILE.lime, art: <BubbleArt />, href: "/guestbook" },
+              { label: "40s brief", bg: TILE.white, art: <CalendarArt />, run: () => dispatch({ type: "open", panel: "brief" }) },
+              { label: "Ask Moci", bg: TILE.white, art: <MociArt />, run: () => dispatch({ type: "open", panel: "agent" }) },
               { label: "Copy email", bg: TILE.blue, art: <PlaneArt />, run: () => dispatch({ type: "copyEmail" }) },
               { label: "Search", bg: TILE.white, art: <SearchArt />, run: () => dispatch({ type: "open", panel: "palette" }) },
-              { label: "40s brief", bg: TILE.purple, art: <SparkleArt />, run: () => dispatch({ type: "open", panel: "brief" }) },
+              { label: isDark ? "Day sky" : "Night sky", bg: isDark ? TILE.blue : TILE.navy, art: isDark ? <CloudArt /> : <MoonArt />, run: () => toggleTheme() },
+              { label: sound ? "Sound off" : "Sound on", bg: TILE.white, art: <SpeakerArt on={sound} />, run: () => applySound(!sound, { persist: true }) },
+              { label: "The lab", bg: TILE.purple, art: <SparkleArt />, href: "/lab" },
             ].map((a) => {
               const icon = (
                 <span className={cn("app-icon app-icon--art mx-auto", a.bg === TILE.white && "app-icon--white")} style={{ "--app-bg": a.bg, "--size": "52px" } as CSSProperties}>

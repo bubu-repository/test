@@ -175,3 +175,65 @@ export function LnWireOne() {
     </div>
   );
 }
+
+/* ----- Ask HR: who answers ----- */
+export function AhWireBot() {
+  return (
+    <div className="wf" style={{ justifyContent: "flex-end" }}>
+      <span className="wf-bubble wf-bubble--out">Maternity leave, how many days?</span>
+      <span className="wf-bubble">🤖 You get 30 days of paid leave.</span>
+      <span className="wf-bubble wf-bubble--out">Can I swap a shift?</span>
+      <span className="wf-bubble">🤖 Yes, any time.</span>
+      <span className="wf-note" style={{ color: "#b4385a" }}>
+        ✗ wrong: policy says 90 days
+      </span>
+    </div>
+  );
+}
+
+export function AhWireInbox() {
+  return (
+    <div className="wf">
+      <span className="wf-note">Inbox · 48 tickets</span>
+      {["Leave balance?", "Payslip date?", "Swap shift?", "Glasses reimbursed?", "BPJS card?", "Holiday list?"].map((t) => (
+        <div key={t} className="wf-row" style={{ borderBottom: "1.5px dashed #cfd4df", paddingBottom: "0.5em" }}>
+          <span className="wf-dot" />
+          <span style={{ flex: 1, color: "#4b536b", fontSize: "0.86em" }}>{t}</span>
+          <span className="wf-chip" style={{ fontSize: "0.66em" }}>
+            draft?
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function AhWireQueue() {
+  return (
+    <div className="wf">
+      <span className="wf-note">Review · 6 drafts</span>
+      <div className="wf-box" style={{ display: "grid", gap: "0.45em" }}>
+        <span className="wf-bar" style={{ width: "60%" }} />
+        <span className="wf-chip" style={{ width: "fit-content" }}>
+          WHY: needs approval
+        </span>
+        <span className="wf-bar" style={{ width: "95%" }} />
+        <span className="wf-bar" style={{ width: "80%" }} />
+        <span className="wf-chip" style={{ width: "fit-content" }}>
+          § 3.1
+        </span>
+        <div className="wf-row">
+          <span className="wf-btn wf-btn--ghost" style={{ flex: 1 }}>
+            Edit
+          </span>
+          <span className="wf-btn" style={{ flex: 1 }}>
+            Approve
+          </span>
+        </div>
+      </div>
+      <div className="wf-box" style={{ opacity: 0.6 }}>
+        <span className="wf-bar" style={{ width: "50%" }} />
+      </div>
+    </div>
+  );
+}

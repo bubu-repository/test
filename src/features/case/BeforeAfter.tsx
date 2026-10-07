@@ -41,9 +41,7 @@ export function BeforeAfter({ data }: { data: Project["beforeAfter"] }) {
           <Panel side="before" data={data} />
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 z-10 w-1 -translate-x-1/2 bg-white shadow-lg" style={{ left: `${split}%` }}>
-          <span className="sticker absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-accent-strong font-bold text-on-accent">
-            ⇆
-          </span>
+          <span className="sticker absolute top-1/2 left-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-accent-strong font-bold text-on-accent">⇆</span>
         </div>
         <label htmlFor={id} className="sr-only">
           Compare before and after. Left shows before, right shows after.

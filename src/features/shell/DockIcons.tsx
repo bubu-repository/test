@@ -282,3 +282,30 @@ export function MoreArt() {
     </Art>
   );
 }
+
+/** CV: a white page with a pink folded corner, a portrait and lines. */
+export function CvArt() {
+  return (
+    <Art>
+      <ellipse cx="24" cy="41.5" rx="11" ry="2.2" fill="rgba(20,24,40,.12)" />
+      <path d="M13 8h16l7 7v23a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2Z" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(20,24,40,.15))" }} />
+      <path d="M29 8v5a2 2 0 0 0 2 2h5Z" fill="#FF3F86" />
+      <circle cx="18" cy="18" r="3.4" fill="#FFB8D2" />
+      <path d="M24 16h7M24 20h5" stroke="#9AA5BA" strokeWidth="2" strokeLinecap="round" />
+      <path d="M15 26h17M15 30h17M15 34h11" stroke="#C3CAD8" strokeWidth="2" strokeLinecap="round" />
+    </Art>
+  );
+}
+
+/** The brief: a desk calendar with a pink band (for the More menu). */
+export function CalendarArt() {
+  return (
+    <Art>
+      <rect x="9" y="9" width="30" height="30" rx="7" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" />
+      <path d="M9 16a7 7 0 0 1 7-7h16a7 7 0 0 1 7 7v2H9Z" fill="#FF3F86" />
+      <text x="24" y="34" textAnchor="middle" fontSize="13" fontWeight="700" fill="#1D2A4D" style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}>
+        40s
+      </text>
+    </Art>
+  );
+}

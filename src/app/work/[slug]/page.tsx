@@ -10,6 +10,7 @@ import { AskAboutProject } from "@/features/case/AskAboutProject";
 import { CaseStudyShell } from "@/features/case/CaseStudyShell";
 import { CountUp } from "@/features/case/CountUp";
 import { TraceRail, type TraceStep } from "@/features/case/TraceRail";
+import { FlowPlayer } from "@/features/screens/FlowPlayer";
 import { Phone } from "@/features/screens/Phone";
 import { WIRES } from "@/features/screens/registry";
 import { Screen } from "@/features/screens/Screen";
@@ -106,6 +107,13 @@ function Cover({ project }: { project: Project }) {
             <dd className="mt-0.5 text-16 font-semibold">{v}</dd>
           </div>
         ))}
+        <div className="border-t border-line pt-4 sm:col-span-2 lg:col-span-4">
+          <dt className="flex items-center gap-2 text-12 text-muted">
+            <span aria-hidden="true" className="case-live" />
+            Where it is now
+          </dt>
+          <dd className="mt-0.5 max-w-[80ch] text-16">{project.status}</dd>
+        </div>
       </dl>
     </section>
   );
@@ -217,6 +225,26 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   </li>
                 ))}
               </ol>
+              <figure className="case-board mt-12">
+                <figcaption className="text-14 text-muted">
+                  <span className="type-pixel mr-2 text-ink">Raw notes</span>
+                  {project.artifact.title}
+                </figcaption>
+                <div className="case-board__cols">
+                  {project.artifact.clusters.map((c, k) => (
+                    <section key={c.label} className="case-board__col" data-k={k}>
+                      <h3 className="case-board__label">{c.label}</h3>
+                      <ul className="case-board__notes">
+                        {c.notes.map((n) => (
+                          <li key={n} className="case-note">
+                            {n}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
+                </div>
+              </figure>
               <p className="mt-10 flex max-w-[72ch] gap-3 rounded-[20px] border border-line px-5 py-4 text-14 text-muted">
                 <span className="type-pixel shrink-0 pt-0.5 text-ink">Consent &amp; data</span>
                 {project.research.ethics}
@@ -238,7 +266,14 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                           {d.options.map((o, k) => {
                             const chosen = k === d.options.length - 1;
                             return (
-                              <li key={o} className={chosen ? "flex gap-2.5 rounded-[14px] bg-accent-soft px-3 py-2 text-16 font-semibold text-on-fill" : "flex gap-2.5 px-3 py-2 text-16 text-muted line-through decoration-[1.5px]"}>
+                              <li
+                                key={o}
+                                className={
+                                  chosen
+                                    ? "flex gap-2.5 rounded-[14px] bg-accent-soft px-3 py-2 text-16 font-semibold text-on-fill"
+                                    : "flex gap-2.5 px-3 py-2 text-16 text-muted line-through decoration-[1.5px]"
+                                }
+                              >
                                 <span aria-hidden="true" className="no-underline">
                                   {chosen ? "✓" : "✗"}
                                 </span>
@@ -266,6 +301,38 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                         </p>
                       </div>
                     </div>
+                    {d.table && (
+                      <div className="case-table mt-7">
+                        <table>
+                          <caption>{d.table.caption}</caption>
+                          <thead>
+                            <tr>
+                              {d.table.head.map((h) => (
+                                <th key={h} scope="col">
+                                  {h}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {d.table.rows.map((row, k) => (
+                              <tr key={row[0]} data-chosen={k === d.table?.chosen || undefined}>
+                                {row.map((cell, j) =>
+                                  j === 0 ? (
+                                    <th key={j} scope="row">
+                                      {cell}
+                                      {k === d.table?.chosen && <span className="case-table__pick">Shipped</span>}
+                                    </th>
+                                  ) : (
+                                    <td key={j}>{cell}</td>
+                                  ),
+                                )}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </li>
                 ))}
               </ol>
@@ -281,7 +348,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                     <li key={it.name} className="case-round" data-kept={it.kept || undefined}>
                       <div className="case-round__phone">
                         {Wire && (
-                          <Phone className="dp--wire" label={`Round ${n + 1} wireframe: ${it.name}`}>
+                          <Phone className="dp--wire" android={project.slug === "catat"} label={`Round ${n + 1} wireframe: ${it.name}`}>
                             <Wire />
                           </Phone>
                         )}
@@ -303,6 +370,8 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
             {/* 06 The shipped design */}
             <section id="design" aria-labelledby="design-title" className="scroll-mt-28">
               <SectionHead index={6} eyebrow="Design" title="The shipped design" id="design" lead="The screens people use, including the ones for when the AI isn't sure or gets it wrong." />
+              <FlowPlayer slug={project.slug} name={project.name} />
+              <p className="type-pixel mt-16 mb-6 text-muted">Every state, side by side</p>
               <ol className="case-screens">
                 {project.screens.map((sc) => (
                   <li key={sc.key} className="case-screen">
@@ -312,10 +381,24 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   </li>
                 ))}
               </ol>
-              <div className="mt-12 widget p-6 md:p-8">
-                <p className="type-pixel text-muted">What didn&apos;t work</p>
-                <h3 className="mt-2 text-24 font-bold tracking-[-0.025em]">{project.deadEnd.title}</h3>
-                <p className="mt-2 max-w-[64ch] text-16">{project.deadEnd.body}</p>
+              <div className="mt-12 grid gap-3 lg:grid-cols-2">
+                <div className="widget p-6 md:p-8">
+                  <p className="type-pixel text-muted">What didn&apos;t work</p>
+                  <h3 className="mt-2 text-24 font-bold tracking-[-0.025em]">{project.deadEnd.title}</h3>
+                  <p className="mt-2 text-16">{project.deadEnd.body}</p>
+                </div>
+                <div className="widget p-6 md:p-8">
+                  <p className="type-pixel text-muted">Accessibility &amp; inclusion</p>
+                  <h3 className="mt-2 text-24 font-bold tracking-[-0.025em]">Who else it had to work for</h3>
+                  <ul className="mt-3 space-y-2.5 text-16">
+                    {project.inclusion.map((line) => (
+                      <li key={line} className="flex gap-2.5">
+                        <span aria-hidden="true" className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-ink" />
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </section>
 
@@ -327,7 +410,10 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   <div key={m.label} className={n === 0 ? `widget ${TONE_TINT[project.tone] ?? "tone-accent"} p-7` : "widget p-7"}>
                     <dt className="sr-only">{m.label}</dt>
                     <dd>
-                      <CountUp value={m.value} className={n === 0 ? "iris-text block w-fit text-64 leading-none font-bold tracking-[-0.045em]" : "block text-64 leading-none font-bold tracking-[-0.045em]"} />
+                      <CountUp
+                        value={m.value}
+                        className={n === 0 ? "iris-text block w-fit text-64 leading-none font-bold tracking-[-0.045em]" : "block text-64 leading-none font-bold tracking-[-0.045em]"}
+                      />
                       <span className="mt-3 block text-16" aria-hidden="true">
                         {m.label}
                       </span>
@@ -373,12 +459,16 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <AskAboutProject name={project.name} />
-                <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="pill">
-                  Live product ↗<span className="sr-only"> (opens in a new tab)</span>
-                </a>
-                <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="pill" data-variant="ghost">
-                  Code ↗<span className="sr-only"> (opens in a new tab)</span>
-                </a>
+                {project.links.live && (
+                  <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="pill">
+                    Live product ↗<span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                )}
+                {project.links.repo && (
+                  <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="pill" data-variant="ghost">
+                    Code ↗<span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                )}
               </div>
             </section>
           </article>

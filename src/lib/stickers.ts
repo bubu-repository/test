@@ -24,7 +24,7 @@ export const STICKERS: StickerDef[] = [
   { id: "clouds", name: "Cloud parter", hint: "Part the clouds in the home sky with your cursor.", emoji: "☁️" },
   { id: "night", name: "Night owl", hint: "Switch to the night sky.", emoji: "🦉" },
   { id: "pack", name: "Pack opener", hint: "Tear open the booster pack.", emoji: "🎴" },
-  { id: "collector", name: "Card collector", hint: "Read all three case studies.", emoji: "🃏" },
+  { id: "collector", name: "Card collector", hint: "Read all four case studies.", emoji: "🃏" },
   { id: "gacha", name: "Lucky capsule", hint: "Get a capsule from the gumball machine.", emoji: "🍬" },
   { id: "shell", name: "Shell native", hint: "Run five commands in the terminal.", emoji: "⌨️" },
   { id: "speed", name: "Speed reader", hint: "Finish the 40-second brief.", emoji: "⏱️" },

@@ -39,6 +39,7 @@ export const bio = {
     "My work starts in the field. I sit behind shop counters, shadow bid teams and ride the 06:40 train with the people I design for, then I turn what I saw into one sharp question the product has to answer. Most of my design work is deciding what to leave out.",
     "AI changes what an interface has to do. It has to show its sources, admit uncertainty, and make a wrong answer cheap to fix. That's the part I care about most, and it's why I prototype in code: you can't judge how an AI product feels from a static frame.",
   ],
+  team: "On a team, I'm the designer who goes to the field first, brings a working prototype to the second meeting, and writes every decision down with what it costs, so engineers and PMs can argue with it before it ships.",
   now: "Designing review flows for Indonesian-language AI agents, and writing up what I learned about citations as a trust pattern.",
   availability: "Open to full-time Product Designer roles on AI products, remote or in the Jakarta area.",
 };
@@ -86,8 +87,8 @@ export const experience: Experience[] = [
     period: "2024 — now",
     title: "Product Designer (independent)",
     org: "Self-employed, Bekasi",
-    summary: "Designing AI products from research to release for small teams, and three of my own: Tenderlens, Catat and Lintas. I prototype and ship the front end myself.",
-    highlights: ["Three products from first interview to real users", "130+ research sessions in Indonesian and English"],
+    summary: "Designed and shipped three AI products of my own, Tenderlens, Catat and Lintas, from the first interview to real users. I prototype and build the front end myself.",
+    highlights: ["Handed Tenderlens to a procurement consultancy and Catat to a cooperative; Lintas is open source", "130+ research sessions in Indonesian and English"],
   },
   {
     period: "2022 — 2024",
@@ -108,7 +109,19 @@ export const experience: Experience[] = [
   },
 ];
 
-/** Model card fields for /about (the page reads like a model card). */
+/** The plain facts a recruiter needs, on /about. CONTOH — ganti dengan data asli */
+export const practical: { label: string; value: string }[] = [
+  { label: "Looking for", value: "A full-time Product Designer role (individual contributor) on an AI product" },
+  { label: "Experience", value: "4 years in product design: 2 in-house at a Series A startup, 2 independent" },
+  { label: "Where", value: "Bekasi, Indonesia (GMT+7). Remote, or hybrid in Jakarta up to 3 days a week" },
+  { label: "Time zones", value: "4+ hours of overlap with anything from GMT+4 (Dubai) to GMT+10 (Sydney)" },
+  { label: "Start", value: "Within 2 weeks of an offer" },
+  { label: "Languages", value: "Indonesian (native), English (full professional)" },
+  { label: "References", value: "My former PM and engineering lead at the HR startup, and Bu Ratna (Tenderlens). On request" },
+  { label: "Why full-time now", value: "All three of my products are handed over or stable. I want to go deep on one product with a team for years, not alone on three for months." },
+];
+
+/** Model card fields for /lab (the page reads like a model card). */
 /* CONTOH — ganti dengan data asli */
 export const modelCard = {
   version: "v2026.10",
@@ -123,16 +136,8 @@ export const modelCard = {
     "Designing how an AI shows its work: sources, confidence, undo",
     "Turning field research into decisions a team can build on",
   ],
-  outOfScope: [
-    "Designing an AI feature nobody asked for",
-    "Shipping an agent without testing its mistakes with real people",
-    "Dark patterns",
-  ],
-  limitations: [
-    "Will ask 'who is this for?' more than once",
-    "Strong opinions about loading states and empty states",
-    "Needs a second coffee before 9 a.m. WIB",
-  ],
+  outOfScope: ["Designing an AI feature nobody asked for", "Shipping an agent without testing its mistakes with real people", "Dark patterns"],
+  limitations: ["Will ask 'who is this for?' more than once", "Strong opinions about loading states and empty states", "Needs a second coffee before 9 a.m. WIB"],
   evals: [
     { name: "Products designed and shipped", score: "3 / 3" },
     { name: "Research sessions, 2024–25", score: "130+" },

@@ -108,7 +108,7 @@ export function LintasCarriages() {
   return (
     <div className="ln">
       <p className="ln-hi">
-        Your train · <b>06:58 Bekasi line</b>
+        Your train · <b>07:14 from Kranji</b>
       </p>
       <div className="ln-hero">
         <span className="ln-label">Least crowded</span>

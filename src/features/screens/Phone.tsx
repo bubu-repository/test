@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * A phone, drawn in CSS: a graphite frame, a Dynamic Island and a status bar, with a product screen
+ * A phone, drawn in CSS: a graphite frame, a Dynamic Island (or an Android punch-hole) and a status bar, with a product screen
  * inside. Everything inside is sized in em off the phone's own width (container query units), so a
  * screen looks the same as a 180px thumbnail and as a 360px figure.
  */
@@ -10,6 +10,7 @@ export function Phone({
   children,
   time = "9:41",
   dark = false,
+  android = false,
   className,
   style,
   label,
@@ -17,12 +18,13 @@ export function Phone({
   children: ReactNode;
   time?: string;
   dark?: boolean;
+  android?: boolean;
   className?: string;
   style?: CSSProperties;
   label?: string;
 }) {
   return (
-    <div className={cn("dp", className)} style={style} role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true}>
+    <div className={cn("dp", android && "dp--android", className)} style={style} role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true}>
       <div className="dp__frame">
         <div className={cn("dp__screen", dark && "dp__screen--dark")}>
           <span className="dp__island" />

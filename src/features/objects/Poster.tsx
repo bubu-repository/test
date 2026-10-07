@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 import { edition, identity } from "@/content/profile";
 import { useNow } from "@/lib/hooks";
 import { sfx } from "@/lib/sound";
@@ -77,55 +77,19 @@ function PosterName() {
   );
 }
 
-function useScreen(): string | null {
-  return useSyncExternalStore(
-    (cb) => {
-      window.addEventListener("resize", cb);
-      return () => window.removeEventListener("resize", cb);
-    },
-    () => `${window.innerWidth}×${window.innerHeight}`,
-    () => null,
-  );
-}
-
-const pageStart = typeof performance !== "undefined" ? performance.now() : 0;
-
-/** A centisecond session timer that writes straight to the DOM (no re-render per frame). */
-function SessionTimer() {
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    let raf = 0;
-    let lastPaint = 0;
-    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const tick = (now: number) => {
-      if (now - lastPaint > (calm ? 1000 : 50) && ref.current) {
-        lastPaint = now;
-        const ms = now - pageStart;
-        const pad = (n: number) => String(n).padStart(2, "0");
-        ref.current.textContent = `${pad(Math.floor(ms / 3_600_000))}:${pad(Math.floor(ms / 60_000) % 60)}:${pad(Math.floor(ms / 1000) % 60)}:${pad(Math.floor(ms / 10) % 100)}`;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-  return <span ref={ref}>00:00:00:00</span>;
-}
-
-/** The live data stack from the 24:QW posters, with real values about Adelia and about you. */
+/** The live data stack from the 24:QW posters: her time and date, and whether she's open to work. */
 function DataStack() {
   const now = useNow();
-  const screen = useScreen();
   const date = now ? new Date(now * 1000) : null;
   const rows = [
     { value: date ? formatTime(identity.timeZone, date, true) : "--:--:--", label: "Time there", hl: "var(--mint)" },
-    { value: <SessionTimer />, label: "Your session", hl: "var(--violet)" },
+    { value: "Open to roles", label: "Status", hl: "var(--violet)" },
     {
       value: date ? new Intl.DateTimeFormat("en-GB", { timeZone: identity.timeZone, day: "2-digit", month: "2-digit", year: "numeric" }).format(date).replaceAll("/", ".") : "--.--.----",
       label: "Date",
       hl: "var(--lime)",
     },
-    { value: screen ?? "––––×–––", label: "Your screen", hl: "var(--cyan)" },
+    { value: "Within a day", label: "Replies", hl: "var(--cyan)" },
   ];
   return (
     <dl className="flex flex-col items-start gap-[3px]">

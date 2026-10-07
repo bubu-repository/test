@@ -8,7 +8,7 @@ export function Screen({ id, label, className }: { id: string; label?: string; c
   if (!s) return null;
   const { Component } = s;
   return (
-    <Phone time={s.time} dark={s.dark} label={label} className={cn(className)}>
+    <Phone time={s.time} dark={s.dark} android={s.android} label={label} className={cn(className)}>
       <Component />
     </Phone>
   );

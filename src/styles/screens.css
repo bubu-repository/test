@@ -103,6 +103,34 @@
   opacity: 0.85;
 }
 
+/* An Android phone (Catat runs on the cheap Android phones its owners carry): slimmer corners, a
+   punch-hole camera, a thinner gesture bar. */
+.dp--android .dp__frame {
+  padding: 2cqi;
+  border-radius: 9.5cqi;
+  background: linear-gradient(155deg, #3b4652 0%, #161b22 36%, #0d1116 66%, #2a333d 100%);
+}
+
+.dp--android .dp__screen {
+  border-radius: 7.8cqi;
+}
+
+.dp--android .dp__island {
+  top: 0.95em;
+  width: 1.1em;
+  height: 1.1em;
+  border-radius: 50%;
+}
+
+.dp--android .dp__status {
+  padding: 0.3em 1.5em 0 1.6em;
+}
+
+.dp--android .dp__home {
+  width: 6.4em;
+  height: 0.24em;
+}
+
 /* A dim layer over a screen when a sheet or notification sits on top. */
 .dp-dim {
   position: absolute;
@@ -1335,6 +1363,10 @@
   background: linear-gradient(160deg, #eaf6f0, #e3ebff);
 }
 
+.case-stage--ask-hr {
+  background: linear-gradient(160deg, #e8ebff, #fdf0dc);
+}
+
 .case-stage--catat {
   background: linear-gradient(160deg, #e3f5ea, #fbf1d6);
 }
@@ -1393,6 +1425,133 @@
   .case-stage__main {
     width: 190px;
   }
+}
+
+/* The click-through prototype: a phone on the project's stage, and the steps beside it. */
+.flow {
+  display: grid;
+  gap: 28px;
+}
+
+@media (min-width: 900px) {
+  .flow {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 56px;
+  }
+}
+
+.flow__stage {
+  display: flex;
+  justify-content: center;
+  padding: clamp(28px, 4vw, 48px) 16px;
+  border-radius: clamp(28px, 3vw, 40px);
+  box-shadow: inset 0 0 0 1px rgba(29, 42, 77, 0.06);
+}
+
+.flow__phone {
+  position: relative;
+  width: min(300px, 78vw);
+}
+
+.flow__screen {
+  animation: flow-in 260ms var(--ease-out) both;
+}
+
+@keyframes flow-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.flow__hot {
+  position: absolute;
+  z-index: 8;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 4.5px #ff3d7f;
+  animation:
+    flow-hot-in 300ms 260ms var(--ease-out) both,
+    flow-pulse 1.8s 560ms ease-in-out infinite;
+}
+
+.flow__hot:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@keyframes flow-hot-in {
+  from {
+    opacity: 0;
+    scale: 1.15;
+  }
+}
+
+@keyframes flow-pulse {
+  50% {
+    box-shadow:
+      0 0 0 2px #ffffff,
+      0 0 0 4.5px #ff3d7f,
+      0 0 0 12px rgba(255, 61, 127, 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow__screen,
+  .flow__hot {
+    animation: none;
+  }
+}
+
+.flow__steps {
+  display: grid;
+  gap: 6px;
+  margin-top: 22px;
+}
+
+.flow__step {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  text-align: left;
+  transition: background-color 180ms var(--ease-out);
+}
+
+.flow__step:hover {
+  background: var(--surface-2);
+}
+
+.flow__step[aria-current] {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.flow__step:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.flow__num {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  font-weight: 700;
+}
+
+.flow__step[aria-current] .flow__num {
+  background: var(--ink);
+  color: var(--surface-solid, #fff);
 }
 
 /* Iterations: three wireframes side by side, the shipped one marked. */
@@ -1504,7 +1663,179 @@
   rotate: 45deg;
 }
 
+/* "Where it is now": a small live dot. */
+.case-live {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #12a150;
+  box-shadow: 0 0 0 3px rgba(18, 161, 80, 0.18);
+}
+
+/* A decision's evidence table: the shipped row is the one with ink behind it. */
+.case-table {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.case-table table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+}
+
+.case-table caption {
+  padding: 14px 18px 10px;
+  text-align: left;
+  color: var(--muted);
+}
+
+.case-table th,
+.case-table td {
+  padding: 11px 18px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.case-table thead th {
+  font-size: var(--text-12);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.case-table tbody th {
+  font-weight: 500;
+}
+
+.case-table td {
+  white-space: nowrap;
+}
+
+.case-table tr[data-chosen] > * {
+  background: var(--accent-soft);
+  color: var(--on-fill);
+  font-weight: 700;
+}
+
+.case-table__pick {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--on-fill);
+  color: var(--accent-soft);
+  font-size: var(--text-11);
+  font-weight: 700;
+  vertical-align: 1px;
+}
+
+/* The raw research artefact: the sticky notes from a session, clustered the way we sorted them. */
+.case-board {
+  padding: 22px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 1px 1px, rgba(16, 23, 46, 0.12) 1px, transparent 1.4px) 0 0 / 18px 18px,
+    var(--surface-2);
+}
+
+.case-board__cols {
+  display: grid;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+@media (min-width: 720px) {
+  .case-board__cols {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.case-board__label {
+  font-size: var(--text-14);
+  font-weight: 700;
+}
+
+.case-board__notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.case-note {
+  --paper: #fff3a6;
+  width: calc(50% - 5px);
+  min-height: 92px;
+  padding: 10px 11px 14px;
+  border-radius: 2px 2px 10px 2px;
+  background: var(--paper);
+  color: #23200f;
+  font-size: var(--text-14);
+  font-stretch: 88%;
+  line-height: 1.3;
+  rotate: -1.2deg;
+  box-shadow:
+    0 1px 1px rgba(40, 30, 0, 0.12),
+    0 6px 12px -6px rgba(40, 30, 0, 0.3);
+}
+
+.case-note:nth-child(2n) {
+  rotate: 1deg;
+}
+
+.case-note:nth-child(3n) {
+  rotate: -0.4deg;
+}
+
+.case-board__col[data-k="1"] .case-note {
+  --paper: #ffd6e4;
+  color: #2a0f19;
+}
+
+.case-board__col[data-k="2"] .case-note {
+  --paper: #cfeaff;
+  color: #0c1f30;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .case-note {
+    transition: rotate 220ms var(--ease-out), translate 220ms var(--ease-out);
+  }
+
+  .case-note:hover {
+    rotate: 0deg;
+    translate: 0 -2px;
+  }
+}
+
 /* ---------- Work cards (home and /work) ---------- */
+/* /work's reading guide: a question you're hiring for, and the case that answers it. */
+.work-guide {
+  display: block;
+  height: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  transition:
+    border-color 200ms var(--ease-out),
+    translate 200ms var(--ease-out);
+}
+
+.work-guide:hover {
+  border-color: var(--ink);
+  translate: 0 -2px;
+}
+
+.work-guide:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .work-cards {
   display: grid;
   gap: 20px;
@@ -1605,6 +1936,15 @@
 
   .work-card--wide .work-card__body .link-arrow {
     margin-top: 0;
+  }
+
+  .work-card--flip .work-card__link {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+
+  .work-card--flip .work-card__stage {
+    order: 2;
+    margin: 8px 8px 8px 0;
   }
 }
 
@@ -1731,4 +2071,261 @@
   left: 50%;
   width: 52%;
   translate: -50% 0;
+}
+
+/* ---------- Ask HR: an HR app, indigo, amber for "waiting", rose for "a person only" ---------- */
+.ah {
+  --ah-ink: #111827;
+  --ah-muted: #6b7280;
+  --ah-line: #e5e7eb;
+  --ah-wash: #f4f5fb;
+  --ah-brand: #4f46e5;
+  --ah-brand-soft: #eef0ff;
+  --ah-wait: #b45309;
+  --ah-wait-soft: #fff4e0;
+  --ah-care: #be185d;
+  --ah-care-soft: #fde8f1;
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--ah-wash);
+  color: var(--ah-ink);
+}
+
+.ah-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.2em 1.05em 0.7em;
+  background: #ffffff;
+  border-bottom: 1px solid var(--ah-line);
+}
+
+.ah-bar b {
+  font-size: 1.05em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ah-bar small {
+  display: block;
+  color: var(--ah-muted);
+  font-size: 0.72em;
+}
+
+.ah-back {
+  color: var(--ah-brand);
+  font-size: 1.3em;
+  line-height: 1;
+}
+
+.ah-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.7em;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.9em 1.05em;
+}
+
+.ah-q {
+  align-self: flex-end;
+  max-width: 82%;
+  padding: 0.6em 0.8em;
+  border-radius: 1em 1em 0.25em 1em;
+  background: var(--ah-brand);
+  color: #ffffff;
+  font-size: 0.86em;
+  line-height: 1.35;
+}
+
+.ah-card {
+  padding: 0.9em;
+  border-radius: 1.1em;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.06), 0 0 0 1px var(--ah-line);
+  font-size: 0.86em;
+  line-height: 1.4;
+}
+
+.ah-card h4 {
+  font-size: 1.08em;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.ah-card p + p {
+  margin-top: 0.5em;
+}
+
+.ah-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.2em 0.55em;
+  border-radius: 1em;
+  background: var(--ah-brand-soft);
+  color: var(--ah-brand);
+  font-size: 0.74em;
+  font-weight: 650;
+}
+
+.ah-tag--wait {
+  background: var(--ah-wait-soft);
+  color: var(--ah-wait);
+}
+
+.ah-tag--care {
+  background: var(--ah-care-soft);
+  color: var(--ah-care);
+}
+
+.ah-src {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  margin-top: 0.7em;
+  padding: 0.55em 0.65em;
+  border: 1px solid var(--ah-line);
+  border-radius: 0.7em;
+  color: var(--ah-ink);
+  font-size: 0.86em;
+  font-weight: 600;
+}
+
+.ah-src::before {
+  content: "§";
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 0.4em;
+  background: var(--ah-brand-soft);
+  color: var(--ah-brand);
+  font-weight: 800;
+}
+
+.ah-src span {
+  margin-left: auto;
+  color: var(--ah-brand);
+}
+
+.ah-meta {
+  color: var(--ah-muted);
+  font-size: 0.72em;
+}
+
+.ah-row {
+  display: flex;
+  gap: 0.45em;
+  margin-top: 0.75em;
+}
+
+.ah-btn {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  height: 2.5em;
+  border-radius: 0.75em;
+  background: var(--ah-wash);
+  color: var(--ah-ink);
+  font-size: 0.86em;
+  font-weight: 650;
+}
+
+.ah-btn--go {
+  background: var(--ah-brand);
+  color: #ffffff;
+}
+
+.ah-btn--care {
+  background: var(--ah-care);
+  color: #ffffff;
+}
+
+.ah-who {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.ah-face {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #c7d2fe, #a5b4fc);
+  color: #312e81;
+  font-size: 0.9em;
+  font-weight: 750;
+}
+
+.ah-steps {
+  display: grid;
+  gap: 0.55em;
+  margin-top: 0.85em;
+}
+
+.ah-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  color: var(--ah-muted);
+  font-size: 0.9em;
+}
+
+.ah-steps li::before {
+  content: "";
+  flex: none;
+  width: 0.85em;
+  height: 0.85em;
+  border: 2px solid var(--ah-line);
+  border-radius: 50%;
+}
+
+.ah-steps li[data-done]::before {
+  border-color: var(--ah-brand);
+  background: var(--ah-brand);
+}
+
+.ah-steps li[data-now] {
+  color: var(--ah-ink);
+  font-weight: 650;
+}
+
+.ah-steps li[data-now]::before {
+  border-color: var(--ah-wait);
+  background: var(--ah-wait-soft);
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.15);
+}
+
+.ah-queue-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ah-peek {
+  height: 2.2em;
+  margin: -0.4em 0.6em 0;
+  border-radius: 0 0 1em 1em;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--ah-line);
+  opacity: 0.7;
+}
+
+.ah-lock {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin-top: 0.7em;
+  color: var(--ah-muted);
+  font-size: 0.78em;
 }

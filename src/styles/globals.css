@@ -2961,11 +2961,9 @@ html[data-theme-swap]::view-transition-new(root) {
 
 @media (min-width: 640px) {
   .device__controls {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas:
-      "dial switches keys"
-      "dial go keys";
-    gap: 16px 28px;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    grid-template-areas: "go keys";
+    gap: 12px;
   }
 }
 

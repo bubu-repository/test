@@ -12,7 +12,7 @@ const PLACES = ["hero-shot--a", "hero-shot--b", "hero-shot--c"];
 export function HeroScreens() {
   return (
     <ul className="hero-shots" aria-label="Selected work">
-      {projects.map((p, i) => (
+      {projects.slice(0, PLACES.length).map((p, i) => (
         <li key={p.slug} className={`hero-shot ${PLACES[i]}`}>
           <Link href={`/work/${p.slug}`} className="hero-shot__link" data-cursor="Open">
             <Screen id={KEY_SCREEN[p.slug]} className="hero-shot__phone" />

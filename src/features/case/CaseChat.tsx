@@ -160,12 +160,16 @@ function buildBeats(project: Project, next: Project): Beat[] {
         <>
           <p className="text-18 leading-snug font-semibold tracking-[-0.01em]">{project.reflection}</p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="pill" data-size="sm" data-variant="magenta">
-              Visit the live site ↗<span className="sr-only"> (opens in a new tab)</span>
-            </a>
-            <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="pill" data-size="sm">
-              View the repo ↗<span className="sr-only"> (opens in a new tab)</span>
-            </a>
+            {project.links.live && (
+              <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="pill" data-size="sm" data-variant="magenta">
+                Visit the live site ↗<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            )}
+            {project.links.repo && (
+              <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="pill" data-size="sm">
+                View the repo ↗<span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            )}
             <Link href={`/work/${next.slug}`} className="pill" data-size="sm" data-variant="ghost">
               Next: {next.name} <ArrowRightIcon width={14} height={14} />
             </Link>
@@ -183,10 +187,12 @@ function localAnswer(question: string, p: Project): string | null {
     return `${p.timeline}. The build ran in ${p.process.length} steps: ${p.process.map((st) => `${st.title.toLowerCase()} (${st.duration.toLowerCase()})`).join(", ")}.`;
   if (/(team|who else|alone|solo|by yourself|collaborat)/.test(q)) return `${p.team}. My part: ${p.role.title.toLowerCase()}. ${p.role.summary}`;
   if (/(stack|tech|built with|framework|language|database|model|llm)/.test(q)) return `The stack: ${p.stack.join(", ")}.`;
-  if (/(result|impact|metric|number|did it work|outcome|success|users?)/.test(q))
-    return `${p.results.metrics.map((m) => `${m.value} ${m.label}`).join("; ")}. ${p.results.body[0] ?? ""}`;
+  if (/(result|impact|metric|number|did it work|outcome|success|users?)/.test(q)) return `${p.results.metrics.map((m) => `${m.value} ${m.label}`).join("; ")}. ${p.results.body[0] ?? ""}`;
   if (/(role|owned|responsib|what did you do)/.test(q)) return `${p.role.title}. ${p.role.summary}`;
-  if (/(live|link|demo|repo|code|github|source|try it)/.test(q)) return `You can try it at ${p.links.live}, and the code is at ${p.links.repo}.`;
+  if (/(live|link|demo|repo|code|github|source|try it)/.test(q))
+    return p.links.live
+      ? `You can try it at ${p.links.live}${p.links.repo ? `, and the code is at ${p.links.repo}` : ""}.`
+      : `It's in-house work under NDA, so there's no public link: ${p.company ?? ""}`;
   if (/(hard|difficult|challenge|lesson|learn|differently|mistake)/.test(q)) return p.reflection;
   if (/(problem|why|pain|before)/.test(q)) return p.problem.body.join(" ");
   return null;
@@ -253,7 +259,15 @@ export function CaseChat({
   const [initial] = useState(() => {
     if (firstQuestion) {
       const id = uid();
-      return { liveId: id, typing: false, busy: true, entries: [{ id: uid(), kind: "user", text: firstQuestion }, { id, kind: "live", text: "", source: "claude", pending: true }] as Entry[] };
+      return {
+        liveId: id,
+        typing: false,
+        busy: true,
+        entries: [
+          { id: uid(), kind: "user", text: firstQuestion },
+          { id, kind: "live", text: "", source: "claude", pending: true },
+        ] as Entry[],
+      };
     }
     return { liveId: null, typing: true, busy: false, entries: [{ id: uid(), kind: "user", text: beats[0].ask }] as Entry[] };
   });

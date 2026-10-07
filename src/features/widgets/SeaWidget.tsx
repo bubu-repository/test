@@ -38,19 +38,22 @@ export function SeaWidget() {
           <p className="mt-3 text-[clamp(32px,4vw,48px)] leading-none font-bold tracking-[-0.04em]">{describe(height)}</p>
           <p className="mt-2 text-14 text-muted">{live ? "Live from the Java Sea, 30 km north of Bekasi." : "Can't reach the buoys right now, so here's a calm sea."}</p>
         </div>
-        <dl className="flex flex-wrap gap-2">
-          {[
-            { k: "Waves", v: height !== null ? `${height.toFixed(1)} m` : "–" },
-            { k: "Every", v: period !== null ? `${Math.round(period)} s` : "–" },
-            { k: "Water", v: live && sea!.waterTemperature !== null ? `${sea!.waterTemperature.toFixed(1)}°` : "–" },
-            ...(from ? [{ k: "From", v: from }] : []),
-          ].map((d) => (
-            <div key={d.k} className="seawidget__stat">
-              <dt className="type-pixel text-muted">{d.k}</dt>
-              <dd className="mt-1 text-20 font-bold tracking-[-0.02em] tabular-nums">{d.v}</dd>
-            </div>
-          ))}
-        </dl>
+        {/* Numbers only when they're real: no rows of dashes when the buoys are out of reach. */}
+        {live && (
+          <dl className="flex flex-wrap gap-2">
+            {[
+              { k: "Waves", v: height !== null ? `${height.toFixed(1)} m` : "–" },
+              { k: "Every", v: period !== null ? `${Math.round(period)} s` : "–" },
+              { k: "Water", v: live && sea!.waterTemperature !== null ? `${sea!.waterTemperature.toFixed(1)}°` : "–" },
+              ...(from ? [{ k: "From", v: from }] : []),
+            ].map((d) => (
+              <div key={d.k} className="seawidget__stat">
+                <dt className="type-pixel text-muted">{d.k}</dt>
+                <dd className="mt-1 text-20 font-bold tracking-[-0.02em] tabular-nums">{d.v}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         <SeaSoundToggle />
       </div>
       <div className="seawidget__water" aria-hidden="true">
