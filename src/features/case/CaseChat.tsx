@@ -78,7 +78,7 @@ function buildBeats(project: Project, next: Project): Beat[] {
                   <span className="text-muted tabular-nums">{o.pct}%</span>
                 </div>
                 <div className="mt-1 h-2 overflow-hidden rounded-pill bg-surface-2" aria-hidden="true">
-                  <div className="h-full rounded-pill bg-accent" style={{ width: `${o.pct}%` }} />
+                  <div className="h-full rounded-pill bar-fill" style={{ width: `${o.pct}%` }} />
                 </div>
               </li>
             ))}
@@ -343,7 +343,7 @@ export function CaseChat({
     <section aria-label={`${project.name}, told as a conversation`} className="mx-auto w-full max-w-[760px]" data-xr="CaseChat · scripted story + live answers">
       <div className="mb-6 flex items-center gap-3" aria-hidden="true">
         <div className="h-1 flex-1 overflow-hidden rounded-pill bg-surface-2">
-          <div className="h-full rounded-pill bg-accent transition-[width] duration-500" style={{ width: `${(shown / beats.length) * 100}%` }} />
+          <div className="h-full rounded-pill bar-fill transition-[width] duration-500" style={{ width: `${(shown / beats.length) * 100}%` }} />
         </div>
         <span className="text-12 font-semibold text-muted tabular-nums">
           {shown}/{beats.length}

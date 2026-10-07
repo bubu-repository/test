@@ -1,16 +1,15 @@
 import Link from "next/link";
 import { projects } from "@/content/projects";
-import { BoosterPack, ResealPack } from "../work/BoosterPack";
-import { HoloCard } from "../work/HoloCard";
+import { BoosterPacks } from "../work/BoosterPack";
 import { ProjectIcon } from "../work/ProjectIcon";
 
 /**
- * Home: the three products come sealed in a booster pack. Tear it open and they are dealt face
- * down, then flip over as holographic trading cards. The app icons sit tucked into the headline.
+ * Home: the three products come sealed in three booster packs. Tear one open and its card pops
+ * out face down, then flips over as a holographic trading card. The app icons sit in the headline.
  */
 export function WorkTeaser() {
   return (
-    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16" data-xr="WorkTeaser · a booster pack of holo cards">
+    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16" data-xr="WorkTeaser · three booster packs of holo cards">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <div className="max-w-[44rem]">
           <p className="type-eyebrow">Selected work</p>
@@ -31,27 +30,16 @@ export function WorkTeaser() {
           </h2>
         </div>
         <div className="max-w-[36ch] pb-2">
-          <p className="text-muted">Each one started as somebody&apos;s messy request and ended as something people use every day. They come in a pack: open it.</p>
+          <p className="text-muted">Each one started as somebody&apos;s messy request and ended as something people use every day. They come in packs: tear them open.</p>
           <Link href="/work" className="link-arrow mt-3">
             All work, and the quick read
           </Link>
         </div>
       </div>
 
-      <div className="mt-14 text-center md:mt-20">
-        <BoosterPack count={projects.length} />
-      </div>
-
       {/* CONTOH — ganti dengan data asli */}
-      <ol className="cards-grid mx-auto mt-4 grid max-w-[1120px] gap-6 md:grid-cols-2 lg:grid-cols-3" aria-label="Case studies">
-        {projects.map((project) => (
-          <li key={project.slug} data-card className="mx-auto w-full max-w-[360px] min-w-0">
-            <HoloCard project={project} total={projects.length} level={3} />
-          </li>
-        ))}
-      </ol>
-      <div className="reseal mt-10 flex justify-center">
-        <ResealPack />
+      <div className="mt-14 md:mt-20">
+        <BoosterPacks projects={projects} level={3} />
       </div>
     </section>
   );

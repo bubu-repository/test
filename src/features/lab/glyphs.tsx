@@ -39,6 +39,8 @@ const GLYPHS: Record<string, string> = {
   sea: "〰",
   "sea-widget": "≈",
   sky: "☁",
+  mp3: "♫",
+  "cd-shelf": "◎",
   secret: "↑↑",
 };
 

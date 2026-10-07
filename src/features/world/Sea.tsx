@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { applySound, getSound } from "@/lib/preferences";
 import { ambience, sfx } from "@/lib/sound";
 
@@ -32,7 +32,7 @@ type Ripple = { id: number; x: number; y: number };
 
 /**
  * The sea at the bottom of every page: the horizon, lines of swell drifting at different speeds,
- * the sun's glitter (the moon's at night) and a paper boat. Tap the water and it ripples, plops,
+ * the sun's glitter (the moon's at night), a paper boat and gulls. Tap the water and it ripples, plops,
  * and the boat sails over. The footer's spec plate floats on it.
  */
 export function Sea({ children }: { children: ReactNode }) {
@@ -56,6 +56,8 @@ export function Sea({ children }: { children: ReactNode }) {
 
   return (
     <div className="sea" onPointerDown={splash} data-cursor="Splash" data-xr="Sea · CSS mask swell + Web Audio ambience">
+      <span className="sea__gull" aria-hidden="true" style={{ "--y": "-92px", "--t": "26s", "--d": "2s" } as CSSProperties} />
+      <span className="sea__gull" aria-hidden="true" style={{ "--y": "-58px", "--t": "34s", "--d": "11s" } as CSSProperties} />
       <div className="sea__surface" aria-hidden="true">
         <div className="sea__glare" />
         <div className="sea__swell sea__swell--1" />

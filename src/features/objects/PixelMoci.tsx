@@ -3,7 +3,7 @@
 import { dispatch } from "@/lib/actions";
 import { sfx } from "@/lib/sound";
 
-/* Moci as an 11×8 sprite: "#" body, "o" eye, "w" shine, "." blush. Two frames for the feet. */
+/* Moci as an 11×8 sprite of a water drop: "#" water, "w" shine, "o" eye, "." blush. Two frames for the feet. */
 const BODY = ["   #####   ", "  #w#####  ", " ######### ", " #o#####o# ", " ######### ", " ##.###.## ", "  #######  "];
 const FEET = [["  ##   ##  "], ["   ## ##   "]];
 
@@ -11,10 +11,10 @@ function pixels(rows: string[], y0: number) {
   const out: { x: number; y: number; c: string }[] = [];
   rows.forEach((row, y) =>
     Array.from(row).forEach((ch, x) => {
-      if (ch === "#") out.push({ x, y: y + y0, c: "var(--accent)" });
-      else if (ch === "w") out.push({ x, y: y + y0, c: "#ffd1e8" });
-      else if (ch === "o") out.push({ x, y: y + y0, c: "#1b1a18" });
-      else if (ch === ".") out.push({ x, y: y + y0, c: "#c2006b" });
+      if (ch === "#") out.push({ x, y: y + y0, c: y + y0 > 4 ? "#9fd0ff" : "#c9e6ff" });
+      else if (ch === "w") out.push({ x, y: y + y0, c: "#ffffff" });
+      else if (ch === "o") out.push({ x, y: y + y0, c: "#1d2a4d" });
+      else if (ch === ".") out.push({ x, y: y + y0, c: "#ff9cc9" });
     }),
   );
   return out;
@@ -51,7 +51,7 @@ export function PixelMoci() {
             {frames.map((f, i) => (
               <g key={i} className={`pixel-moci__frame pixel-moci__frame--${i}`}>
                 {f.map((p) => (
-                  <rect key={`f${p.x}-${p.y}`} x={p.x} y={p.y} width="1" height="1" fill="#c2006b" />
+                  <rect key={`f${p.x}-${p.y}`} x={p.x} y={p.y} width="1" height="1" fill="#6fb2f2" />
                 ))}
               </g>
             ))}

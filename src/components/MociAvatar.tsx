@@ -1,8 +1,8 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Moci as a small CSS jelly: magenta body, glossy highlight, blinking eyes.
- * The big WebGL version lives in the hero; this one is for the chat, tour and 404.
+ * Moci, a drop of clear water: the body refracts whatever is behind it, with a bright rim, glints,
+ * a blue pool of light at the bottom, blush and blinking eyes. Used everywhere Moci shows up.
  */
 export function MociAvatar({ size = 40, mood = "happy", className }: { size?: number; mood?: "happy" | "think" | "oops"; className?: string }) {
   return (

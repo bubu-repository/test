@@ -8,11 +8,11 @@ import { ambience, sfx } from "@/lib/sound";
 /** Anything you can press or pick. */
 const PRESSABLE = 'a[href], button, [role="button"], [role="tab"], [role="radio"], [role="switch"], [role="option"], summary, label[for], input[type="checkbox"], input[type="radio"], select';
 /** Glass that catches the light under the pointer. */
-const GLASS = ".widget, .device, .spec-plate, [data-glass-light]";
+const GLASS = ".widget, .device, .spec-plate, .ipod, [data-glass-light]";
 /** What fades up into view as you scroll, on every page. */
 const REVEAL = "main :is(h2, .type-eyebrow, .type-lead, .widget, .polaroid, .spec-plate, [data-rv-item]), footer :is(h2, .type-eyebrow, .spec-plate)";
-/** Never animated in: the hero, the pack and its cards (they have their own entrance), dialogs. */
-const SKIP = "#hero, .pack, .cards-grid, dialog, [data-no-reveal]";
+/** Never animated in: the hero, the packs and their cards (they have their own entrance), dialogs. */
+const SKIP = "#hero, .packs, dialog, [data-no-reveal]";
 
 /**
  * The layer that makes every page feel alive, without each page wiring it up:
@@ -72,16 +72,33 @@ export function WorldHost() {
     sfx.wave();
   }, [pathname]);
 
-  // Light: the glass under the pointer brightens where the pointer is.
+  // Light: the glass under the pointer brightens where the pointer is. Tilt: in a tilt zone (the
+  // hero), the object leans a few degrees toward the pointer.
   useEffect(() => {
     if (!window.matchMedia("(hover: hover)").matches) return;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let lit: HTMLElement | null = null;
+    let tilted: HTMLElement | null = null;
     let frame = 0;
     let last: PointerEvent | null = null;
     const paint = () => {
       frame = 0;
       const e = last;
       if (!e) return;
+      const zone = still ? null : ((e.target as Element | null)?.closest?.<HTMLElement>("[data-tilt-zone]") ?? null);
+      const tilt = zone?.querySelector<HTMLElement>("[data-tilt]") ?? null;
+      if (tilted && tilted !== tilt) {
+        tilted.style.setProperty("--tilt-x", "0deg");
+        tilted.style.setProperty("--tilt-y", "0deg");
+      }
+      tilted = tilt;
+      if (zone && tilt) {
+        const z = zone.getBoundingClientRect();
+        const px = (e.clientX - z.left) / z.width - 0.5;
+        const py = (e.clientY - z.top) / z.height - 0.5;
+        tilt.style.setProperty("--tilt-x", `${(-py * 5).toFixed(2)}deg`);
+        tilt.style.setProperty("--tilt-y", `${(px * 6).toFixed(2)}deg`);
+      }
       const el = (e.target as Element | null)?.closest?.<HTMLElement>(GLASS) ?? null;
       if (lit && lit !== el) {
         lit.style.removeProperty("--gx");

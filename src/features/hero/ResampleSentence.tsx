@@ -187,7 +187,7 @@ function Token({ slot, choice, onChoose, first, color }: { slot: Slot; choice: n
             >
               <span className="min-w-0 flex-1 truncate">{o.text}</span>
               <span aria-hidden="true" className="h-2 w-16 overflow-hidden rounded-pill bg-surface-2">
-                <span className="block h-full rounded-pill bg-accent" style={{ width: `${o.p * 100}%` }} />
+                <span className="block h-full rounded-pill bar-fill" style={{ width: `${o.p * 100}%` }} />
               </span>
               <span className="w-10 text-right font-mono text-12 tabular-nums">{o.p.toFixed(2)}</span>
             </span>

@@ -4,8 +4,7 @@ import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
 import { PageHeader } from "@/components/PageHeader";
 import { projects } from "@/content/projects";
-import { BoosterPack, ResealPack } from "@/features/work/BoosterPack";
-import { HoloCard } from "@/features/work/HoloCard";
+import { BoosterPacks } from "@/features/work/BoosterPack";
 
 export const metadata: Metadata = pageMeta({
   title: "Work",
@@ -24,19 +23,10 @@ export default function WorkPage() {
             Three products, shipped <span className="sticker-text">end to end</span>.
           </>
         }
-        lead="Each one started as somebody's messy request and ended as a product people use every day. Open the pack, then tap a card for the full case study."
+        lead="Each one started as somebody's messy request and ended as a product people use every day. Tear open the packs, then tap a card for the full case study."
       >
-        <BoosterPack count={projects.length} />
-
-        <ol className="cards-grid mx-auto mt-14 grid max-w-[1120px] gap-6 text-left md:grid-cols-2 lg:grid-cols-3" aria-label="Projects">
-          {projects.map((project) => (
-            <li key={project.slug} data-card className="mx-auto w-full max-w-[360px] min-w-0">
-              <HoloCard project={project} total={projects.length} />
-            </li>
-          ))}
-        </ol>
-        <div className="reseal mt-8 flex justify-center">
-          <ResealPack />
+        <div className="mt-14">
+          <BoosterPacks projects={projects} />
         </div>
       </PageHeader>
 

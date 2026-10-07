@@ -504,6 +504,29 @@
     --pill-shadow: inset 0 1px 0 #ffffff, 0 0 0 1px rgba(244, 27, 141, 0.16), 0 2px 0 rgba(230, 120, 175, 0.45), 0 8px 20px rgba(244, 110, 175, 0.24);
   }
 
+  .pill[data-variant="magenta"] {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .pill[data-variant="magenta"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.85) 50%, transparent 68%);
+    transform: translateX(-130%);
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .pill[data-variant="magenta"]:hover::after {
+      transform: translateX(130%);
+      transition: transform 760ms var(--ease-out);
+    }
+  }
+
   [data-theme="dark"] .pill[data-variant="magenta"] {
     --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 55%), linear-gradient(180deg, #ffd0e7, var(--accent-soft) 60%, var(--accent-soft-2));
     --pill-fg: #3a0a24;
@@ -932,6 +955,30 @@
   animation-duration: 0s;
 }
 
+::view-transition-old(.page-fade) {
+  animation: page-out 240ms var(--ease-in-out) both;
+}
+
+::view-transition-new(.page-fade) {
+  animation: page-in 560ms var(--ease-out) 60ms both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.992);
+    filter: blur(6px);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(8px);
+  }
+}
+
 ::view-transition-group(.card-morph) {
   animation-duration: 560ms;
   animation-timing-function: var(--ease-out);
@@ -1235,25 +1282,68 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-/* ---------- Moci, the small CSS jelly ---------- */
+/* ---------- Moci, a drop of clear water ---------- */
+/*
+ * The body is clear: it blurs and brightens what is behind it (like a lens of water), with a bright
+ * rim, two glints, a blue refraction pooling at the bottom and a soft caustic under it.
+ */
+.moci-avatar {
+  --drop-ink: #1d2a4d;
+  --drop-blush: rgba(255, 150, 196, 0.55);
+}
+
+[data-theme="dark"] .moci-avatar {
+  --drop-ink: #eaf0fa;
+  --drop-blush: rgba(255, 150, 196, 0.45);
+}
+
 .moci-avatar__body {
   position: absolute;
   inset: 0;
   border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
   background:
-    radial-gradient(60% 42% at 34% 26%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 60%),
-    radial-gradient(90% 80% at 50% 110%, var(--jelly-core) 0%, transparent 60%),
-    radial-gradient(120% 120% at 30% 20%, var(--jelly-light) 0%, var(--accent) 45%, var(--jelly-deep) 100%);
+    radial-gradient(34% 22% at 33% 24%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(14% 8% at 72% 80%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 75%),
+    radial-gradient(95% 60% at 50% 108%, rgba(120, 190, 255, 0.55), rgba(120, 190, 255, 0) 70%),
+    radial-gradient(120% 120% at 30% 18%, rgba(255, 255, 255, 0.5), rgba(214, 236, 255, 0.22) 55%, rgba(160, 205, 255, 0.4) 100%);
+  -webkit-backdrop-filter: blur(1.5px) saturate(1.8) brightness(1.08);
+  backdrop-filter: blur(1.5px) saturate(1.8) brightness(1.08);
   box-shadow:
-    inset 0 -4px 10px rgba(80, 0, 60, 0.35),
-    inset 0 2px 0 rgba(255, 255, 255, 0.6),
-    0 6px 16px var(--glow);
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.9),
+    inset 0 -5px 9px rgba(80, 150, 235, 0.3),
+    inset 3px 5px 8px rgba(255, 255, 255, 0.55),
+    0 5px 12px rgba(60, 120, 210, 0.2);
+}
+
+[data-theme="dark"] .moci-avatar__body {
+  background:
+    radial-gradient(34% 22% at 33% 24%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 72%),
+    radial-gradient(14% 8% at 72% 80%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 75%),
+    radial-gradient(95% 60% at 50% 108%, rgba(120, 190, 255, 0.5), rgba(120, 190, 255, 0) 70%),
+    radial-gradient(120% 120% at 30% 18%, rgba(200, 225, 255, 0.32), rgba(150, 190, 255, 0.16) 55%, rgba(120, 170, 255, 0.3) 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(220, 235, 255, 0.6),
+    inset 0 -5px 9px rgba(80, 150, 235, 0.35),
+    0 5px 14px rgba(80, 150, 255, 0.25);
+}
+
+/* Blush under the eyes. */
+.moci-avatar__body::after {
+  content: "";
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  top: 56%;
+  height: 9%;
+  background:
+    radial-gradient(closest-side, var(--drop-blush), transparent) left / 24% 100% no-repeat,
+    radial-gradient(closest-side, var(--drop-blush), transparent) right / 24% 100% no-repeat;
 }
 
 .moci-avatar__eyes {
   position: absolute;
   left: 50%;
-  top: 44%;
+  top: 42%;
   display: flex;
   gap: 22%;
   width: 46%;
@@ -1262,18 +1352,39 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .moci-avatar__eyes span {
+  position: relative;
   display: block;
   width: 18%;
   aspect-ratio: 0.75;
   min-width: 3px;
   border-radius: 999px;
-  background: var(--jelly-ink);
+  background: var(--drop-ink);
   transform-origin: center;
+}
+
+/* A catchlight in each eye. */
+.moci-avatar__eyes span::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  left: 22%;
+  width: 36%;
+  height: 28%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] .moci-avatar__eyes span::after {
+  background: rgba(29, 42, 77, 0.7);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .moci-avatar__eyes span {
     animation: blink 5.5s infinite;
+  }
+
+  .moci-avatar__body {
+    animation: drop-wobble 4.8s var(--ease-in-out) infinite;
   }
 
   .moci-avatar[data-mood="think"] .moci-avatar__body {
@@ -1283,21 +1394,33 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
+/* Water never sits perfectly still. */
+@keyframes drop-wobble {
+  0%,
+  100% {
+    border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  }
+
+  50% {
+    border-radius: 48% 52% 44% 48% / 55% 60% 40% 45%;
+  }
+}
+
 .moci-avatar__mouth {
   position: absolute;
   left: 50%;
-  top: 62%;
+  top: 60%;
   width: 16%;
   height: 8%;
   transform: translateX(-50%);
-  border-bottom: 2px solid var(--jelly-ink);
+  border-bottom: 2px solid var(--drop-ink);
   border-radius: 0 0 999px 999px;
 }
 
 .moci-avatar[data-mood="oops"] .moci-avatar__mouth {
-  top: 64%;
+  top: 62%;
   height: 10%;
-  border: 2px solid var(--jelly-ink);
+  border: 2px solid var(--drop-ink);
   border-radius: 999px;
 }
 
@@ -1403,8 +1526,11 @@ html[data-theme-swap]::view-transition-new(root) {
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  background: transparent;
-  border: 1.5px solid color-mix(in srgb, var(--ink) 35%, transparent);
+  background: radial-gradient(40% 30% at 32% 26%, rgba(255, 255, 255, 0.85), transparent 70%), rgba(190, 225, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent), inset 0 -3px 6px rgba(80, 150, 235, 0.25);
+  -webkit-backdrop-filter: blur(1px) saturate(1.8) brightness(1.06);
+  backdrop-filter: blur(1px) saturate(1.8) brightness(1.06);
   transition:
     background-color var(--dur-micro) var(--ease-out),
     border-color var(--dur-micro) var(--ease-out),
@@ -1412,8 +1538,8 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .cursor-blob[data-mode="hover"] {
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  background: radial-gradient(40% 30% at 32% 26%, rgba(255, 255, 255, 0.9), transparent 70%), rgba(160, 210, 255, 0.22);
+  border-color: #ffffff;
 }
 
 .cursor-blob[data-mode="hover"][data-label="on"] {
@@ -1448,7 +1574,7 @@ html[data-theme-swap]::view-transition-new(root) {
   margin: -8px 0 0 -8px;
   z-index: 191;
   pointer-events: none;
-  border: 1.5px solid var(--accent);
+  border: 1.5px solid rgba(120, 190, 255, 0.9);
   border-radius: 999px;
 }
 
@@ -4112,16 +4238,30 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-/* The reveal: cards come out of the pack face down and flip, rarest last. */
+/* The reveal: the card pops out of its pack face down, then flips over. */
 @media (prefers-reduced-motion: no-preference) {
-  html[data-dealing] .tcg__flipper {
-    animation: tcg-reveal 820ms var(--ease-out) both;
-    animation-delay: calc(1350ms + var(--i) * 450ms);
+  .packslot[data-dealing] .packslot__card {
+    animation: card-pop 640ms var(--ease-jelly) both;
   }
 
-  html[data-dealing] .tcg[data-finish="holo"] .tcg__glare {
-    animation: tcg-flash 900ms var(--ease-out) both;
-    animation-delay: calc(1850ms + var(--i) * 450ms);
+  .packslot[data-dealing] .tcg__flipper {
+    animation: tcg-reveal 820ms var(--ease-out) 280ms both;
+  }
+
+  .packslot[data-dealing] .tcg[data-finish="holo"] .tcg__glare {
+    animation: tcg-flash 900ms var(--ease-out) 700ms both;
+  }
+}
+
+@keyframes card-pop {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(0.78) rotate(-5deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -4179,22 +4319,165 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-/* ---------- Booster pack ---------- */
-.pack {
+/* ---------- Booster packs: one product in each ---------- */
+.packrow {
+  display: grid;
+  gap: clamp(20px, 3vw, 32px);
+  max-width: 1120px;
+  margin-inline: auto;
+  text-align: left;
+}
+
+/* Phones: a row you swipe through, with the next pack peeking in. */
+@media (max-width: 639px) {
+  .packrow {
+    display: flex;
+    gap: 14px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 6px var(--gutter) 22px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .packrow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .packslot {
+    flex: 0 0 80%;
+    scroll-snap-align: center;
+  }
+}
+
+@media (min-width: 640px) {
+  .packrow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .packrow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Each slot keeps the card's size, so nothing moves when a pack turns into its card. */
+.packslot {
+  position: relative;
+  display: grid;
+  width: 100%;
+  max-width: 360px;
+  margin-inline: auto;
+}
+
+.packslot > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.packslot__pack {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 63 / 88;
+}
+
+.packslot__card {
+  display: none;
+  position: relative;
+}
+
+/* Which packs are open lives on <html data-opened="0 2">, set before paint. */
+html[data-opened~="0"] .packslot[data-i="0"] .packslot__pack,
+html[data-opened~="1"] .packslot[data-i="1"] .packslot__pack,
+html[data-opened~="2"] .packslot[data-i="2"] .packslot__pack,
+html[data-opened~="3"] .packslot[data-i="3"] .packslot__pack,
+html[data-opened~="4"] .packslot[data-i="4"] .packslot__pack,
+html[data-opened~="5"] .packslot[data-i="5"] .packslot__pack {
   display: none;
 }
 
-@media (scripting: enabled) {
-  html[data-pack="sealed"] .pack,
-  html[data-pack="tearing"] .pack {
-    display: grid;
+html[data-opened~="0"] .packslot[data-i="0"] .packslot__card,
+html[data-opened~="1"] .packslot[data-i="1"] .packslot__card,
+html[data-opened~="2"] .packslot[data-i="2"] .packslot__card,
+html[data-opened~="3"] .packslot[data-i="3"] .packslot__card,
+html[data-opened~="4"] .packslot[data-i="4"] .packslot__card,
+html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
+  display: block;
+}
+
+/* No JavaScript, no tearing: just show the cards. */
+@media (scripting: none) {
+  .packslot__pack {
+    display: none;
   }
 
-  html[data-pack="sealed"] .cards-grid,
-  html[data-pack="sealed"] .reseal,
-  html[data-pack="tearing"] .cards-grid,
-  html[data-pack="tearing"] .reseal {
-    display: none;
+  .packslot__card {
+    display: block;
+  }
+}
+
+/* Each pack's foil follows its product's colour. */
+.packslot {
+  --foil: linear-gradient(165deg, #ffd3e9, #f9b4d9 28%, #e3c4ff 62%, #c6d8ff 92%);
+}
+
+.packslot[data-tone="cobalt"] {
+  --foil: linear-gradient(165deg, #d9ecff, #a9d2ff 30%, #b9c6ff 62%, #d6ccff 92%);
+}
+
+.packslot[data-tone="violet"] {
+  --foil: linear-gradient(165deg, #ece3ff, #cdbaff 30%, #b4c8ff 62%, #a8e0f0 92%);
+}
+
+/* Sparkles thrown by a holo rare as it comes out. */
+.packslot__burst {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  pointer-events: none;
+}
+
+.packslot__burst i {
+  position: absolute;
+  left: -7px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  opacity: 0;
+}
+
+.packslot__burst i:nth-child(3n) {
+  background: #ffd3ea;
+}
+
+.packslot__burst i:nth-child(3n + 1) {
+  background: #cfe6ff;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .packslot[data-dealing][data-finish="holo"] .packslot__burst i,
+  .packslot[data-dealing][data-finish="reverse"] .packslot__burst i:nth-child(odd) {
+    animation: burst 900ms var(--ease-out) 620ms both;
+  }
+}
+
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateY(0) scale(0.4);
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateY(calc(var(--d) * -1.9)) scale(1);
   }
 }
 
@@ -4206,19 +4489,44 @@ html[data-theme-swap]::view-transition-new(root) {
   --prx: 0deg;
   --pry: 0deg;
   position: relative;
-  width: min(280px, 72vw);
+  display: block;
+  width: 84%;
   aspect-ratio: 5 / 8;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
   container-type: inline-size;
   transform: perspective(900px) rotateX(var(--prx)) rotateY(var(--pry));
-  transition: transform 500ms var(--ease-out);
-  filter: drop-shadow(0 26px 28px rgba(15, 23, 42, 0.2)) drop-shadow(0 3px 5px rgba(15, 23, 42, 0.14));
+  transition:
+    transform 500ms var(--ease-out),
+    filter 300ms var(--ease-out);
+  filter: drop-shadow(0 22px 24px rgba(40, 80, 150, 0.2)) drop-shadow(0 3px 5px rgba(15, 23, 42, 0.12));
+}
+
+.pack__body:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 0 var(--accent)) drop-shadow(0 0 6px var(--accent)) drop-shadow(0 22px 24px rgba(40, 80, 150, 0.2));
+}
+
+@media (hover: hover) {
+  .pack__body:hover {
+    filter: drop-shadow(0 30px 30px rgba(40, 80, 150, 0.26)) drop-shadow(0 3px 5px rgba(15, 23, 42, 0.12));
+  }
+}
+
+/* Every part of the pack is a span (it lives in a button); block by default, without beating the parts' own display. */
+:where(.pack__body) span {
+  display: block;
 }
 
 .pack__foil,
 .pack__strip-foil {
   background:
     radial-gradient(120% 70% at 25% 0%, rgba(255, 255, 255, 0.55), transparent 55%),
-    linear-gradient(165deg, #ffd3e9, #f9b4d9 28%, #cdbaff 60%, #a8d4ff 92%);
+    var(--foil);
   background-size: 100% 115cqi, 100% 160cqi;
   background-repeat: no-repeat;
 }
@@ -4272,13 +4580,12 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 /* The inside of the pack, seen under the lifted strip: the tops of three card backs. */
-.pack__mouth {
+.pack__body .pack__mouth {
   position: absolute;
   inset: 5% 3% auto;
   z-index: 1;
   display: flex;
   justify-content: center;
-  gap: 3%;
   height: 11%;
   padding-top: 3.5%;
   overflow: hidden;
@@ -4286,8 +4593,8 @@ html[data-theme-swap]::view-transition-new(root) {
   background: linear-gradient(180deg, #1d2a4d, #34406e);
 }
 
-.pack__mouth span {
-  width: 28%;
+.pack__body .pack__mouth span {
+  width: 72%;
   border-radius: 2cqi 2cqi 0 0;
   background:
     radial-gradient(circle at 50% 110%, rgba(244, 27, 141, 0.7), transparent 60%),
@@ -4295,9 +4602,7 @@ html[data-theme-swap]::view-transition-new(root) {
   box-shadow: 0 0 0 1.2cqi #c9d1dc inset;
 }
 
-.pack__mouth span:nth-child(2) {
-  margin-top: -2%;
-}
+
 
 /* The perforation, and the torn edge that runs along it as you drag. */
 .pack__perf {
@@ -4371,7 +4676,8 @@ html[data-theme-swap]::view-transition-new(root) {
   color: #1d2a4d;
 }
 
-.pack__brand {
+.pack__body .pack__brand {
+  display: inline-block;
   padding: 2cqi 4.2cqi;
   border-radius: 999px;
   font: 700 3.6cqi/1 var(--font-mono);
@@ -4385,29 +4691,37 @@ html[data-theme-swap]::view-transition-new(root) {
   color: #ff8cc8;
 }
 
-.pack__mascot {
-  display: grid;
-  place-items: center;
-  width: 40cqi;
-  height: 40cqi;
-  border-radius: 999px;
-  background: radial-gradient(circle at 35% 30%, #ffffff, #ffe3f1 60%, #ffc4e1);
-  box-shadow:
-    0 0 0 2cqi rgba(255, 255, 255, 0.3),
-    0 4cqi 8cqi rgba(80, 0, 40, 0.35);
+.pack__no {
+  font: 800 44cqi/0.8 var(--font-display);
+  font-stretch: 75%;
+  letter-spacing: -0.06em;
+  color: rgba(255, 255, 255, 0.55);
+  -webkit-text-stroke: 1.2cqi #ffffff;
+  paint-order: stroke fill;
+  text-shadow: 0 1.6cqi 3cqi rgba(80, 60, 160, 0.22);
 }
 
 .pack__title {
-  font: 800 19cqi/0.84 var(--font-display);
-  font-stretch: 78%;
-  letter-spacing: -0.04em;
-  -webkit-text-stroke: 1.6cqi #ffffff;
+  margin-top: -2cqi;
+  font: 800 11cqi/0.9 var(--font-display);
+  font-stretch: 80%;
+  letter-spacing: -0.035em;
+  -webkit-text-stroke: 1.1cqi #ffffff;
   paint-order: stroke fill;
-  text-shadow: 0 1.2cqi 2cqi rgba(80, 60, 160, 0.25);
 }
 
-.pack__meta {
+.pack__theme {
+  max-width: 80%;
+  font-size: 4.4cqi;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #33416a;
+}
+
+.pack__body .pack__meta {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 2cqi;
   font: 600 3.3cqi/1 var(--font-mono);
   letter-spacing: 0.14em;
@@ -4419,13 +4733,6 @@ html[data-theme-swap]::view-transition-new(root) {
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 1.4cqi;
   background: rgba(255, 255, 255, 0.45);
-}
-
-.pack__count {
-  font-size: 4cqi;
-  font-weight: 600;
-  line-height: 1.3;
-  color: #33416a;
 }
 
 /* A hologram seal in the corner, like the real ones. */
@@ -4451,8 +4758,7 @@ html[data-theme-swap]::view-transition-new(root) {
   rotate: -12deg;
 }
 
-html[data-pack="tearing"] .pack > button,
-html[data-pack="tearing"] .pack-hint {
+.packslot[data-state="tearing"] .pack__strip-label {
   opacity: 0;
   transition: opacity 200ms var(--ease-out);
 }
@@ -4462,11 +4768,11 @@ html[data-pack="tearing"] .pack-hint {
     animation: pack-float 3.6s var(--ease-in-out) infinite alternate;
   }
 
-  html[data-pack="tearing"] .pack__strip {
+  .packslot[data-state="tearing"] .pack__strip {
     animation: pack-strip-off 460ms var(--ease-in) forwards;
   }
 
-  html[data-pack="tearing"] .pack__body {
+  .packslot[data-state="tearing"] .pack__body {
     animation: pack-burst 520ms var(--ease-out) forwards;
   }
 }
@@ -4746,7 +5052,8 @@ html[data-pack="tearing"] .pack-hint {
 .sea {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   padding: clamp(170px, 19vw, 240px) 0 clamp(40px, 5vw, 64px);
   background: linear-gradient(180deg, var(--sea-from) 0%, var(--sea-mid) 26%, var(--sea-to) 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
@@ -5086,4 +5393,742 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
     -webkit-mask-position: -600px 0, 0 calc(30px * var(--amp) - 1px);
     mask-position: -600px 0, 0 calc(30px * var(--amp) - 1px);
   }
+}
+
+/* Moci's bubble on the corner of the hero device: a glass sphere with sky in it, so the drop shows. */
+.moci-sticker {
+  background:
+    radial-gradient(40% 30% at 32% 24%, rgba(255, 255, 255, 0.95), transparent 70%),
+    radial-gradient(circle at 50% 70%, #a9d6ff, #dcefff 60%, #f6fbff);
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.9),
+    inset 0 -6px 12px rgba(80, 150, 235, 0.25),
+    0 10px 24px rgba(40, 90, 160, 0.22);
+}
+
+[data-theme="dark"] .moci-sticker {
+  background:
+    radial-gradient(40% 30% at 32% 24%, rgba(255, 255, 255, 0.5), transparent 70%),
+    radial-gradient(circle at 50% 70%, #3a5ea8, #22356b 60%, #1a2550);
+  box-shadow:
+    0 0 0 4px rgba(200, 215, 255, 0.25),
+    0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- The MP3 player (About) ---------- */
+.ipod {
+  position: relative;
+  width: 272px;
+  padding: 18px 18px 26px;
+  border-radius: 34px;
+  background:
+    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.45), transparent 45%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(236, 244, 253, 0.88) 50%, rgba(214, 230, 248, 0.92));
+  border: 1px solid #ffffff;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -8px 16px rgba(64, 104, 168, 0.12),
+    0 2px 4px rgba(40, 80, 140, 0.08),
+    0 26px 52px rgba(40, 90, 160, 0.2);
+  outline: none;
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+.ipod:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 6px var(--accent),
+    0 26px 52px rgba(40, 90, 160, 0.2);
+}
+
+[data-theme="dark"] .ipod {
+  background:
+    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.08), transparent 45%),
+    linear-gradient(160deg, #2c3a6b, #1c2752 60%, #141c3e);
+  border-color: rgba(200, 215, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 26px 52px rgba(0, 0, 0, 0.4);
+}
+
+/* The headphone jack, with the earbud cable curling off the top. */
+.ipod__jack {
+  position: absolute;
+  top: -5px;
+  left: 38px;
+  width: 16px;
+  height: 7px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(#e4ebf4, #a8b4c6);
+}
+
+.ipod__jack::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  width: 70px;
+  height: 46px;
+  border: 3px solid #ffffff;
+  border-color: #ffffff transparent transparent #ffffff;
+  border-radius: 46px 0 0 0;
+  filter: drop-shadow(0 2px 2px rgba(40, 80, 140, 0.18));
+}
+
+.ipod__screen {
+  display: flex;
+  flex-direction: column;
+  height: 212px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.ipod__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--screen-line);
+  font: 600 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--screen-muted);
+}
+
+.ipod__battery {
+  position: relative;
+  width: 20px;
+  height: 10px;
+  padding: 1.5px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #2fcb9f 72%, transparent 72%) content-box;
+}
+
+.ipod__now {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.ipod__track {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.ipod__art {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  font-size: 30px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.75),
+    0 4px 10px rgba(40, 80, 140, 0.2);
+}
+
+.ipod__title {
+  display: block;
+  overflow: hidden;
+  font: 700 14px/1.2 var(--font-body);
+  color: var(--screen-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ipod__artist,
+.ipod__count {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--screen-muted);
+}
+
+.ipod__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 34px;
+}
+
+.ipod__bars i {
+  flex: 1;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #ff9cc9, #9ccfff);
+  transform: scaleY(0.06);
+  transform-origin: bottom;
+  transition: transform 90ms linear;
+}
+
+.ipod__progress {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  font: 600 10px/1 var(--font-mono);
+  color: var(--screen-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ipod__rail {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--screen-line);
+}
+
+.ipod__rail span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #9ccfff, #ff9cc9);
+  transition: width 240ms linear;
+}
+
+.ipod__menu {
+  margin: 6px -12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ipod__menu li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--screen-ink);
+  cursor: pointer;
+}
+
+.ipod__menu li:last-child {
+  font-style: italic;
+  color: var(--screen-muted);
+}
+
+.ipod__menu li[aria-selected="true"] {
+  color: #ffffff;
+  background: linear-gradient(180deg, #8fc4ff, #5e9df2);
+}
+
+.ipod__wheel {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  margin: 22px auto 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #ffffff, #eef4fb 60%, #dde8f5);
+  box-shadow:
+    inset 0 2px 3px #ffffff,
+    inset 0 -3px 8px rgba(64, 104, 168, 0.16),
+    0 1px 2px rgba(40, 80, 140, 0.16);
+  touch-action: none;
+  user-select: none;
+}
+
+[data-theme="dark"] .ipod__wheel {
+  background: radial-gradient(circle at 50% 30%, #3a4a7e, #26335f 60%, #1d2850);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.ipod__key {
+  position: absolute;
+  padding: 8px;
+  border: 0;
+  background: none;
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8692a9;
+  transition:
+    color 160ms var(--ease-out),
+    scale 160ms var(--ease-out);
+}
+
+.ipod__key:hover {
+  color: var(--ink);
+}
+
+.ipod__key:active {
+  scale: 0.88;
+}
+
+.ipod__key--menu {
+  top: 8px;
+  left: 50%;
+  translate: -50% 0;
+}
+
+.ipod__key--prev,
+.ipod__key--next,
+.ipod__key--play {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.ipod__key--prev {
+  top: 50%;
+  left: 8px;
+  translate: 0 -50%;
+}
+
+.ipod__key--next {
+  top: 50%;
+  right: 8px;
+  translate: 0 -50%;
+}
+
+.ipod__key--play {
+  bottom: 8px;
+  left: 50%;
+  translate: -50% 0;
+}
+
+.ipod__center {
+  position: absolute;
+  inset: 31%;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #ffffff, #e9f1fb);
+  box-shadow:
+    0 0 0 1px rgba(64, 104, 168, 0.14),
+    0 2px 4px rgba(40, 80, 140, 0.18),
+    inset 0 -2px 4px rgba(64, 104, 168, 0.14);
+  transition: box-shadow 120ms var(--ease-out);
+}
+
+.ipod__center:active {
+  box-shadow:
+    0 0 0 1px rgba(64, 104, 168, 0.2),
+    inset 0 3px 6px rgba(64, 104, 168, 0.28);
+}
+
+[data-theme="dark"] .ipod__center {
+  background: radial-gradient(circle at 50% 30%, #4a5b92, #2c3a6b);
+}
+
+.ipod__drop {
+  position: absolute;
+  inset: 10px;
+  display: grid;
+  place-items: center;
+  padding: 30px;
+  border: 2px dashed var(--accent);
+  border-radius: 26px;
+  background: rgba(255, 228, 241, 0.92);
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.ipod[data-dragging] .ipod__drop {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ipod__now {
+    animation: ipod-in 260ms var(--ease-out) both;
+    --from: 18px;
+  }
+
+  .ipod__menu {
+    animation: ipod-in 260ms var(--ease-out) both;
+    --from: -18px;
+  }
+
+  .ipod[data-playing] .ipod__art {
+    animation: art-breathe 2.6s var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes ipod-in {
+  from {
+    opacity: 0;
+    translate: var(--from) 0;
+  }
+}
+
+@keyframes art-breathe {
+  50% {
+    scale: 1.05;
+    rotate: -2deg;
+  }
+}
+
+/* ---------- The CD shelf (About) ---------- */
+.cdshelf {
+  position: relative;
+  min-width: 0;
+}
+
+.cdshelf__row {
+  display: flex;
+  gap: 18px;
+  margin: 0;
+  padding: 92px 10px 0;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.cdshelf__row::-webkit-scrollbar {
+  display: none;
+}
+
+.cdshelf__row > li {
+  flex: none;
+  scroll-snap-align: center;
+}
+
+@media (min-width: 1024px) {
+  .cdshelf__row {
+    justify-content: space-between;
+    overflow: visible;
+  }
+}
+
+.cdcase {
+  position: relative;
+  display: block;
+  width: 128px;
+  height: 114px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  transition:
+    translate 460ms var(--ease-jelly),
+    rotate 460ms var(--ease-jelly);
+}
+
+@media (hover: hover) {
+  .cdcase:hover {
+    translate: 0 -6px;
+    rotate: -2deg;
+  }
+}
+
+.cdcase[aria-pressed="true"] {
+  translate: 0 -8px;
+  rotate: 0deg;
+}
+
+.cdcase__box {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  box-shadow:
+    0 1px 1px rgba(40, 80, 140, 0.12),
+    0 12px 22px rgba(40, 90, 160, 0.2);
+}
+
+/* The clear plastic over the cover. */
+.cdcase__box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 34%, rgba(255, 255, 255, 0) 70%, rgba(255, 255, 255, 0.28));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.9),
+    inset 0 0 0 2px rgba(64, 104, 168, 0.12);
+  pointer-events: none;
+}
+
+.cdcase__cover {
+  position: absolute;
+  inset: 4px 4px 4px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px;
+  overflow: hidden;
+  border-radius: 2px;
+  text-align: left;
+}
+
+.cdcase__glyph {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  font-size: 28px;
+  filter: drop-shadow(0 2px 3px rgba(40, 80, 140, 0.25));
+}
+
+.cdcase__title {
+  display: block;
+  font: 800 12.5px/1.05 var(--font-display);
+  letter-spacing: -0.02em;
+  color: #1d2a4d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.cdcase__platform {
+  display: block;
+  margin-top: 3px;
+  font: 600 8.5px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(29, 42, 77, 0.7);
+}
+
+.cdcase__hinge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 15px;
+  border-radius: 4px 0 0 4px;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0) 0 5px, rgba(255, 255, 255, 0.6) 5px 6px),
+    linear-gradient(90deg, rgba(235, 243, 252, 0.95), rgba(190, 208, 232, 0.9) 45%, rgba(240, 246, 253, 0.95));
+  border-right: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+/* The disc: iridescent silver, a printed label, the hole in the middle. */
+.cdcase__disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  display: block;
+  width: 106px;
+  height: 106px;
+  margin: -53px 0 0 -46px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0 9.5%, transparent 10%),
+    conic-gradient(from 20deg, #e9eef6, #ffd6ea, #d6efff, #e6ffe6, #fff1c4, #e4dbff, #e9eef6);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.9),
+    0 4px 10px rgba(40, 90, 160, 0.22);
+  -webkit-mask: radial-gradient(circle, transparent 0 6.5%, #000 7%);
+  mask: radial-gradient(circle, transparent 0 6.5%, #000 7%);
+  transition: translate 640ms var(--ease-out);
+}
+
+.cdcase__label {
+  position: absolute;
+  inset: 18%;
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 0 19%, var(--l1) 20% 62%, var(--l2) 63%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.cdcase__label span {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  translate: -50% 0;
+  font-size: 15px;
+}
+
+.cdcase[aria-pressed="true"] .cdcase__disc {
+  translate: 0 -64%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cdcase[data-spin] .cdcase__disc {
+    animation: spin 7s linear infinite;
+  }
+
+  .cdcase[data-spin="fast"] .cdcase__disc {
+    animation-duration: 1.4s;
+  }
+
+  .cdshelf__detail {
+    animation: rise-in 460ms var(--ease-out) both;
+  }
+}
+
+.cdshelf__ledge {
+  height: 14px;
+  margin-top: -3px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(214, 230, 248, 0.7));
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 12px 22px rgba(40, 90, 160, 0.16);
+}
+
+[data-theme="dark"] .cdshelf__ledge {
+  background: linear-gradient(180deg, rgba(120, 140, 200, 0.4), rgba(40, 55, 100, 0.5));
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.35);
+}
+
+.cdshelf__detail {
+  margin-top: 28px;
+}
+
+/* ---------- Polish: motion and micro-interactions ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /*
+   * Section headings wipe up into view, not just fade. A mask, not clip-path: a clipped heading
+   * would have no visible area, and the IntersectionObserver would never see it arrive.
+   */
+  h2[data-rv] {
+    -webkit-mask-image: linear-gradient(180deg, transparent 0 38%, #000 62%);
+    mask-image: linear-gradient(180deg, transparent 0 38%, #000 62%);
+    -webkit-mask-size: 100% 300%;
+    mask-size: 100% 300%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: 0 100%;
+    mask-position: 0 100%;
+    transition:
+      opacity 820ms var(--ease-out),
+      translate 820ms var(--ease-out),
+      scale 820ms var(--ease-out),
+      -webkit-mask-position 1100ms var(--ease-out),
+      mask-position 1100ms var(--ease-out);
+    transition-delay: calc(var(--rv-i, 0) * 90ms);
+  }
+
+  h2[data-rv=""] {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+
+  /* Cards in a list lift a little under the pointer. */
+  main li.widget {
+    transition:
+      transform 420ms var(--ease-jelly),
+      box-shadow 300ms var(--ease-out),
+      opacity 820ms var(--ease-out),
+      translate 820ms var(--ease-out),
+      scale 820ms var(--ease-out);
+  }
+
+  /* The hero leans toward the pointer (WorldHost sets --tilt-x/--tilt-y). */
+  [data-tilt] {
+    transform: perspective(1600px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition: transform 900ms var(--ease-out);
+  }
+
+  /* Moci's bubble wobbles when pressed. */
+  .moci-sticker[data-boop="a"] {
+    animation: boop-a 620ms var(--ease-jelly);
+  }
+
+  .moci-sticker[data-boop="b"] {
+    animation: boop-b 620ms var(--ease-jelly);
+  }
+
+  .moci-sticker:hover .moci-avatar {
+    animation: wobble 900ms var(--ease-in-out);
+    --wobble-from: -6deg;
+    --wobble-to: 6deg;
+  }
+}
+
+@media (hover: hover) {
+  main li.widget:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      var(--bevel),
+      var(--lift-lg);
+  }
+}
+
+.moci-sticker {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+@keyframes boop-a {
+  30% {
+    scale: 1.18 0.86;
+  }
+
+  60% {
+    scale: 0.92 1.1;
+  }
+}
+
+@keyframes boop-b {
+  30% {
+    scale: 0.86 1.16;
+  }
+
+  60% {
+    scale: 1.1 0.94;
+  }
+}
+
+/* Gulls over the horizon. */
+.sea__gull {
+  position: absolute;
+  top: var(--y);
+  left: 0;
+  z-index: 0;
+  width: 22px;
+  height: 9px;
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 9'%3E%3Cpath d='M1 8 Q6 0 11 6 Q16 0 21 8' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 9'%3E%3Cpath d='M1 8 Q6 0 11 6 Q16 0 21 8' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sea__gull {
+    animation:
+      gull-fly var(--t) linear var(--d) infinite,
+      gull-flap 520ms var(--ease-in-out) infinite alternate;
+  }
+}
+
+@keyframes gull-fly {
+  0% {
+    opacity: 0;
+    translate: -40px 0;
+  }
+
+  6%,
+  90% {
+    opacity: 1;
+  }
+
+  50% {
+    translate: 50vw -18px;
+  }
+
+  100% {
+    opacity: 0;
+    translate: 104vw 6px;
+  }
+}
+
+@keyframes gull-flap {
+  to {
+    scale: 1 0.55;
+  }
+}
+
+/* Progress and skill bars: the same pastel ribbon as the player's progress rail. */
+.bar-fill {
+  background: linear-gradient(90deg, #9ccfff, #c7b8ff 55%, #ff9cc9);
 }

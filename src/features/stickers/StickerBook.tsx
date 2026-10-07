@@ -59,7 +59,7 @@ export function StickerBook() {
               </span>
             </p>
             <div className="mt-2 h-4 overflow-hidden rounded-pill bg-surface p-0.5" role="progressbar" aria-valuemin={0} aria-valuemax={STICKERS.length} aria-valuenow={count} aria-label="Stickers collected">
-              <div className="h-full rounded-pill bg-accent transition-[width] duration-700" style={{ width: `${(count / STICKERS.length) * 100}%` }} />
+              <div className="h-full rounded-pill bar-fill transition-[width] duration-700" style={{ width: `${(count / STICKERS.length) * 100}%` }} />
             </div>
           </div>
         </header>

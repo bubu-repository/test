@@ -6,6 +6,7 @@ import { bio, experience, identity, modelCard, skills } from "@/content/profile"
 import { JdMatcher } from "@/features/about/JdMatcher";
 import { IdBadge } from "@/features/hero/IdBadge";
 import { ProfileCard } from "@/features/about/ProfileCard";
+import { OffTheClock } from "@/features/about/music/OffTheClock";
 
 export const metadata: Metadata = pageMeta({
   title: "About",
@@ -97,6 +98,8 @@ export default function AboutPage() {
           <ProfileCard />
         </div>
       </div>
+
+      <OffTheClock />
 
       <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">If I were a model</p>

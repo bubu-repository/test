@@ -68,16 +68,16 @@ const G = {
   ),
 };
 
-/** Icon colours: the only saturated colour in the chrome. Each is a soft top-to-bottom gradient. */
+/** Icon colours: the only saturated colour in the chrome, kept pastel. Each is a soft top-to-bottom gradient. */
 const TINT = {
-  work: "linear-gradient(180deg, #6CC4FF, #1F7BFF)",
-  lab: "linear-gradient(180deg, #C995FF, #7A3CF0)",
-  about: "linear-gradient(180deg, #7FE3F2, #0EA5C6)",
-  guestbook: "linear-gradient(180deg, #99F6E4, #14B8A6)",
-  contact: "linear-gradient(180deg, #C7D2FE, #5B6CF0)",
-  moci: "radial-gradient(120% 120% at 30% 15%, #FF9BD0 0%, #F41B8D 48%, #B8006A 100%)",
-  grey: "linear-gradient(180deg, #F8FAFC, #DDE3EB)",
-  night: "linear-gradient(180deg, #2A3140, #0E131B)",
+  work: "linear-gradient(180deg, #A9D6FF, #5E9DF2)",
+  lab: "linear-gradient(180deg, #DCCBFF, #9E7CF0)",
+  about: "linear-gradient(180deg, #B9EEF6, #4CB9D6)",
+  guestbook: "linear-gradient(180deg, #C4F3E9, #4FC4AE)",
+  contact: "linear-gradient(180deg, #E0E4FF, #8C96F2)",
+  moci: "radial-gradient(45% 35% at 32% 26%, rgba(255, 255, 255, 0.95), transparent 70%), radial-gradient(130% 120% at 50% 100%, #8CC8FF 0%, #CFE8FF 55%, #F4FAFF 100%)",
+  grey: "linear-gradient(180deg, #F8FBFF, #DCE6F2)",
+  night: "linear-gradient(180deg, #3A4A78, #1D2A4D)",
 };
 
 function Glyph({ children }: { children: ReactNode }) {
@@ -257,9 +257,11 @@ export function SiteNav() {
         </DockItem>
         <DockItem label="Ask Moci (/)" bg={TINT.moci} onClick={() => dispatch({ type: "open", panel: "agent" })} cursor="Ask">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <ellipse cx="9" cy="12" rx="1.6" ry="2.1" fill="#1A0614" />
-            <ellipse cx="15" cy="12" rx="1.6" ry="2.1" fill="#1A0614" />
-            <path d="M10.4 16a2.2 2.2 0 0 0 3.2 0" stroke="#1A0614" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+            <ellipse cx="9" cy="12" rx="1.6" ry="2.1" fill="#1D2A4D" />
+            <ellipse cx="15" cy="12" rx="1.6" ry="2.1" fill="#1D2A4D" />
+            <ellipse cx="7.2" cy="14.6" rx="1.4" ry="0.8" fill="#FF9CC9" opacity="0.8" />
+            <ellipse cx="16.8" cy="14.6" rx="1.4" ry="0.8" fill="#FF9CC9" opacity="0.8" />
+            <path d="M10.4 16a2.2 2.2 0 0 0 3.2 0" stroke="#1D2A4D" strokeWidth="1.5" strokeLinecap="round" fill="none" />
           </svg>
         </DockItem>
         <span className="dock-sep max-sm:hidden" aria-hidden="true" />

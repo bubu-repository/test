@@ -148,7 +148,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                           <span className="font-mono">{o.pct}%</span>
                         </div>
                         <div className="mt-1 h-2.5 overflow-hidden rounded-pill bg-surface-2" aria-hidden="true">
-                          <div className="h-full rounded-pill bg-accent" style={{ width: `${o.pct}%` }} />
+                          <div className="h-full rounded-pill bar-fill" style={{ width: `${o.pct}%` }} />
                         </div>
                       </li>
                     ))}
