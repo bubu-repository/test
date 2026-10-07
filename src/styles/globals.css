@@ -265,8 +265,8 @@
   text-transform: uppercase;
   color: var(--ink);
   background: var(--sheen), var(--surface);
-  border: 1px solid var(--rim);
-  box-shadow: var(--bevel), 0 2px 8px rgba(40, 80, 140, 0.08);
+  border: 1px solid var(--edge);
+  box-shadow: var(--bevel), 0 2px 8px rgba(29, 42, 77, 0.06);
 
   &::before {
     content: "✦";
@@ -419,6 +419,7 @@
   border: 1px solid var(--rim);
   box-shadow:
     var(--bevel),
+    0 0 0 1px var(--edge),
     var(--lift);
 }
 
@@ -468,7 +469,7 @@
   .pill {
     --pill-bg: var(--sheen), var(--surface);
     --pill-fg: var(--ink);
-    --pill-edge: var(--rim);
+    --pill-edge: var(--edge);
     --pill-shadow: var(--bevel), var(--key-edge), var(--lift-sm);
     position: relative;
     display: inline-flex;
@@ -699,8 +700,8 @@
     font-weight: 500;
     line-height: 1;
     white-space: nowrap;
-    border: 1px solid var(--rim);
-    box-shadow: var(--bevel), 0 1px 3px rgba(40, 80, 140, 0.1);
+    border: 1px solid var(--edge);
+    box-shadow: var(--bevel), 0 1px 3px rgba(29, 42, 77, 0.06);
   }
 
   .chip[data-tone] {
@@ -2862,6 +2863,7 @@ html[data-theme-swap]::view-transition-new(root) {
   border: 1px solid var(--rim);
   box-shadow:
     var(--bevel),
+    0 0 0 1px var(--edge),
     var(--lift-lg);
 }
 
@@ -4868,7 +4870,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 .sky__veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, var(--sky-veil-top) 0%, var(--sky-veil) 42%, var(--sky-veil) 100%);
+  background: linear-gradient(180deg, var(--sky-veil-top) 0%, var(--sky-veil) 34%, var(--sky-veil) 100%);
 }
 
 /* The sun, top right, with slow rays. At night it is the moon. */
@@ -5276,11 +5278,11 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
 /* Dawn and dusk tint the sky: lilac in the morning, peach-pink in the evening. */
 html[data-theme="light"][data-daypart="dawn"] .sky__veil {
-  background: linear-gradient(180deg, rgba(236, 230, 255, 0.45) 0%, rgba(240, 236, 255, 0.74) 42%, rgba(240, 240, 255, 0.74) 100%);
+  background: linear-gradient(180deg, rgba(246, 243, 255, 0.62) 0%, rgba(248, 247, 252, 0.9) 42%, rgba(248, 248, 251, 0.9) 100%);
 }
 
 html[data-theme="light"][data-daypart="dusk"] .sky__veil {
-  background: linear-gradient(180deg, rgba(255, 228, 236, 0.45) 0%, rgba(255, 238, 244, 0.74) 42%, rgba(244, 240, 255, 0.74) 100%);
+  background: linear-gradient(180deg, rgba(255, 244, 246, 0.62) 0%, rgba(252, 248, 249, 0.9) 42%, rgba(248, 248, 251, 0.9) 100%);
 }
 
 /* ---------- The sea widget: a little sea as tall and quick as the real one ---------- */
@@ -6131,4 +6133,204 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
 /* Progress and skill bars: the same pastel ribbon as the player's progress rail. */
 .bar-fill {
   background: linear-gradient(90deg, #9ccfff, #c7b8ff 55%, #ff9cc9);
+}
+
+/* ---------- Take a break: the pocket console in the live board ---------- */
+.playwidget {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 250px;
+}
+
+.playwidget__console {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff, #eef2f7);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -4px 10px rgba(29, 42, 77, 0.06),
+    0 0 0 1px rgba(29, 42, 77, 0.08),
+    0 10px 22px rgba(29, 42, 77, 0.12);
+  text-decoration: none;
+  transition:
+    transform 420ms var(--ease-jelly),
+    box-shadow 300ms var(--ease-out);
+}
+
+[data-theme="dark"] .playwidget__console {
+  background: linear-gradient(180deg, #2c3a6b, #1c2752);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+@media (hover: hover) {
+  .playwidget__console:hover {
+    transform: translateY(-3px) rotate(-1deg);
+    box-shadow:
+      inset 0 1px 0 #ffffff,
+      0 0 0 1px rgba(29, 42, 77, 0.1),
+      0 16px 30px rgba(29, 42, 77, 0.16);
+  }
+}
+
+.playwidget__dpad {
+  justify-self: center;
+  width: 28px;
+  height: 28px;
+  background:
+    linear-gradient(#c3cbd8, #c3cbd8) center / 9px 100% no-repeat,
+    linear-gradient(#c3cbd8, #c3cbd8) center / 100% 9px no-repeat;
+  border-radius: 3px;
+}
+
+.playwidget__buttons {
+  position: relative;
+  justify-self: center;
+  width: 28px;
+  height: 28px;
+}
+
+.playwidget__buttons i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #c3cbd8;
+}
+
+.playwidget__buttons i:nth-child(1) {
+  top: 0;
+  left: 9.5px;
+  background: #8fe6d6;
+}
+
+.playwidget__buttons i:nth-child(2) {
+  top: 9.5px;
+  right: 0;
+  background: #ff9cc9;
+}
+
+.playwidget__buttons i:nth-child(3) {
+  bottom: 0;
+  left: 9.5px;
+  background: #9ccfff;
+}
+
+.playwidget__buttons i:nth-child(4) {
+  top: 9.5px;
+  left: 0;
+  background: #c7c0ff;
+}
+
+/* The screen: the title, a snake of tokens crawling toward a token, and a start prompt. */
+.playwidget__screen {
+  position: relative;
+  display: block;
+  height: 96px;
+  overflow: hidden;
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 8px,
+    linear-gradient(160deg, #1d2a4d, #0e1630);
+  box-shadow: inset 0 0 0 2px #0a1028;
+}
+
+.playwidget__title {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  font: 700 12px/1 var(--font-display);
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: #eaf0fa;
+}
+
+.playwidget__snake {
+  position: absolute;
+  top: 46px;
+  left: 14%;
+  display: flex;
+  gap: 2px;
+}
+
+.playwidget__snake i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #8fe6d6;
+  opacity: calc(1 - var(--i) * 0.14);
+}
+
+.playwidget__snake i:first-child {
+  background: #ff9cc9;
+}
+
+.playwidget__snake {
+  flex-direction: row-reverse;
+}
+
+.playwidget__token {
+  position: absolute;
+  top: 43px;
+  left: 74%;
+  font-size: 11px;
+  color: #ffe58f;
+}
+
+.playwidget__start {
+  position: absolute;
+  bottom: 9px;
+  left: 0;
+  right: 0;
+  font: 600 9px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #ff9cc9;
+}
+
+.playwidget__ground {
+  margin-top: auto;
+  height: 36px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .playwidget__snake {
+    animation: snake-crawl 3.2s steps(16) infinite;
+  }
+
+  .playwidget__token {
+    animation: twinkle 1.6s var(--ease-in-out) infinite;
+  }
+
+  .playwidget__start {
+    animation: blink-start 1.2s steps(1) infinite;
+  }
+}
+
+@keyframes snake-crawl {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: 160% 0;
+  }
+}
+
+@keyframes blink-start {
+  50% {
+    opacity: 0;
+  }
 }

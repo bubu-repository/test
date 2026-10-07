@@ -3,8 +3,8 @@
  * The single source of truth for adelia.cc and every *.adelia.cc experiment.
  * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
  *
- * World: a bright sky with the sea at the bottom of every page. Panels are frosted glass that
- * the clouds drift behind; a few real objects (a pack of cards, a PSP, a laptop, an ID card) sit
+ * World: a neutral white page with a hint of sky at the top and the sea at the bottom of every
+ * page. Panels are frosted glass with a fine edge; a few real objects (a pack of cards, a PSP, a laptop, an ID card) sit
  * on top. Colours are soft and pastel, after a game-UI reference: sky blue, cotton pink, butter,
  * lilac, with navy ink. Magenta #F41B8D stays the brand mark, in small doses only (the logo dot,
  * LEDs, the dial pointer); large fills use its pastel (--accent-soft).
@@ -22,16 +22,17 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: #DCEBFA;          /* pale sky, under the sky image */
-  --sky-tone: #D1E5FC;    /* what the veiled sky averages to, for contrast checks */
-  --glass-tone: #F1F7FF;  /* what a glass panel averages to, for contrast checks */
+  --bg: #F4F5F7;          /* neutral white, under the sky image */
+  --sky-tone: #ECEFF4;    /* what the veiled sky averages to, for contrast checks */
+  --glass-tone: #FBFBFC;  /* what a glass panel averages to, for contrast checks */
   --surface: rgba(255, 255, 255, .7);   /* frosted glass: panels, keys, cards */
   --surface-solid: #FFFFFF; /* where a panel must be opaque (menus over moving content) */
   --surface-2: rgba(236, 245, 255, .62); /* recessed wells, inputs, quiet fills */
   --ink: #1D2A4D;         /* navy (13.0:1 on the veiled sky) */
   --muted: #475779;       /* slate blue (5.2:1 on glass, 4.6:1 on the veiled sky) */
-  --line: rgba(64, 104, 168, .18); /* hairlines inside panels */
-  --rim: rgba(255, 255, 255, .92); /* the bright edge of a glass panel */
+  --line: rgba(29, 42, 77, .12); /* hairlines inside panels */
+  --rim: rgba(255, 255, 255, .92); /* the bright inner edge of a glass panel */
+  --edge: rgba(29, 42, 77, .08);   /* the fine outer edge that keeps glass visible on white */
   --accent: #F41B8D;      /* MAGENTA, the brand mark: small doses only */
   --accent-strong: #D6087A; /* magenta behind white text (5.0:1) */
   --accent-ink: #B8006A;  /* magenta as small text (6.5:1 on white) */
@@ -41,11 +42,11 @@
   /* Materials: frosted glass lit from above, shadows a little blue */
   --sheen: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 52%);
   --bevel: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 0 0 1px rgba(255, 255, 255, .28);
-  --lift-sm: 0 1px 2px rgba(40, 80, 140, .08), 0 3px 8px rgba(40, 80, 140, .08);
-  --lift: 0 1px 2px rgba(40, 80, 140, .06), 0 8px 20px rgba(40, 90, 160, .1), 0 24px 48px rgba(40, 90, 160, .1);
-  --lift-lg: 0 2px 4px rgba(40, 80, 140, .06), 0 16px 36px rgba(40, 90, 160, .14), 0 48px 96px rgba(40, 90, 160, .16);
-  --recess: inset 0 2px 5px rgba(40, 80, 140, .1), inset 0 0 0 1px rgba(64, 104, 168, .12), 0 1px 0 rgba(255, 255, 255, .8);
-  --key-edge: 0 2px 0 rgba(140, 175, 220, .55);
+  --lift-sm: 0 1px 2px rgba(29, 42, 77, .07), 0 3px 8px rgba(29, 42, 77, .06);
+  --lift: 0 1px 2px rgba(29, 42, 77, .05), 0 8px 20px rgba(29, 42, 77, .07), 0 24px 48px rgba(29, 42, 77, .07);
+  --lift-lg: 0 2px 4px rgba(29, 42, 77, .05), 0 16px 36px rgba(29, 42, 77, .1), 0 48px 96px rgba(29, 42, 77, .12);
+  --recess: inset 0 2px 5px rgba(29, 42, 77, .08), inset 0 0 0 1px rgba(29, 42, 77, .08), 0 1px 0 rgba(255, 255, 255, .8);
+  --key-edge: 0 2px 0 rgba(29, 42, 77, .1);
   --screen: #D4E6F8;      /* LCD: pale glass */
   --screen-ink: #1D2A4D;  /* segments (10.9:1) */
   --screen-muted: #44557C; /* dim segments (5.6:1) */
@@ -61,24 +62,24 @@
   --glass-strong: rgba(255, 255, 255, .86);
   --glass-edge: rgba(255, 255, 255, 1);
   --glass-line: rgba(255, 255, 255, .85);
-  --glass-shadow: 0 1px 2px rgba(40, 80, 140, .08), 0 10px 26px rgba(40, 90, 160, .12), 0 28px 56px rgba(40, 90, 160, .1);
+  --glass-shadow: 0 0 0 1px rgba(29, 42, 77, .06), 0 1px 2px rgba(29, 42, 77, .06), 0 10px 26px rgba(29, 42, 77, .09), 0 28px 56px rgba(29, 42, 77, .08);
   --glass-blur: 22px;
 
   /* The sky and the sea (SkyBackdrop, the footer) */
   --stage-from: #7DB5F2;
   --stage-to: #E7F3FD;
   --sky-image: url("/sky/day.webp");
-  --sky-veil-top: rgba(238, 246, 255, .4);
-  --sky-veil: rgba(238, 246, 255, .72);
-  --grid-line: rgba(255, 255, 255, .2);
+  --sky-veil-top: rgba(248, 249, 251, .62);
+  --sky-veil: rgba(248, 249, 251, .9);
+  --grid-line: rgba(29, 42, 77, .035);
   --sea-from: #9AD8FF;    /* horizon */
   --sea-mid: #63B2EE;
   --sea-to: #3F86D6;      /* deep */
   --foam: rgba(255, 255, 255, .85);
-  --dot: rgba(60, 100, 160, .1);
+  --dot: rgba(29, 42, 77, .08);
   --glow: rgba(255, 150, 200, .3);
-  --check-a: #F4F9FF;     /* checkerboard pair (reveal card) */
-  --check-b: #E2EEFA;
+  --check-a: #F7F8FA;     /* checkerboard pair (reveal card) */
+  --check-b: #E8EBF0;
 }
 
 /* ---------- Color: night (dark) ---------- */
@@ -95,6 +96,7 @@
   --muted: #A9B6D3;       /* secondary text (8.1:1) */
   --line: rgba(160, 182, 235, .16);
   --rim: rgba(200, 215, 255, .2);
+  --edge: rgba(0, 0, 0, .25);
   --accent: #F41B8D;
   --accent-strong: #D6087A;
   --accent-ink: #FF8CC6;  /* magenta as small text (7.4:1) */
