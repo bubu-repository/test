@@ -68,14 +68,14 @@ const G = {
   ),
 };
 
-/** Icon colours: the only saturated colour in the chrome, kept pastel. Each is a soft top-to-bottom gradient. */
+/** Icon colours: small and vivid, the most saturated colour in the chrome. Each is a soft top-to-bottom gradient. */
 const TINT = {
-  work: "linear-gradient(180deg, #A9D6FF, #5E9DF2)",
-  lab: "linear-gradient(180deg, #DCCBFF, #9E7CF0)",
-  about: "linear-gradient(180deg, #B9EEF6, #4CB9D6)",
-  guestbook: "linear-gradient(180deg, #C4F3E9, #4FC4AE)",
-  contact: "linear-gradient(180deg, #E0E4FF, #8C96F2)",
-  moci: "radial-gradient(45% 35% at 32% 26%, rgba(255, 255, 255, 0.95), transparent 70%), radial-gradient(130% 120% at 50% 100%, #8CC8FF 0%, #CFE8FF 55%, #F4FAFF 100%)",
+  work: "linear-gradient(180deg, #6CC4FF, #2F7BFF)",
+  lab: "linear-gradient(180deg, #C4A8FF, #8B5CF6)",
+  about: "linear-gradient(180deg, #8CE6F5, #12A8CC)",
+  guestbook: "linear-gradient(180deg, #8EF0DE, #14B8A6)",
+  contact: "linear-gradient(180deg, #C2CAFF, #6D7CF5)",
+  moci: "radial-gradient(45% 35% at 32% 26%, rgba(255, 255, 255, 0.95), transparent 70%), radial-gradient(130% 120% at 50% 100%, #4DB3FF 0%, #BFE3FF 55%, #F4FAFF 100%)",
   grey: "linear-gradient(180deg, #F8FBFF, #DCE6F2)",
   night: "linear-gradient(180deg, #3A4A78, #1D2A4D)",
 };

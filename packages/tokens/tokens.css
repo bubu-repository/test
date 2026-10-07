@@ -5,9 +5,9 @@
  *
  * World: a neutral white page with a hint of sky at the top and the sea at the bottom of every
  * page. Panels are frosted glass with a fine edge; a few real objects (a pack of cards, a PSP, a laptop, an ID card) sit
- * on top. Colours are soft and pastel, after a game-UI reference: sky blue, cotton pink, butter,
- * lilac, with navy ink. Magenta #F41B8D stays the brand mark, in small doses only (the logo dot,
- * LEDs, the dial pointer); large fills use its pastel (--accent-soft).
+ * on top. Colour has a hierarchy: large surfaces are calm and pale; the small things that guide
+ * the eye (the primary key, highlighted words, icons, bars, LEDs) are vivid, cool and saturated,
+ * with magenta #F41B8D as the brand mark and the primary key.
  * Type is Bricolage Grotesque, with JetBrains Mono for printed labels.
  *
  * Contrast rules (checked on /styleguide):
@@ -142,19 +142,24 @@
   --check-b: #1E2850;
 }
 
-/* ---------- Accent colours (theme-independent, pastel, used in small doses) ---------- */
+/*
+ * ---------- Accent colours (theme-independent) ----------
+ * The hierarchy: the page and big surfaces are calm (white, glass, pale LCD); these accents are
+ * vivid and cool, used small (icons, dots, bars, keys, highlights) so they guide the eye. Pastels
+ * (--accent-soft, the glass) are for large areas only.
+ */
 :root {
-  --red: #FF6B8A;         /* errors only */
-  --lime: #8FE6D6;        /* aqua pastel (the old lime slot) */
-  --cobalt: #3B66E0;      /* blue (white text 4.9:1) */
-  --sun: #C7C0FF;         /* lilac (the old sun slot) */
-  --butter: #FFE58F;      /* butter yellow, the reference's highlight chip */
-  --pink: #FFC2DE;
-  --mint: #6FDCC4;
-  --cyan: #86DDF2;
-  --violet: #A493FF;
-  --orange: #86CBFA;      /* sky blue (the old orange slot) */
-  --sky: #9CCFFF;
+  --red: #FF4D6D;         /* errors only */
+  --lime: #2DD4BF;        /* aqua (the old lime slot); navy text on it 7.6:1 */
+  --cobalt: #3B66E0;      /* blue (white text 5.0:1) */
+  --sun: #8E9BFF;         /* periwinkle (the old sun slot); navy text on it 5.6:1 */
+  --butter: #FFD43B;      /* the yellow of the reference's reward chip */
+  --pink: #FF6FB5;
+  --mint: #14C8A8;
+  --cyan: #22C3E6;
+  --violet: #8B5CF6;      /* fills and icons only */
+  --orange: #1EA7FF;      /* bright sky blue (the old orange slot) */
+  --sky: #4DB3FF;
   --charcoal: #1E2A48;
   --lcd: #121C3A;
   --ok: #2FCB9F;
@@ -164,7 +169,7 @@
   --on-cobalt: #FFFFFF;   /* text on blue and charcoal */
   --on-ink: #FFFFFF;
 
-  /* Jelly shading for the small glossy mascot (a softer pink) */
+  /* Jelly shading (kept for the small sprites; Moci itself is now clear water) */
   --jelly-light: #FFA9D4;
   --jelly-deep: #E0539F;
   --jelly-core: #C23A86;

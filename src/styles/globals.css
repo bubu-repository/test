@@ -497,12 +497,12 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* The primary key: cotton pink glass with magenta ink, after the reference's reward chips. */
+  /* The primary key: the one vivid thing in view. Magenta glass, white label (5.0:1). */
   .pill[data-variant="magenta"] {
-    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 55%), linear-gradient(180deg, #ffe9f4, var(--accent-soft) 60%, var(--accent-soft-2));
-    --pill-fg: var(--accent-ink);
-    --pill-edge: #ffffff;
-    --pill-shadow: inset 0 1px 0 #ffffff, 0 0 0 1px rgba(244, 27, 141, 0.16), 0 2px 0 rgba(230, 120, 175, 0.45), 0 8px 20px rgba(244, 110, 175, 0.24);
+    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 52%), linear-gradient(180deg, #ff4fa6, var(--accent-strong) 78%);
+    --pill-fg: #ffffff;
+    --pill-edge: rgba(255, 255, 255, 0.55);
+    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 rgba(120, 0, 60, 0.2), 0 2px 0 #b0005f, 0 10px 22px rgba(214, 8, 122, 0.3);
   }
 
   .pill[data-variant="magenta"] {
@@ -516,7 +516,7 @@
     inset: 0;
     z-index: -1;
     border-radius: inherit;
-    background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.85) 50%, transparent 68%);
+    background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.45) 50%, transparent 68%);
     transform: translateX(-130%);
     pointer-events: none;
   }
@@ -529,10 +529,7 @@
   }
 
   [data-theme="dark"] .pill[data-variant="magenta"] {
-    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 55%), linear-gradient(180deg, #ffd0e7, var(--accent-soft) 60%, var(--accent-soft-2));
-    --pill-fg: #3a0a24;
-    --pill-edge: rgba(255, 255, 255, 0.6);
-    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 0 rgba(150, 40, 100, 0.6), 0 8px 22px rgba(255, 120, 190, 0.25);
+    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 0 #7a0042, 0 10px 26px rgba(244, 27, 141, 0.35);
   }
 
   .pill[data-variant="ink"] {
@@ -636,8 +633,8 @@
     }
 
     .pill[data-variant="magenta"]:hover {
-      --pill-edge: #ffffff;
-      --pill-shadow: inset 0 1px 0 #ffffff, 0 0 0 1px rgba(244, 27, 141, 0.3), 0 2px 0 rgba(230, 120, 175, 0.5), 0 10px 26px rgba(244, 110, 175, 0.34);
+      --pill-edge: rgba(255, 255, 255, 0.7);
+      --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 2px 0 #b0005f, 0 14px 28px rgba(214, 8, 122, 0.38);
     }
   }
 
@@ -649,7 +646,7 @@
   }
 
   .pill[data-variant="magenta"]:active:not(:disabled) {
-    --pill-shadow: inset 0 2px 5px rgba(160, 30, 100, 0.25);
+    --pill-shadow: inset 0 2px 5px rgba(90, 0, 45, 0.4);
   }
 
   .pill:disabled,
@@ -753,10 +750,10 @@
     --tone: var(--ink);
   }
 
-  /* Highlighted phrase in a headline: a pastel marker stroke under the ink, pink to lilac to sky. */
+  /* Highlighted phrase in a headline: the word in magenta (display size, 3.4:1), a soft marker under it. */
   .sticker-text {
-    color: inherit;
-    background-image: linear-gradient(100deg, color-mix(in srgb, var(--accent-soft) 92%, transparent), color-mix(in srgb, var(--sun) 70%, transparent) 55%, color-mix(in srgb, var(--sky) 70%, transparent));
+    color: var(--accent);
+    background-image: linear-gradient(100deg, rgba(255, 194, 224, 0.75), rgba(199, 192, 255, 0.55) 55%, rgba(156, 207, 255, 0.55));
     background-size: 100% 0.38em;
     background-position: 0 88%;
     background-repeat: no-repeat;
@@ -767,7 +764,8 @@
   }
 
   [data-theme="dark"] .sticker-text {
-    background-image: linear-gradient(100deg, rgba(255, 140, 198, 0.55), rgba(164, 147, 255, 0.5) 55%, rgba(124, 196, 255, 0.5));
+    color: #ff8cc6;
+    background-image: linear-gradient(100deg, rgba(255, 140, 198, 0.32), rgba(164, 147, 255, 0.3) 55%, rgba(124, 196, 255, 0.3));
   }
 
   /* Sparkle glyph that twinkles. */
@@ -1979,13 +1977,13 @@ html[data-theme-swap]::view-transition-new(root) {
   border: 0;
   border-radius: 0 0 3px 3px;
   margin-top: -7px;
-  background: linear-gradient(180deg, #ffe3f0, var(--accent-soft-2));
-  color: var(--accent-ink);
+  background: var(--accent-strong);
+  color: #ffffff;
   cursor: pointer;
 }
 
 .poster__email:hover {
-  background: linear-gradient(180deg, #ffd6ea, #ffadd6);
+  background: color-mix(in srgb, var(--accent-strong) 88%, #000);
 }
 
 .poster-name {
@@ -2042,7 +2040,7 @@ html[data-theme-swap]::view-transition-new(root) {
 
 .hl-row > .hl {
   padding: 0.12em 0.25em 0.06em;
-  background: var(--hl, #ffc2e0);
+  background: var(--hl, var(--pink));
   color: #1d2a4d;
   font-variant-numeric: tabular-nums;
 }
@@ -3081,7 +3079,7 @@ html[data-theme-swap]::view-transition-new(root) {
   margin: 0 auto;
   background:
     repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0 2px, transparent 2px 6px),
-    linear-gradient(90deg, #ffb6d9, #ffd3e8 30%, #b9dcff 31% 69%, #ffd3e8 70%, #ffb6d9);
+    linear-gradient(90deg, #d6087a, #f41b8d 30%, #3b66e0 31% 69%, #f41b8d 70%, #d6087a);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
   -webkit-mask: linear-gradient(180deg, transparent, #000 28px);
   mask: linear-gradient(180deg, transparent, #000 28px);
@@ -3230,7 +3228,7 @@ html[data-theme-swap]::view-transition-new(root) {
   position: absolute;
   inset: auto 0 0;
   height: 1cqi;
-  background: linear-gradient(90deg, #ff9ccc, #ffd3e8 60%, #ff9ccc);
+  background: linear-gradient(90deg, #f41b8d, #ff7ac0 60%, #f41b8d);
 }
 
 .idc__brand {
@@ -3428,8 +3426,8 @@ html[data-theme-swap]::view-transition-new(root) {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--accent-ink);
-  background: linear-gradient(90deg, #ffd3e8, #ffe6f2 50%, #ffd3e8);
+  color: rgba(255, 255, 255, 0.95);
+  background: linear-gradient(90deg, #d6087a, #f41b8d);
 }
 
 /* Back */
@@ -3692,12 +3690,12 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .palette-key[data-on="true"] {
-  color: var(--accent-ink);
-  background: linear-gradient(180deg, #ffe9f4, var(--accent-soft) 60%, var(--accent-soft-2));
-  border-color: #ffffff;
+  color: #ffffff;
+  background: linear-gradient(180deg, #ff4fa6, var(--accent-strong) 80%);
+  border-color: rgba(255, 255, 255, 0.5);
   box-shadow:
-    inset 0 1px 0 #ffffff,
-    0 2px 0 rgba(230, 120, 175, 0.45);
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 2px 0 #8f0050;
 }
 
 /* ---------- Playable UI demos in the widget board (after marco.fyi) ---------- */
@@ -3761,11 +3759,11 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .demo-option--on {
-  background: linear-gradient(180deg, #ffe9f4, var(--accent-soft) 60%, var(--accent-soft-2));
-  color: var(--accent-ink);
+  background: linear-gradient(180deg, #ff4fa6, var(--accent-strong) 80%);
+  color: #ffffff;
   box-shadow:
-    inset 0 1px 0 #ffffff,
-    0 2px 0 rgba(230, 120, 175, 0.45);
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 2px 0 #8f0050;
 }
 
 .demo-tab {
@@ -3863,8 +3861,8 @@ html[data-theme-swap]::view-transition-new(root) {
   --o: 0;
   --bgx: 50%;
   --bgy: 50%;
-  --frame: linear-gradient(140deg, #ffe0ef, #ff9ccc 40%, #e66aa8 72%, #ffc9e3);
-  --tone-ink: #c2187a;
+  --frame: linear-gradient(140deg, #ffb3dc, #f41b8d 42%, #b0006a 78%, #ff7cc2);
+  --tone-ink: #c2006b;
   /* A printed card keeps its daylight colours in night mode. */
   --ink: #0e1726;
   --muted: #556070;
@@ -3879,12 +3877,12 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .tcg[data-tone="cobalt"] {
-  --frame: linear-gradient(140deg, #e0ecff, #94bcff 40%, #5f8ee8 72%, #c4d9ff);
-  --tone-ink: #2f5cc8;
+  --frame: linear-gradient(140deg, #b9d0ff, #3b66e0 42%, #1f3fa8 78%, #8fb0ff);
+  --tone-ink: #2348c4;
 }
 
 .tcg[data-tone="violet"] {
-  --frame: linear-gradient(140deg, #ece8ff, #b9adff 40%, #8b78ea 72%, #ddd6ff);
+  --frame: linear-gradient(140deg, #ddd4ff, #8b5cf6 42%, #5b2fc8 78%, #b9adff);
   --tone-ink: #5b45d6;
 }
 
@@ -4422,15 +4420,15 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
 /* Each pack's foil follows its product's colour. */
 .packslot {
-  --foil: linear-gradient(165deg, #ffd3e9, #f9b4d9 28%, #e3c4ff 62%, #c6d8ff 92%);
+  --foil: linear-gradient(165deg, #ffb6dc, #ff6fb5 30%, #e94b9e 55%, #a98cff 92%);
 }
 
 .packslot[data-tone="cobalt"] {
-  --foil: linear-gradient(165deg, #d9ecff, #a9d2ff 30%, #b9c6ff 62%, #d6ccff 92%);
+  --foil: linear-gradient(165deg, #b9e0ff, #4db3ff 30%, #3b66e0 62%, #8e9bff 92%);
 }
 
 .packslot[data-tone="violet"] {
-  --foil: linear-gradient(165deg, #ece3ff, #cdbaff 30%, #b4c8ff 62%, #a8e0f0 92%);
+  --foil: linear-gradient(165deg, #d9ccff, #a98cff 30%, #8b5cf6 58%, #22c3e6 94%);
 }
 
 /* Sparkles thrown by a holo rare as it comes out. */
@@ -4577,8 +4575,11 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   top: 60%;
   translate: -50% -50%;
   white-space: nowrap;
-  font-size: 3.6cqi;
+  padding: 1cqi 2.6cqi;
+  border-radius: 999px;
+  font-size: 3.4cqi;
   color: #1d2a4d;
+  background: rgba(255, 255, 255, 0.75);
 }
 
 /* The inside of the pack, seen under the lifted strip: the tops of three card backs. */
@@ -4612,7 +4613,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   inset: 13% 0 auto;
   z-index: 4;
   height: 0;
-  border-top: 2px dashed rgba(29, 42, 77, 0.3);
+  border-top: 2px dashed rgba(255, 255, 255, 0.75);
   opacity: calc(1 - var(--tear) * 0.8);
   pointer-events: none;
 }
@@ -4697,7 +4698,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   font: 800 44cqi/0.8 var(--font-display);
   font-stretch: 75%;
   letter-spacing: -0.06em;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.35);
   -webkit-text-stroke: 1.2cqi #ffffff;
   paint-order: stroke fill;
   text-shadow: 0 1.6cqi 3cqi rgba(80, 60, 160, 0.22);
@@ -4713,11 +4714,14 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 }
 
 .pack__theme {
-  max-width: 80%;
-  font-size: 4.4cqi;
-  font-weight: 600;
-  line-height: 1.25;
-  color: #33416a;
+  max-width: 86%;
+  padding: 1.4cqi 3.2cqi;
+  border-radius: 999px;
+  font-size: 4.2cqi;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1d2a4d;
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .pack__body .pack__meta {
@@ -4734,7 +4738,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   padding: 1.6cqi 2.4cqi;
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 1.4cqi;
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.78);
 }
 
 /* A hologram seal in the corner, like the real ones. */
@@ -5566,7 +5570,7 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
   flex: 1;
   height: 100%;
   border-radius: 2px;
-  background: linear-gradient(180deg, #ff9cc9, #9ccfff);
+  background: linear-gradient(180deg, #f41b8d, #8b5cf6 55%, #3b66e0);
   transform: scaleY(0.06);
   transform-origin: bottom;
   transition: transform 90ms linear;
@@ -5593,7 +5597,7 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #9ccfff, #ff9cc9);
+  background: linear-gradient(90deg, #3b66e0, #8b5cf6 55%, #f41b8d);
   transition: width 240ms linear;
 }
 
@@ -5621,7 +5625,7 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
 
 .ipod__menu li[aria-selected="true"] {
   color: #ffffff;
-  background: linear-gradient(180deg, #8fc4ff, #5e9df2);
+  background: linear-gradient(180deg, #4d8bff, #3b66e0);
 }
 
 .ipod__wheel {
@@ -6132,7 +6136,7 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
 
 /* Progress and skill bars: the same pastel ribbon as the player's progress rail. */
 .bar-fill {
-  background: linear-gradient(90deg, #9ccfff, #c7b8ff 55%, #ff9cc9);
+  background: linear-gradient(90deg, #3b66e0, #8b5cf6 55%, #f41b8d);
 }
 
 /* ---------- Take a break: the pocket console in the live board ---------- */
@@ -6210,25 +6214,25 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
 .playwidget__buttons i:nth-child(1) {
   top: 0;
   left: 9.5px;
-  background: #8fe6d6;
+  background: var(--mint);
 }
 
 .playwidget__buttons i:nth-child(2) {
   top: 9.5px;
   right: 0;
-  background: #ff9cc9;
+  background: var(--accent);
 }
 
 .playwidget__buttons i:nth-child(3) {
   bottom: 0;
   left: 9.5px;
-  background: #9ccfff;
+  background: var(--cobalt);
 }
 
 .playwidget__buttons i:nth-child(4) {
   top: 9.5px;
   left: 0;
-  background: #c7c0ff;
+  background: var(--violet);
 }
 
 /* The screen: the title, a snake of tokens crawling toward a token, and a start prompt. */
@@ -6268,12 +6272,12 @@ html[data-theme="light"][data-daypart="dusk"] .sky__veil {
   width: 8px;
   height: 8px;
   border-radius: 2px;
-  background: #8fe6d6;
+  background: var(--lime);
   opacity: calc(1 - var(--i) * 0.14);
 }
 
 .playwidget__snake i:first-child {
-  background: #ff9cc9;
+  background: var(--pink);
 }
 
 .playwidget__snake {

@@ -97,7 +97,7 @@ export function AgentPanel() {
         {messages.map((m) =>
           m.role === "user" ? (
             <div key={m.id} className="flex justify-end">
-              <p className="max-w-[85%] rounded-[20px_20px_6px_20px] bg-accent-soft px-4 py-2.5 text-16 text-ink">{m.text}</p>
+              <p className="max-w-[85%] rounded-[20px_20px_6px_20px] bg-accent-strong px-4 py-2.5 text-16 text-on-accent">{m.text}</p>
             </div>
           ) : (
             <div key={m.id} className="flex gap-2.5">
