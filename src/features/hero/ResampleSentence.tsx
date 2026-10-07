@@ -198,7 +198,7 @@ function Token({ slot, choice, onChoose, first, color }: { slot: Slot; choice: n
   );
 }
 
-export function ResampleSentence({ controls = true, className }: { controls?: boolean; className?: string }) {
+export function ResampleSentence({ controls = true, className }: { controls?: boolean | "screen"; className?: string }) {
   const [choices, setChoices] = useState<number[]>(() => SLOTS.map(() => 0));
   const temperature = useHero((s) => s.temperature);
   const [announce, setAnnounce] = useState("");
@@ -234,7 +234,34 @@ export function ResampleSentence({ controls = true, className }: { controls?: bo
       <p className="sr-only" aria-live="polite">
         {announce}
       </p>
-      {controls && (
+      {controls === "screen" && (
+        <div className="js-only mt-3 flex flex-wrap items-center gap-x-2 gap-y-2 font-mono text-[10px] tracking-[0.12em] text-screen-muted uppercase">
+          <button type="button" onClick={resampleAll} className="screen-key">
+            <RefreshIcon width={11} height={11} /> Resample
+          </button>
+          <label htmlFor={sliderId} className="flex h-7 items-center gap-2 rounded-[6px] border border-white/10 px-2">
+            Temp
+            <input
+              id={sliderId}
+              type="range"
+              min={0}
+              max={2}
+              step={0.1}
+              value={temperature}
+              onChange={(e) => heroStore.set({ temperature: Number(e.target.value) })}
+              className="w-16 accent-[var(--screen-accent)]"
+              aria-valuetext={`Temperature ${temperature.toFixed(1)}`}
+            />
+            <span className="w-6 text-screen-ink tabular-nums">{temperature.toFixed(1)}</span>
+          </label>
+          {!isCanonical && (
+            <button type="button" onClick={() => set(SLOTS.map(() => 0))} className="screen-key">
+              Greedy
+            </button>
+          )}
+        </div>
+      )}
+      {controls === true && (
         <div className="js-only mt-4 flex flex-wrap items-center gap-x-2 gap-y-2">
           <button type="button" onClick={resampleAll} className="pill" data-size="sm">
             <RefreshIcon width={15} height={15} /> Resample

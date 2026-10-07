@@ -7,7 +7,12 @@ import { projects } from "@/content/projects";
 import { cn } from "@/lib/cn";
 import { sfx } from "@/lib/sound";
 import { readJSON, writeJSON } from "@/lib/storage";
+import { Phone } from "../desk/Phone";
+import { PixelMoci } from "../desk/PixelMoci";
+import { Poster } from "../desk/Poster";
+import { Capsule, JellyCandies, Keychain, MiniPack } from "../desk/objects";
 import { ProjectMockup } from "../work/ProjectMockup";
+import { IdBadge } from "./IdBadge";
 
 const KEY = "adelia:desk";
 const FREE = "(min-width: 1280px) and (pointer: fine)";
@@ -107,32 +112,60 @@ function useDesk(root: RefObject<HTMLElement | null>) {
 /** Free placement on wide screens; a scrollable row of objects everywhere else. */
 type Spot = { l?: string; r?: string; t: number };
 
-function Item({ id, spot, tilt, className, children }: { id: string; spot: Spot; tilt: number; className?: string; children: ReactNode }) {
+function Item({ id, spot, tilt, fixed, className, children }: { id: string; spot: Spot; tilt: number; fixed?: boolean; className?: string; children: ReactNode }) {
   const vars = { "--l": spot.l ?? "auto", "--r": spot.r ?? "auto", "--t": `${spot.t}px`, "--tilt": `${tilt}deg` } as Record<string, string>;
   return (
-    <div data-desk-item={id} className={cn("desk-item shrink-0 snap-center", className)} style={vars}>
+    <div data-desk-item={fixed ? undefined : id} className={cn("desk-item shrink-0 snap-center", className)} style={vars}>
       {children}
     </div>
   );
 }
 
-const SPOTS: { spot: Spot; tilt: number }[] = [
-  { spot: { l: "max(24px, calc(50% - 640px))", t: 150 }, tilt: -6 },
-  { spot: { l: "max(40px, calc(50% - 600px))", t: 470 }, tilt: 4 },
-  { spot: { r: "max(32px, calc(50% - 630px))", t: 140 }, tilt: 5 },
+/* Where things lie on a wide desk, relative to the device in the middle (it spans ±330px). */
+const LEFT = (px: number) => `max(${24 + (640 - px)}px, calc(50% - ${px}px))`;
+const RIGHT = (px: number) => `max(${24 + (640 - px)}px, calc(50% - ${px}px))`;
+
+const POLAROIDS: { spot: Spot; tilt: number }[] = [
+  { spot: { l: LEFT(606), t: 548 }, tilt: 5 },
+  { spot: { l: LEFT(620), t: 860 }, tilt: -4 },
+  { spot: { l: "calc(50% - 232px)", t: 1030 }, tilt: 3 },
 ];
 
+function Polaroid({ project }: { project: (typeof projects)[number] }) {
+  return (
+    <Link href={`/work/${project.slug}`} className="polaroid relative w-[214px] select-none" draggable={false} data-cursor="Open">
+      <span className="tape" aria-hidden="true" />
+      <span className="relative block aspect-[4/3] overflow-hidden rounded-[2px]">
+        <ProjectMockup project={project} className="rounded-none" />
+        <span className="stamp absolute right-2 bottom-2" aria-hidden="true">
+          Shipped ✓
+        </span>
+      </span>
+      <span className="polaroid__caption flex items-baseline justify-between gap-2">
+        <span>{project.name}</span>
+        <span className="font-mono text-[10px] font-medium tracking-[0.1em] text-[#8a857a]">{project.year}</span>
+      </span>
+      <span className="-mt-2 block pb-3 font-mono text-[9.5px] tracking-[0.1em] text-[#6b665c] uppercase">
+        Project {project.index} | {project.kind}
+      </span>
+    </Link>
+  );
+}
+
 /**
- * The hero desk: a blue self-healing cutting mat with the AT-26 in the middle, three polaroids of
- * the work, Moci as a sticker and a sticky note on how to use the place. On wide screens everything
- * can be dragged around (and is remembered); on smaller screens the objects sit in a row.
+ * The hero desk: a blue self-healing cutting mat with the AT-26 in the middle and every earlier
+ * version of this hero lying around it as a thing: the 24:QW poster (name, live data, email strip),
+ * the ID badge on its lanyard, a phone showing the live sky, the capsule keys, a keychain of pages,
+ * a sealed booster pack, jelly candies, polaroids of the work, Moci as a sticker and as an 8-bit
+ * sprite walking the ruler. On wide screens everything can be dragged around (and is remembered);
+ * on smaller screens the objects sit in a row you swipe.
  */
 export function HeroDesk({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   useDesk(ref);
 
   return (
-    <section ref={ref} id="hero" aria-labelledby="hero-name" className="mat relative overflow-hidden text-white" data-xr="HeroDesk · a cutting mat with things you can drag">
+    <section ref={ref} id="hero" aria-labelledby="hero-name" className="mat mat-frame relative overflow-hidden text-white" data-xr="HeroDesk · a cutting mat with every version of this hero on it">
       <div className="mat-ruler top-[86px] left-0 hidden md:flex" aria-hidden="true">
         {Array.from({ length: 24 }, (_, i) => (
           <span key={i}>{i}</span>
@@ -144,28 +177,44 @@ export function HeroDesk({ children }: { children: ReactNode }) {
         ))}
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1440px] flex-col items-center px-3 pt-28 pb-14 sm:px-6 md:pt-32 xl:min-h-[960px] xl:pb-24">
+      <JellyCandies />
+
+      <div className="relative mx-auto flex w-full max-w-[1440px] flex-col items-center px-3 pt-28 pb-24 sm:px-6 md:pt-32 xl:min-h-[1330px]">
         <div className="relative z-[5] w-full max-w-[660px]">{children}</div>
 
         {/* The desk objects. */}
-        <div className="desk-row mt-10 flex w-full snap-x snap-mandatory gap-8 overflow-x-auto px-4 pt-4 pb-6 xl:contents">
+        <div className="desk-row mt-10 flex w-full snap-x snap-mandatory items-start gap-8 overflow-x-auto px-4 pt-6 pb-8 xl:contents">
+          <Item id="poster" spot={{ l: LEFT(628), t: 124 }} tilt={-3}>
+            <Poster />
+          </Item>
+
+          <Item id="badge" fixed spot={{ r: RIGHT(598), t: -8 }} tilt={0} className="xl:z-[4]">
+            <IdBadge strap={64} />
+          </Item>
+
+          <Item id="phone" spot={{ r: RIGHT(588), t: 470 }} tilt={6}>
+            <Phone />
+          </Item>
+
           {projects.map((p, i) => (
-            <Item key={p.slug} id={p.slug} spot={SPOTS[i].spot} tilt={SPOTS[i].tilt}>
-              <Link href={`/work/${p.slug}`} className="polaroid relative w-[214px] select-none" draggable={false} data-cursor="Open">
-                <span className="tape" aria-hidden="true" />
-                <span className="block aspect-[4/3] overflow-hidden rounded-[2px]">
-                  <ProjectMockup project={p} className="rounded-none" />
-                </span>
-                <span className="polaroid__caption flex items-baseline justify-between gap-2">
-                  <span>{p.name}</span>
-                  <span className="font-mono text-[10px] font-medium tracking-[0.1em] text-[#8a857a]">{p.index}/03</span>
-                </span>
-                <span className="-mt-2 block pb-3 text-12 text-[#6b665c]">{p.kind}</span>
-              </Link>
+            <Item key={p.slug} id={p.slug} spot={POLAROIDS[i].spot} tilt={POLAROIDS[i].tilt}>
+              <Polaroid project={p} />
             </Item>
           ))}
 
-          <Item id="note" spot={{ r: "max(40px, calc(50% - 610px))", t: 520 }} tilt={-3}>
+          <Item id="capsule" spot={{ l: "calc(50% - 318px)", t: 912 }} tilt={-2}>
+            <Capsule />
+          </Item>
+
+          <Item id="keychain" spot={{ l: "calc(50% + 12px)", t: 910 }} tilt={4}>
+            <Keychain />
+          </Item>
+
+          <Item id="pack" spot={{ l: "calc(50% + 236px)", t: 960 }} tilt={9}>
+            <MiniPack />
+          </Item>
+
+          <Item id="note" spot={{ r: RIGHT(604), t: 1010 }} tilt={-3}>
             <div className="sticky-note w-[214px] select-none">
               <p className="font-mono text-[10px] font-semibold tracking-[0.14em] uppercase opacity-70">How to use this desk</p>
               <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-14 leading-snug">
@@ -177,6 +226,8 @@ export function HeroDesk({ children }: { children: ReactNode }) {
                 <dd>screen on and off</dd>
                 <dt className="font-mono font-semibold">⌘K</dt>
                 <dd>anything, really</dd>
+                <dt className="font-semibold">Phone</dt>
+                <dd>tap it for the tour</dd>
               </dl>
             </div>
           </Item>
@@ -188,9 +239,9 @@ export function HeroDesk({ children }: { children: ReactNode }) {
           </Item>
         </div>
 
-        <p className="mt-2 flex items-center gap-3 font-mono text-[11px] tracking-[0.12em] text-white/70 uppercase xl:absolute xl:bottom-10 xl:left-[max(40px,calc(50%-640px))] xl:mt-0">
-          <span className="hidden xl:inline">Drag things around</span>
-          <span className="xl:hidden">Swipe the desk</span>
+        <p className="mt-2 flex items-center gap-3 font-mono text-[11px] tracking-[0.12em] text-white/75 uppercase xl:absolute xl:bottom-20 xl:left-[max(40px,calc(50%-640px))] xl:mt-0">
+          <span className="hidden xl:inline">Look around · drag anything</span>
+          <span className="xl:hidden">Swipe the desk →</span>
           <button
             type="button"
             className="js-only hidden rounded-pill border border-white/30 px-3 py-1.5 tracking-[0.12em] uppercase hover:bg-white/10 xl:inline-block"
@@ -203,6 +254,8 @@ export function HeroDesk({ children }: { children: ReactNode }) {
           </button>
         </p>
       </div>
+
+      <PixelMoci />
     </section>
   );
 }
