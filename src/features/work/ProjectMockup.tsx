@@ -46,7 +46,7 @@ function Tenderlens({ big }: { big: boolean }) {
         <span className="mt-[0.4em] inline-block rounded-pill bg-sky px-[0.6em] py-[0.1em] font-mono text-on-fill">p.87</span>
       </div>
       <div className="flex flex-col gap-[0.5em]">
-        <div className="rounded-[8px] bg-accent p-[0.6em] text-on-fill">
+        <div className="rounded-[8px] bg-accent-soft p-[0.6em] text-on-fill">
           <span className="block font-pixel text-[0.8em]">Bid score</span>
           <span className="block font-display text-[2.4em] leading-none font-bold">82</span>
         </div>

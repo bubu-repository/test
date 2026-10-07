@@ -239,7 +239,7 @@ export function ResampleSentence({ controls = true, className }: { controls?: bo
           <button type="button" onClick={resampleAll} className="screen-key">
             <RefreshIcon width={11} height={11} /> Resample
           </button>
-          <label htmlFor={sliderId} className="flex h-7 items-center gap-2 rounded-[6px] border border-white/10 px-2">
+          <label htmlFor={sliderId} className="flex h-7 items-center gap-2 rounded-[6px] border border-[color:var(--screen-line)] px-2">
             Temp
             <input
               id={sliderId}

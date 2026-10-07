@@ -8,6 +8,8 @@
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
+/** When the last sound started (performance.now()), so the global layer never doubles a component's own sound. */
+let lastAt = -Infinity;
 
 function enabled() {
   return typeof document !== "undefined" && document.documentElement.getAttribute("data-sound") === "on";
@@ -52,11 +54,13 @@ function tone({ type = "sine", from, to = from, duration, gain = 0.5, delay = 0,
   osc.connect(env).connect(master);
   osc.start(t);
   osc.stop(t + duration + 0.02);
+  lastAt = performance.now();
 }
 
-function noise(duration: number, gain = 0.2, filterFrom = 4000, filterTo = 600) {
+function noise(duration: number, gain = 0.2, filterFrom = 4000, filterTo = 600, type: BiquadFilterType = "bandpass") {
   const ac = audio();
   if (!ac || !master) return;
+  lastAt = performance.now();
   const t = ac.currentTime;
   const buffer = ac.createBuffer(1, Math.ceil(ac.sampleRate * duration), ac.sampleRate);
   const data = buffer.getChannelData(0);
@@ -64,7 +68,7 @@ function noise(duration: number, gain = 0.2, filterFrom = 4000, filterTo = 600) 
   const src = ac.createBufferSource();
   src.buffer = buffer;
   const filter = ac.createBiquadFilter();
-  filter.type = "bandpass";
+  filter.type = type;
   filter.frequency.setValueAtTime(filterFrom, t);
   filter.frequency.exponentialRampToValueAtTime(filterTo, t + duration);
   const env = ac.createGain();
@@ -74,8 +78,24 @@ function noise(duration: number, gain = 0.2, filterFrom = 4000, filterTo = 600) 
 }
 
 export const sfx = {
+  /** When the last sound started; see SoundHost. */
+  lastAt: () => lastAt,
   /** Soft hover tick. */
   tick: () => tone({ type: "triangle", from: 1800, to: 1400, duration: 0.03, gain: 0.08 }),
+  /** Hovering anything you can press: a faint high tick. */
+  hover: () => tone({ type: "sine", from: 2400, to: 2100, duration: 0.025, gain: 0.04 }),
+  /** Pressing anything that has no sound of its own: a small glass tap. */
+  tap: () => {
+    tone({ type: "sine", from: 1250, to: 1520, duration: 0.06, gain: 0.14 });
+    tone({ type: "sine", from: 2900, duration: 0.04, gain: 0.035, delay: 0.005 });
+  },
+  /** A drop in the sea. */
+  plop: () => {
+    tone({ type: "sine", from: 1100, to: 260, duration: 0.14, gain: 0.32 });
+    noise(0.22, 0.08, 1800, 400, "lowpass");
+  },
+  /** Changing page: a small wave washing in. */
+  wave: () => noise(0.7, 0.07, 1400, 260, "lowpass"),
   /** Button press: a jelly pop. */
   pop: () => tone({ type: "sine", from: 520, to: 880, duration: 0.09, gain: 0.35 }),
   /** Boop the mascot: a wobbly drop. */
@@ -106,4 +126,78 @@ export const sfx = {
   },
   /** Gumball knob click. */
   click: () => tone({ type: "square", from: 300, to: 120, duration: 0.04, gain: 0.12 }),
+};
+
+type Ambience = { stop: () => void };
+let sea: Ambience | null = null;
+const seaListeners = new Set<() => void>();
+
+/**
+ * The sea, as an ambient loop: brown noise through a low-pass filter, with a slow swell on both the
+ * filter and the volume so it breathes like waves on a beach. Starts only inside a user gesture.
+ */
+export const ambience = {
+  isOn: () => sea !== null,
+  subscribe(listener: () => void) {
+    seaListeners.add(listener);
+    return () => {
+      seaListeners.delete(listener);
+    };
+  },
+  start() {
+    const ac = audio();
+    if (!ac || !master || sea) return;
+    const t = ac.currentTime;
+    const length = ac.sampleRate * 4;
+    const buffer = ac.createBuffer(2, length, ac.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = buffer.getChannelData(ch);
+      let last = 0;
+      for (let i = 0; i < length; i++) {
+        last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+        data[i] = last * 3.2;
+      }
+    }
+    const src = ac.createBufferSource();
+    src.buffer = buffer;
+    src.loop = true;
+    const lowpass = ac.createBiquadFilter();
+    lowpass.type = "lowpass";
+    lowpass.frequency.value = 520;
+    lowpass.Q.value = 0.5;
+    const swell = ac.createGain();
+    swell.gain.value = 0.55;
+    const out = ac.createGain();
+    out.gain.setValueAtTime(0.0001, t);
+    out.gain.exponentialRampToValueAtTime(0.6, t + 2.5);
+    // One wave about every eight seconds: the same slow oscillator opens the filter and the volume.
+    const lfo = ac.createOscillator();
+    lfo.frequency.value = 0.12;
+    const toGain = ac.createGain();
+    toGain.gain.value = 0.4;
+    const toFilter = ac.createGain();
+    toFilter.gain.value = 360;
+    lfo.connect(toGain).connect(swell.gain);
+    lfo.connect(toFilter).connect(lowpass.frequency);
+    src.connect(lowpass).connect(swell).connect(out).connect(master);
+    src.start(t);
+    lfo.start(t);
+    sea = {
+      stop: () => {
+        const now = ac.currentTime;
+        out.gain.cancelScheduledValues(now);
+        out.gain.setValueAtTime(Math.max(out.gain.value, 0.0001), now);
+        out.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+        src.stop(now + 1);
+        lfo.stop(now + 1);
+      },
+    };
+    seaListeners.forEach((l) => l());
+  },
+  stop() {
+    if (!sea) return;
+    sea.stop();
+    sea = null;
+    seaListeners.forEach((l) => l());
+  },
 };

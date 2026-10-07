@@ -10,6 +10,7 @@ import { Cursor } from "../cursor/Cursor";
 import { LiveLayer } from "../live/LiveLayer";
 import { StickerLayer } from "../stickers/StickerLayer";
 import { Tour } from "../tour/Tour";
+import { WorldHost } from "../world/WorldHost";
 import { ActionHost } from "./ActionHost";
 import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { Toasts } from "./Toasts";
@@ -95,6 +96,7 @@ export function SiteChrome() {
   return (
     <>
       <ActionHost />
+      <WorldHost />
       <KeyboardShortcuts />
       <VisitTracker />
       <LiveLayer />

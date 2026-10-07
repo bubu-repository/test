@@ -213,7 +213,7 @@ function Bubble({ who, children, tag }: { who: "adelia" | "moci" | "you"; childr
   if (who === "you") {
     return (
       <div className="flex justify-end">
-        <p className="max-w-[85%] rounded-[22px_22px_6px_22px] bg-accent-strong px-4 py-2.5 text-16 text-on-accent">{children}</p>
+        <p className="max-w-[85%] rounded-[22px_22px_6px_22px] bg-accent-soft px-4 py-2.5 text-16 text-ink">{children}</p>
       </div>
     );
   }

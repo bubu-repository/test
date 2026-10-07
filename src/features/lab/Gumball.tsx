@@ -66,8 +66,8 @@ export function Gumball() {
               <stop offset="100%" stopColor="#dfe8ff" stopOpacity="0.45" />
             </radialGradient>
             <linearGradient id="gb-body" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#FF5FB2" />
-              <stop offset="100%" stopColor="#C2006B" />
+              <stop offset="0%" stopColor="#FFC4E1" />
+              <stop offset="100%" stopColor="#F58FC0" />
             </linearGradient>
           </defs>
           {/* globe */}
@@ -83,20 +83,20 @@ export function Gumball() {
           <circle cx="130" cy="132" r="112" fill="url(#gb-glass)" />
           <ellipse cx="90" cy="70" rx="30" ry="16" fill="#fff" opacity="0.7" transform="rotate(-30 90 70)" />
           {/* neck + body */}
-          <rect x="78" y="236" width="104" height="22" rx="8" fill="#B8006A" />
+          <rect x="78" y="236" width="104" height="22" rx="8" fill="#E9A9D0" />
           <path d="M42 262a14 14 0 0 1 14-14h148a14 14 0 0 1 14 14v112a18 18 0 0 1-18 18H60a18 18 0 0 1-18-18Z" fill="url(#gb-body)" />
           <rect x="62" y="270" width="72" height="26" rx="8" fill="#fff" opacity="0.92" />
-          <text x="98" y="288" textAnchor="middle" fontSize="12" fontWeight="700" fill="#1D1D1F" letterSpacing="2">
+          <text x="98" y="288" textAnchor="middle" fontSize="12" fontWeight="700" fill="#1D2A4D" letterSpacing="2">
             LAB
           </text>
           {/* knob */}
           <g style={{ transform: `rotate(${turns * 360}deg)`, transformOrigin: "176px 318px", transition: calm ? "none" : "transform 700ms cubic-bezier(.34,1.3,.64,1)" }}>
             <circle cx="176" cy="318" r="28" fill="#fff" />
             <rect x="171" y="294" width="10" height="48" rx="5" fill="#E8E8EC" />
-            <circle cx="176" cy="318" r="7" fill="#C2006B" />
+            <circle cx="176" cy="318" r="7" fill="#F41B8D" />
           </g>
           {/* chute */}
-          <rect x="70" y="330" width="56" height="40" rx="12" fill="#5A0033" opacity="0.55" />
+          <rect x="70" y="330" width="56" height="40" rx="12" fill="#7A3A66" opacity="0.4" />
           {/* capsule */}
           {(phase === "dropping" || phase === "open") && (
             <g className={calm ? undefined : "gb-capsule"}>

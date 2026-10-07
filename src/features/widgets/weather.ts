@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { SeaState } from "@/app/api/sea/route";
 import type { Weather } from "@/app/api/weather/route";
 
 /** WMO weather codes → words, for the Bekasi sky widget. */
@@ -32,4 +33,22 @@ export function useWeather() {
     };
   }, []);
   return weather;
+}
+
+let seaCache: Promise<SeaState | null> | null = null;
+
+/** The sea off Jakarta right now (see /api/sea). Null while loading or if the request failed. */
+export function useSea() {
+  const [sea, setSea] = useState<SeaState | null>(null);
+  useEffect(() => {
+    seaCache ??= fetch("/api/sea")
+      .then((r) => (r.ok ? (r.json() as Promise<SeaState>) : null))
+      .catch(() => null);
+    let alive = true;
+    void seaCache.then((s) => alive && setSea(s));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return sea;
 }

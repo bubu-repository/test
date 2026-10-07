@@ -11,6 +11,7 @@ import { STICKERS, useStickers } from "@/lib/stickers";
 import { probableStatus, zoneCity } from "@/lib/time";
 import { useUI } from "@/lib/ui";
 import { Poster } from "../objects/Poster";
+import { Sea, SeaSoundToggle } from "../world/Sea";
 import { useLive } from "../live/live-store";
 
 function Status() {
@@ -36,7 +37,7 @@ export function SiteFooter() {
 
   return (
     <footer id="contact" className="mt-auto scroll-mt-20" data-xr="SiteFooter · live clocks + one-click email">
-      <div className="container-page grid items-center gap-16 py-24 md:py-32 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-24">
+      <div className="container-page grid items-center gap-16 pt-24 pb-4 md:pt-32 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-24">
         <div className="text-center lg:text-left">
           <p className="type-eyebrow">Say hello</p>
           <h2 className="type-display mx-auto mt-4 max-w-[15ch] lg:mx-0">
@@ -64,84 +65,89 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* The spec plate: a printed label panel, like the back of a device. */}
-      <div className="container-page pb-10">
-        <div className="spec-plate">
-          <span className="screw absolute top-3 left-3" aria-hidden="true" />
-          <span className="screw absolute top-3 right-3" aria-hidden="true" />
-          <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_auto]">
-            <div>
-              <p className="spec-label">Base</p>
-              <p className="mt-2 text-ink">
-                {identity.location} · {identity.timeZoneLabel}
-              </p>
-              <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
-                <span>
-                  <LiveClock zone={identity.timeZone} className="text-ink tabular-nums" /> there, <Status />
-                </span>
-                <VisitorClock />
-                {here > 1 && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <span className="live-dot" aria-hidden="true" /> {here} here now
+      {/* The sea, with the spec plate floating on it: a glass label panel, like the back of a device. */}
+      <Sea>
+        <div className="container-page">
+          <div className="spec-plate">
+            <span className="screw absolute top-3 left-3" aria-hidden="true" />
+            <span className="screw absolute top-3 right-3" aria-hidden="true" />
+            <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_auto]">
+              <div>
+                <p className="spec-label">Base</p>
+                <p className="mt-2 text-ink">
+                  {identity.location} · {identity.timeZoneLabel}
+                </p>
+                <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+                  <span>
+                    <LiveClock zone={identity.timeZone} className="text-ink tabular-nums" /> there, <Status />
                   </span>
-                )}
-              </p>
-            </div>
-            <div>
-              <p className="spec-label">Focus</p>
-              <p className="mt-2 text-ink">AI products, end to end</p>
-              <p className="mt-1">Interfaces, agents, evals</p>
-            </div>
-            <nav aria-label="Footer">
-              <p className="spec-label">Index</p>
-              <ul className="mt-2 grid grid-cols-2 gap-x-5 gap-y-1">
-                <li>
-                  <Link href="/" className="hover:text-ink">
-                    Home
-                  </Link>
-                </li>
-                {nav.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className="hover:text-ink">
-                      {item.label}
+                  <VisitorClock />
+                  {here > 1 && (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="live-dot" aria-hidden="true" /> {here} here now
+                    </span>
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="spec-label">Focus</p>
+                <p className="mt-2 text-ink">AI products, end to end</p>
+                <p className="mt-1">Interfaces, agents, evals</p>
+              </div>
+              <nav aria-label="Footer">
+                <p className="spec-label">Index</p>
+                <ul className="mt-2 grid grid-cols-2 gap-x-5 gap-y-1">
+                  <li>
+                    <Link href="/" className="hover:text-ink">
+                      Home
                     </Link>
                   </li>
-                ))}
-                {socials
-                  .filter((s) => s.href)
-                  .map((s) => (
-                    <li key={s.label}>
-                      <a href={s.href!} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
-                        {s.label} ↗<span className="sr-only"> (opens in a new tab)</span>
-                      </a>
+                  {nav.map((item) => (
+                    <li key={item.href}>
+                      <Link href={item.href} className="hover:text-ink">
+                        {item.label}
+                      </Link>
                     </li>
                   ))}
-              </ul>
-            </nav>
-            <div className="js-only">
-              <p className="spec-label">System</p>
-              <div className="mt-1 -ml-3 flex flex-wrap items-center gap-1 lg:flex-col lg:items-start">
-                <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "stickers" })}>
-                  Stickers {collected}/{STICKERS.length}
-                </button>
-                <button type="button" className="pill" data-variant="ghost" data-size="sm" aria-pressed={xray} onClick={() => dispatch({ type: "xray" })}>
-                  X-ray {xray ? "on" : "off"}
-                </button>
-                <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "shortcuts" })}>
-                  <kbd aria-hidden="true">?</kbd> Shortcuts
-                </button>
+                  {socials
+                    .filter((s) => s.href)
+                    .map((s) => (
+                      <li key={s.label}>
+                        <a href={s.href!} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+                          {s.label} ↗<span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+              </nav>
+              <div className="js-only">
+                <p className="spec-label">System</p>
+                <div className="mt-1 -ml-3 flex flex-wrap items-center gap-1 lg:flex-col lg:items-start">
+                  <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "stickers" })}>
+                    Stickers {collected}/{STICKERS.length}
+                  </button>
+                  <button type="button" className="pill" data-variant="ghost" data-size="sm" aria-pressed={xray} onClick={() => dispatch({ type: "xray" })}>
+                    X-ray {xray ? "on" : "off"}
+                  </button>
+                  <button type="button" className="pill" data-variant="ghost" data-size="sm" onClick={() => dispatch({ type: "open", panel: "shortcuts" })}>
+                    <kbd aria-hidden="true">?</kbd> Shortcuts
+                  </button>
+                </div>
               </div>
             </div>
+            <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-dashed border-line pt-4 font-mono text-[10px] tracking-[0.14em] uppercase">
+              <span>
+                © {edition} {identity.name}
+              </span>
+              <span>Designed &amp; built in {identity.city}</span>
+              <span className="sm:ml-auto">Model AT-26 · Rev. {edition}</span>
+            </p>
           </div>
-          <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-dashed border-line pt-4 font-mono text-[10px] tracking-[0.14em] uppercase">
-            <span>
-              © {edition} {identity.name}
-            </span>
-            <span>Designed &amp; built in {identity.city}</span>
-            <span className="sm:ml-auto">Model AT-26 · Rev. {edition}</span>
-          </p>
+          <div className="mt-5 flex justify-center">
+            <SeaSoundToggle />
+          </div>
         </div>
-      </div>
+      </Sea>
     </footer>
   );
 }

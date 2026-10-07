@@ -3,15 +3,17 @@
  * The single source of truth for adelia.cc and every *.adelia.cc experiment.
  * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
  *
- * World: clean, white objects on a soft cool mist. Real objects you can touch (a small device, a PSP, a
- * laptop, polaroids, an ID badge) sit on white with soft, slightly blue shadows and a lot of air.
- * Type is Bricolage Grotesque, with JetBrains Mono for printed labels. Magenta #F41B8D is the
- * anchor: the power LED, the primary key, the dial pointer. Every other colour is cool (blue,
- * periwinkle, aqua, ice) and used in small doses.
+ * World: a bright sky with the sea at the bottom of every page. Panels are frosted glass that
+ * the clouds drift behind; a few real objects (a pack of cards, a PSP, a laptop, an ID card) sit
+ * on top. Colours are soft and pastel, after a game-UI reference: sky blue, cotton pink, butter,
+ * lilac, with navy ink. Magenta #F41B8D stays the brand mark, in small doses only (the logo dot,
+ * LEDs, the dial pointer); large fills use its pastel (--accent-soft).
+ * Type is Bricolage Grotesque, with JetBrains Mono for printed labels.
  *
  * Contrast rules (checked on /styleguide):
+ * - Text sits on glass (--surface) or on the veiled sky, never on the bare sky image.
  * - White text sits on --accent-strong (5.0:1), never on --accent (3.9:1).
- * - Text on a bright fill (aqua, ice, pink, periwinkle, sky, cyan, violet) uses --on-fill.
+ * - Text on a pastel fill (pink, butter, lilac, aqua, sky) uses --on-fill.
  * - Magenta as small text: --accent-ink.
  */
 
@@ -20,130 +22,160 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: #EEF2F7;          /* soft cool mist, so white objects stand out */
-  --surface: #FFFFFF;     /* panels, keys, cards: white on the mist */
-  --surface-2: #F2F5F9;   /* recessed wells, inputs, quiet fills */
-  --ink: #0E1726;         /* cool near-black (16.0:1 on --bg) */
-  --muted: #556070;       /* cool grey (5.7:1 on --bg, 6.4:1 on white) */
-  --line: #DDE3EB;        /* hairlines */
-  --accent: #F41B8D;      /* MAGENTA, the anchor: LEDs, pointers, marks */
-  --accent-strong: #D6087A; /* magenta key behind white text (5.0:1) */
-  --accent-ink: #B8006A;  /* magenta as small text (5.8:1 on --bg, 6.5:1 on white) */
+  --bg: #DCEBFA;          /* pale sky, under the sky image */
+  --sky-tone: #D1E5FC;    /* what the veiled sky averages to, for contrast checks */
+  --glass-tone: #F1F7FF;  /* what a glass panel averages to, for contrast checks */
+  --surface: rgba(255, 255, 255, .7);   /* frosted glass: panels, keys, cards */
+  --surface-solid: #FFFFFF; /* where a panel must be opaque (menus over moving content) */
+  --surface-2: rgba(236, 245, 255, .62); /* recessed wells, inputs, quiet fills */
+  --ink: #1D2A4D;         /* navy (13.0:1 on the veiled sky) */
+  --muted: #475779;       /* slate blue (5.2:1 on glass, 4.6:1 on the veiled sky) */
+  --line: rgba(64, 104, 168, .18); /* hairlines inside panels */
+  --rim: rgba(255, 255, 255, .92); /* the bright edge of a glass panel */
+  --accent: #F41B8D;      /* MAGENTA, the brand mark: small doses only */
+  --accent-strong: #D6087A; /* magenta behind white text (5.0:1) */
+  --accent-ink: #B8006A;  /* magenta as small text (6.5:1 on white) */
+  --accent-soft: #FFD9EC; /* cotton pink: the primary key, highlights */
+  --accent-soft-2: #FFC2E0;
 
-  /* Materials: white plastic and brushed aluminium, lit from above, shadows a little blue */
-  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0) 46%);
-  --bevel: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(15, 23, 42, .06);
-  --lift-sm: 0 1px 1px rgba(15, 23, 42, .06), 0 2px 6px rgba(15, 23, 42, .06);
-  --lift: 0 1px 1px rgba(15, 23, 42, .05), 0 6px 14px rgba(15, 23, 42, .06), 0 22px 44px rgba(15, 23, 42, .07);
-  --lift-lg: 0 2px 2px rgba(15, 23, 42, .05), 0 14px 30px rgba(15, 23, 42, .08), 0 48px 96px rgba(15, 23, 42, .12);
-  --recess: inset 0 2px 4px rgba(15, 23, 42, .08), inset 0 0 0 1px rgba(15, 23, 42, .06), 0 1px 0 rgba(255, 255, 255, .9);
-  --key-edge: 0 2px 0 #D7DDE6;
-  --screen: #0B0F17;      /* LCD glass */
-  --screen-ink: #E8EEF7;  /* lit segments (16.4:1) */
-  --screen-muted: #8B97A8; /* dim segments (6.5:1) */
-  --screen-accent: #FF6FB8; /* magenta on the screen (7.5:1) */
+  /* Materials: frosted glass lit from above, shadows a little blue */
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 52%);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 0 0 1px rgba(255, 255, 255, .28);
+  --lift-sm: 0 1px 2px rgba(40, 80, 140, .08), 0 3px 8px rgba(40, 80, 140, .08);
+  --lift: 0 1px 2px rgba(40, 80, 140, .06), 0 8px 20px rgba(40, 90, 160, .1), 0 24px 48px rgba(40, 90, 160, .1);
+  --lift-lg: 0 2px 4px rgba(40, 80, 140, .06), 0 16px 36px rgba(40, 90, 160, .14), 0 48px 96px rgba(40, 90, 160, .16);
+  --recess: inset 0 2px 5px rgba(40, 80, 140, .1), inset 0 0 0 1px rgba(64, 104, 168, .12), 0 1px 0 rgba(255, 255, 255, .8);
+  --key-edge: 0 2px 0 rgba(140, 175, 220, .55);
+  --screen: #D4E6F8;      /* LCD: pale glass */
+  --screen-ink: #1D2A4D;  /* segments (10.9:1) */
+  --screen-muted: #44557C; /* dim segments (5.6:1) */
+  --screen-accent: #B8156F; /* magenta on the screen (5.4:1) */
+  --screen-line: rgba(40, 80, 150, .2);
+  --screen-well: rgba(255, 255, 255, .5);
   --metal-from: #FFFFFF;
-  --metal-to: #B9C1CD;
-  --led: #22C9A0;
+  --metal-to: #C3D3E6;
+  --led: #2FCB9F;
 
   /* Floating chrome (dock, popovers, dialogs) */
-  --glass: rgba(255, 255, 255, .86);
-  --glass-strong: rgba(255, 255, 255, .95);
+  --glass: rgba(255, 255, 255, .64);
+  --glass-strong: rgba(255, 255, 255, .86);
   --glass-edge: rgba(255, 255, 255, 1);
-  --glass-line: rgba(15, 23, 42, .08);
-  --glass-shadow: 0 1px 1px rgba(15, 23, 42, .05), 0 8px 20px rgba(15, 23, 42, .08), 0 24px 48px rgba(15, 23, 42, .08);
-  --glass-blur: 18px;
+  --glass-line: rgba(255, 255, 255, .85);
+  --glass-shadow: 0 1px 2px rgba(40, 80, 140, .08), 0 10px 26px rgba(40, 90, 160, .12), 0 28px 56px rgba(40, 90, 160, .1);
+  --glass-blur: 22px;
 
-  --stage-from: #8DBEFF;  /* sky fallback gradient, top (the live sky lives in the phone) */
-  --stage-to: #EAF3FF;    /* sky fallback gradient, bottom */
+  /* The sky and the sea (SkyBackdrop, the footer) */
+  --stage-from: #7DB5F2;
+  --stage-to: #E7F3FD;
   --sky-image: url("/sky/day.webp");
-  --cloud: rgba(255, 255, 255, .9);
-  --dot: rgba(15, 23, 42, .06);
-  --glow: rgba(244, 27, 141, .2);
-  --check-a: #F4F6F9;     /* checkerboard pair (badge, reveal card) */
-  --check-b: #E6EAF0;
+  --sky-veil-top: rgba(238, 246, 255, .4);
+  --sky-veil: rgba(238, 246, 255, .72);
+  --grid-line: rgba(255, 255, 255, .2);
+  --sea-from: #9AD8FF;    /* horizon */
+  --sea-mid: #63B2EE;
+  --sea-to: #3F86D6;      /* deep */
+  --foam: rgba(255, 255, 255, .85);
+  --dot: rgba(60, 100, 160, .1);
+  --glow: rgba(255, 150, 200, .3);
+  --check-a: #F4F9FF;     /* checkerboard pair (reveal card) */
+  --check-b: #E2EEFA;
 }
 
 /* ---------- Color: night (dark) ---------- */
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #0B0E13;          /* cool graphite */
-  --surface: #151A21;
-  --surface-2: #10141A;
-  --ink: #E9EEF5;         /* text (16.6:1 on --bg) */
-  --muted: #9AA5B5;       /* secondary text (7.8:1 on --bg, 7.0:1 on --surface) */
-  --line: #232A34;
-  --accent: #F41B8D;      /* magenta stays the anchor */
+  --bg: #0E1630;          /* night sky */
+  --sky-tone: #161837;
+  --glass-tone: #1F2A52;
+  --surface: rgba(30, 40, 78, .6);
+  --surface-solid: #182142;
+  --surface-2: rgba(10, 16, 38, .5);
+  --ink: #EAF0FA;         /* text (14.8:1 on the veiled night) */
+  --muted: #A9B6D3;       /* secondary text (8.1:1) */
+  --line: rgba(160, 182, 235, .16);
+  --rim: rgba(200, 215, 255, .2);
+  --accent: #F41B8D;
   --accent-strong: #D6087A;
-  --accent-ink: #FF6FB8;  /* magenta as small text (7.6:1 on --bg) */
+  --accent-ink: #FF8CC6;  /* magenta as small text (7.4:1) */
+  --accent-soft: #FFB8DA;
+  --accent-soft-2: #FF94C8;
 
-  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 46%);
-  --bevel: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 -1px 0 rgba(0, 0, 0, .45);
-  --lift-sm: 0 1px 1px rgba(0, 0, 0, .4), 0 2px 6px rgba(0, 0, 0, .3);
-  --lift: 0 1px 1px rgba(0, 0, 0, .4), 0 6px 14px rgba(0, 0, 0, .3), 0 22px 44px rgba(0, 0, 0, .35);
-  --lift-lg: 0 2px 2px rgba(0, 0, 0, .4), 0 14px 30px rgba(0, 0, 0, .4), 0 48px 96px rgba(0, 0, 0, .5);
-  --recess: inset 0 2px 5px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 255, 255, .04);
-  --key-edge: 0 2px 0 #06080B;
-  --screen: #070A0F;
-  --screen-ink: #E8EEF7;
-  --screen-muted: #8B97A8;
-  --screen-accent: #FF6FB8;
-  --metal-from: #5B6573;
-  --metal-to: #232932;
-  --led: #22C9A0;
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, 0) 52%);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 0 0 1px rgba(255, 255, 255, .04);
+  --lift-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 3px 8px rgba(0, 0, 0, .25);
+  --lift: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 20px rgba(0, 0, 0, .28), 0 24px 48px rgba(0, 0, 0, .3);
+  --lift-lg: 0 2px 4px rgba(0, 0, 0, .3), 0 16px 36px rgba(0, 0, 0, .35), 0 48px 96px rgba(0, 0, 0, .45);
+  --recess: inset 0 2px 5px rgba(0, 0, 0, .4), inset 0 0 0 1px rgba(0, 0, 0, .3), 0 1px 0 rgba(255, 255, 255, .05);
+  --key-edge: 0 2px 0 rgba(0, 0, 0, .45);
+  --screen: #121C3A;
+  --screen-ink: #E8EEF9;
+  --screen-muted: #9DAACB;
+  --screen-accent: #FF8CC6;
+  --screen-line: rgba(255, 255, 255, .14);
+  --screen-well: rgba(255, 255, 255, .05);
+  --metal-from: #5C6A8A;
+  --metal-to: #232C48;
+  --led: #3FE0B5;
 
-  --glass: rgba(21, 26, 33, .86);
-  --glass-strong: rgba(21, 26, 33, .95);
-  --glass-edge: rgba(255, 255, 255, .07);
-  --glass-line: rgba(0, 0, 0, .5);
-  --glass-shadow: 0 1px 1px rgba(0, 0, 0, .4), 0 8px 20px rgba(0, 0, 0, .4), 0 24px 48px rgba(0, 0, 0, .4);
+  --glass: rgba(26, 36, 72, .6);
+  --glass-strong: rgba(22, 30, 62, .88);
+  --glass-edge: rgba(255, 255, 255, .12);
+  --glass-line: rgba(200, 215, 255, .16);
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 10px 26px rgba(0, 0, 0, .35), 0 28px 56px rgba(0, 0, 0, .35);
 
-  --stage-from: #060814;
-  --stage-to: #141a33;
+  --stage-from: #0A1028;
+  --stage-to: #1B2550;
   --sky-image: url("/sky/night.webp");
-  --cloud: rgba(140, 150, 220, .25);
-  --dot: rgba(233, 238, 245, .06);
-  --glow: rgba(244, 27, 141, .4);
-  --check-a: #151A21;
-  --check-b: #1C222B;
+  --sky-veil-top: rgba(10, 16, 40, .35);
+  --sky-veil: rgba(10, 16, 40, .62);
+  --grid-line: rgba(180, 200, 255, .06);
+  --sea-from: #24396E;
+  --sea-mid: #16285A;
+  --sea-to: #0B1638;
+  --foam: rgba(200, 215, 255, .5);
+  --dot: rgba(233, 238, 245, .07);
+  --glow: rgba(255, 140, 198, .35);
+  --check-a: #182142;
+  --check-b: #1E2850;
 }
 
-/* ---------- Accent colours (theme-independent, cool, used in small doses) ---------- */
+/* ---------- Accent colours (theme-independent, pastel, used in small doses) ---------- */
 :root {
-  --red: #FF4D6D;         /* errors only */
-  --lime: #5EEAD4;        /* aqua (the old lime slot, cooled) */
-  --cobalt: #3060E6;      /* blue (white text 5.0:1) */
-  --sun: #A5B4FC;         /* periwinkle (the old sun slot, cooled) */
-  --pink: #FFB2DC;
-  --mint: #2DD4BF;        /* teal */
-  --cyan: #32D4E8;
-  --violet: #8E7CFF;
-  --orange: #38BDF8;      /* sky blue (the old orange slot, cooled) */
-  --sky: #7CC4FF;
-  --charcoal: #1E2530;
-  --lcd: #0B0F17;
-  --ok: #22C9A0;
+  --red: #FF6B8A;         /* errors only */
+  --lime: #8FE6D6;        /* aqua pastel (the old lime slot) */
+  --cobalt: #3B66E0;      /* blue (white text 4.9:1) */
+  --sun: #C7C0FF;         /* lilac (the old sun slot) */
+  --butter: #FFE58F;      /* butter yellow, the reference's highlight chip */
+  --pink: #FFC2DE;
+  --mint: #6FDCC4;
+  --cyan: #86DDF2;
+  --violet: #A493FF;
+  --orange: #86CBFA;      /* sky blue (the old orange slot) */
+  --sky: #9CCFFF;
+  --charcoal: #1E2A48;
+  --lcd: #121C3A;
+  --ok: #2FCB9F;
 
-  --on-fill: #0E1726;     /* text on every bright fill */
+  --on-fill: #1D2A4D;     /* text on every pastel fill */
   --on-accent: #FFFFFF;   /* text on --accent-strong */
   --on-cobalt: #FFFFFF;   /* text on blue and charcoal */
   --on-ink: #FFFFFF;
 
-  /* Jelly shading for the small glossy mascot */
-  --jelly-light: #FF8CC8;
-  --jelly-deep: #C2006B;
-  --jelly-core: #A0007A;
-  --jelly-ink: #1A0614;
+  /* Jelly shading for the small glossy mascot (a softer pink) */
+  --jelly-light: #FFA9D4;
+  --jelly-deep: #E0539F;
+  --jelly-core: #C23A86;
+  --jelly-ink: #2A0C20;
 
   /* Terminal: always a night console */
-  --term-bg: #0B0F17;
-  --term-ink: #E8EEF7;
-  --term-muted: #8B97A8;
-  --term-accent: #FF6FB8;
-  --term-link: #7CC4FF;
-  --term-ok: #5EEAD4;
-  --term-warn: #A5B4FC;
+  --term-bg: #0E1630;
+  --term-ink: #E8EEF9;
+  --term-muted: #9DAACB;
+  --term-accent: #FF8CC6;
+  --term-link: #9CCFFF;
+  --term-ok: #8FE6D6;
+  --term-warn: #C7C0FF;
 }
 
 /* ---------- Shape, depth, space, motion, type ---------- */

@@ -77,7 +77,7 @@ function AskLine() {
   const [q, setQ] = useState("");
   return (
     <form
-      className="js-only mt-7 flex items-center gap-3 rounded-[12px] border border-white/10 bg-white/[0.04] py-1.5 pr-1.5 pl-4 font-mono text-[14px] focus-within:border-screen-accent/60"
+      className="js-only mt-7 flex items-center gap-3 rounded-[12px] border border-[color:var(--screen-line)] bg-[var(--screen-well)] py-1.5 pr-1.5 pl-4 font-mono text-[14px] focus-within:border-screen-accent/60"
       onSubmit={(e) => {
         e.preventDefault();
         const text = q.trim();
@@ -104,7 +104,7 @@ function AskLine() {
       <button
         type="submit"
         disabled={!q.trim()}
-        className="flex h-9 shrink-0 items-center gap-1.5 rounded-[8px] bg-white/10 px-3 text-[12px] tracking-[0.08em] text-screen-ink uppercase transition-opacity disabled:opacity-40"
+        className="flex h-9 shrink-0 items-center gap-1.5 rounded-[8px] bg-[var(--screen-line)] px-3 text-[12px] tracking-[0.08em] text-screen-ink uppercase transition-opacity disabled:opacity-40"
         data-cursor="Ask"
       >
         <span className="max-sm:sr-only">Enter</span>

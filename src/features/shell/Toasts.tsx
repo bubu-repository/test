@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
 import { dismissToast, useUI } from "@/lib/ui";
 
 const TONE: Record<string, string> = {
-  magenta: "bg-accent",
+  magenta: "bg-accent-soft",
   lime: "bg-lime",
   sun: "bg-sun",
   sky: "bg-sky",

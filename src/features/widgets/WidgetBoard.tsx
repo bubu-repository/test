@@ -9,11 +9,12 @@ import { createStore, useStore } from "@/lib/store";
 import { ui, useUI, type Lens } from "@/lib/ui";
 import { RevealCard } from "../hero/RevealCard";
 import { FindTimeWidget, KeycapsWidget, PhoneWidget, WorkspaceWidget } from "./demos";
+import { SeaWidget } from "./SeaWidget";
 import { AskWidget, LabWidget, OverlapWidget } from "./widgets";
 
-type WidgetId = "now" | "overlap" | "ask" | "reveal" | "lab" | "findtime" | "workspace" | "keys";
+type WidgetId = "now" | "overlap" | "ask" | "reveal" | "lab" | "findtime" | "workspace" | "keys" | "sea";
 
-/** Eight widgets: her phone with the live sky, live data, Moci, the lab, plus three playable UI demos (after marco.fyi). */
+/** Nine widgets: her phone with the live sky, the live sea, live data, Moci, the lab, plus three playable UI demos (after marco.fyi). */
 const WIDGETS: Record<WidgetId, { label: string; Component: ComponentType; span: string; tone?: string }> = {
   now: { label: "Bekasi now", Component: PhoneWidget, span: "sm:col-span-1 sm:row-span-2 lg:col-span-4 lg:row-span-2" },
   overlap: { label: "Working hours overlap", Component: OverlapWidget, span: "sm:col-span-1 lg:col-span-4", tone: "tone-sky" },
@@ -23,18 +24,19 @@ const WIDGETS: Record<WidgetId, { label: string; Component: ComponentType; span:
   findtime: { label: "Find a time", Component: FindTimeWidget, span: "sm:col-span-1 lg:col-span-4" },
   workspace: { label: "Workspaces", Component: WorkspaceWidget, span: "sm:col-span-1 lg:col-span-4" },
   keys: { label: "Keyboard", Component: KeycapsWidget, span: "sm:col-span-2 lg:col-span-4" },
+  sea: { label: "The sea", Component: SeaWidget, span: "sm:col-span-2 lg:col-span-12 overflow-hidden" },
 };
 
-const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "findtime", "workspace", "keys", "reveal", "lab"];
+const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "findtime", "workspace", "keys", "sea", "reveal", "lab"];
 
 const LENSES: { id: Lens; label: string; order: WidgetId[] }[] = [
-  { id: "recruiter", label: "Recruiter", order: ["findtime", "reveal", "ask", "overlap", "workspace", "now", "keys", "lab"] },
-  { id: "engineer", label: "Engineer", order: ["workspace", "ask", "lab", "keys", "now", "overlap", "findtime", "reveal"] },
-  { id: "designer", label: "Designer", order: ["lab", "keys", "reveal", "workspace", "ask", "now", "overlap", "findtime"] },
-  { id: "curious", label: "Just curious", order: ["keys", "lab", "reveal", "ask", "now", "overlap", "workspace", "findtime"] },
+  { id: "recruiter", label: "Recruiter", order: ["findtime", "reveal", "ask", "overlap", "workspace", "now", "keys", "lab", "sea"] },
+  { id: "engineer", label: "Engineer", order: ["workspace", "ask", "lab", "keys", "now", "overlap", "findtime", "reveal", "sea"] },
+  { id: "designer", label: "Designer", order: ["lab", "keys", "reveal", "workspace", "ask", "now", "overlap", "findtime", "sea"] },
+  { id: "curious", label: "Just curious", order: ["sea", "keys", "lab", "reveal", "ask", "now", "overlap", "workspace", "findtime"] },
 ];
 
-const KEY = "adelia:widgets:v4";
+const KEY = "adelia:widgets:v5";
 
 function valid(order: unknown): order is WidgetId[] {
   return Array.isArray(order) && order.length === DEFAULT_ORDER.length && DEFAULT_ORDER.every((id) => order.includes(id));

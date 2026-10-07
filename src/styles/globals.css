@@ -34,6 +34,10 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-surface-solid: var(--surface-solid);
+  --color-rim: var(--rim);
+  --color-butter: var(--butter);
   --color-glass: var(--glass);
   --color-glass-strong: var(--glass-strong);
   --color-cobalt: var(--cobalt);
@@ -243,15 +247,41 @@
   line-height: 1.2;
 }
 
-/* The small letter-spaced label above a headline ("CASE STUDY", "SELECTED WORK"). */
+/*
+ * The label above a headline ("CASE STUDY", "SELECTED WORK"): a small glass tag with a butter
+ * star, after the "✦ [reward]" labels of the game UI reference.
+ */
 @utility type-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.42em 1em 0.42em 0.42em;
+  border-radius: 999px;
   font-family: var(--font-mono);
   font-size: var(--text-12);
   font-weight: 600;
   letter-spacing: 0.14em;
   line-height: 1.3;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink);
+  background: var(--sheen), var(--surface);
+  border: 1px solid var(--rim);
+  box-shadow: var(--bevel), 0 2px 8px rgba(40, 80, 140, 0.08);
+
+  &::before {
+    content: "✦";
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.75em;
+    height: 1.75em;
+    border-radius: 999px;
+    background: var(--butter);
+    color: var(--on-fill);
+    font-size: 0.92em;
+    letter-spacing: 0;
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.9);
+  }
 }
 
 @utility type-label {
@@ -354,8 +384,8 @@
 /* Frosted glass: translucent white, heavy blur, a light rim and a hairline. */
 @utility glass {
   background: var(--sheen), var(--glass);
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
   border: 1px solid var(--glass-line);
   box-shadow:
     var(--bevel),
@@ -364,21 +394,29 @@
 
 @utility glass-strong {
   background: var(--sheen), var(--glass-strong);
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
   border: 1px solid var(--glass-line);
   box-shadow:
     var(--bevel),
     var(--glass-shadow);
 }
 
-/* A plastic panel sitting on the desk: sheen on top, bevelled edge, soft drop shadow, grain. */
+/*
+ * A frosted glass panel: the sky blurs behind it, a bright rim, a sheen on top, and a soft light
+ * that follows the pointer across it (--gx/--gy, set by GlassLight).
+ */
 @utility widget {
   position: relative;
   min-width: 0;
   border-radius: 24px;
-  background: var(--sheen), var(--grain), var(--surface);
-  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  background:
+    radial-gradient(420px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.32), transparent 45%),
+    var(--sheen),
+    var(--surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+  border: 1px solid var(--rim);
   box-shadow:
     var(--bevel),
     var(--lift);
@@ -391,18 +429,19 @@
   border: 0;
 }
 
-/* An LCD: dark glass, recessed, with a faint reflection across the top. */
+/* An LCD: pale tinted glass, recessed, with a faint grid and a reflection across the top. */
 @utility screen {
   position: relative;
   color: var(--screen-ink);
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 38%),
-    radial-gradient(120% 90% at 30% 0%, color-mix(in srgb, var(--screen) 80%, #3a3f38), var(--screen));
+    linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 40%),
+    linear-gradient(var(--screen-line) 1px, transparent 1px) 0 0 / 100% 28px,
+    radial-gradient(120% 100% at 30% 0%, color-mix(in srgb, var(--screen) 70%, #ffffff), var(--screen));
   box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.6),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.7),
-    0 0 0 4px color-mix(in srgb, var(--surface-2) 70%, #000 6%),
-    0 1px 0 4px rgba(255, 255, 255, 0.5);
+    inset 0 2px 8px rgba(30, 60, 120, 0.18),
+    inset 0 0 0 1px var(--screen-line),
+    0 0 0 4px var(--rim),
+    0 1px 0 4px rgba(64, 104, 168, 0.12);
 }
 
 /* White die-cut sticker edge + soft lift. */
@@ -429,7 +468,7 @@
   .pill {
     --pill-bg: var(--sheen), var(--surface);
     --pill-fg: var(--ink);
-    --pill-edge: color-mix(in srgb, var(--line) 80%, transparent);
+    --pill-edge: var(--rim);
     --pill-shadow: var(--bevel), var(--key-edge), var(--lift-sm);
     position: relative;
     display: inline-flex;
@@ -457,11 +496,19 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* The primary key: cotton pink glass with magenta ink, after the reference's reward chips. */
   .pill[data-variant="magenta"] {
-    --pill-bg: linear-gradient(180deg, #ff4fa8, var(--accent-strong) 70%);
-    --pill-fg: var(--on-accent);
-    --pill-edge: color-mix(in srgb, var(--accent-strong) 70%, #000);
-    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.15), 0 2px 0 #8f0050, 0 4px 10px rgba(214, 8, 122, 0.3);
+    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 55%), linear-gradient(180deg, #ffe9f4, var(--accent-soft) 60%, var(--accent-soft-2));
+    --pill-fg: var(--accent-ink);
+    --pill-edge: #ffffff;
+    --pill-shadow: inset 0 1px 0 #ffffff, 0 0 0 1px rgba(244, 27, 141, 0.16), 0 2px 0 rgba(230, 120, 175, 0.45), 0 8px 20px rgba(244, 110, 175, 0.24);
+  }
+
+  [data-theme="dark"] .pill[data-variant="magenta"] {
+    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 55%), linear-gradient(180deg, #ffd0e7, var(--accent-soft) 60%, var(--accent-soft-2));
+    --pill-fg: #3a0a24;
+    --pill-edge: rgba(255, 255, 255, 0.6);
+    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 0 rgba(150, 40, 100, 0.6), 0 8px 22px rgba(255, 120, 190, 0.25);
   }
 
   .pill[data-variant="ink"] {
@@ -555,7 +602,8 @@
 
   @media (hover: hover) {
     .pill:hover {
-      --pill-edge: color-mix(in srgb, var(--ink) 22%, transparent);
+      --pill-edge: #ffffff;
+      --pill-shadow: var(--bevel), var(--key-edge), 0 0 0 3px color-mix(in srgb, var(--sky) 35%, transparent), var(--lift-sm);
     }
 
     .pill[data-variant="ghost"]:hover {
@@ -564,7 +612,8 @@
     }
 
     .pill[data-variant="magenta"]:hover {
-      --pill-bg: linear-gradient(180deg, #ff5fb2, #c4006f 70%);
+      --pill-edge: #ffffff;
+      --pill-shadow: inset 0 1px 0 #ffffff, 0 0 0 1px rgba(244, 27, 141, 0.3), 0 2px 0 rgba(230, 120, 175, 0.5), 0 10px 26px rgba(244, 110, 175, 0.34);
     }
   }
 
@@ -576,7 +625,7 @@
   }
 
   .pill[data-variant="magenta"]:active:not(:disabled) {
-    --pill-shadow: inset 0 2px 5px rgba(80, 0, 40, 0.45);
+    --pill-shadow: inset 0 2px 5px rgba(160, 30, 100, 0.25);
   }
 
   .pill:disabled,
@@ -627,12 +676,12 @@
     font-weight: 500;
     line-height: 1;
     white-space: nowrap;
-    border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
-    box-shadow: var(--bevel), 0 1px 2px rgba(15, 23, 42, 0.08);
+    border: 1px solid var(--rim);
+    box-shadow: var(--bevel), 0 1px 3px rgba(40, 80, 140, 0.1);
   }
 
   .chip[data-tone] {
-    background: var(--surface);
+    background: var(--sheen), color-mix(in srgb, var(--tone) 14%, var(--surface));
   }
 
   .chip[data-tone]::before {
@@ -680,9 +729,21 @@
     --tone: var(--ink);
   }
 
-  /* Highlighted phrase in a headline: one flat brand colour, no effects. */
+  /* Highlighted phrase in a headline: a pastel marker stroke under the ink, pink to lilac to sky. */
   .sticker-text {
-    color: var(--accent);
+    color: inherit;
+    background-image: linear-gradient(100deg, color-mix(in srgb, var(--accent-soft) 92%, transparent), color-mix(in srgb, var(--sun) 70%, transparent) 55%, color-mix(in srgb, var(--sky) 70%, transparent));
+    background-size: 100% 0.38em;
+    background-position: 0 88%;
+    background-repeat: no-repeat;
+    border-radius: 0.1em;
+    padding-inline: 0.04em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  [data-theme="dark"] .sticker-text {
+    background-image: linear-gradient(100deg, rgba(255, 140, 198, 0.55), rgba(164, 147, 255, 0.5) 55%, rgba(124, 196, 255, 0.5));
   }
 
   /* Sparkle glyph that twinkles. */
@@ -1791,13 +1852,13 @@ html[data-theme-swap]::view-transition-new(root) {
   border: 0;
   border-radius: 0 0 3px 3px;
   margin-top: -7px;
-  background: var(--accent-strong);
-  color: #fff;
+  background: linear-gradient(180deg, #ffe3f0, var(--accent-soft-2));
+  color: var(--accent-ink);
   cursor: pointer;
 }
 
 .poster__email:hover {
-  background: color-mix(in srgb, var(--accent-strong) 88%, #000);
+  background: linear-gradient(180deg, #ffd6ea, #ffadd6);
 }
 
 .poster-name {
@@ -1854,8 +1915,8 @@ html[data-theme-swap]::view-transition-new(root) {
 
 .hl-row > .hl {
   padding: 0.12em 0.25em 0.06em;
-  background: var(--hl, var(--accent));
-  color: #111;
+  background: var(--hl, #ffc2e0);
+  color: #1d2a4d;
   font-variant-numeric: tabular-nums;
 }
 
@@ -2163,9 +2224,9 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 /* ---------- The hero stage ---------- */
-/* White, with a faint cool haze behind the device so it sits in light rather than on a flat page. */
+/* The sky, with a soft light behind the device so the glass glows. */
 .hero-stage {
-  background: radial-gradient(60% 46% at 50% 52%, color-mix(in srgb, #ffffff 70%, transparent), transparent 70%);
+  background: radial-gradient(50% 40% at 50% 52%, rgba(255, 255, 255, 0.45), transparent 70%);
 }
 
 [data-theme="dark"] .hero-stage {
@@ -2638,9 +2699,14 @@ html[data-theme-swap]::view-transition-new(root) {
   border-radius: 22px;
   font-size: var(--text-14);
   color: var(--muted);
-  background: var(--sheen), var(--grain), var(--surface);
-  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
-  box-shadow: var(--bevel), var(--lift);
+  background:
+    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.3), transparent 45%),
+    var(--sheen),
+    var(--glass-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  border: 1px solid var(--rim);
+  box-shadow: var(--bevel), 0 18px 40px rgba(10, 40, 100, 0.25);
 }
 
 @media (min-width: 768px) {
@@ -2661,10 +2727,15 @@ html[data-theme-swap]::view-transition-new(root) {
   position: relative;
   border-radius: 34px;
   padding: 18px;
-  background: var(--sheen), var(--grain), var(--surface);
+  background:
+    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.3), transparent 45%),
+    var(--sheen),
+    var(--surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+  border: 1px solid var(--rim);
   box-shadow:
     var(--bevel),
-    0 0 0 1px color-mix(in srgb, var(--line) 80%, transparent),
     var(--lift-lg);
 }
 
@@ -2722,6 +2793,18 @@ html[data-theme-swap]::view-transition-new(root) {
   transition: opacity 240ms var(--ease-out);
 }
 
+[data-theme="dark"] .screen {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 40%),
+    linear-gradient(var(--screen-line) 1px, transparent 1px) 0 0 / 100% 28px,
+    radial-gradient(120% 100% at 30% 0%, color-mix(in srgb, var(--screen) 80%, #3a4a80), var(--screen));
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 0 0 4px var(--rim),
+    0 1px 0 4px rgba(0, 0, 0, 0.2);
+}
+
 /* Soft keys printed on the LCD. */
 .screen-key {
   display: inline-flex;
@@ -2730,8 +2813,8 @@ html[data-theme-swap]::view-transition-new(root) {
   height: 28px;
   padding: 0 9px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--screen-line);
+  background: var(--screen-well);
   color: var(--screen-ink);
   font: inherit;
   letter-spacing: inherit;
@@ -2745,7 +2828,7 @@ html[data-theme-swap]::view-transition-new(root) {
 
 .screen-key:active {
   translate: 0 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--screen-line);
 }
 
 /* Controls: dial + switches + go key, keys underneath on phones; three columns from 640px. */
@@ -2792,7 +2875,7 @@ html[data-theme-swap]::view-transition-new(root) {
 
 .screen .resample-token:hover,
 .screen .resample-token[aria-expanded="true"] {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--screen-well);
   text-decoration-color: var(--screen-accent);
 }
 
@@ -2869,8 +2952,8 @@ html[data-theme-swap]::view-transition-new(root) {
   height: var(--strap, 120px);
   margin: 0 auto;
   background:
-    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0 2px, transparent 2px 6px),
-    linear-gradient(90deg, var(--accent-strong), var(--accent) 50%, var(--accent-strong));
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0 2px, transparent 2px 6px),
+    linear-gradient(90deg, #ffb6d9, #ffd3e8 30%, #b9dcff 31% 69%, #ffd3e8 70%, #ffb6d9);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
   -webkit-mask: linear-gradient(180deg, transparent, #000 28px);
   mask: linear-gradient(180deg, transparent, #000 28px);
@@ -3019,7 +3102,7 @@ html[data-theme-swap]::view-transition-new(root) {
   position: absolute;
   inset: auto 0 0;
   height: 1cqi;
-  background: linear-gradient(90deg, #f41b8d, #ff7ac0 60%, #f41b8d);
+  background: linear-gradient(90deg, #ff9ccc, #ffd3e8 60%, #ff9ccc);
 }
 
 .idc__brand {
@@ -3217,8 +3300,8 @@ html[data-theme-swap]::view-transition-new(root) {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: rgba(255, 255, 255, 0.92);
-  background: linear-gradient(90deg, #d6087a, #f41b8d);
+  color: var(--accent-ink);
+  background: linear-gradient(90deg, #ffd3e8, #ffe6f2 50%, #ffd3e8);
 }
 
 /* Back */
@@ -3481,12 +3564,12 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .palette-key[data-on="true"] {
-  color: #fff;
-  background: linear-gradient(180deg, #ff4fa8, var(--accent-strong) 80%);
-  border-color: color-mix(in srgb, var(--accent-strong) 70%, #000);
+  color: var(--accent-ink);
+  background: linear-gradient(180deg, #ffe9f4, var(--accent-soft) 60%, var(--accent-soft-2));
+  border-color: #ffffff;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 2px 0 #8f0050;
+    inset 0 1px 0 #ffffff,
+    0 2px 0 rgba(230, 120, 175, 0.45);
 }
 
 /* ---------- Playable UI demos in the widget board (after marco.fyi) ---------- */
@@ -3550,11 +3633,11 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .demo-option--on {
-  background: linear-gradient(180deg, #ff4fa8, var(--accent-strong) 80%);
-  color: #fff;
+  background: linear-gradient(180deg, #ffe9f4, var(--accent-soft) 60%, var(--accent-soft-2));
+  color: var(--accent-ink);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 2px 0 #8f0050;
+    inset 0 1px 0 #ffffff,
+    0 2px 0 rgba(230, 120, 175, 0.45);
 }
 
 .demo-tab {
@@ -3652,8 +3735,8 @@ html[data-theme-swap]::view-transition-new(root) {
   --o: 0;
   --bgx: 50%;
   --bgy: 50%;
-  --frame: linear-gradient(140deg, #ffb3dc, #f41b8d 42%, #a3005f 78%, #ff7cc2);
-  --tone-ink: #c2006b;
+  --frame: linear-gradient(140deg, #ffe0ef, #ff9ccc 40%, #e66aa8 72%, #ffc9e3);
+  --tone-ink: #c2187a;
   /* A printed card keeps its daylight colours in night mode. */
   --ink: #0e1726;
   --muted: #556070;
@@ -3668,12 +3751,12 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 .tcg[data-tone="cobalt"] {
-  --frame: linear-gradient(140deg, #b9d0ff, #3060e6 42%, #1a3a9e 78%, #8fb0ff);
-  --tone-ink: #2348c4;
+  --frame: linear-gradient(140deg, #e0ecff, #94bcff 40%, #5f8ee8 72%, #c4d9ff);
+  --tone-ink: #2f5cc8;
 }
 
 .tcg[data-tone="violet"] {
-  --frame: linear-gradient(140deg, #ddd4ff, #7c6cf0 42%, #4a2fb8 78%, #b9adff);
+  --frame: linear-gradient(140deg, #ece8ff, #b9adff 40%, #8b78ea 72%, #ddd6ff);
   --tone-ink: #5b45d6;
 }
 
@@ -4134,8 +4217,8 @@ html[data-theme-swap]::view-transition-new(root) {
 .pack__foil,
 .pack__strip-foil {
   background:
-    radial-gradient(120% 70% at 25% 0%, rgba(255, 255, 255, 0.3), transparent 55%),
-    linear-gradient(165deg, #ff5aab, #e3138a 45%, #b0006a 85%, #8e0057);
+    radial-gradient(120% 70% at 25% 0%, rgba(255, 255, 255, 0.55), transparent 55%),
+    linear-gradient(165deg, #ffd3e9, #f9b4d9 28%, #cdbaff 60%, #a8d4ff 92%);
   background-size: 100% 115cqi, 100% 160cqi;
   background-repeat: no-repeat;
 }
@@ -4185,7 +4268,7 @@ html[data-theme-swap]::view-transition-new(root) {
   translate: -50% -50%;
   white-space: nowrap;
   font-size: 3.6cqi;
-  color: rgba(255, 255, 255, 0.92);
+  color: #1d2a4d;
 }
 
 /* The inside of the pack, seen under the lifted strip: the tops of three card backs. */
@@ -4200,7 +4283,7 @@ html[data-theme-swap]::view-transition-new(root) {
   padding-top: 3.5%;
   overflow: hidden;
   border-radius: 2cqi 2cqi 0 0;
-  background: linear-gradient(180deg, #2a0b1d, #4a1032);
+  background: linear-gradient(180deg, #1d2a4d, #34406e);
 }
 
 .pack__mouth span {
@@ -4222,7 +4305,7 @@ html[data-theme-swap]::view-transition-new(root) {
   inset: 13% 0 auto;
   z-index: 4;
   height: 0;
-  border-top: 2px dashed rgba(255, 255, 255, 0.6);
+  border-top: 2px dashed rgba(29, 42, 77, 0.3);
   opacity: calc(1 - var(--tear) * 0.8);
   pointer-events: none;
 }
@@ -4285,7 +4368,7 @@ html[data-theme-swap]::view-transition-new(root) {
   height: 100%;
   padding: 6cqi 8cqi 12cqi;
   text-align: center;
-  color: #ffffff;
+  color: #1d2a4d;
 }
 
 .pack__brand {
@@ -4294,7 +4377,8 @@ html[data-theme-swap]::view-transition-new(root) {
   font: 700 3.6cqi/1 var(--font-mono);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  background: rgba(11, 16, 32, 0.86);
+  color: #ffffff;
+  background: rgba(29, 42, 77, 0.88);
 }
 
 .pack__brand b {
@@ -4317,7 +4401,9 @@ html[data-theme-swap]::view-transition-new(root) {
   font: 800 19cqi/0.84 var(--font-display);
   font-stretch: 78%;
   letter-spacing: -0.04em;
-  text-shadow: 0 0.8cqi 0 rgba(110, 0, 55, 0.35);
+  -webkit-text-stroke: 1.6cqi #ffffff;
+  paint-order: stroke fill;
+  text-shadow: 0 1.2cqi 2cqi rgba(80, 60, 160, 0.25);
 }
 
 .pack__meta {
@@ -4330,15 +4416,16 @@ html[data-theme-swap]::view-transition-new(root) {
 
 .pack__meta span {
   padding: 1.6cqi 2.4cqi;
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 1.4cqi;
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .pack__count {
   font-size: 4cqi;
   font-weight: 600;
   line-height: 1.3;
-  color: rgba(255, 255, 255, 0.88);
+  color: #33416a;
 }
 
 /* A hologram seal in the corner, like the real ones. */
@@ -4451,4 +4538,552 @@ html[data-pack="tearing"] .pack-hint {
   --accent-ink: #FF5FB2;
   background: rgba(28, 28, 30, 0.88) !important;
   color: var(--ink);
+}
+
+/* ---------- The world: the sky behind every page ---------- */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  transform: translateZ(0);
+  background: linear-gradient(180deg, var(--stage-from), var(--stage-to));
+}
+
+.sky__image {
+  position: absolute;
+  inset: -6% -3%;
+  background: var(--sky-image) center / cover no-repeat;
+}
+
+/* A veil, lighter at the top, so text always sits on a pale sky. */
+.sky__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--sky-veil-top) 0%, var(--sky-veil) 42%, var(--sky-veil) 100%);
+}
+
+/* The sun, top right, with slow rays. At night it is the moon. */
+.sky__sun {
+  position: absolute;
+  top: -22vmax;
+  right: -14vmax;
+  width: 64vmax;
+  height: 64vmax;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 5%, rgba(255, 250, 236, 0.6) 12%, rgba(255, 255, 255, 0.2) 32%, transparent 62%);
+}
+
+[data-theme="dark"] .sky__sun {
+  top: 7vh;
+  right: 9vw;
+  width: 16vmax;
+  height: 16vmax;
+  background: radial-gradient(circle, #fbf8ee 0 19%, #ece6d2 21%, rgba(230, 232, 255, 0.45) 23%, rgba(170, 175, 255, 0.16) 42%, transparent 70%);
+}
+
+.sky__stars {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background-image:
+    radial-gradient(1.4px 1.4px at 22px 34px, #ffffff, transparent),
+    radial-gradient(1px 1px at 140px 80px, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 90px 190px, #e9e4ff, transparent),
+    radial-gradient(1px 1px at 210px 150px, #ffffff, transparent),
+    radial-gradient(1.2px 1.2px at 260px 40px, #dfe8ff, transparent);
+  background-size: 300px 240px;
+  opacity: 0.75;
+}
+
+[data-theme="dark"] .sky__stars {
+  display: block;
+}
+
+.sky__clouds {
+  --tile: 1600px;
+  position: absolute;
+  left: 0;
+  width: calc(100% + var(--tile));
+  will-change: translate;
+}
+
+/* Pre-rendered white cloud strips (public/sky), tiled sideways; dimmer and bluer at night. */
+.sky__clouds--far {
+  top: 4%;
+  height: 360px;
+  opacity: 0.8;
+  background: url("/sky/clouds-far.webp") 0 0 / var(--tile) 100% repeat-x;
+}
+
+.sky__clouds--near {
+  --tile: 2400px;
+  bottom: -6%;
+  height: 520px;
+  opacity: 0.72;
+  background: url("/sky/clouds-near.webp") 0 0 / var(--tile) 100% repeat-x;
+}
+
+[data-theme="dark"] .sky__clouds--far {
+  opacity: 0.12;
+}
+
+[data-theme="dark"] .sky__clouds--near {
+  opacity: 0.1;
+}
+
+/* The faint grid from the game UI reference. */
+.sky__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.sky__glint {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  background: #ffffff;
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sky__clouds--far {
+    animation: cloud-drift 160s linear infinite;
+  }
+
+  .sky__clouds--near {
+    animation: cloud-drift 100s linear infinite;
+  }
+
+  .sky__glint {
+    opacity: 0;
+    animation: glint 5.5s var(--ease-in-out) var(--d) infinite;
+  }
+
+  [data-theme="dark"] .sky__stars {
+    animation: stars 5s var(--ease-in-out) infinite alternate;
+  }
+
+  /* The sky drifts up a little as you scroll the page. */
+  @supports (animation-timeline: scroll()) {
+    .sky__image {
+      animation: sky-parallax linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes cloud-drift {
+  to {
+    translate: calc(var(--tile) * -1) 0;
+  }
+}
+
+@keyframes sky-parallax {
+  to {
+    transform: translateY(-5%);
+  }
+}
+
+@keyframes glint {
+  0%,
+  100% {
+    opacity: 0;
+    scale: 0.3;
+    rotate: 0deg;
+  }
+
+  50% {
+    opacity: 0.95;
+    scale: 1;
+    rotate: 45deg;
+  }
+}
+
+@keyframes stars {
+  from {
+    opacity: 0.45;
+  }
+
+  to {
+    opacity: 0.9;
+  }
+}
+
+/* ---------- Motion on every page: fade up into view (WorldHost sets data-rv) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  [data-rv] {
+    transition:
+      opacity 820ms var(--ease-out),
+      translate 820ms var(--ease-out),
+      scale 820ms var(--ease-out);
+    transition-delay: calc(var(--rv-i, 0) * 90ms);
+  }
+
+  [data-rv=""] {
+    opacity: 0;
+    translate: 0 32px;
+    scale: 0.985;
+  }
+
+  /* Page openings rise in, eyebrow first. */
+  .page-head > * {
+    animation: rise-in 760ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 60ms);
+  }
+}
+
+/* ---------- The world: the sea at the bottom of every page ---------- */
+.sea {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(170px, 19vw, 240px) 0 clamp(40px, 5vw, 64px);
+  background: linear-gradient(180deg, var(--sea-from) 0%, var(--sea-mid) 26%, var(--sea-to) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  touch-action: manipulation;
+}
+
+/* Haze on the horizon, where the sea meets the sky. */
+.sea::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  height: 64px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+[data-theme="dark"] .sea::before {
+  background: linear-gradient(180deg, rgba(160, 175, 255, 0.22), rgba(160, 175, 255, 0));
+}
+
+.sea__surface {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The sun's glitter on the water (the moon's at night): broken streaks that shimmer. */
+.sea__glare {
+  position: absolute;
+  top: 0;
+  right: 12%;
+  width: min(380px, 46vw);
+  height: 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.45) 35%, rgba(255, 255, 255, 0) 80%);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27320%27%20height=%27120%27%20viewBox=%270%200%20320%20120%27%3E%3Cg%20fill=%27black%27%3E%3Cellipse%20cx=%2730%27%20cy=%2720%27%20rx=%2714%27%20ry=%271.6%27/%3E%3Cellipse%20cx=%27120%27%20cy=%2748%27%20rx=%2722%27%20ry=%272%27/%3E%3Cellipse%20cx=%27210%27%20cy=%2714%27%20rx=%2710%27%20ry=%271.4%27/%3E%3Cellipse%20cx=%27270%27%20cy=%2780%27%20rx=%2718%27%20ry=%271.8%27/%3E%3Cellipse%20cx=%2770%27%20cy=%2796%27%20rx=%2712%27%20ry=%271.5%27/%3E%3Cellipse%20cx=%27170%27%20cy=%27104%27%20rx=%2726%27%20ry=%272.2%27/%3E%3C/g%3E%3C/svg%3E") 0 0 / 320px 120px repeat;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27320%27%20height=%27120%27%20viewBox=%270%200%20320%20120%27%3E%3Cg%20fill=%27black%27%3E%3Cellipse%20cx=%2730%27%20cy=%2720%27%20rx=%2714%27%20ry=%271.6%27/%3E%3Cellipse%20cx=%27120%27%20cy=%2748%27%20rx=%2722%27%20ry=%272%27/%3E%3Cellipse%20cx=%27210%27%20cy=%2714%27%20rx=%2710%27%20ry=%271.4%27/%3E%3Cellipse%20cx=%27270%27%20cy=%2780%27%20rx=%2718%27%20ry=%271.8%27/%3E%3Cellipse%20cx=%2770%27%20cy=%2796%27%20rx=%2712%27%20ry=%271.5%27/%3E%3Cellipse%20cx=%27170%27%20cy=%27104%27%20rx=%2726%27%20ry=%272.2%27/%3E%3C/g%3E%3C/svg%3E") 0 0 / 320px 120px repeat;
+}
+
+[data-theme="dark"] .sea__glare {
+  right: calc(9vw + 4vmax);
+  width: min(160px, 26vw);
+  background: linear-gradient(180deg, rgba(246, 242, 228, 0.85), rgba(246, 242, 228, 0.3) 40%, rgba(246, 242, 228, 0) 80%);
+}
+
+/* Lines of swell: thin and slow near the horizon, wider and faster closer in. */
+.sea__swell {
+  --tile: 240px;
+  position: absolute;
+  left: 0;
+  width: calc(100% + var(--tile));
+  height: 24px;
+  background: var(--foam);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27240%27%20height=%2724%27%20viewBox=%270%200%20240%2024%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2014%20Q%2030%204%2060%2014%20T%20120%2014%20T%20180%2014%20T%20240%2014%27%20fill=%27none%27%20stroke=%27black%27%20stroke-width=%272.4%27%20stroke-linecap=%27round%27%20vector-effect=%27non-scaling-stroke%27/%3E%3C/svg%3E") 0 0 / var(--tile) 100% repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27240%27%20height=%2724%27%20viewBox=%270%200%20240%2024%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2014%20Q%2030%204%2060%2014%20T%20120%2014%20T%20180%2014%20T%20240%2014%27%20fill=%27none%27%20stroke=%27black%27%20stroke-width=%272.4%27%20stroke-linecap=%27round%27%20vector-effect=%27non-scaling-stroke%27/%3E%3C/svg%3E") 0 0 / var(--tile) 100% repeat-x;
+}
+
+.sea__swell--1 {
+  --tile: 110px;
+  top: 16px;
+  height: 10px;
+  opacity: 0.4;
+}
+
+.sea__swell--2 {
+  --tile: 170px;
+  top: 40px;
+  height: 15px;
+  opacity: 0.45;
+}
+
+.sea__swell--3 {
+  --tile: 240px;
+  top: 76px;
+  height: 22px;
+  opacity: 0.5;
+}
+
+.sea__swell--4 {
+  --tile: 340px;
+  top: 126px;
+  height: 30px;
+  opacity: 0.4;
+}
+
+.sea__ripple {
+  position: absolute;
+  width: 140px;
+  height: 30px;
+  margin: -15px 0 0 -70px;
+  border-radius: 50%;
+  border: 2px solid var(--foam);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
+  animation: ripple 1.2s var(--ease-out) forwards;
+}
+
+.sea__boat {
+  position: absolute;
+  top: 58px;
+  z-index: 1;
+  width: 72px;
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: 50% 80%;
+  transition: left 2.2s var(--ease-in-out);
+  filter: drop-shadow(0 6px 4px rgba(20, 50, 110, 0.25));
+  cursor: pointer;
+}
+
+.sea__boat svg {
+  width: 100%;
+  height: auto;
+}
+
+.sea__content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sea__swell--1 {
+    animation: cloud-drift 22s linear infinite;
+  }
+
+  .sea__swell--2 {
+    animation: cloud-drift 16s linear infinite reverse;
+  }
+
+  .sea__swell--3 {
+    animation: cloud-drift 11s linear infinite;
+  }
+
+  .sea__swell--4 {
+    animation: cloud-drift 8s linear infinite reverse;
+  }
+
+  .sea__glare {
+    animation: glare 3.2s var(--ease-in-out) infinite alternate;
+  }
+
+  .sea__boat {
+    animation: bob 3.4s var(--ease-in-out) infinite;
+  }
+
+  .sea__boat[data-hop="a"] {
+    animation: boat-hop-a 700ms var(--ease-out), bob 3.4s var(--ease-in-out) 700ms infinite;
+  }
+
+  .sea__boat[data-hop="b"] {
+    animation: boat-hop-b 700ms var(--ease-out), bob 3.4s var(--ease-in-out) 700ms infinite;
+  }
+}
+
+@keyframes glare {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    opacity: 0.75;
+  }
+
+  to {
+    -webkit-mask-position: 22px 6px;
+    mask-position: 22px 6px;
+    opacity: 1;
+  }
+}
+
+@keyframes ripple {
+  from {
+    scale: 0.1;
+    opacity: 1;
+  }
+
+  to {
+    scale: 1.5;
+    opacity: 0;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-3deg);
+  }
+
+  50% {
+    transform: translateY(-6px) rotate(3deg);
+  }
+}
+
+@keyframes boat-hop-a {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+
+  40% {
+    transform: translateY(-34px) rotate(-14deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@keyframes boat-hop-b {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+
+  40% {
+    transform: translateY(-34px) rotate(14deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+/* Dawn and dusk tint the sky: lilac in the morning, peach-pink in the evening. */
+html[data-theme="light"][data-daypart="dawn"] .sky__veil {
+  background: linear-gradient(180deg, rgba(236, 230, 255, 0.45) 0%, rgba(240, 236, 255, 0.74) 42%, rgba(240, 240, 255, 0.74) 100%);
+}
+
+html[data-theme="light"][data-daypart="dusk"] .sky__veil {
+  background: linear-gradient(180deg, rgba(255, 228, 236, 0.45) 0%, rgba(255, 238, 244, 0.74) 42%, rgba(244, 240, 255, 0.74) 100%);
+}
+
+/* ---------- The sea widget: a little sea as tall and quick as the real one ---------- */
+.seawidget {
+  --amp: 1;
+  --speed: 8s;
+  position: relative;
+  min-height: 236px;
+  padding-bottom: 92px;
+}
+
+.seawidget__stat {
+  min-width: 84px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--surface-2);
+  box-shadow: var(--recess);
+}
+
+.seawidget__water {
+  position: absolute;
+  left: -24px;
+  right: -24px;
+  bottom: -24px;
+  height: 104px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--sea-from), var(--sea-mid) 70%);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27600%27%20height=%2760%27%20viewBox=%270%200%20600%2060%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2030%20C%2050%2018%20100%2018%20150%2030%20S%20250%2042%20300%2030%20S%20400%2018%20450%2030%20S%20550%2042%20600%2030%20L%20600%2060%20L%200%2060%20Z%27%20fill=%27black%27/%3E%3C/svg%3E") 0 0 / 600px calc(30px * var(--amp)) repeat-x, linear-gradient(#000 0 0) 0 calc(30px * var(--amp) - 1px) / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27600%27%20height=%2760%27%20viewBox=%270%200%20600%2060%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2030%20C%2050%2018%20100%2018%20150%2030%20S%20250%2042%20300%2030%20S%20400%2018%20450%2030%20S%20550%2042%20600%2030%20L%20600%2060%20L%200%2060%20Z%27%20fill=%27black%27/%3E%3C/svg%3E") 0 0 / 600px calc(30px * var(--amp)) repeat-x, linear-gradient(#000 0 0) 0 calc(30px * var(--amp) - 1px) / 100% 100% no-repeat;
+}
+
+.seawidget__water i {
+  --tile: 200px;
+  position: absolute;
+  left: 0;
+  width: calc(100% + var(--tile));
+  height: calc(16px * var(--amp));
+  background: var(--foam);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27240%27%20height=%2724%27%20viewBox=%270%200%20240%2024%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2014%20Q%2030%204%2060%2014%20T%20120%2014%20T%20180%2014%20T%20240%2014%27%20fill=%27none%27%20stroke=%27black%27%20stroke-width=%272.4%27%20stroke-linecap=%27round%27%20vector-effect=%27non-scaling-stroke%27/%3E%3C/svg%3E") 0 0 / var(--tile) 100% repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27240%27%20height=%2724%27%20viewBox=%270%200%20240%2024%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2014%20Q%2030%204%2060%2014%20T%20120%2014%20T%20180%2014%20T%20240%2014%27%20fill=%27none%27%20stroke=%27black%27%20stroke-width=%272.4%27%20stroke-linecap=%27round%27%20vector-effect=%27non-scaling-stroke%27/%3E%3C/svg%3E") 0 0 / var(--tile) 100% repeat-x;
+  opacity: 0.5;
+}
+
+.seawidget__water i:nth-of-type(1) {
+  top: 34px;
+}
+
+.seawidget__water i:nth-of-type(2) {
+  --tile: 280px;
+  top: 56px;
+  opacity: 0.4;
+}
+
+.seawidget__water i:nth-of-type(3) {
+  --tile: 360px;
+  top: 80px;
+  opacity: 0.3;
+}
+
+/* A buoy, with the brand dot on top. */
+.seawidget__buoy {
+  position: absolute;
+  top: calc(30px * var(--amp) - 14px);
+  right: 18%;
+  z-index: 1;
+  width: 18px;
+  height: 24px;
+  border-radius: 9px 9px 4px 4px;
+  background: linear-gradient(90deg, #ffffff, #ffe3f0 45%, #ffffff 46% 60%, #ffd0e6);
+  box-shadow: 0 2px 4px rgba(10, 40, 100, 0.3);
+}
+
+.seawidget__buoy::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .seawidget__water {
+    animation: crest var(--speed) linear infinite;
+  }
+
+  .seawidget__water i:nth-of-type(1) {
+    animation: cloud-drift calc(var(--speed) * 0.9) linear infinite reverse;
+  }
+
+  .seawidget__water i:nth-of-type(2) {
+    animation: cloud-drift calc(var(--speed) * 1.3) linear infinite;
+  }
+
+  .seawidget__water i:nth-of-type(3) {
+    animation: cloud-drift calc(var(--speed) * 1.8) linear infinite reverse;
+  }
+
+  .seawidget__buoy {
+    animation: bob calc(var(--speed) * 0.45) var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes crest {
+  to {
+    -webkit-mask-position: -600px 0, 0 calc(30px * var(--amp) - 1px);
+    mask-position: -600px 0, 0 calc(30px * var(--amp) - 1px);
+  }
 }

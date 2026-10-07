@@ -10,7 +10,7 @@ export function HeroStage({ children }: { children: ReactNode }) {
     <section id="hero" aria-labelledby="hero-name" className="hero-stage relative flex min-h-[100svh] flex-col items-center justify-center px-4 pt-28 pb-14 sm:px-6 md:pt-32" data-xr="HeroStage · one device on white">
       <div className="relative w-full max-w-[600px]">
         {children}
-        <span className="sticker absolute -top-7 -right-7 hidden size-[84px] rotate-[8deg] place-items-center rounded-full bg-accent sm:grid" title="Moci, my agent. Ask it anything." aria-hidden="true">
+        <span className="sticker absolute -top-7 -right-7 hidden size-[84px] rotate-[8deg] place-items-center rounded-full bg-accent-soft sm:grid" title="Moci, my agent. Ask it anything." aria-hidden="true">
           <MociAvatar size={46} />
         </span>
       </div>

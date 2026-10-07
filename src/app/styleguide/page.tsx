@@ -15,17 +15,20 @@ type Theme = "light" | "dark";
 const colorNames = Array.from(new Set([...tokens.light, ...tokens.dark].map((t) => t.name))).filter((n) => !n.startsWith("--font"));
 
 const contrastPairs = [
-  { fg: "--ink", bg: "--bg", use: "Body text", min: 4.5 },
-  { fg: "--ink", bg: "--surface-2", use: "Text on cards", min: 4.5 },
-  { fg: "--muted", bg: "--bg", use: "Secondary text", min: 4.5 },
-  { fg: "--muted", bg: "--surface-2", use: "Secondary text on cards", min: 4.5 },
-  { fg: "--accent-ink", bg: "--bg", use: "Magenta as text", min: 4.5 },
-  { fg: "--accent-ink", bg: "--surface-2", use: "Magenta text on cards", min: 4.5 },
-  { fg: "--on-accent", bg: "--accent-strong", use: "Label on the magenta button", min: 4.5 },
+  { fg: "--ink", bg: "--sky-tone", use: "Body text on the veiled sky", min: 4.5 },
+  { fg: "--ink", bg: "--glass-tone", use: "Text on glass", min: 4.5 },
+  { fg: "--muted", bg: "--sky-tone", use: "Secondary text on the sky", min: 4.5 },
+  { fg: "--muted", bg: "--glass-tone", use: "Secondary text on glass", min: 4.5 },
+  { fg: "--accent-ink", bg: "--sky-tone", use: "Magenta as text", min: 4.5 },
+  { fg: "--accent-ink", bg: "--glass-tone", use: "Magenta text on glass", min: 4.5 },
+  { fg: "--accent-ink", bg: "--accent-soft", use: "Label on the pink key", min: 4.5 },
+  { fg: "--on-accent", bg: "--accent-strong", use: "White on magenta", min: 4.5 },
   { fg: "--on-cobalt", bg: "--cobalt", use: "Label on blue", min: 4.5 },
-  { fg: "--on-fill", bg: "--sun", use: "Label on sun", min: 4.5 },
-  { fg: "--on-fill", bg: "--lime", use: "Label on lime", min: 4.5 },
-  { fg: "--accent", bg: "--bg", use: "Magenta marker and large display text", min: 3 },
+  { fg: "--on-fill", bg: "--butter", use: "Label on butter", min: 4.5 },
+  { fg: "--on-fill", bg: "--sun", use: "Label on lilac", min: 4.5 },
+  { fg: "--on-fill", bg: "--lime", use: "Label on aqua", min: 4.5 },
+  { fg: "--screen-ink", bg: "--screen", use: "LCD segments", min: 4.5 },
+  { fg: "--screen-muted", bg: "--screen", use: "Dim LCD segments", min: 4.5 },
 ];
 
 function Section({ index, title, children, lead }: { index: string; title: string; lead?: string; children: ReactNode }) {
