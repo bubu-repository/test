@@ -19,10 +19,11 @@ const contrastPairs = [
   { fg: "--ink", bg: "--glass-tone", use: "Text on glass", min: 4.5 },
   { fg: "--muted", bg: "--sky-tone", use: "Secondary text on the sky", min: 4.5 },
   { fg: "--muted", bg: "--glass-tone", use: "Secondary text on glass", min: 4.5 },
-  { fg: "--accent-ink", bg: "--sky-tone", use: "Magenta as text", min: 4.5 },
-  { fg: "--accent-ink", bg: "--glass-tone", use: "Magenta text on glass", min: 4.5 },
-  { fg: "--accent-ink", bg: "--accent-soft", use: "Label on the pink key", min: 4.5 },
-  { fg: "--on-accent", bg: "--accent-strong", use: "White on magenta", min: 4.5 },
+  { fg: "--accent-ink", bg: "--sky-tone", use: "Blue as text", min: 4.5 },
+  { fg: "--accent-ink", bg: "--glass-tone", use: "Blue text on glass", min: 4.5 },
+  { fg: "--on-fill", bg: "--accent-soft", use: "Label on a pale blue fill", min: 4.5 },
+  { fg: "--on-accent", bg: "--accent-strong", use: "White on the blue key", min: 4.5 },
+  { fg: "--accent-display", bg: "--sky-tone", use: "Highlighted headline words (display size)", min: 3 },
   { fg: "--on-cobalt", bg: "--cobalt", use: "Label on blue", min: 4.5 },
   { fg: "--on-fill", bg: "--butter", use: "Label on butter", min: 4.5 },
   { fg: "--on-fill", bg: "--sun", use: "Label on lilac", min: 4.5 },
@@ -73,7 +74,7 @@ export default function StyleguidePage() {
         </div>
       </header>
 
-      <Section index="01" title="Colour" lead="White paper and near-black ink. Magenta is the one colour you always feel; the rest are small accents.">
+      <Section index="01" title="Colour" lead="A neutral white page and navy ink. Wii blue is the brand you always feel; the rest are small, vivid, cool accents.">
         <div className="grid gap-5 md:grid-cols-2">
           {(["light", "dark"] as const).map((theme) => (
             <div key={theme} data-theme={theme} className="widget bg-surface p-5 text-ink">

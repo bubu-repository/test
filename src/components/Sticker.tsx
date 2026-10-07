@@ -46,7 +46,7 @@ export function Sticker({ shape, tone, emoji, size = 72, locked = false, classNa
       <svg viewBox="0 0 100 100" width={size} height={size} className={cn("absolute inset-0 overflow-visible", !locked && "drop-shadow-[0_6px_10px_rgba(15,18,48,0.22)]")}>
         <path
           d={SHAPES[shape]}
-          fill={locked ? "transparent" : `var(--${tone === "magenta" ? "accent" : tone})`}
+          fill={locked ? "transparent" : `var(--${tone})`}
           stroke={locked ? "color-mix(in srgb, var(--ink) 30%, transparent)" : "#ffffff"}
           strokeWidth={locked ? 3 : 7}
           strokeDasharray={locked ? "6 6" : undefined}

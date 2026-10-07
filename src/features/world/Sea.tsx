@@ -82,7 +82,7 @@ export function Sea({ children }: { children: ReactNode }) {
       >
         <svg viewBox="0 0 72 48" aria-hidden="true">
           <path d="M36 4v20" stroke="#1D2A4D" strokeOpacity=".5" strokeWidth="1.5" />
-          <path d="M37 5l11 4-11 4z" fill="#F41B8D" />
+          <path d="M37 5l11 4-11 4z" fill="#1E9BE0" />
           <path d="M14 24 L34 8 L34 24 Z" fill="#FFE3F0" />
           <path d="M38 10 L56 24 L38 24 Z" fill="#E4F0FF" />
           <path d="M4 25 H68 L56 40 H16 Z" fill="#FFFFFF" />

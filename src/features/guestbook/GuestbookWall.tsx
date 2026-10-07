@@ -10,7 +10,7 @@ import { toast } from "@/lib/ui";
 import { useLive } from "../live/live-store";
 
 const TINT: Record<NoteColor, string> = {
-  magenta: "var(--accent)",
+  magenta: "var(--pink)",
   sun: "var(--sun)",
   lime: "var(--lime)",
   sky: "var(--sky)",

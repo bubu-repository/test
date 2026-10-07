@@ -10,7 +10,7 @@ export function ProjectMockup({ project, size = "card", className }: { project: 
   return (
     <div
       className={cn("relative h-full w-full overflow-hidden rounded-[18px]", className)}
-      style={{ background: `color-mix(in srgb, var(--${project.tone === "magenta" ? "accent" : project.tone}) 9%, var(--surface-2))` }}
+      style={{ background: `color-mix(in srgb, var(--${project.tone}) 9%, var(--surface-2))` }}
       aria-hidden="true"
     >
       <div className={cn("absolute inset-x-[8%] top-[10%] bottom-[-6%] overflow-hidden rounded-t-[14px] bg-surface shadow-lg", big && "inset-x-[10%] top-[12%]")}>

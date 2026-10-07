@@ -28,7 +28,7 @@ function Ring({ score }: { score: number }) {
       />
       <defs>
         <linearGradient id="jd-iris" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#F41B8D" />
+          <stop offset="0%" stopColor="#1E9BE0" />
           <stop offset="55%" stopColor="#B86BFF" />
           <stop offset="100%" stopColor="#39C6E6" />
         </linearGradient>
