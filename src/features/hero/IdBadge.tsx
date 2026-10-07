@@ -2,9 +2,7 @@
 
 import qrcode from "qrcode-generator";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MociAvatar } from "@/components/MociAvatar";
 import { identity } from "@/content/profile";
-import { labItems } from "@/content/lab";
 import { projects } from "@/content/projects";
 import { sfx } from "@/lib/sound";
 
@@ -26,10 +24,48 @@ function QrCode({ text, size = 132 }: { text: string; size?: number }) {
   );
 }
 
+/** A Code-128-looking barcode, drawn from the ID so it is the same on every render. */
+function Barcode({ code }: { code: string }) {
+  const bars = useMemo(() => {
+    const out: { x: number; w: number }[] = [];
+    let x = 0;
+    const widths = [2, 1, 1, 3, 1, 2, 2, 1];
+    for (const ch of `*${code}*`) {
+      const n = ch.charCodeAt(0);
+      for (let k = 0; k < 6; k++) {
+        const w = widths[(n + k * 3) % widths.length];
+        if (k % 2 === 0) out.push({ x, w });
+        x += w;
+      }
+      x += 1;
+    }
+    return { out, total: x };
+  }, [code]);
+  return (
+    <svg viewBox={`0 0 ${bars.total} 10`} preserveAspectRatio="none" className="idc__barcode" aria-hidden="true">
+      {bars.out.map((b) => (
+        <rect key={b.x} x={b.x} width={b.w} height="10" fill="#0e1726" />
+      ))}
+    </svg>
+  );
+}
+
+/* CONTOH — ganti dengan data asli (ID no., dept., masa berlaku) */
+const FIELDS = [
+  { k: "ID No.", v: "AT-0x24" },
+  { k: "Dept.", v: "Product × AI" },
+  { k: "Base", v: "Bekasi, ID" },
+  { k: "Zone", v: "WIB · UTC+7" },
+  { k: "Shipped", v: `${String(projects.length).padStart(2, "0")} products` },
+  { k: "Valid thru", v: "12 / 2027" },
+];
+
 /**
- * The ID badge, a frosted-glass card on a magenta lanyard with a pastel checker strip (after the
- * "JELLYBELLY123" badge on the reference board). Drag it and it swings back on its lanyard;
- * click, Enter or Space flips it to a QR code.
+ * The ID badge: a real CR80 card on a magenta lanyard. Front: a guilloche band with the slot
+ * punched through, a photo, name and role, printed fields, a barcode, a holographic seal that
+ * shifts as the card swings, and the open-to-work status. Back: a magnetic stripe, a QR code,
+ * a return address and a signature panel. Drag it and it swings back on its lanyard; click,
+ * Enter or Space flips it over.
  */
 export function IdBadge({ className, strap = 0 }: { className?: string; strap?: number }) {
   const [flipped, setFlipped] = useState(false);
@@ -52,6 +88,8 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       m.angle += m.va;
       el.style.translate = `${m.x.toFixed(1)}px ${m.y.toFixed(1)}px`;
       el.style.rotate = `${m.angle.toFixed(2)}deg`;
+      // The holographic seal catches the light as the card swings.
+      el.style.setProperty("--sway", m.angle.toFixed(2));
       const moving = m.dragging || Math.abs(m.x) + Math.abs(m.y) + Math.abs(m.vx) + Math.abs(m.va) + Math.abs(m.angle) > 0.05;
       m.raf = moving ? requestAnimationFrame(step) : 0;
     };
@@ -77,6 +115,12 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       m.x = nx;
       m.y = ny;
     };
+    const onHover = (e: PointerEvent) => {
+      if (m.dragging || e.pointerType === "touch") return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--hx", ((e.clientX - r.left) / r.width).toFixed(3));
+      el.style.setProperty("--hy", ((e.clientY - r.top) / r.height).toFixed(3));
+    };
     const onUp = () => {
       if (!m.dragging) return;
       m.dragging = false;
@@ -90,31 +134,30 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       }
     };
     el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointermove", onHover);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
     el.addEventListener("keydown", onKey);
     return () => {
       cancelAnimationFrame(m.raf);
       el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointermove", onHover);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       el.removeEventListener("keydown", onKey);
     };
   }, []);
 
-  const subdomains = labItems.filter((l) => l.where === "subdomain").length;
-
   return (
     <div className={className}>
       {strap > 0 && <div className="badge-strap" aria-hidden="true" style={{ ["--strap" as string]: `${strap}px` }} />}
-      <div className="badge-clip" aria-hidden="true" />
       <button
         ref={ref}
         type="button"
         data-tour="badge"
         data-cursor={flipped ? "Flip" : "Drag · Flip"}
         aria-pressed={flipped}
-        aria-label={flipped ? "ID badge, back: QR code to adelia.cc. Press to flip to the front." : `ID badge: ${identity.name}. Press to flip for a QR code. Left and right arrows swing it.`}
+        aria-label={flipped ? `ID card, back: QR code to ${identity.domain} and ${identity.email}. Press to flip to the front.` : `ID card: ${identity.name}, ${identity.role}, ${identity.city}. Open to work. Press to flip for a QR code. Left and right arrows swing it.`}
         className="badge touch-none select-none"
         onClick={() => {
           if (motion.current.moved) {
@@ -124,43 +167,119 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
           sfx.pop();
           setFlipped((f) => !f);
         }}
-        data-xr="IdBadge · lanyard spring physics + 3D flip"
+        data-xr="IdBadge · CR80 card, lanyard spring physics + 3D flip"
       >
+        <span className="badge-clip" aria-hidden="true" />
         <span className="badge__card" data-flipped={flipped}>
+          {/* Front */}
           <span className="badge__face">
-            <span className="badge__inner">
-              <span className="badge__strip checker" aria-hidden="true" />
-              <span className="flex items-center justify-between">
-                <span className="type-pixel text-muted">ID · 0x24</span>
-                <span className="chip" data-tone="mint">
-                  Open to work
+            <span className="idc">
+              <span className="idc__band">
+                <span className="idc__brand">
+                  <span className="idc__logo">
+                    <span>
+                      a<b>.</b>
+                    </span>
+                  </span>
+                  {identity.domain}
+                </span>
+                <span className="idc__pass">
+                  Studio
+                  <br />
+                  pass
+                </span>
+                <svg className="idc__nfc" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 8.5a5 5 0 0 1 0 7M10.5 6a8.5 8.5 0 0 1 0 12M14 3.5a12 12 0 0 1 0 17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </span>
+
+              <span className="idc__main">
+                {/* CONTOH — ganti dengan foto asli */}
+                <span className="idc__photo">
+                  <svg viewBox="0 0 60 80" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="idc-person" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stopColor="#9aa8bc" />
+                        <stop offset="1" stopColor="#6f7f96" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="30" cy="31" r="13" fill="url(#idc-person)" />
+                    <path d="M6 80c0-15 10.5-25 24-25s24 10 24 25z" fill="url(#idc-person)" />
+                  </svg>
+                  <span className="idc__holo" />
+                </span>
+                <span className="idc__who">
+                  <span className="idc__label">Name</span>
+                  <span className="idc__name">{identity.name}</span>
+                  <span className="idc__label mt-[2.4cqi]">Role</span>
+                  <span className="idc__role">{identity.role}</span>
                 </span>
               </span>
-              <span className="mt-3 grid place-items-center">
-                <MociAvatar size={68} />
+
+              <span className="idc__fields">
+                {FIELDS.map((f) => (
+                  <span key={f.k}>
+                    <span className="idc__label">{f.k}</span>
+                    <span className="idc__val">{f.v}</span>
+                  </span>
+                ))}
               </span>
-              <span className="mt-3 block text-center text-24 leading-none font-bold tracking-[-0.03em]">{identity.name}</span>
-              <span className="mt-1 block text-center text-14 text-muted">{identity.role}</span>
-              <span className="mt-3 flex justify-center gap-2">
-                <span className="badge__stat" style={{ ["--tone" as string]: "var(--accent)" }}>
-                  <span className="text-24 leading-none font-bold tabular-nums">{String(projects.length).padStart(2, "0")}</span>
-                  <span className="type-pixel mt-1 text-[10px] text-muted">shipped</span>
+
+              <span className="idc__bottom">
+                <span className="min-w-0">
+                  <Barcode code="AT0X24" />
+                  <span className="idc__status">
+                    <span className="idc__led" />
+                    Open to work
+                  </span>
                 </span>
-                <span className="badge__stat" style={{ ["--tone" as string]: "var(--cobalt)" }}>
-                  <span className="text-24 leading-none font-bold tabular-nums">{String(subdomains).padStart(2, "0")}</span>
-                  <span className="type-pixel mt-1 text-[10px] text-muted">subdomains</span>
+                <span className="idc__seal" aria-hidden="true">
+                  AT
                 </span>
+              </span>
+
+              <span className="idc__strip" aria-hidden="true">
+                AT-26 · Studio pass · {identity.domain} · AT-26 · Studio pass · {identity.domain}
               </span>
             </span>
           </span>
+
+          {/* Back */}
           <span className="badge__face badge__face--back">
-            <span className="badge__inner grid place-items-center content-center gap-2 text-center">
-              <span className="type-pixel text-muted">Scan me</span>
-              <span className="overflow-hidden rounded-[14px]">
-                <QrCode text={identity.url} size={124} />
+            <span className="idc idc--back">
+              <span className="idc__mag" aria-hidden="true" />
+              <span className="idc__back-row">
+                <span className="idc__qr">
+                  <QrCode text={identity.url} size={88} />
+                </span>
+                <span className="min-w-0">
+                  <span className="idc__label">Scan to visit</span>
+                  <span className="idc__url">{identity.domain}</span>
+                  <span className="idc__label mt-[2.4cqi]">Or write to</span>
+                  <span className="idc__email">{identity.email}</span>
+                </span>
               </span>
-              <span className="text-18 leading-none font-bold tracking-tight">adelia.cc</span>
-              <span className="text-12 break-all text-muted">{identity.email}</span>
+              <span className="idc__return">
+                If found, please return to {identity.name}, {identity.location}. Or just hire her.
+              </span>
+              <span className="idc__sig">
+                <span className="idc__label">Authorised signature</span>
+                <span className="idc__sig-panel">
+                  <svg viewBox="0 0 120 36" aria-hidden="true">
+                    <path
+                      d="M6 28C10 10 17 5 16 24s8-12 12-6 4 10 10 2 6-14 4-6-3 14 6 10 8-14 10-8-2 12 6 8 8-12 10-6 2 8 8 4M70 8l3 24M18 31c30-3 60-5 96-6"
+                      fill="none"
+                      stroke="#1b2f73"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </span>
+              <span className="idc__micro" aria-hidden="true">
+                This pass remains the property of its holder · Not valid for travel · AT-26 · 0x24
+              </span>
             </span>
           </span>
         </span>

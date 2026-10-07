@@ -28,9 +28,9 @@ export default function WorkPage() {
       >
         <BoosterPack count={projects.length} />
 
-        <ol className="cards-grid mt-14 grid gap-6 text-left md:grid-cols-2 lg:grid-cols-3" aria-label="Projects">
+        <ol className="cards-grid mx-auto mt-14 grid max-w-[1120px] gap-6 text-left md:grid-cols-2 lg:grid-cols-3" aria-label="Projects">
           {projects.map((project) => (
-            <li key={project.slug} data-card className="min-w-0">
+            <li key={project.slug} data-card className="mx-auto w-full max-w-[360px] min-w-0">
               <HoloCard project={project} total={projects.length} />
             </li>
           ))}

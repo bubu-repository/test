@@ -8,6 +8,7 @@ import { ui } from "@/lib/ui";
 import { agentStore } from "../agent/agent-store";
 import { paletteStore, submitPalette } from "../palette/palette-store";
 import { findVisible } from "../shell/ActionHost";
+import { resealPack } from "../work/BoosterPack";
 import { TourAborted, tourStore } from "./tour-store";
 
 /** Ghost cursor state, read every frame by the Tour component. */
@@ -149,17 +150,18 @@ export async function runTour(signal: AbortSignal) {
       await press(navWork, signal);
     }
     await goto("/work", signal);
+    resealPack();
     const pack = await waitFor('[data-tour="pack"]', signal, 1500);
     if (pack) {
       await moveTo(pack, signal);
       await say("Fresh pack. Let's open it.", signal, 600);
       await press(pack, signal);
-      await sleep(1200, signal);
+      await sleep(calm() ? 300 : 3000, signal);
     }
     const card = await waitFor('[data-tour="card-tenderlens"]', signal);
     if (card) {
       await moveTo(card, signal);
-      await say("Tenderlens reads 200-page government tenders so small contractors don't have to.", signal, 1500);
+      await say("Pulled the holo rare. Tenderlens reads 200-page government tenders so small contractors don't have to.", signal, 1500);
       await goto("/work/tenderlens", signal);
     }
 

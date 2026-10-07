@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/icons";
 import { PageTransition } from "@/components/PageTransition";
@@ -12,6 +11,7 @@ import { CaseStudyShell } from "@/features/case/CaseStudyShell";
 import { CountUp } from "@/features/case/CountUp";
 import { TraceRail, type TraceStep } from "@/features/case/TraceRail";
 import { ProjectMockup } from "@/features/work/ProjectMockup";
+import { Polaroid } from "@/features/work/Polaroid";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -248,25 +248,24 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
         </div>
       </CaseStudyShell>
 
-      <nav aria-label="More projects" className="container-page grid gap-4 pb-24 sm:grid-cols-2">
-        {[
-          { p: prev, dir: "Previous" },
-          { p: next, dir: "Next" },
-        ].map(({ p, dir }) => (
-          <Link
-            key={dir}
-            href={`/work/${p.slug}`}
-            className="widget group flex items-center justify-between gap-4 p-6 transition-transform hover:-translate-y-1 motion-reduce:transition-none"
-          >
-            {dir === "Previous" && <ArrowLeftIcon className="shrink-0" />}
-            <span className={dir === "Next" ? "min-w-0" : "min-w-0 flex-1 text-right"}>
-              <span className="type-pixel block text-muted">{dir} case</span>
-              <span className="block text-32 font-bold tracking-[-0.03em]">{p.name}</span>
-              <span className="block truncate text-14 text-muted">{p.kind}</span>
-            </span>
-            {dir === "Next" && <ArrowRightIcon className="shrink-0" />}
-          </Link>
-        ))}
+      {/* The other two projects, as prints pinned under the case. */}
+      <nav aria-label="More projects" className="container-page pb-28">
+        <p className="type-eyebrow text-center">Keep reading</p>
+        <ul className="mx-auto mt-10 grid max-w-[760px] gap-x-12 gap-y-14 sm:grid-cols-2">
+          {[
+            { p: prev, dir: "Previous case", tilt: -2 },
+            { p: next, dir: "Next case", tilt: 1.5 },
+          ].map(({ p, dir, tilt }) => (
+            <li key={dir} className="mx-auto w-full max-w-[320px]">
+              <p className="mb-4 flex items-center gap-2 text-14 font-semibold text-muted">
+                {dir === "Previous case" ? <ArrowLeftIcon className="shrink-0" /> : null}
+                {dir}
+                {dir === "Next case" ? <ArrowRightIcon className="shrink-0" /> : null}
+              </p>
+              <Polaroid project={p} tilt={tilt} />
+            </li>
+          ))}
+        </ul>
       </nav>
     </PageTransition>
   );

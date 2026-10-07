@@ -1,34 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import { ViewTransition, useRef } from "react";
+import { ViewTransition, useRef, type CSSProperties } from "react";
 import type { Project } from "@/content/projects";
 import { sfx } from "@/lib/sound";
 import { ProjectMockup } from "./ProjectMockup";
 
+/** Rarity → foil: the holo rare shines in the art window, the rare is reverse holo, the uncommon is etched. */
+const FINISH: Record<string, { finish: "holo" | "reverse" | "etched"; glyph: string; rank: number }> = {
+  "Holo rare": { finish: "holo", glyph: "★", rank: 2 },
+  Rare: { finish: "reverse", glyph: "◆", rank: 1 },
+  Uncommon: { finish: "etched", glyph: "●", rank: 0 },
+};
+
 /**
- * A holographic trading card. The foil and glare follow the pointer; the card tilts in 3D.
- * The whole card is a link; it morphs into the case-study hero (shared view transition).
+ * A holographic trading card, printed like the real thing: a metallic frame in the project's
+ * colour, an art window, a type line, the three numbers as moves, flavour text and a set number.
+ * The foil depends on the rarity; the glare and the tilt follow the pointer, and on touch screens
+ * the foil shimmers on its own. The back is printed too, so the pack can deal cards face down.
+ * The whole card is a link; it morphs into the case-study icon (shared view transition).
  */
 export function HoloCard({ project, total, morph = true, level = 2 }: { project: Project; total: number; morph?: boolean; level?: 2 | 3 }) {
   const Heading = level === 3 ? "h3" : "h2";
   const ref = useRef<HTMLAnchorElement>(null);
+  const rarity = FINISH[project.rarity] ?? FINISH.Uncommon;
+  const pad = (n: number | string) => String(n).padStart(3, "0");
 
   const onMove = (e: React.PointerEvent) => {
     const el = ref.current;
     if (!el || e.pointerType === "touch") return;
     const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width;
-    const py = (e.clientY - r.top) / r.height;
-    el.style.setProperty("--mx", `${px * 100}%`);
-    el.style.setProperty("--my", `${py * 100}%`);
-    el.style.setProperty("--rx", `${(0.5 - py) * 14}deg`);
-    el.style.setProperty("--ry", `${(px - 0.5) * 18}deg`);
+    const px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    const py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+    el.dataset.live = "true";
+    el.style.setProperty("--mx", `${(px * 100).toFixed(1)}%`);
+    el.style.setProperty("--my", `${(py * 100).toFixed(1)}%`);
+    el.style.setProperty("--bgx", `${(30 + px * 40).toFixed(1)}%`);
+    el.style.setProperty("--bgy", `${(30 + py * 40).toFixed(1)}%`);
+    el.style.setProperty("--rx", `${((0.5 - py) * 16).toFixed(2)}deg`);
+    el.style.setProperty("--ry", `${((px - 0.5) * 20).toFixed(2)}deg`);
     el.style.setProperty("--o", "1");
   };
   const onLeave = () => {
     const el = ref.current;
     if (!el) return;
+    delete el.dataset.live;
     el.style.setProperty("--rx", "0deg");
     el.style.setProperty("--ry", "0deg");
     el.style.setProperty("--o", "0");
@@ -38,50 +54,70 @@ export function HoloCard({ project, total, morph = true, level = 2 }: { project:
     <Link
       ref={ref}
       href={`/work/${project.slug}`}
-      className="holo-card group block"
+      className="tcg"
       data-tone={project.tone}
+      data-finish={rarity.finish}
+      style={{ "--i": rarity.rank } as CSSProperties}
       data-tour={morph ? `card-${project.slug}` : undefined}
       data-cursor="Read"
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       onPointerEnter={() => sfx.tick()}
-      aria-label={`${project.name}: ${project.tagline} Read the case study.`}
+      aria-label={`${project.name}, ${project.rarity.toLowerCase()} card: ${project.tagline} Read the case study.`}
     >
       <ViewTransition name={morph ? `card-${project.slug}` : undefined} share="card-morph" default="none">
-        <div className="holo-card__inner">
-          <div className="holo-card__face">
-            <div className="flex items-center justify-between gap-2">
-              <p className="type-pixel text-muted">
-                No. {project.index}/{String(total).padStart(2, "0")}
-              </p>
-              <span className="chip shrink-0" data-tone={project.tone === "cobalt" ? "sky" : project.tone}>
-                {project.rarity}
-              </span>
-            </div>
-            <Heading className="mt-3 text-32 leading-none font-bold tracking-[-0.035em]">{project.name}</Heading>
-            <p className="mt-1.5 text-14 text-muted">
-              {project.kind} · {project.year}
-            </p>
-            <div className="relative mt-5">
-              <div className="aspect-[4/3] overflow-hidden rounded-[18px]">
-                <ProjectMockup project={project} />
-              </div>
-              {/* A proof badge floating over the screenshot (after Finansiologi's annotated mockups). */}
-              <span className="proof-badge" aria-hidden="true">
-                <span className="led" />
-                {project.stats[1].value} {project.stats[1].label.toLowerCase()}
-              </span>
-            </div>
-            <p className="mt-5 text-16 leading-snug">{project.tagline}</p>
-            <dl className="mt-auto grid grid-cols-3 divide-x divide-line pt-6">
-              {project.stats.map((s) => (
-                <div key={s.label} className="px-2 text-center first:pl-0 last:pr-0">
-                  <dd className="text-18 leading-tight font-bold tracking-tight">{s.value}</dd>
-                  <dt className="mt-0.5 truncate text-12 text-muted">{s.label}</dt>
+        <div className="tcg__flipper">
+          <div className="tcg__tilt">
+            <div className="tcg__face tcg__front">
+              <div className="tcg__frame">
+                <div className="tcg__top">
+                  <Heading className="tcg__name">{project.name}</Heading>
+                  <span className="tcg__no">
+                    <small>No.</small>
+                    {project.index}
+                  </span>
                 </div>
-              ))}
-            </dl>
-            <p className="link-arrow mt-6 text-16">Read the case study</p>
+                <div className="tcg__art">
+                  <ProjectMockup project={project} className="rounded-none" />
+                  <span className="tcg__art-foil" aria-hidden="true" />
+                </div>
+                <div className="tcg__type">
+                  {project.kind} · {project.year}
+                </div>
+                <div className="tcg__moves">
+                  {project.stats.map((s, i) => (
+                    <span key={s.label} className="tcg__move">
+                      <span className="tcg__energy" aria-hidden="true">
+                        {Array.from({ length: i + 1 }, (_, k) => (
+                          <i key={k} />
+                        ))}
+                      </span>
+                      <span className="tcg__move-name">{s.label}</span>
+                      <span className="tcg__move-value">{s.value}</span>
+                    </span>
+                  ))}
+                </div>
+                <div className="tcg__flavor">{project.tagline}</div>
+                <div className="tcg__foot">
+                  <span>Illus. Adelia Tiara</span>
+                  <span>
+                    {rarity.glyph} AT·26 {pad(project.index)}/{pad(total)}
+                  </span>
+                </div>
+              </div>
+              <span className="tcg__shine" aria-hidden="true" />
+              <span className="tcg__glare" aria-hidden="true" />
+            </div>
+            <div className="tcg__face tcg__back" aria-hidden="true">
+              <div className="tcg__back-inner">
+                <span className="tcg__back-logo">
+                  <span>
+                    a<b>.</b>
+                  </span>
+                </span>
+                <span className="tcg__back-text">Adelia · Trading Card Game</span>
+              </div>
+            </div>
           </div>
         </div>
       </ViewTransition>

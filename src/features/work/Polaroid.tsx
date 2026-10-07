@@ -2,11 +2,12 @@ import Link from "next/link";
 import { ViewTransition } from "react";
 import type { Project } from "@/content/projects";
 import { cn } from "@/lib/cn";
-import { ProjectMockup } from "../work/ProjectMockup";
+import { ProjectMockup } from "./ProjectMockup";
 
 /**
- * A polaroid of a project: a taped print with a SHIPPED stamp and one proof number floating over
- * it. Opening it morphs the photo into the case study's app icon (shared view transition).
+ * A polaroid of a project, pinned under each case study: a taped print with a SHIPPED stamp and
+ * one proof number floating over it. Opening it morphs the photo into the case study's app icon
+ * (shared view transition).
  */
 export function Polaroid({ project, tilt = 0, className }: { project: Project; tilt?: number; className?: string }) {
   const proof = project.stats[1];

@@ -2165,7 +2165,7 @@ html[data-theme-swap]::view-transition-new(root) {
 /* ---------- The hero stage ---------- */
 /* White, with a faint cool haze behind the device so it sits in light rather than on a flat page. */
 .hero-stage {
-  background: radial-gradient(60% 46% at 50% 52%, color-mix(in srgb, #cfe3ff 42%, transparent), transparent 70%);
+  background: radial-gradient(60% 46% at 50% 52%, color-mix(in srgb, #ffffff 70%, transparent), transparent 70%);
 }
 
 [data-theme="dark"] .hero-stage {
@@ -2229,12 +2229,12 @@ html[data-theme-swap]::view-transition-new(root) {
   gap: 8px 22px;
   padding: 16px 30px 14px;
   border-radius: 120px;
-  background: linear-gradient(180deg, #ffffff, #edf1f6);
+  background: linear-gradient(180deg, #ffffff, #f3f6fa);
   color: var(--ink);
   box-shadow:
     inset 0 2px 0 #ffffff,
-    inset 0 -6px 14px rgba(15, 23, 42, 0.07),
-    0 0 0 1px rgba(15, 23, 42, 0.07),
+    inset 0 -6px 14px rgba(15, 23, 42, 0.06),
+    0 0 0 1px rgba(15, 23, 42, 0.08),
     var(--lift-lg);
 }
 
@@ -2863,49 +2863,29 @@ html[data-theme-swap]::view-transition-new(root) {
   text-decoration-color: var(--accent);
 }
 
-/* ---------- The ID badge on its lanyard ---------- */
+/* ---------- The ID card on its lanyard (CR80, portrait) ---------- */
 .badge-strap {
   width: 22px;
   height: var(--strap, 120px);
   margin: 0 auto;
   background:
     repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0 2px, transparent 2px 6px),
-    linear-gradient(90deg, var(--accent-strong), var(--accent));
-  border-radius: 0 0 4px 4px;
+    linear-gradient(90deg, var(--accent-strong), var(--accent) 50%, var(--accent-strong));
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
-}
-
-.badge-clip {
-  width: 40px;
-  height: 46px;
-  margin: -6px auto -16px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #f2f2f5, #c9c9d0);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.14),
-    0 2px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 2;
-}
-
-.badge-clip::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 9px;
-  width: 16px;
-  height: 5px;
-  translate: -50% 0;
-  border-radius: 999px;
-  background: #9a9aa2;
+  -webkit-mask: linear-gradient(180deg, transparent, #000 28px);
+  mask: linear-gradient(180deg, transparent, #000 28px);
 }
 
 .badge {
+  --sway: 0;
+  --hx: 0.5;
+  --hy: 0.3;
+  position: relative;
   display: block;
-  width: 224px;
-  perspective: 900px;
-  transform-origin: 50% -30px;
+  width: 240px;
+  margin-top: -2px;
+  perspective: 1000px;
+  transform-origin: 50% -20px;
   border: 0;
   padding: 0;
   background: none;
@@ -2916,10 +2896,38 @@ html[data-theme-swap]::view-transition-new(root) {
   cursor: grabbing;
 }
 
+.badge:focus-visible {
+  outline: none;
+}
+
+.badge:focus-visible .badge__face {
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 6px var(--accent);
+}
+
+/* The lanyard clip: a metal hook that runs down into the punched slot. */
+.badge-clip {
+  position: relative;
+  z-index: 3;
+  display: block;
+  width: 30px;
+  height: 40px;
+  margin: 0 auto -30px;
+  border-radius: 8px 8px 5px 5px;
+  background: linear-gradient(90deg, #a7b0bd, #f4f6f9 35%, #c9d0da 65%, #8d97a6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 4px rgba(15, 23, 42, 0.25);
+  -webkit-mask: linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 12px 100% no-repeat;
+  mask: linear-gradient(#000 0 0) top / 100% 22px no-repeat, linear-gradient(#000 0 0) bottom / 12px 100% no-repeat;
+}
+
 .badge__card {
   position: relative;
   display: block;
-  aspect-ratio: 0.74;
+  aspect-ratio: 54 / 85.6;
+  container-type: inline-size;
   transform-style: preserve-3d;
   transition: transform 620ms var(--ease-jelly);
 }
@@ -2928,15 +2936,16 @@ html[data-theme-swap]::view-transition-new(root) {
   transform: rotateY(180deg);
 }
 
+/* The face carries the shadow only; the card itself (.idc) has the slot punched through it. */
 .badge__face {
   position: absolute;
   inset: 0;
   display: block;
-  padding: 8px;
-  border-radius: 28px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-lg);
+  border-radius: 5.9cqi;
+  box-shadow:
+    0 1px 1px rgba(15, 23, 42, 0.12),
+    0 12px 24px rgba(15, 23, 42, 0.14),
+    0 34px 60px rgba(15, 23, 42, 0.12);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -2945,36 +2954,355 @@ html[data-theme-swap]::view-transition-new(root) {
   transform: rotateY(180deg);
 }
 
-.badge__inner {
-  position: relative;
-  display: block;
-  height: 100%;
-  padding: 14px 14px 12px;
-  border-radius: 21px;
-  color: var(--ink);
-  text-align: left;
-  overflow: hidden;
-}
-
-/* A checker strip across the top of the card: the reference touch, in pastel. */
-.badge__strip {
-  --check-size: 10px;
-  display: block;
-  height: 20px;
-  margin: -14px -14px 12px;
-  opacity: 0.9;
-}
-
-.badge__stat {
-  display: inline-flex;
+.idc {
+  position: absolute;
+  inset: 0;
+  display: flex;
   flex-direction: column;
+  overflow: hidden;
+  border-radius: inherit;
+  color: #0e1726;
+  text-align: left;
+  background:
+    repeating-linear-gradient(0deg, rgba(48, 96, 230, 0.035) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #ffffff, #f3f6fb);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+  -webkit-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 5'%3E%3Crect width='30' height='5' rx='2.5'/%3E%3C/svg%3E") 50% 4.6cqi / 30cqi 5cqi no-repeat,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 5'%3E%3Crect width='30' height='5' rx='2.5'/%3E%3C/svg%3E") 50% 4.6cqi / 30cqi 5cqi no-repeat exclude,
+    linear-gradient(#000 0 0);
+}
+
+/* A worn rim round the punched slot. */
+.idc::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 3.9cqi;
+  width: 31.4cqi;
+  height: 6.4cqi;
+  translate: -50% 0;
+  border-radius: 999px;
+  border: 0.7cqi solid rgba(10, 20, 50, 0.22);
+}
+
+.idc__label {
+  display: block;
+  font: 600 2.9cqi/1.2 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6a778a;
+}
+
+/* Guilloche band: two families of fine rings over a cool blue, with a magenta hairline. */
+.idc__band {
+  position: relative;
+  display: flex;
   align-items: center;
-  min-width: 78px;
-  padding: 8px 10px 7px;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--tone) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--tone) 26%, transparent);
-  text-align: center;
+  gap: 3cqi;
+  flex: none;
+  height: 38cqi;
+  padding: 11cqi 6cqi 10cqi;
+  color: #ffffff;
+  background:
+    repeating-radial-gradient(circle at 12% 150%, rgba(255, 255, 255, 0) 0 1.5cqi, rgba(255, 255, 255, 0.13) 1.5cqi 1.8cqi),
+    repeating-radial-gradient(circle at 88% 150%, rgba(255, 255, 255, 0) 0 1.5cqi, rgba(255, 255, 255, 0.1) 1.5cqi 1.8cqi),
+    linear-gradient(135deg, #172a66, #2753d1 55%, #4c8af2);
+}
+
+.idc__band::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1cqi;
+  background: linear-gradient(90deg, #f41b8d, #ff7ac0 60%, #f41b8d);
+}
+
+.idc__brand {
+  display: flex;
+  align-items: center;
+  gap: 2.2cqi;
+  font: 800 6.4cqi/1 var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.idc__logo {
+  display: grid;
+  place-items: center;
+  width: 9cqi;
+  height: 9cqi;
+  border-radius: 999px;
+  font-size: 6.2cqi;
+  background: #ffffff;
+  color: #172a66;
+}
+
+.idc__logo b {
+  color: #f41b8d;
+}
+
+.idc__pass {
+  margin-left: auto;
+  font: 700 2.8cqi/1.15 var(--font-mono);
+  letter-spacing: 0.18em;
+  text-align: right;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.idc__nfc {
+  width: 6.4cqi;
+  height: 6.4cqi;
+  flex: none;
+  opacity: 0.85;
+}
+
+.idc__main {
+  display: flex;
+  gap: 4.5cqi;
+  padding: 0 6cqi;
+  margin-top: -9cqi;
+}
+
+/* CONTOH: swap the silhouette for a real photo (an <img> inside .idc__photo). */
+.idc__photo {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 33cqi;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2cqi;
+  background: linear-gradient(180deg, #e7eef8, #cfdbea);
+  box-shadow:
+    0 0 0 1.1cqi #ffffff,
+    0 1.5cqi 3cqi rgba(15, 23, 42, 0.22);
+}
+
+.idc__photo svg,
+.idc__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The security foil over the photo, catching the light as the card swings. */
+.idc__holo {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(120deg, rgba(255, 159, 214, 0.5) 0%, rgba(143, 184, 255, 0.5) 6%, rgba(132, 236, 255, 0.5) 12%, rgba(196, 181, 253, 0.5) 18%, rgba(255, 159, 214, 0.5) 24%);
+  background-size: 300% 300%;
+  background-position: calc(50% + var(--sway) * 4% + var(--hx) * 30%) calc(40% + var(--hy) * 30%);
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+  -webkit-mask: linear-gradient(115deg, transparent 30%, #000 50%, transparent 70%);
+  mask: linear-gradient(115deg, transparent 30%, #000 50%, transparent 70%);
+}
+
+.idc__who {
+  min-width: 0;
+  padding-top: 13cqi;
+}
+
+.idc__name {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 800 7.4cqi/0.98 var(--font-display);
+  letter-spacing: -0.035em;
+}
+
+.idc__role {
+  display: block;
+  margin-top: 0.6cqi;
+  font-size: 4.2cqi;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.idc__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3cqi 4cqi;
+  margin: 5.5cqi 6cqi 0;
+  padding-top: 4cqi;
+  border-top: 0.4cqi solid #e2e8f0;
+}
+
+.idc__val {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 600 4cqi/1.1 var(--font-mono);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.idc__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4cqi;
+  margin: auto 6cqi 4cqi;
+}
+
+.idc__barcode {
+  display: block;
+  width: 44cqi;
+  height: 8cqi;
+}
+
+.idc__status {
+  display: flex;
+  align-items: center;
+  gap: 1.6cqi;
+  margin-top: 2cqi;
+  font: 700 3cqi/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
+.idc__led {
+  width: 2.2cqi;
+  height: 2.2cqi;
+  border-radius: 999px;
+  background: var(--led, #22c9a0);
+  box-shadow: 0 0 0 0.7cqi rgba(34, 201, 160, 0.22), 0 0 2cqi rgba(34, 201, 160, 0.8);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .idc__led {
+    animation: idc-blink 2.4s steps(1, end) infinite;
+  }
+}
+
+@keyframes idc-blink {
+  85% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.35;
+  }
+}
+
+/* The hologram sticker: a rainbow that moves with the swing and the pointer. */
+.idc__seal {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 14cqi;
+  height: 14cqi;
+  border-radius: 999px;
+  font: 800 4cqi/1 var(--font-display);
+  letter-spacing: -0.04em;
+  color: rgba(23, 42, 102, 0.75);
+  background:
+    radial-gradient(circle at calc(var(--hx) * 100%) calc(var(--hy) * 100%), rgba(255, 255, 255, 0.95), transparent 55%),
+    repeating-conic-gradient(from calc(var(--sway) * 9deg + var(--hx) * 90deg), #c7d2fe 0 30deg, #a5f3fc 30deg 60deg, #bbf7d0 60deg 90deg, #fbcfe8 90deg 120deg, #ddd6fe 120deg 150deg, #c7d2fe 150deg 180deg);
+  box-shadow:
+    inset 0 0 0 0.5cqi rgba(255, 255, 255, 0.8),
+    0 0.6cqi 1.4cqi rgba(15, 23, 42, 0.2);
+}
+
+.idc__strip {
+  flex: none;
+  overflow: hidden;
+  padding: 1.6cqi 6cqi;
+  font: 700 2.6cqi/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(90deg, #d6087a, #f41b8d);
+}
+
+/* Back */
+.idc--back {
+  background:
+    repeating-linear-gradient(0deg, rgba(48, 96, 230, 0.035) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #f3f6fb, #ffffff);
+}
+
+.idc__mag {
+  flex: none;
+  height: 15cqi;
+  margin-top: 14cqi;
+  background: linear-gradient(180deg, #1a1d24, #2b2f38 45%, #14161c);
+}
+
+.idc__back-row {
+  display: flex;
+  align-items: center;
+  gap: 4cqi;
+  margin: 6cqi 6cqi 0;
+}
+
+.idc__qr {
+  flex: none;
+  width: 32cqi;
+  overflow: hidden;
+  border-radius: 2cqi;
+  box-shadow: 0 0 0 0.4cqi #e2e8f0;
+}
+
+.idc__qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.idc__url {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 800 6cqi/1 var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.idc__email {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 600 3.2cqi/1.25 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.idc__return {
+  margin: 5cqi 6cqi 0;
+  font-size: 3.5cqi;
+  line-height: 1.4;
+  color: #4a5568;
+}
+
+.idc__sig {
+  margin: 5cqi 6cqi 0;
+}
+
+.idc__sig-panel {
+  display: block;
+  height: 13cqi;
+  margin-top: 1.2cqi;
+  padding: 0.8cqi 2cqi;
+  border-radius: 1cqi;
+  background: repeating-linear-gradient(-45deg, #f8fafc 0 1.2cqi, #e8eef6 1.2cqi 1.6cqi);
+  box-shadow: inset 0 0 0 0.3cqi #d5dde8;
+}
+
+.idc__sig-panel svg {
+  display: block;
+  width: 70%;
+  height: 100%;
+}
+
+.idc__micro {
+  margin: auto 6cqi 4cqi;
+  font: 600 2.3cqi/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8b97a8;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3304,89 +3632,439 @@ html[data-theme-swap]::view-transition-new(root) {
   outline-offset: 4px;
 }
 
-/* ---------- Holographic trading cards (white glass, iridescent only under the pointer) ---------- */
-.holo-card {
+/* ---------- Holographic trading cards ---------- */
+/* Registered so the idle shimmer can animate the light position on touch screens. */
+@property --mx {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --my {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 50%;
+}
+
+.tcg {
   --rx: 0deg;
   --ry: 0deg;
-  --mx: 50%;
-  --my: 50%;
   --o: 0;
-  --frame: var(--accent);
-  perspective: 1000px;
-  text-decoration: none;
+  --bgx: 50%;
+  --bgy: 50%;
+  --frame: linear-gradient(140deg, #ffb3dc, #f41b8d 42%, #a3005f 78%, #ff7cc2);
+  --tone-ink: #c2006b;
+  /* A printed card keeps its daylight colours in night mode. */
+  --ink: #0e1726;
+  --muted: #556070;
+  --surface: #ffffff;
+  --surface-2: #f2f5f9;
+  --line: #dde3eb;
+  display: block;
+  perspective: 1100px;
   color: var(--ink);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.holo-card[data-tone="cobalt"] {
-  --frame: var(--cobalt);
+.tcg[data-tone="cobalt"] {
+  --frame: linear-gradient(140deg, #b9d0ff, #3060e6 42%, #1a3a9e 78%, #8fb0ff);
+  --tone-ink: #2348c4;
 }
 
-.holo-card[data-tone="sun"] {
-  --frame: #F2A900;
+.tcg[data-tone="violet"] {
+  --frame: linear-gradient(140deg, #ddd4ff, #7c6cf0 42%, #4a2fb8 78%, #b9adff);
+  --tone-ink: #5b45d6;
 }
 
-.holo-card[data-tone="lime"] {
-  --frame: #8DB800;
+.tcg__flipper {
+  display: block;
+  transform-style: preserve-3d;
 }
 
-.holo-card__inner {
+.tcg__tilt {
   position: relative;
-  display: flex;
-  height: 100%;
-  padding: 8px;
-  border-radius: 32px;
-  background: var(--surface-2);
-  border: 1px solid var(--line);
+  display: block;
+  aspect-ratio: 63 / 88;
+  container-type: inline-size;
   transform: rotateX(var(--rx)) rotateY(var(--ry));
   transform-style: preserve-3d;
-  transition:
-    transform 500ms var(--ease-out),
-    box-shadow var(--dur-short) var(--ease-out);
-  isolation: isolate;
+  transition: transform 450ms var(--ease-out);
+}
+
+.tcg[data-live] .tcg__tilt {
+  transition: transform 90ms linear;
+}
+
+.tcg__face {
+  position: absolute;
+  inset: 0;
+  display: block;
   overflow: hidden;
+  border-radius: 4.6cqi;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow:
+    0 1px 1px rgba(15, 23, 42, 0.1),
+    0 12px 24px rgba(15, 23, 42, 0.14),
+    0 30px 60px rgba(15, 23, 42, 0.12);
 }
 
-.holo-card:hover .holo-card__inner {
-  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
-  box-shadow: var(--shadow-sm);
+/* Front: metallic frame in the project's colour around a printed panel. */
+.tcg__front {
+  padding: 3.2cqi;
+  background: var(--frame);
 }
 
-.holo-card__face {
+.tcg__front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.25) 60%, rgba(255, 255, 255, 0) 80%);
+  pointer-events: none;
+}
+
+.tcg__frame {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  padding: 18px;
-  border-radius: 25px;
+  height: 100%;
+  padding: 3.4cqi 3.6cqi 2.6cqi;
+  border-radius: 2.6cqi;
+  background: linear-gradient(180deg, #ffffff, #f3f6fa);
+  box-shadow: inset 0 0 0 0.4cqi rgba(15, 23, 42, 0.08);
+  overflow: hidden;
 }
 
-/* Glare: a soft light where the pointer is. */
-.holo-card__inner::after {
+.tcg__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2cqi;
+}
+
+.tcg__name {
+  font-family: var(--font-display);
+  font-size: 9.2cqi;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.tcg__no {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6cqi;
+  font: 800 6.4cqi/1 var(--font-display);
+  color: var(--tone-ink);
+}
+
+.tcg__no small {
+  font: 700 2.8cqi/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tcg__art {
+  position: relative;
+  margin-top: 2.6cqi;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 1.4cqi;
+  box-shadow:
+    0 0 0 0.6cqi #ffffff,
+    0 0 0 1.1cqi color-mix(in srgb, var(--tone-ink) 35%, #c7cfdb),
+    0 1cqi 2cqi rgba(15, 23, 42, 0.18);
+}
+
+.tcg__art-foil {
+  position: absolute;
+  inset: 0;
+  display: none;
+  pointer-events: none;
+}
+
+.tcg__type {
+  margin: 2.8cqi auto 0;
+  padding: 0.9cqi 3cqi;
+  border-radius: 999px;
+  font: 600 3.1cqi/1.2 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tone-ink) 9%, transparent), transparent);
+  text-align: center;
+}
+
+.tcg__moves {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6cqi;
+  margin-top: 2.8cqi;
+}
+
+.tcg__move {
+  display: flex;
+  align-items: center;
+  gap: 2cqi;
+  padding-bottom: 1.4cqi;
+  border-bottom: 0.3cqi solid #e3e8ef;
+}
+
+.tcg__energy {
+  display: inline-flex;
+  gap: 0.6cqi;
+  min-width: 10cqi;
+}
+
+.tcg__energy i {
+  display: block;
+  width: 2.8cqi;
+  height: 2.8cqi;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #ffffff, color-mix(in srgb, var(--tone-ink) 75%, #ffffff) 45%, var(--tone-ink));
+  box-shadow: 0 0 0 0.3cqi rgba(255, 255, 255, 0.9);
+}
+
+.tcg__move-name {
+  flex: 1;
+  font: 700 4.2cqi/1.1 var(--font-body);
+  color: var(--ink);
+}
+
+.tcg__move-value {
+  font: 800 4.8cqi/1 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.tcg__flavor {
+  margin-top: auto;
+  padding-top: 2.4cqi;
+  font-size: 3.5cqi;
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.tcg__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqi;
+  margin-top: 2cqi;
+  font: 600 2.6cqi/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8b97a8;
+}
+
+/* Light: glare follows the pointer; the shine is the foil layer. */
+.tcg__glare,
+.tcg__shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.tcg__glare {
+  background: radial-gradient(farthest-corner circle at var(--mx) var(--my), rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.25) 28%, rgba(15, 23, 42, 0.12) 90%);
+  mix-blend-mode: overlay;
+  opacity: calc(0.15 + var(--o) * 0.7);
+  transition: opacity 300ms var(--ease-out);
+}
+
+.tcg__shine {
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 48%, rgba(190, 210, 255, 0.35) 52%, transparent 65%);
+  background-size: 260% 260%;
+  background-position: var(--bgx) var(--bgy);
+  mix-blend-mode: soft-light;
+  opacity: calc(0.35 + var(--o) * 0.65);
+}
+
+/* Holo rare: a cool rainbow foil with sparkle, in the art window. */
+.tcg[data-finish="holo"] .tcg__art-foil {
+  display: block;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 0.5px, transparent 1.4px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 0 0.4px, transparent 1.2px),
+    repeating-linear-gradient(110deg, #ff9fd6 0%, #c3b2ff 6%, #8fb8ff 12%, #84ecff 18%, #a5ffdc 24%, #c3b2ff 30%, #ff9fd6 36%),
+    radial-gradient(farthest-corner circle at var(--mx) var(--my), rgba(255, 255, 255, 0.55), rgba(0, 0, 0, 0.25) 80%);
+  background-size: 23px 23px, 37px 37px, 320% 320%, 100% 100%;
+  background-position: 0 0, 11px 17px, var(--bgx) var(--bgy), center;
+  mix-blend-mode: overlay;
+  filter: saturate(1.5);
+  opacity: calc(0.45 + var(--o) * 0.5);
+}
+
+.tcg[data-finish="holo"] .tcg__shine {
+  background:
+    repeating-linear-gradient(110deg, rgba(255, 159, 214, 0.3) 0%, rgba(143, 184, 255, 0.3) 8%, rgba(132, 236, 255, 0.3) 16%, rgba(255, 159, 214, 0.3) 24%),
+    linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.6) 48%, transparent 62%);
+  background-size: 400% 400%, 260% 260%;
+  background-position: var(--bgx) var(--bgy), var(--bgx) var(--bgy);
+  mix-blend-mode: overlay;
+  opacity: calc(0.25 + var(--o) * 0.55);
+}
+
+/* Rare: reverse holo, the printed panel shines and the art stays matte. */
+.tcg[data-finish="reverse"] .tcg__frame::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background: radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.5), transparent 45%);
-  mix-blend-mode: soft-light;
-  opacity: calc(var(--o) * 0.6);
-  transition: opacity 400ms var(--ease-out);
+  z-index: -1;
+  background:
+    repeating-linear-gradient(120deg, #e6ecff 0%, #cfdcff 6%, #d9fbff 12%, #eadfff 18%, #e6ecff 24%),
+    radial-gradient(farthest-corner circle at var(--mx) var(--my), rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 60%);
+  background-size: 300% 300%, 100% 100%;
+  background-position: var(--bgx) var(--bgy), center;
+  opacity: calc(0.65 + var(--o) * 0.35);
 }
 
-.holo-card:focus-visible {
+.tcg[data-finish="reverse"] .tcg__frame {
+  background: transparent;
+}
+
+/* Uncommon: etched, a silver sweep only. */
+.tcg[data-finish="etched"] .tcg__shine {
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0) 0 3px, rgba(255, 255, 255, 0.18) 3px 4px),
+    linear-gradient(115deg, transparent 38%, rgba(230, 236, 245, 0.7) 50%, transparent 62%);
+  background-size: auto, 260% 260%;
+  background-position: 0 0, var(--bgx) var(--bgy);
+  mix-blend-mode: soft-light;
+}
+
+/* Back: the printed back of the set. */
+.tcg__back {
+  transform: rotateY(180deg);
+  padding: 3.2cqi;
+  background: linear-gradient(140deg, #dfe6f1, #9aa6b8 45%, #e9eef5 70%, #b3bdcc);
+}
+
+.tcg__back-inner {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 5cqi;
+  height: 100%;
+  border-radius: 2.6cqi;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(244, 27, 141, 0.35), transparent 45%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 6px, transparent 6px 12px),
+    linear-gradient(160deg, #1a2440, #0b1020);
+}
+
+.tcg__back-logo {
+  display: grid;
+  place-items: center;
+  width: 38cqi;
+  height: 38cqi;
+  border-radius: 999px;
+  font: 800 22cqi/1 var(--font-display);
+  letter-spacing: -0.06em;
+  color: #ffffff;
+  background: radial-gradient(circle at 35% 30%, #ff8cc8, #f41b8d 50%, #a3005f);
+  box-shadow:
+    0 0 0 1.4cqi rgba(255, 255, 255, 0.85),
+    0 0 0 2.4cqi rgba(255, 255, 255, 0.15),
+    0 2cqi 6cqi rgba(0, 0, 0, 0.5);
+}
+
+.tcg__back-logo b {
+  color: #0b1020;
+}
+
+.tcg__back-text {
+  font: 700 3.2cqi/1 var(--font-mono);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@media (hover: hover) {
+  .tcg:hover .tcg__face {
+    box-shadow:
+      0 1px 1px rgba(15, 23, 42, 0.1),
+      0 18px 34px rgba(15, 23, 42, 0.18),
+      0 44px 80px rgba(15, 23, 42, 0.16);
+  }
+}
+
+.tcg:focus-visible {
   outline: none;
 }
 
-.holo-card:focus-visible .holo-card__inner {
+.tcg:focus-visible .tcg__face {
   box-shadow:
     0 0 0 3px var(--bg),
     0 0 0 6px var(--accent),
-    var(--shadow-lg);
+    0 30px 60px rgba(15, 23, 42, 0.14);
+}
+
+/* Touch screens: no pointer, so the light drifts on its own. */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .tcg {
+    --o: 0.6;
+    animation: tcg-idle 7s var(--ease-in-out) infinite alternate;
+  }
+}
+
+@keyframes tcg-idle {
+  0% {
+    --mx: 20%;
+    --my: 15%;
+    --bgx: 32%;
+    --bgy: 30%;
+  }
+  100% {
+    --mx: 80%;
+    --my: 85%;
+    --bgx: 68%;
+    --bgy: 70%;
+  }
+}
+
+/* The reveal: cards come out of the pack face down and flip, rarest last. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-dealing] .tcg__flipper {
+    animation: tcg-reveal 820ms var(--ease-out) both;
+    animation-delay: calc(1350ms + var(--i) * 450ms);
+  }
+
+  html[data-dealing] .tcg[data-finish="holo"] .tcg__glare {
+    animation: tcg-flash 900ms var(--ease-out) both;
+    animation-delay: calc(1850ms + var(--i) * 450ms);
+  }
+}
+
+@keyframes tcg-reveal {
+  0% {
+    transform: rotateY(180deg) scale(0.96);
+  }
+  60% {
+    transform: rotateY(-12deg) scale(1.04);
+  }
+  100% {
+    transform: rotateY(0) scale(1);
+  }
+}
+
+@keyframes tcg-flash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.15;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .holo-card__inner {
+  .tcg__tilt {
     transform: none;
   }
 }
@@ -3424,45 +4102,318 @@ html[data-theme-swap]::view-transition-new(root) {
 }
 
 @media (scripting: enabled) {
-  html[data-pack="sealed"] .pack {
+  html[data-pack="sealed"] .pack,
+  html[data-pack="tearing"] .pack {
     display: grid;
   }
 
   html[data-pack="sealed"] .cards-grid,
-  html[data-pack="sealed"] .reseal {
+  html[data-pack="sealed"] .reseal,
+  html[data-pack="tearing"] .cards-grid,
+  html[data-pack="tearing"] .reseal {
     display: none;
   }
 }
 
-.pack__foil {
+/* A foil pack, crimped top and bottom. The strip on top peels off as you drag across it. */
+.pack__body {
+  --tear: 0;
+  --px: 30%;
+  --py: 20%;
+  --prx: 0deg;
+  --pry: 0deg;
   position: relative;
-  width: min(300px, 74vw);
+  width: min(280px, 72vw);
   aspect-ratio: 5 / 8;
-  border-radius: 20px;
-  background:
-    radial-gradient(120% 60% at 30% 8%, rgba(255, 255, 255, 0.28), transparent 55%),
-    linear-gradient(160deg, #FF4FA6, #D6087A 60%, #A8005F);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-  -webkit-mask:
-    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 16px 51% repeat-x,
-    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 16px 51% repeat-x;
-  mask:
-    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 16px 51% repeat-x,
-    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 16px 51% repeat-x;
+  container-type: inline-size;
+  transform: perspective(900px) rotateX(var(--prx)) rotateY(var(--pry));
+  transition: transform 500ms var(--ease-out);
+  filter: drop-shadow(0 26px 28px rgba(15, 23, 42, 0.2)) drop-shadow(0 3px 5px rgba(15, 23, 42, 0.14));
 }
 
+.pack__foil,
+.pack__strip-foil {
+  background:
+    radial-gradient(120% 70% at 25% 0%, rgba(255, 255, 255, 0.3), transparent 55%),
+    linear-gradient(165deg, #ff5aab, #e3138a 45%, #b0006a 85%, #8e0057);
+  background-size: 100% 115cqi, 100% 160cqi;
+  background-repeat: no-repeat;
+}
+
+/* The heat-sealed crimp: fine vertical ridges. */
+.pack__strip-foil::after,
+.pack__foil::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.16) 0 1px, rgba(90, 0, 50, 0.16) 1px 3px, transparent 3px 5px);
+}
+
+.pack__strip {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: 13%;
+  cursor: grab;
+  transform-origin: 100% 100%;
+  transform: translateY(calc(var(--tear) * -5px)) rotate(calc(var(--tear) * 8deg));
+  transition: transform 160ms var(--ease-out);
+  filter: drop-shadow(0 calc(var(--tear) * 6px) calc(var(--tear) * 5px) rgba(60, 0, 35, 0.35));
+}
+
+.pack__strip:active {
+  cursor: grabbing;
+}
+
+.pack__strip-foil {
+  position: absolute;
+  inset: 0;
+  -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 14px 100% repeat-x;
+  mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 14px 100% repeat-x;
+}
+
+.pack__strip-foil::after {
+  top: 0;
+  height: 42%;
+}
+
+.pack__strip-label {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  translate: -50% -50%;
+  white-space: nowrap;
+  font-size: 3.6cqi;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* The inside of the pack, seen under the lifted strip: the tops of three card backs. */
+.pack__mouth {
+  position: absolute;
+  inset: 5% 3% auto;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 3%;
+  height: 11%;
+  padding-top: 3.5%;
+  overflow: hidden;
+  border-radius: 2cqi 2cqi 0 0;
+  background: linear-gradient(180deg, #2a0b1d, #4a1032);
+}
+
+.pack__mouth span {
+  width: 28%;
+  border-radius: 2cqi 2cqi 0 0;
+  background:
+    radial-gradient(circle at 50% 110%, rgba(244, 27, 141, 0.7), transparent 60%),
+    linear-gradient(160deg, #1a2440, #0b1020);
+  box-shadow: 0 0 0 1.2cqi #c9d1dc inset;
+}
+
+.pack__mouth span:nth-child(2) {
+  margin-top: -2%;
+}
+
+/* The perforation, and the torn edge that runs along it as you drag. */
+.pack__perf {
+  position: absolute;
+  inset: 13% 0 auto;
+  z-index: 4;
+  height: 0;
+  border-top: 2px dashed rgba(255, 255, 255, 0.6);
+  opacity: calc(1 - var(--tear) * 0.8);
+  pointer-events: none;
+}
+
+.pack__perf-done {
+  position: absolute;
+  left: 0;
+  top: -3px;
+  width: calc(var(--tear) * 100%);
+  height: 4px;
+  background: conic-gradient(from 135deg at top, #0000, #fff 1deg 89deg, #0000 90deg) top / 6px 100% repeat-x;
+}
+
+.pack__foil {
+  position: absolute;
+  inset: 13% 0 0;
+  z-index: 2;
+  overflow: hidden;
+  background-position: 0 -20.8cqi, 0 -20.8cqi;
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 14px 100% repeat-x;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 14px 100% repeat-x;
+}
+
+.pack__foil::before {
+  bottom: 0;
+  height: 5.5%;
+}
+
+/* Foil grain, and a sheen that follows the pointer. */
 .pack__foil::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0) 0 12px, rgba(255, 255, 255, 0.22) 12px 14px);
+  pointer-events: none;
+  background: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0) 0 12px, rgba(255, 255, 255, 0.16) 12px 14px);
   mix-blend-mode: overlay;
 }
 
+.pack__sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--px) var(--py), rgba(255, 255, 255, 0.55), transparent 42%),
+    repeating-linear-gradient(115deg, rgba(150, 200, 255, 0.35) 0%, rgba(190, 160, 255, 0.3) 7%, rgba(130, 240, 255, 0.3) 14%, rgba(255, 160, 220, 0.3) 21%);
+  background-size: 100% 100%, 300% 300%;
+  background-position: center, var(--px) var(--py);
+  mix-blend-mode: overlay;
+  transition: background-position 500ms var(--ease-out);
+}
+
+.pack__print {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4cqi;
+  height: 100%;
+  padding: 6cqi 8cqi 12cqi;
+  text-align: center;
+  color: #ffffff;
+}
+
+.pack__brand {
+  padding: 2cqi 4.2cqi;
+  border-radius: 999px;
+  font: 700 3.6cqi/1 var(--font-mono);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  background: rgba(11, 16, 32, 0.86);
+}
+
+.pack__brand b {
+  color: #ff8cc8;
+}
+
+.pack__mascot {
+  display: grid;
+  place-items: center;
+  width: 40cqi;
+  height: 40cqi;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #ffe3f1 60%, #ffc4e1);
+  box-shadow:
+    0 0 0 2cqi rgba(255, 255, 255, 0.3),
+    0 4cqi 8cqi rgba(80, 0, 40, 0.35);
+}
+
+.pack__title {
+  font: 800 19cqi/0.84 var(--font-display);
+  font-stretch: 78%;
+  letter-spacing: -0.04em;
+  text-shadow: 0 0.8cqi 0 rgba(110, 0, 55, 0.35);
+}
+
+.pack__meta {
+  display: flex;
+  gap: 2cqi;
+  font: 600 3.3cqi/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pack__meta span {
+  padding: 1.6cqi 2.4cqi;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 1.4cqi;
+}
+
+.pack__count {
+  font-size: 4cqi;
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* A hologram seal in the corner, like the real ones. */
+.pack__seal {
+  position: absolute;
+  top: 6cqi;
+  right: 6cqi;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 15cqi;
+  height: 15cqi;
+  border-radius: 999px;
+  font: 800 3.4cqi/0.95 var(--font-mono);
+  text-align: center;
+  color: #0b1020;
+  background:
+    radial-gradient(circle at var(--px) var(--py), rgba(255, 255, 255, 0.9), transparent 55%),
+    conic-gradient(from 30deg, #c7d2fe, #a5f3fc, #bbf7d0, #fbcfe8, #ddd6fe, #c7d2fe);
+  box-shadow:
+    0 0 0 0.8cqi rgba(255, 255, 255, 0.7),
+    0 1cqi 2cqi rgba(60, 0, 35, 0.35);
+  rotate: -12deg;
+}
+
+html[data-pack="tearing"] .pack > button,
+html[data-pack="tearing"] .pack-hint {
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .pack__foil {
-    animation: float-y 3.6s var(--ease-in-out) infinite;
+  .pack__body {
+    animation: pack-float 3.6s var(--ease-in-out) infinite alternate;
+  }
+
+  html[data-pack="tearing"] .pack__strip {
+    animation: pack-strip-off 460ms var(--ease-in) forwards;
+  }
+
+  html[data-pack="tearing"] .pack__body {
+    animation: pack-burst 520ms var(--ease-out) forwards;
+  }
+}
+
+@keyframes pack-float {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -10px;
+  }
+}
+
+@keyframes pack-strip-off {
+  to {
+    transform: translate(60%, -170%) rotate(26deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pack-burst {
+  0% {
+    scale: 1;
+  }
+  35% {
+    scale: 1.04 0.97;
+  }
+  65% {
+    scale: 0.98 1.03;
+    opacity: 1;
+  }
+  100% {
+    scale: 1.08;
+    opacity: 0;
   }
 }
 

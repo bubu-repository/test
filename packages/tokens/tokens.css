@@ -3,7 +3,7 @@
  * The single source of truth for adelia.cc and every *.adelia.cc experiment.
  * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
  *
- * World: clean, mostly white, cool-toned. Real objects you can touch (a small device, a PSP, a
+ * World: clean, white objects on a soft cool mist. Real objects you can touch (a small device, a PSP, a
  * laptop, polaroids, an ID badge) sit on white with soft, slightly blue shadows and a lot of air.
  * Type is Bricolage Grotesque, with JetBrains Mono for printed labels. Magenta #F41B8D is the
  * anchor: the power LED, the primary key, the dial pointer. Every other colour is cool (blue,
@@ -20,15 +20,15 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: #FFFFFF;          /* white */
-  --surface: #FFFFFF;     /* panels, keys, cards (separated by hairlines and soft shadows) */
-  --surface-2: #F3F5F8;   /* recessed wells, inputs, quiet fills */
-  --ink: #0E1726;         /* cool near-black (18.0:1 on white) */
-  --muted: #556070;       /* cool grey (6.4:1 on white, 5.8:1 on --surface-2) */
-  --line: #E3E7ED;        /* hairlines */
+  --bg: #EEF2F7;          /* soft cool mist, so white objects stand out */
+  --surface: #FFFFFF;     /* panels, keys, cards: white on the mist */
+  --surface-2: #F2F5F9;   /* recessed wells, inputs, quiet fills */
+  --ink: #0E1726;         /* cool near-black (16.0:1 on --bg) */
+  --muted: #556070;       /* cool grey (5.7:1 on --bg, 6.4:1 on white) */
+  --line: #DDE3EB;        /* hairlines */
   --accent: #F41B8D;      /* MAGENTA, the anchor: LEDs, pointers, marks */
   --accent-strong: #D6087A; /* magenta key behind white text (5.0:1) */
-  --accent-ink: #B8006A;  /* magenta as small text (6.5:1 on white) */
+  --accent-ink: #B8006A;  /* magenta as small text (5.8:1 on --bg, 6.5:1 on white) */
 
   /* Materials: white plastic and brushed aluminium, lit from above, shadows a little blue */
   --sheen: linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0) 46%);

@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { projects } from "@/content/projects";
+import { BoosterPack, ResealPack } from "../work/BoosterPack";
+import { HoloCard } from "../work/HoloCard";
 import { ProjectIcon } from "../work/ProjectIcon";
-import { Polaroid } from "./Polaroid";
 
-const TILT = [-2.5, 1.5, -1];
-
-/** Home: the three products as polaroids on white, with the app icons tucked into the headline. */
+/**
+ * Home: the three products come sealed in a booster pack. Tear it open and they are dealt face
+ * down, then flip over as holographic trading cards. The app icons sit tucked into the headline.
+ */
 export function WorkTeaser() {
   return (
-    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16" data-xr="WorkTeaser · polaroids of the three products">
+    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16" data-xr="WorkTeaser · a booster pack of holo cards">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <div className="max-w-[44rem]">
           <p className="type-eyebrow">Selected work</p>
@@ -29,25 +31,28 @@ export function WorkTeaser() {
           </h2>
         </div>
         <div className="max-w-[36ch] pb-2">
-          <p className="text-muted">Each one started as somebody&apos;s messy request and ended as something people use every day.</p>
+          <p className="text-muted">Each one started as somebody&apos;s messy request and ended as something people use every day. They come in a pack: open it.</p>
           <Link href="/work" className="link-arrow mt-3">
-            Open the card pack
+            All work, and the quick read
           </Link>
         </div>
       </div>
 
+      <div className="mt-14 text-center md:mt-20">
+        <BoosterPack count={projects.length} />
+      </div>
+
       {/* CONTOH — ganti dengan data asli */}
-      <ol className="mt-16 grid gap-x-10 gap-y-16 md:mt-24 md:grid-cols-3" aria-label="Case studies">
-        {projects.map((project, i) => (
-          <li key={project.slug} className="mx-auto w-full max-w-[340px]">
-            <Polaroid project={project} tilt={TILT[i]} />
-            <p className="mt-7 text-16 leading-snug">{project.tagline}</p>
-            <Link href={`/work/${project.slug}`} className="link-arrow mt-3 text-16">
-              Read the case study
-            </Link>
+      <ol className="cards-grid mx-auto mt-4 grid max-w-[1120px] gap-6 md:grid-cols-2 lg:grid-cols-3" aria-label="Case studies">
+        {projects.map((project) => (
+          <li key={project.slug} data-card className="mx-auto w-full max-w-[360px] min-w-0">
+            <HoloCard project={project} total={projects.length} level={3} />
           </li>
         ))}
       </ol>
+      <div className="reseal mt-10 flex justify-center">
+        <ResealPack />
+      </div>
     </section>
   );
 }

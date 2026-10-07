@@ -51,9 +51,9 @@ export default function AboutPage() {
         }
         lead={bio.short}
       >
-        {/* The lanyard badge hangs from the top edge of the mat: drag it, flip it for a QR code. */}
-        <div className="pointer-events-none absolute top-0 right-[var(--gutter)] hidden xl:block">
-          <IdBadge strap={64} className="pointer-events-auto origin-top scale-90" />
+        {/* Her ID card on a lanyard: under the intro on small screens, hanging from the top edge on wide ones. Drag it, flip it. */}
+        <div className="mt-10 flex justify-center xl:pointer-events-none xl:absolute xl:top-0 xl:right-[var(--gutter)] xl:mt-0 xl:block">
+          <IdBadge strap={64} className="xl:pointer-events-auto xl:origin-top xl:scale-90" />
         </div>
       </PageHeader>
 
