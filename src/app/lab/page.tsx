@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/PageHeader";
 import { labItems } from "@/content/lab";
 import { Gumball } from "@/features/lab/Gumball";
 import { FeatureGrid, SubdomainGrid } from "@/features/lab/LabGrid";
+import { TerminalSection } from "@/features/home/TerminalSection";
+import { WidgetBoard } from "@/features/widgets/WidgetBoard";
 
 const subs = labItems.filter((l) => l.where === "subdomain").length;
 const site = labItems.filter((l) => l.where === "site").length;
@@ -26,7 +28,7 @@ export default function LabPage() {
             Toys, tools and <span className="sticker-text">experiments</span>.
           </>
         }
-        lead={`${subs} live on their own subdomains. ${site} more are built into this site, and every one of them runs from a button on this page.`}
+        lead={`Where I try ideas before they're useful. ${subs} live on their own subdomains, ${site} more are built into this site, plus a live board, a terminal and a game.`}
       >
         <section id="gacha" aria-labelledby="gacha-title" className="mt-14 scroll-mt-24 text-left">
           <h2 id="gacha-title" className="sr-only">
@@ -36,7 +38,9 @@ export default function LabPage() {
         </section>
       </PageHeader>
 
-      <div className="section-y" />
+      <WidgetBoard />
+
+      <TerminalSection />
 
       <section aria-labelledby="subdomains-title" className="container-page pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">*.adelia.cc</p>

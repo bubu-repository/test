@@ -58,9 +58,12 @@ function ScreenStatus() {
           {date && same && " · same as you"}
         </span>
       </p>
-      <p aria-label={weather?.ok ? `Bekasi weather: ${Math.round(weather.temperature ?? 0)} degrees, ${w.label}` : undefined}>
-        {weather?.ok ? `${Math.round(weather.temperature ?? 0)}°C · ${w.label}` : weather ? "Sky offline" : "Reading the sky…"}
-      </p>
+      {/* The weather only shows when there is some: no "offline" states on the first screen. */}
+      {weather?.ok && (
+        <p aria-label={`Bekasi weather: ${Math.round(weather.temperature ?? 0)} degrees, ${w.label}`}>
+          {Math.round(weather.temperature ?? 0)}°C · {w.label}
+        </p>
+      )}
     </div>
   );
 }
@@ -323,14 +326,17 @@ export function HeroDevice() {
             <div id="hero-name" className="mt-1">
               <HeroName />
             </div>
-            <p className="mt-4 font-mono text-[12px] font-medium tracking-[0.12em] text-screen-accent uppercase">
-              {identity.role} · {identity.location}
+            <p className="mt-3 text-[clamp(20px,2vw,24px)] leading-tight font-semibold tracking-[-0.02em] text-screen-ink">
+              {identity.role} <span className="text-screen-accent">for {identity.focus}</span>
             </p>
+            <p className="mt-1.5 font-mono text-[11px] font-medium tracking-[0.12em] text-screen-muted uppercase">{identity.location} · remote or Jakarta</p>
             <div className="mt-4 max-w-[46ch]">
               <ResampleSentence controls="screen" />
             </div>
           </div>
-          <AskLine />
+          <div className="max-sm:hidden">
+            <AskLine />
+          </div>
         </div>
         {!power && (
           <p className="absolute inset-0 z-[3] grid place-items-center font-mono text-[11px] tracking-[0.16em] text-screen-muted/70 uppercase" aria-live="polite">
@@ -341,11 +347,11 @@ export function HeroDevice() {
 
       {/* Controls. */}
       <div className="device__controls mt-5 px-1">
-        <div className="[grid-area:dial]">
+        <div className="[grid-area:dial] max-sm:hidden">
           <Dial index={stop} onChange={setStop} />
         </div>
 
-        <div className="flex flex-wrap items-start gap-x-5 gap-y-3 [grid-area:switches]">
+        <div className="flex flex-wrap items-start gap-x-5 gap-y-3 [grid-area:switches] max-sm:hidden">
             <PreferenceSwitches />
             <button type="button" aria-pressed={!power} aria-label="Screen power" onClick={togglePower} className="toggle" data-cursor={power ? "Sleep" : "Wake"}>
               <span className="pill size-[24px] min-h-0 p-0" data-shape="icon" aria-hidden="true">
@@ -381,8 +387,8 @@ export function HeroDevice() {
           <Keycap label="Download the CV" onPress={() => void dispatch({ type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" })}>
             CV
           </Keycap>
-          <Keycap label="Open the command palette" onPress={() => void dispatch({ type: "open", panel: "palette" })}>
-            ⌘K
+          <Keycap label="Copy her email address" onPress={() => void dispatch({ type: "copyEmail" })}>
+            Email
           </Keycap>
         </div>
       </div>
@@ -390,7 +396,9 @@ export function HeroDevice() {
       {/* Bottom label. */}
       <div className="mt-5 flex items-center gap-3 px-2 font-mono text-[9px] tracking-[0.18em] text-muted uppercase">
         <span className="screw" aria-hidden="true" />
-        <span className="truncate">S/N AT-0x24 · Designed &amp; built in Bekasi</span>
+        <span className="truncate">
+          <span className="max-sm:hidden">S/N AT-0x24 · </span>Designed &amp; built in Bekasi
+        </span>
         <span className="screw ml-auto" aria-hidden="true" />
       </div>
     </div>

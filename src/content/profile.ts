@@ -7,7 +7,9 @@
 export const identity = {
   name: "Adelia Tiara",
   firstName: "Adelia",
-  role: "AI Product Engineer",
+  role: "Product Designer",
+  /** What kind of product designer, in a few words (hero, meta, the CV). */
+  focus: "AI products",
   city: "Bekasi",
   country: "Indonesia",
   location: "Bekasi, Indonesia",
@@ -23,55 +25,56 @@ export const identity = {
 } as const;
 
 /** The canonical hero sentence. The resampler starts from (and returns to) this. */
-export const tagline = "I build AI products end to end, from the interface to the agents behind it.";
+export const tagline = "I design AI products people can trust, from the first interview to the shipped interface.";
 
 export const description =
-  "Adelia Tiara is an AI Product Engineer in Bekasi, Indonesia. She builds AI products end to end: interfaces, fullstack apps and the agents behind them.";
+  "Adelia Tiara is a product designer in Bekasi, Indonesia. She designs AI products people can trust, from the first interview to the shipped interface, and prototypes them in real code.";
 
 /* CONTOH — ganti dengan data asli */
 export const bio = {
   short:
-    "Product engineer who ships AI features from the first sketch to the eval dashboard. I work across the whole stack, prototype fast with vibe coding, then harden what works.",
+    "Product designer for AI products. I find the one decision a person is trying to make, design the interface (and the AI behind it) around that decision, and prototype in real code so what we test is what ships.",
   long: [
-    "I'm an AI product engineer based in Bekasi, just east of Jakarta. I like owning a product end to end: talking to users, designing the interface, building the fullstack app, and wiring the agents and evals behind it.",
-    "My favourite problems sit where messy human input meets software: 200-page tender documents, voice notes full of market slang, a commuter's half-formed question at 6 a.m. I build agents that do the boring part and interfaces that make their work easy to check.",
-    "I prototype with AI pair-programming (yes, vibe coding) to find the right shape quickly, then I slow down: typed code, real evals, and the boring reliability work that makes people trust an AI product.",
+    "I'm a product designer based in Bekasi, just east of Jakarta. I design for the moment an AI meets a messy, real person: a contractor reading a 214-page tender at night, a shop owner with one free hand, a commuter deciding in the time it takes to walk to the station.",
+    "My work starts in the field. I sit behind shop counters, shadow bid teams and ride the 06:40 train with the people I design for, then I turn what I saw into one sharp question the product has to answer. Most of my design work is deciding what to leave out.",
+    "AI changes what an interface has to do. It has to show its sources, admit uncertainty, and make a wrong answer cheap to fix. That's the part I care about most, and it's why I prototype in code: you can't judge how an AI product feels from a static frame.",
   ],
-  now: "Building an eval harness for Indonesian-language agents and polishing this site.",
-  availability: "Open to full-time AI product engineering roles, remote or Jakarta area.",
+  now: "Designing review flows for Indonesian-language AI agents, and writing up what I learned about citations as a trust pattern.",
+  availability: "Open to full-time Product Designer roles on AI products, remote or in the Jakarta area.",
 };
+
+/** How she works: the principles behind every case study (About, the brief, the agent). */
+/* CONTOH — ganti dengan data asli */
+export const principles = [
+  { title: "One decision per screen", body: "Every screen I design answers one question the person came with. Everything else waits one tap away." },
+  { title: "Show the receipts", body: "If an AI says it, the person can check it. Sources, confidence and an undo are part of the design, not an afterthought." },
+  { title: "Their words, not ours", body: "Interfaces speak the way users talk: 'goceng', not 'IDR 5,000'. I collect the vocabulary in the field before I name a single button." },
+  { title: "Prototype the real thing", body: "AI products are about timing, errors and waiting. I test them in code with real data, because a Figma frame can't misread a voice note." },
+];
 
 export type SkillGroup = { name: string; tone: "magenta" | "cobalt" | "lime" | "sun" | "violet"; items: string[] };
 
 /* CONTOH — ganti dengan data asli */
 export const skills: SkillGroup[] = [
   {
-    name: "AI & agents",
+    name: "Product design",
     tone: "magenta",
-    items: [
-      "Agentic workflows and tool use",
-      "Claude API",
-      "RAG and pgvector",
-      "Prompt and context design",
-      "Evals and regression suites",
-      "Structured extraction",
-      "Speech-to-text pipelines",
-    ],
+    items: ["Field research and interviews", "Problem framing", "Interaction design", "UX writing", "Usability testing", "Design systems", "Accessibility (WCAG 2.2)"],
   },
   {
-    name: "Interface",
+    name: "Designing for AI",
+    tone: "violet",
+    items: ["Trust and citations", "Designing for uncertainty", "Human-in-the-loop review", "Conversation design", "Error recovery and undo", "Evals with real users"],
+  },
+  {
+    name: "Craft",
     tone: "cobalt",
-    items: ["Product and UX design", "Figma", "React", "Next.js", "TypeScript", "Tailwind CSS", "WebGL and canvas", "Accessibility"],
+    items: ["Figma", "Prototyping in code", "Motion and micro-interaction", "Type and layout", "Information design", "Mobile-first"],
   },
   {
-    name: "Backend",
-    tone: "lime",
-    items: ["Node.js", "Python", "PostgreSQL", "Redis", "Queues and background jobs", "REST and webhooks", "Auth"],
-  },
-  {
-    name: "Shipping",
+    name: "Build",
     tone: "sun",
-    items: ["Vibe coding to production", "CI/CD", "Vercel", "Docker", "Observability", "Analytics", "User research"],
+    items: ["React and Next.js", "TypeScript", "Tailwind CSS", "Claude API", "PostgreSQL", "Shipping to production"],
   },
 ];
 
@@ -81,21 +84,21 @@ export type Experience = { period: string; title: string; org: string; summary: 
 export const experience: Experience[] = [
   {
     period: "2024 — now",
-    title: "AI Product Engineer (independent)",
+    title: "Product Designer (independent)",
     org: "Self-employed, Bekasi",
-    summary: "Designing and building AI products end to end for small teams, plus my own products: Tenderlens, Catat and Lintas.",
+    summary: "Designing AI products from research to release for small teams, and three of my own: Tenderlens, Catat and Lintas. I prototype and ship the front end myself.",
   },
   {
     period: "2022 — 2024",
-    title: "Fullstack Engineer",
+    title: "Product Designer, then Design Engineer",
     org: "Product startup, Jakarta",
-    summary: "Shipped customer-facing features across a Next.js frontend and a Node/Postgres backend. Led the first LLM features.",
+    summary: "Designed customer-facing flows in a squad of six, led design for the company's first LLM features, and rebuilt our component library in code with the engineers.",
   },
   {
     period: "2018 — 2022",
-    title: "B.Sc. Informatics",
+    title: "B.Sc. Informatics, HCI track",
     org: "University, West Java",
-    summary: "Thesis on Indonesian-language text classification. Ran the campus web dev club.",
+    summary: "Thesis on how Indonesian users read machine-generated text. Ran the campus design and web club.",
   },
 ];
 
@@ -103,30 +106,30 @@ export const experience: Experience[] = [
 /* CONTOH — ganti dengan data asli */
 export const modelCard = {
   version: "v2026.10",
-  architecture: "Human, caffeinated. Fine-tuned on product work.",
+  architecture: "Human, caffeinated. Fine-tuned on field research and shipped product.",
   trainingData: [
-    "Four years of shipping web products",
-    "Hundreds of user interviews in Bahasa Indonesia and English",
-    "A lot of reading other people's prompts",
+    "Four years of designing and shipping web products",
+    "130+ research sessions in Bahasa Indonesia and English, across three products",
+    "A notebook of every slang word for money in Greater Jakarta",
   ],
   intendedUse: [
     "Taking an AI product from a fuzzy idea to something people use every day",
-    "Owning the interface, the fullstack app and the agent behind it",
-    "Turning research into evals, and evals into decisions",
+    "Designing how an AI shows its work: sources, confidence, undo",
+    "Turning field research into decisions a team can build on",
   ],
   outOfScope: [
-    "Training foundation models from scratch",
-    "Shipping an agent without an eval set",
+    "Designing an AI feature nobody asked for",
+    "Shipping an agent without testing its mistakes with real people",
     "Dark patterns",
   ],
   limitations: [
     "Will ask 'who is this for?' more than once",
-    "Strong opinions about loading states",
+    "Strong opinions about loading states and empty states",
     "Needs a second coffee before 9 a.m. WIB",
   ],
   evals: [
-    { name: "Projects shipped end to end", score: "3 / 3" },
-    { name: "Case studies with real evals", score: "3 / 3" },
+    { name: "Products designed and shipped", score: "3 / 3" },
+    { name: "Research sessions, 2024–25", score: "130+" },
     { name: "Languages", score: "Indonesian, English" },
     { name: "Response time to email", score: "< 24h" },
   ],

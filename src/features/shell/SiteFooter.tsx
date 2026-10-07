@@ -93,8 +93,8 @@ export function SiteFooter() {
               </div>
               <div>
                 <p className="spec-label">Focus</p>
-                <p className="mt-2 text-ink">AI products, end to end</p>
-                <p className="mt-1">Interfaces, agents, evals</p>
+                <p className="mt-2 text-ink">Product design for AI</p>
+                <p className="mt-1">Research, interaction, trust</p>
               </div>
               <nav aria-label="Footer">
                 <p className="spec-label">Index</p>

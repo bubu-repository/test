@@ -1,9 +1,9 @@
 import { ogContentType, ogSize, renderOg } from "@/lib/og";
 
-export const alt = "Adelia Tiara, AI Product Engineer in Bekasi, Indonesia";
+export const alt = "Adelia Tiara, Product Designer for AI products in Bekasi, Indonesia";
 export const size = ogSize;
 export const contentType = ogContentType;
 
 export default function Image() {
-  return renderOg({ eyebrow: "AI Product Engineer", title: "Adelia Tiara", subtitle: "I build AI products end to end, from the interface to the agents behind it." });
+  return renderOg({ eyebrow: "Product Designer · AI products", title: "Adelia Tiara", subtitle: "I design AI products people can trust, from the first interview to the shipped interface." });
 }

@@ -28,7 +28,7 @@ export function buildDocs(): Doc[] {
     {
       id: "who",
       title: "Who is Adelia",
-      text: `${identity.name} is an ${identity.role} based in ${identity.location}. ${bio.short}`,
+      text: `${identity.name} is a ${identity.role.toLowerCase()} for ${identity.focus} based in ${identity.location}. ${bio.short}`,
       keywords: ["who", "adelia", "about", "introduce", "yourself", "summary", "background", "tiara"],
       href: "/about",
     },
@@ -36,7 +36,7 @@ export function buildDocs(): Doc[] {
       id: "what",
       title: "What she does",
       text: `${tagline} ${bio.long[0]}`,
-      keywords: ["do", "does", "role", "job", "work", "end", "fullstack", "product", "engineer"],
+      keywords: ["do", "does", "role", "job", "work", "end", "product", "designer", "design", "ux", "ui", "engineer", "code"],
       href: "/about",
     },
     {
@@ -109,11 +109,11 @@ export function buildDocs(): Doc[] {
     },
     {
       id: "agents",
-      title: "Agentic AI experience",
-      text: `Every featured project ships an agent with tools and an eval set. ${projects
-        .map((p) => `${p.name}: ${p.process.find((s) => s.call.startsWith("build") || s.call.startsWith("design(tools") || s.call.startsWith("agent"))?.body ?? p.summary}`)
+      title: "Designing AI products",
+      text: `She designs how AI shows its work: sources, uncertainty, and a cheap way to fix mistakes. ${projects
+        .map((p) => `${p.name}: ${p.decisions[0].title}. ${p.decisions[0].why}`)
         .join(" ")}`,
-      keywords: ["agent", "agents", "agentic", "tool", "tools", "llm", "ai", "evals", "eval", "rag", "claude"],
+      keywords: ["agent", "agents", "agentic", "tool", "tools", "llm", "ai", "evals", "eval", "trust", "uncertainty", "design", "claude"],
       href: "/work",
     },
     {

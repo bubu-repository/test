@@ -198,13 +198,17 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
                 <span className="idc__photo">
                   <svg viewBox="0 0 60 80" aria-hidden="true">
                     <defs>
-                      <linearGradient id="idc-person" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0" stopColor="#9aa8bc" />
-                        <stop offset="1" stopColor="#6f7f96" />
+                      <linearGradient id="idc-mono" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stopColor="#FF8AB5" />
+                        <stop offset=".55" stopColor="#FF3F86" />
+                        <stop offset="1" stopColor="#9D6CFF" />
                       </linearGradient>
                     </defs>
-                    <circle cx="30" cy="31" r="13" fill="url(#idc-person)" />
-                    <path d="M6 80c0-15 10.5-25 24-25s24 10 24 25z" fill="url(#idc-person)" />
+                    <rect width="60" height="80" fill="url(#idc-mono)" />
+                    <circle cx="48" cy="12" r="16" fill="#FFFFFF" opacity=".18" />
+                    <text x="30" y="49" textAnchor="middle" fontSize="27" fontWeight="800" letterSpacing="-1.5" fill="#FFFFFF" style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}>
+                      AT
+                    </text>
                   </svg>
                   <span className="idc__holo" />
                 </span>

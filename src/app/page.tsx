@@ -1,13 +1,12 @@
 import { HeroDevice } from "@/features/hero/HeroDevice";
 import { HeroStage } from "@/features/hero/HeroStage";
-import { TerminalSection } from "@/features/home/TerminalSection";
+import { HowIWork } from "@/features/home/HowIWork";
+import { LabTeaser } from "@/features/home/LabTeaser";
 import { WorkTeaser } from "@/features/home/WorkTeaser";
-import { WidgetBoard } from "@/features/widgets/WidgetBoard";
 
 /**
- * Home: one device in the hero, then the rest of the world as you scroll: three booster packs of
- * work, the live board (Bekasi on a phone, the sea, a pocket console to take a break), and a laptop
- * with the terminal. The game itself lives on /play.
+ * Home: who she is (the device, in a window onto the sky), then the work with real screens, how
+ * she works, and a door to the lab. Contact is the footer. The toys live in the lab.
  */
 export default function HomePage() {
   return (
@@ -16,8 +15,8 @@ export default function HomePage() {
         <HeroDevice />
       </HeroStage>
       <WorkTeaser />
-      <WidgetBoard />
-      <TerminalSection />
+      <HowIWork />
+      <LabTeaser />
     </>
   );
 }

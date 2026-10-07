@@ -19,6 +19,8 @@ import { BoxArt, BubbleArt, CloudArt, MociArt, MoonArt, MoreArt, PlaneArt, Searc
 
 type ItemProps = {
   label: string;
+  /** The short word under the icon (defaults to the label up to " ·" or " ("). */
+  caption?: string;
   bg: string;
   fg?: string;
   ink?: string;
@@ -30,12 +32,15 @@ type ItemProps = {
   cursor?: string;
 } & ({ href: string; onClick?: never; pressed?: never } | { href?: never; onClick: () => void; pressed?: boolean });
 
-function DockItem({ label, bg, fg, ink, active, className, iconClassName, children, tour, cursor, ...rest }: ItemProps) {
+function DockItem({ label, caption, bg, fg, ink, active, className, iconClassName, children, tour, cursor, ...rest }: ItemProps) {
   const style = { "--app-bg": bg, "--app-fg": fg ?? "#fff", "--app-ink": ink ?? "#1FB24A" } as CSSProperties;
   const inner = (
     <>
       <span className={cn("app-icon app-icon--art", bg === TILE.white && "app-icon--white", iconClassName)} style={style}>
         {children}
+      </span>
+      <span className="dock-caption" aria-hidden="true">
+        {caption ?? label.split(/ ·| \(/)[0]}
       </span>
       <span className="dock-label" aria-hidden="true">
         {label}
@@ -144,6 +149,44 @@ export function SiteNav() {
     };
   }, []);
 
+  // Out of the way while reading: the dock slides up on scroll down and comes back on scroll up,
+  // on focus, or when the pointer goes near the top edge.
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    let last = window.scrollY;
+    let raf = 0;
+    const set = (hidden: boolean) => {
+      if (hidden && header.contains(document.activeElement)) return;
+      header.toggleAttribute("data-hidden", hidden);
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const y = window.scrollY;
+        if (y < 140) set(false);
+        else if (y > last + 6) set(true);
+        else if (y < last - 6) set(false);
+        last = y;
+      });
+    };
+    const onMove = (e: PointerEvent) => {
+      if (e.clientY < 72) set(false);
+    };
+    const onFocus = () => set(false);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("pointermove", onMove, { passive: true });
+    header.addEventListener("focusin", onFocus);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", onMove);
+      header.removeEventListener("focusin", onFocus);
+    };
+  }, []);
+
   const isDark = theme === "dark";
   const toggleTheme = () => {
     const el = dockRef.current?.querySelector<HTMLElement>('[data-tour="theme"]');
@@ -159,7 +202,7 @@ export function SiteNav() {
   };
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-2 pt-3 md:pt-4">
+    <header ref={headerRef} className="site-header pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-2 pt-3 md:pt-4">
       <nav ref={dockRef} aria-label="Primary" data-xr="Dock · app icons with magnification" className="dock glass-strong pointer-events-auto">
         <DockItem href="/" label="Home" bg={TILE.white} fg="#1D2A4D" active={pathname === "/"} cursor="Home">
           <span className="text-[calc(22px*var(--m,1))] leading-none font-bold tracking-[-0.06em]">
@@ -188,6 +231,7 @@ export function SiteNav() {
         </DockItem>
         <DockItem
           label={calendarLabel}
+          caption="Brief"
           bg={TILE.white}
           fg="#1D2A4D"
           iconClassName="app-icon--calendar"
@@ -197,21 +241,22 @@ export function SiteNav() {
         >
           <CalendarGlyph />
         </DockItem>
-        <DockItem label="Copy email" bg={TILE.blue} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
+        <DockItem label="Copy email" caption="Email" bg={TILE.blue} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
           <PlaneArt />
         </DockItem>
-        <DockItem label="Ask Moci (/)" bg={TILE.white} onClick={() => dispatch({ type: "open", panel: "agent" })} cursor="Ask">
+        <DockItem label="Ask Moci (/)" caption="Moci" bg={TILE.white} onClick={() => dispatch({ type: "open", panel: "agent" })} cursor="Ask">
           <MociArt />
         </DockItem>
         <span className="dock-sep max-sm:hidden" aria-hidden="true" />
-        <DockItem label="Search and commands (⌘K)" bg={TILE.white} className="max-sm:hidden" onClick={() => dispatch({ type: "open", panel: "palette" })} cursor="⌘K">
+        <DockItem label="Search and commands (⌘K)" caption="Search" bg={TILE.white} className="max-sm:hidden" onClick={() => dispatch({ type: "open", panel: "palette" })} cursor="⌘K">
           <SearchArt />
         </DockItem>
-        <DockItem label={isDark ? "Day sky" : "Night sky"} bg={isDark ? TILE.blue : TILE.navy} pressed={isDark} className="max-md:hidden" onClick={toggleTheme} tour="theme">
+        <DockItem label={isDark ? "Day sky" : "Night sky"} caption={isDark ? "Day" : "Night"} bg={isDark ? TILE.blue : TILE.navy} pressed={isDark} className="max-md:hidden" onClick={toggleTheme} tour="theme">
           {isDark ? <CloudArt /> : <MoonArt />}
         </DockItem>
         <DockItem
           label={sound ? "Sound on" : "Sound off"}
+          caption="Sound"
           bg={TILE.white}
           pressed={sound}
           className="max-lg:hidden"

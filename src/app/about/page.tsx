@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
 import { PageHeader } from "@/components/PageHeader";
-import { bio, experience, identity, modelCard, skills } from "@/content/profile";
+import { bio, experience, identity, modelCard, principles, skills } from "@/content/profile";
 import { JdMatcher } from "@/features/about/JdMatcher";
 import { IdBadge } from "@/features/hero/IdBadge";
 import { ProfileCard } from "@/features/about/ProfileCard";
@@ -10,7 +10,7 @@ import { OffTheClock } from "@/features/about/music/OffTheClock";
 
 export const metadata: Metadata = pageMeta({
   title: "About",
-  description: `About ${identity.name}, an AI Product Engineer in ${identity.location}: background, skills, a model card, a CV to download and a job-description matcher.`,
+  description: `About ${identity.name}, a product designer for AI products in ${identity.location}: how she works, background, skills, a CV to download and a job-description matcher.`,
   path: "/about",
 });
 
@@ -99,39 +99,21 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <OffTheClock />
-
-      <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
-        <p className="type-eyebrow">If I were a model</p>
-        <h2 id="model-title" className="type-title mt-3">
-          Model card
+      <section aria-labelledby="principles-title" className="container-page pb-[clamp(96px,13vw,176px)]">
+        <p className="type-eyebrow">How I work</p>
+        <h2 id="principles-title" className="type-title mt-3">
+          Four rules I design by
         </h2>
         {/* CONTOH — ganti dengan data asli */}
-        <div className="widget mt-10 rounded-[36px] p-6 md:p-10" data-xr="Model card · rendered from content/profile.ts">
-          <div className="flex flex-wrap items-center gap-3 border-b border-line pb-6">
-            <span className="font-mono text-20 font-semibold">adelia-tiara</span>
-            <span className="chip" data-tone="magenta">
-              {modelCard.version}
-            </span>
-            <span className="chip">Bekasi · {identity.timeZoneLabel}</span>
-            <p className="w-full text-16 text-muted md:ml-auto md:w-auto">{modelCard.architecture}</p>
-          </div>
-          <div className="grid gap-8 pt-8 md:grid-cols-2">
-            <CardList title="Training data" items={modelCard.trainingData} />
-            <CardList title="Intended use" items={modelCard.intendedUse} />
-            <CardList title="Out of scope" items={modelCard.outOfScope} />
-            <CardList title="Known limitations" items={modelCard.limitations} />
-          </div>
-          <h3 className="mt-10 text-14 font-semibold text-muted">Evals</h3>
-          <dl className="mt-3 grid gap-px overflow-hidden rounded-[20px] border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {modelCard.evals.map((e) => (
-              <div key={e.name} className="bg-surface px-5 py-4">
-                <dt className="text-14 text-muted">{e.name}</dt>
-                <dd className="mt-1 text-24 font-bold tracking-[-0.03em]">{e.score}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {principles.map((p, i) => (
+            <li key={p.title} className="widget p-6">
+              <p className="font-mono text-12 font-semibold text-accent-ink">0{i + 1}</p>
+              <h3 className="mt-3 text-20 leading-tight font-bold tracking-[-0.02em]">{p.title}</h3>
+              <p className="mt-2 text-16 text-muted">{p.body}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section aria-labelledby="skills-title" className="container-page pb-[clamp(96px,13vw,176px)]">
@@ -169,6 +151,41 @@ export default function AboutPage() {
         </p>
         <JdMatcher />
       </section>
+
+      <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
+        <p className="type-eyebrow">If I were a model</p>
+        <h2 id="model-title" className="type-title mt-3">
+          Model card
+        </h2>
+        {/* CONTOH — ganti dengan data asli */}
+        <div className="widget mt-10 rounded-[36px] p-6 md:p-10" data-xr="Model card · rendered from content/profile.ts">
+          <div className="flex flex-wrap items-center gap-3 border-b border-line pb-6">
+            <span className="font-mono text-20 font-semibold">adelia-tiara</span>
+            <span className="chip" data-tone="magenta">
+              {modelCard.version}
+            </span>
+            <span className="chip">Bekasi · {identity.timeZoneLabel}</span>
+            <p className="w-full text-16 text-muted md:ml-auto md:w-auto">{modelCard.architecture}</p>
+          </div>
+          <div className="grid gap-8 pt-8 md:grid-cols-2">
+            <CardList title="Training data" items={modelCard.trainingData} />
+            <CardList title="Intended use" items={modelCard.intendedUse} />
+            <CardList title="Out of scope" items={modelCard.outOfScope} />
+            <CardList title="Known limitations" items={modelCard.limitations} />
+          </div>
+          <h3 className="mt-10 text-14 font-semibold text-muted">Evals</h3>
+          <dl className="mt-3 grid gap-px overflow-hidden rounded-[20px] border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+            {modelCard.evals.map((e) => (
+              <div key={e.name} className="bg-surface px-5 py-4">
+                <dt className="text-14 text-muted">{e.name}</dt>
+                <dd className="mt-1 text-24 font-bold tracking-[-0.03em]">{e.score}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <OffTheClock />
     </PageTransition>
   );
 }

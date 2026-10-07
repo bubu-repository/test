@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./tokens.css";
+@import "./screens.css";
 
 /* `dark:` follows the data-theme attribute (set before paint), not the OS setting. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
@@ -1639,6 +1640,7 @@ html[data-theme-swap]::view-transition-new(root) {
 
 /* The running-app dot under the current page. */
 .dock-dot {
+  display: none;
   position: absolute;
   left: 50%;
   bottom: -6px;
@@ -1684,6 +1686,24 @@ html[data-theme-swap]::view-transition-new(root) {
 .dock-item:focus-visible .dock-label {
   opacity: 1;
   translate: -50% 0;
+}
+
+/* The word under each icon, so nobody has to guess. */
+.dock-caption {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.dock-item[aria-current="page"] .dock-caption {
+  color: var(--accent-ink);
+  font-weight: 700;
 }
 
 .dock-sep {
@@ -2933,9 +2953,8 @@ html[data-theme-swap]::view-transition-new(root) {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
-    "dial switches"
-    "keys keys"
-    "go go";
+    "go go"
+    "keys keys";
   align-items: center;
   gap: 20px 18px;
 }
@@ -3248,7 +3267,7 @@ html[data-theme-swap]::view-transition-new(root) {
   margin-top: -9cqi;
 }
 
-/* CONTOH: swap the silhouette for a real photo (an <img> inside .idc__photo). */
+/* CONTOH: swap the monogram for a real photo (an <img> inside .idc__photo). */
 .idc__photo {
   position: relative;
   z-index: 1;
@@ -6341,14 +6360,13 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   }
 }
 
-/* On the vivid sky the scroll cue is white. */
+/* The scroll cue sits on the pale bottom of the sky window: navy, quiet. */
 .hero-stage .scroll-cue {
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 1px 2px rgba(10, 60, 140, 0.35);
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
 }
 
 .hero-stage .scroll-cue__line {
-  background: linear-gradient(rgba(255, 255, 255, 0.4), #ffffff);
+  background: linear-gradient(color-mix(in srgb, var(--ink) 10%, transparent), color-mix(in srgb, var(--ink) 60%, transparent));
 }
 
 /* ---------- The island on the ocean card's horizon ---------- */
@@ -6490,5 +6508,20 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
   to {
     rotate: 3deg;
+  }
+}
+
+/* The dock slides away while you read down the page, and comes back when you scroll up. */
+.site-header {
+  transition: translate 320ms var(--ease-out);
+}
+
+.site-header[data-hidden] {
+  translate: 0 calc(-100% - 12px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
   }
 }

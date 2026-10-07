@@ -92,8 +92,8 @@ export function Brief() {
           <section>
             <h3 className="type-pixel text-accent-ink">Who</h3>
             <p className="mt-2 text-16">
-              <strong>{identity.name}</strong>, {identity.role} in {identity.location} ({identity.timeZoneLabel}). She builds AI products end to end:
-              interface, fullstack app, agents and evals.
+              <strong>{identity.name}</strong>, {identity.role} for {identity.focus} in {identity.location} ({identity.timeZoneLabel}). She designs AI products people can trust,
+              from field research to the shipped interface, and prototypes them in real code.
             </p>
           </section>
           <section>

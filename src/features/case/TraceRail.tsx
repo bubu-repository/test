@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { collect } from "@/lib/stickers";
 
-export type TraceStep = { id: string; label: string; kind: string };
+export type TraceStep = { id: string; label: string };
 
 /**
- * The case study's agent trace: which step you're reading, how far along you are, and a
- * playful "tokens read" counter (≈ words × 1.33). Also counts the visit for the sticker.
+ * The case study's contents: which section you're reading, how far along you are, and how many
+ * minutes are left at a calm reading pace. Also counts the visit for the sticker.
  */
 export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string }) {
   const [active, setActive] = useState(steps[0]?.id);
@@ -39,7 +39,7 @@ export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string })
         const r = article.getBoundingClientRect();
         const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / r.height));
         setProgress(p);
-        setTotal(Math.round(words * 1.33));
+        setTotal(Math.max(1, Math.round(words / 230)));
       });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -59,7 +59,7 @@ export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string })
       </div>
 
       <nav aria-label="Case study steps" className="sticky top-28 hidden self-start lg:block" data-xr="TraceRail · IntersectionObserver">
-        <p className="type-pixel text-muted">Agent trace</p>
+        <p className="type-pixel text-muted">Contents</p>
         <ol className="relative mt-4 space-y-1 border-l-2 border-dashed border-line pl-5">
           <span aria-hidden="true" className="absolute top-0 -left-[2px] w-[2px] bg-accent transition-[height] duration-300" style={{ height: `${progress * 100}%` }} />
           {steps.map((step, i) => {
@@ -75,20 +75,20 @@ export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string })
                   aria-current={isActive ? "step" : undefined}
                   className={cn("block rounded-sm px-2 py-1.5 transition-colors", isActive ? "bg-surface font-semibold shadow-sm" : "text-muted hover:text-ink")}
                 >
-                  <span className="type-pixel block text-[10px]">
-                    {String(i + 1).padStart(2, "0")} · {step.kind}
+                  <span className="text-14">
+                    <span className="mr-2 font-mono text-12 text-muted tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                    {step.label}
                   </span>
-                  <span className="text-14">{step.label}</span>
                 </a>
               </li>
             );
           })}
         </ol>
         <div className="mt-6 rounded-sm bg-surface p-3 shadow-sm">
-          <p className="type-pixel text-muted">Tokens read</p>
+          <p className="type-pixel text-muted">Reading time</p>
           <p className="font-display text-24 font-bold tabular-nums">
-            {Math.round(progress * total).toLocaleString("en-US")}
-            <span className="text-14 font-semibold text-muted"> / {total.toLocaleString("en-US")}</span>
+            {Math.max(0, Math.round((1 - progress) * total))} min
+            <span className="text-14 font-semibold text-muted"> left of {total}</span>
           </p>
         </div>
       </nav>

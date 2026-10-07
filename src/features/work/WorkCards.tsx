@@ -1,0 +1,44 @@
+import Link from "next/link";
+import type { Project } from "@/content/projects";
+import { KEY_SCREEN } from "../screens/registry";
+import { Screen } from "../screens/Screen";
+
+/**
+ * The work, readable in five seconds: each project as a card with its real key screen, its name,
+ * what it is, three numbers and my role. The first card is wide; the whole card is the link.
+ */
+export function WorkCards({ projects, headingLevel = 3 }: { projects: Project[]; headingLevel?: 2 | 3 }) {
+  const H = headingLevel === 2 ? "h2" : "h3";
+  return (
+    <ul className="work-cards">
+      {projects.map((p, i) => (
+        <li key={p.slug} className={i === 0 ? "work-card work-card--wide" : "work-card"}>
+          <Link href={`/work/${p.slug}`} className="work-card__link" data-cursor="Read" data-tour={i === 0 ? "work-card" : undefined}>
+            <div className={`work-card__stage case-stage--${p.slug}`} aria-hidden="true">
+              <Screen id={KEY_SCREEN[p.slug]} className="work-card__phone" />
+            </div>
+            <div className="work-card__body">
+              <p className="type-pixel text-muted">
+                {p.index} · {p.kind} · {p.year}
+              </p>
+              <H className="mt-3 text-48 leading-none font-bold tracking-[-0.045em]">{p.name}</H>
+              <p className="mt-3 max-w-[46ch] text-18 leading-snug">{p.tagline}</p>
+              <dl className="work-card__stats">
+                {p.stats.map((s) => (
+                  <div key={s.label}>
+                    <dt>{s.label}</dt>
+                    <dd>{s.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-4 text-14 text-muted">
+                <span className="font-semibold text-ink">Role:</span> {p.role.title} · {p.timeline}
+              </p>
+              <span className="link-arrow mt-5 text-16">Read the case study</span>
+            </div>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}

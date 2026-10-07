@@ -11,11 +11,12 @@ import { CaseChat, type CaseChatHandle } from "./CaseChat";
 type Mode = "read" | "chat";
 
 /**
- * The case study's front door: a quiet centred intro, one box to ask anything about the project,
- * and a choice of how to take it in. "Chat through it" tells the story message by message;
- * "Read the full case study" is the article, server-rendered underneath (so it works without JS).
+ * The case study's front door: a quiet centred intro, the cover (shipped screens and the short
+ * version), then one box to ask anything about the project and a choice of how to take it in.
+ * "Chat through it" tells the story message by message; "Read the full case study" is the
+ * article, server-rendered underneath (so it works without JS).
  */
-export function CaseStudyShell({ project, next, index, total, children }: { project: Project; next: Project; index: number; total: number; children: ReactNode }) {
+export function CaseStudyShell({ project, next, index, total, cover, children }: { project: Project; next: Project; index: number; total: number; cover?: ReactNode; children: ReactNode }) {
   const [mode, setMode] = useState<Mode>("read");
   const [opened, setOpened] = useState(false);
   const [firstQuestion, setFirstQuestion] = useState<string | undefined>();
@@ -57,13 +58,14 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
       >
         <p className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-16">
           <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="link-arrow">
-            Visit the live site<span className="sr-only"> (opens in a new tab)</span>
-          </a>
-          <a href={project.links.repo} target="_blank" rel="noopener noreferrer" className="link-arrow">
-            View the repo<span className="sr-only"> (opens in a new tab)</span>
+            Try the live product<span className="sr-only"> (opens in a new tab)</span>
           </a>
         </p>
+      </PageHeader>
 
+      {cover}
+
+      <div className="container-page">
         {/* The console: one box to ask anything, and two keys for how to take it in. */}
         <div className="js-only device mx-auto mt-12 max-w-[760px] text-left text-ink" data-xr="CaseStudyShell · ask box + two ways in, as a console">
           <div className="flex items-center gap-3 px-2 pb-3">
@@ -102,7 +104,7 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
             {(
               [
                 { id: "chat", title: "Chat through it", body: "The story unfolds message by message. You decide when to continue, and you can ask your own questions anytime." },
-                { id: "read", title: "Read the full case study", body: "Everything on one page: problem, role, process, architecture and results. Scroll it like an article." },
+                { id: "read", title: "Read the full case study", body: "Everything on one page: problem, role, research, decisions, iterations, screens and results." },
               ] as const
             ).map((m) => {
               const on = mode === m.id;
@@ -125,7 +127,7 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
             })}
           </div>
         </div>
-      </PageHeader>
+      </div>
 
       <div ref={bodyRef} className="scroll-mt-24 pt-16 md:pt-24">
         {opened && (

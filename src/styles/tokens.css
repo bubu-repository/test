@@ -11,4 +11,5 @@
   --font-body: var(--font-sans-face);
   --font-pixel: var(--font-pixel-face);
   --font-mono: var(--font-mono-face);
+  --font-ui: var(--font-ui-face);
 }

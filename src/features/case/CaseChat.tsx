@@ -70,16 +70,11 @@ function buildBeats(project: Project, next: Project): Beat[] {
         <>
           <p className="font-semibold">{project.role.title}.</p>
           <p className="mt-2">{project.role.summary}</p>
-          <ul className="mt-4 space-y-2">
-            {project.role.ownership.map((o) => (
-              <li key={o.area}>
-                <div className="flex justify-between text-14 font-semibold">
-                  <span>{o.area}</span>
-                  <span className="text-muted tabular-nums">{o.pct}%</span>
-                </div>
-                <div className="mt-1 h-2 overflow-hidden rounded-pill bg-surface-2" aria-hidden="true">
-                  <div className="h-full rounded-pill bar-fill" style={{ width: `${o.pct}%` }} />
-                </div>
+          <p className="mt-4 text-14 font-semibold text-muted">The calls that were mine</p>
+          <ul className="mt-2 space-y-2">
+            {project.role.decisions.map((d) => (
+              <li key={d} className="rounded-[16px] bg-surface-2 px-4 py-3 text-14">
+                {d}
               </li>
             ))}
           </ul>
@@ -87,19 +82,17 @@ function buildBeats(project: Project, next: Project): Beat[] {
       ),
     },
     {
-      ask: "How did you build it?",
+      ask: "How did it go, step by step?",
       reply: (
         <>
-          <p>
-            In {project.process.length} steps. I write them down like tool calls, because that&apos;s how I think about them: one call, one result, then the next.
-          </p>
+          <p>In {project.process.length} stages, from the first visit to the release:</p>
           <ol className="mt-4 space-y-2.5">
             {project.process.map((step, n) => (
-              <li key={step.call} className="rounded-[16px] bg-surface-2 px-4 py-3">
+              <li key={step.title} className="rounded-[16px] bg-surface-2 px-4 py-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <code className="text-12 font-semibold text-cobalt">
-                    {n + 1}. {step.call}
-                  </code>
+                  <span className="type-pixel text-accent-ink">
+                    {n + 1}. {step.stage}
+                  </span>
                   <span className="text-12 text-muted">{step.duration}</span>
                 </div>
                 <p className="mt-1.5 font-semibold">{step.title}</p>

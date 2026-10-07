@@ -134,10 +134,10 @@ function PackSlot({ project, index, total, level, state, onOpen }: { project: Pr
                 Adelia <b>TCG</b>
               </span>
               <span className="pack__no">{project.index}</span>
-              <span className="pack__title">Selected Work</span>
+              <span className="pack__title">{project.name}</span>
               <span className="pack__theme">{project.kind}</span>
               <span className="pack__meta">
-                <span>Series 2026</span>
+                <span>Edition {project.year}</span>
                 <span>
                   {rarity.glyph} {rarity.label}
                 </span>

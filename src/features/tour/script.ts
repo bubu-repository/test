@@ -8,7 +8,6 @@ import { ui } from "@/lib/ui";
 import { agentStore } from "../agent/agent-store";
 import { paletteStore, submitPalette } from "../palette/palette-store";
 import { findVisible } from "../shell/ActionHost";
-import { resealPacks } from "../work/BoosterPack";
 import { TourAborted, tourStore } from "./tour-store";
 
 /** Ghost cursor state, read every frame by the Tour component. */
@@ -99,7 +98,6 @@ export async function runTour(signal: AbortSignal) {
   stepCount = 0;
   tourStore.set({ total: 12 });
   const startTheme = getTheme();
-  const wide = window.innerWidth >= 768;
 
   ghost.x = window.innerWidth - 80;
   ghost.y = window.innerHeight - 80;
@@ -117,7 +115,7 @@ export async function runTour(signal: AbortSignal) {
     const name = await waitFor('[data-tour="name"]', signal);
     if (name) {
       await moveTo(name, signal, "left");
-      await say("This is Adelia Tiara, an AI Product Engineer in Bekasi, Indonesia.", signal, 1700);
+      await say("This is Adelia Tiara, a product designer for AI products, in Bekasi, Indonesia.", signal, 1700);
     }
 
     // 2. The headline is sampled
@@ -135,35 +133,14 @@ export async function runTour(signal: AbortSignal) {
       await sleep(600, signal);
     }
 
-    // 3. The live sky, on her phone in the live board further down
-    const sky = await waitFor('[data-tour="sky"]', signal, 2000);
-    if (sky) {
-      await moveTo(sky, signal);
-      await say("That sky on her phone is a live shader. Its clouds follow the real weather over Bekasi right now.", signal, 2000);
+    // 3. The work, right under the hero
+    const work = await waitFor('[data-tour="work-card"]', signal, 2000);
+    if (work) {
+      await moveTo(work, signal);
+      await say("Her work: three AI products, each with the real screens, the decisions and the numbers.", signal, 1600);
+      await press(work, signal);
     }
-
-    // 4. Work: through the dock on wide screens
-    const navWork = wide ? findVisible('[data-tour="nav-work"]') : null;
-    if (navWork) {
-      await moveTo(navWork, signal);
-      await say("Her work comes as trading cards.", signal, 400);
-      await press(navWork, signal);
-    }
-    await goto("/work", signal);
-    resealPacks();
-    const pack = await waitFor('[data-tour="pack"]', signal, 1500);
-    if (pack) {
-      await moveTo(pack, signal);
-      await say("Three fresh packs, one product in each. Let's open them.", signal, 600);
-      await press(pack, signal);
-      await sleep(calm() ? 300 : 2600, signal);
-    }
-    const card = await waitFor('[data-tour="card-tenderlens"]', signal);
-    if (card) {
-      await moveTo(card, signal);
-      await say("Pulled the holo rare. Tenderlens reads 200-page government tenders so small contractors don't have to.", signal, 1500);
-      await goto("/work/tenderlens", signal);
-    }
+    await goto("/work/tenderlens", signal);
 
     // 6. Case study as a conversation
     const chat = await waitFor('[data-tour="case-chat"]', signal, 2000);

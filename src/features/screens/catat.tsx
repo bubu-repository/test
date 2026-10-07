@@ -1,0 +1,182 @@
+import type { ReactNode } from "react";
+
+/*
+ * Catat screens (CONTOH — ganti dengan screenshot asli): the agent inside WhatsApp, in the
+ * Indonesian the owners actually speak. The case study captions translate them.
+ */
+
+const WAVES = [3, 6, 4, 9, 12, 7, 5, 10, 14, 8, 4, 6, 11, 7, 3, 5, 9, 6, 4, 3];
+
+function Voice({ length }: { length: string }) {
+  return (
+    <span className="ct-voice">
+      <span className="ct-play" />
+      <span className="ct-wave">
+        {WAVES.map((h, i) => (
+          <i key={i} style={{ height: `${h * 6}%` }} />
+        ))}
+      </span>
+      <small>{length}</small>
+    </span>
+  );
+}
+
+function Chat({ children, typing = "Ketik pesan" }: { children: ReactNode; typing?: string }) {
+  return (
+    <div className="ct">
+      <div className="ct-head">
+        <span className="ct-back">‹</span>
+        <span className="ct-avatar">C</span>
+        <span>
+          <b>Catat</b>
+          <small>buku kas lewat WhatsApp</small>
+        </span>
+      </div>
+      <div className="ct-chat">{children}</div>
+      <div className="ct-type">
+        <span>{typing}</span>
+        <span className="ct-mic">🎙</span>
+      </div>
+    </div>
+  );
+}
+
+const In = ({ children, time }: { children: ReactNode; time: string }) => (
+  <div className="ct-msg ct-msg--in">
+    {children}
+    <time>{time}</time>
+  </div>
+);
+
+const Out = ({ children, time }: { children: ReactNode; time: string }) => (
+  <div className="ct-msg ct-msg--out">
+    {children}
+    <time>
+      {time} <b>✓✓</b>
+    </time>
+  </div>
+);
+
+/** Logging a sale by voice: one line back, ✓ to keep it, ✗ to undo. */
+export function CatatSale() {
+  return (
+    <Chat>
+      <span className="ct-day">Hari ini</span>
+      <Out time="07:42">
+        <Voice length="0:06" />
+      </Out>
+      <In time="07:42">
+        <span className="ct-quiet">&ldquo;Indomie goreng dua, goceng sama dua rebu&rdquo;</span>
+        <br />✓ <strong>Terjual 2 Indomie Goreng · Rp7.000</strong>
+      </In>
+      <div className="ct-btns ct-btns--two">
+        <span data-picked="">✓ Benar</span>
+        <span>✗ Batalkan</span>
+      </div>
+      <Out time="07:44">
+        <Voice length="0:04" />
+      </Out>
+      <In time="07:44">
+        <span className="ct-quiet">&ldquo;Aqua gelas sedus, ceban&rdquo;</span>
+        <br />✓ <strong>Stok masuk 1 dus Aqua Gelas · Rp10.000</strong>
+      </In>
+      <div className="ct-btns ct-btns--two">
+        <span>✓ Benar</span>
+        <span>✗ Batalkan</span>
+      </div>
+    </Chat>
+  );
+}
+
+/** When the note is ambiguous, Catat asks one short question instead of guessing. */
+export function CatatAsk() {
+  return (
+    <Chat>
+      <span className="ct-day">Hari ini</span>
+      <Out time="09:15">
+        <Voice length="0:03" />
+      </Out>
+      <In time="09:15">
+        <span className="ct-quiet">&ldquo;Ceban, Bu Sri&rdquo;</span>
+        <br />
+        Rp10.000, Bu Sri. Ini <strong>utang baru</strong>, atau Bu Sri <strong>bayar utang</strong>?
+      </In>
+      <div className="ct-btns ct-btns--two">
+        <span>Utang baru</span>
+        <span data-picked="">Bayar utang</span>
+      </div>
+      <In time="09:15">
+        ✓ <strong>Bu Sri bayar Rp10.000.</strong>
+        <br />
+        Sisa utangnya Rp15.000 (sejak 3 Okt).
+      </In>
+      <div className="ct-btns">
+        <span>✗ Batalkan</span>
+      </div>
+    </Chat>
+  );
+}
+
+/** Undo, in one tap, and nothing is written down. */
+export function CatatUndo() {
+  return (
+    <Chat>
+      <span className="ct-day">Hari ini</span>
+      <Out time="11:02">
+        <Voice length="0:05" />
+      </Out>
+      <In time="11:02">
+        <span className="ct-quiet">&ldquo;Rokok sebungkus, dua lima&rdquo;</span>
+        <br />✓ <strong>Terjual 1 Rokok · Rp2.500</strong>
+      </In>
+      <div className="ct-btns ct-btns--two">
+        <span>✓ Benar</span>
+        <span data-picked="">✗ Batalkan</span>
+      </div>
+      <In time="11:02">
+        Oke, dibatalkan. Tidak ada yang dicatat.
+        <br />
+        Mau ulang? Kirim lagi aja, misalnya <em>&ldquo;rokok sebungkus, dua puluh lima ribu&rdquo;</em>.
+      </In>
+    </Chat>
+  );
+}
+
+/** The Sunday summary: the reason owners kept using it. */
+export function CatatSummary() {
+  return (
+    <Chat>
+      <span className="ct-day">Minggu</span>
+      <In time="19:00">
+        <strong>📒 Ringkasan minggu ini</strong>
+        <br />
+        Omzet: <strong>Rp4.230.000</strong>
+        <br />
+        Untung kira-kira: <strong>Rp860.000</strong> (naik 6%)
+        <br />
+        <br />
+        <strong>Paling laku</strong>
+        <br />
+        1. Indomie Goreng · 142
+        <br />
+        2. Aqua Gelas · 96
+        <br />
+        3. Kopi Kapal Api · 71
+        <br />
+        <br />
+        <strong>Yang masih utang</strong>
+        <br />
+        Bu Sri · Rp15.000 · 5 hari
+        <br />
+        Mas Andi · Rp32.000 · 12 hari
+        <br />
+        <br />
+        Stok Aqua tinggal 1 dus. Belanja besok?
+      </In>
+      <div className="ct-btns ct-btns--two">
+        <span>Ingatkan besok</span>
+        <span>Nanti saja</span>
+      </div>
+    </Chat>
+  );
+}

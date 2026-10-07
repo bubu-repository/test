@@ -1,7 +1,7 @@
 import localFont from "next/font/local";
 
 /*
- * Three families, self-hosted from Fontsource (latin subset; the site is English).
+ * Four families, self-hosted from Fontsource (latin subset; the site is English).
  * Bricolage Grotesque carries everything: its optical-size axis (12–96) gives tight display
  * headlines and open, readable text from one file. Only Bricolage is preloaded.
  */
@@ -38,4 +38,15 @@ export const fontMono = localFont({
   fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
 });
 
-export const fontVariables = [fontSans.variable, fontPixel.variable, fontMono.variable].join(" ");
+// The product screens in the case studies (Tenderlens, Catat, Lintas) use their own UI face, so
+// they read as real apps and not as part of the portfolio.
+export const fontUi = localFont({
+  src: "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
+  variable: "--font-ui-face",
+  weight: "100 900",
+  display: "swap",
+  preload: false,
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
+});
+
+export const fontVariables = [fontSans.variable, fontPixel.variable, fontMono.variable, fontUi.variable].join(" ");

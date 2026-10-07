@@ -16,51 +16,51 @@ const SLOTS: Slot[] = [
   {
     id: "verb",
     options: [
-      { text: "build", p: 0.62 },
-      { text: "ship", p: 0.21 },
-      { text: "design", p: 0.09 },
-      { text: "craft", p: 0.05 },
-      { text: "prototype", p: 0.03 },
+      { text: "design", p: 0.64 },
+      { text: "prototype", p: 0.16 },
+      { text: "shape", p: 0.1 },
+      { text: "build", p: 0.06 },
+      { text: "sweat over", p: 0.04 },
     ],
   },
   {
     id: "what",
     options: [
-      { text: "AI products", p: 0.58 },
-      { text: "agents", p: 0.17 },
-      { text: "useful software", p: 0.12 },
-      { text: "LLM apps", p: 0.09 },
+      { text: "AI products", p: 0.6 },
+      { text: "agents", p: 0.16 },
+      { text: "tools", p: 0.12 },
+      { text: "interfaces", p: 0.08 },
       { text: "tiny robots", p: 0.04 },
     ],
   },
   {
-    id: "how",
+    id: "feel",
     options: [
-      { text: "end to end", p: 0.71 },
-      { text: "from scratch", p: 0.12 },
-      { text: "with care", p: 0.09 },
-      { text: "at speed", p: 0.05 },
-      { text: "all the way down", p: 0.03 },
+      { text: "trust", p: 0.58 },
+      { text: "check", p: 0.17 },
+      { text: "understand", p: 0.13 },
+      { text: "fix", p: 0.08 },
+      { text: "love", p: 0.04 },
     ],
   },
   {
     id: "from",
     options: [
-      { text: "interface", p: 0.55 },
-      { text: "first sketch", p: 0.2 },
-      { text: "pixels", p: 0.12 },
-      { text: "prompt", p: 0.08 },
-      { text: "user interview", p: 0.05 },
+      { text: "first interview", p: 0.56 },
+      { text: "shop counter", p: 0.18 },
+      { text: "messy notes", p: 0.12 },
+      { text: "first sketch", p: 0.09 },
+      { text: "6 a.m. train", p: 0.05 },
     ],
   },
   {
     id: "to",
     options: [
-      { text: "agents", p: 0.6 },
-      { text: "evals", p: 0.18 },
-      { text: "database", p: 0.1 },
-      { text: "infra", p: 0.07 },
-      { text: "vibes", p: 0.05 },
+      { text: "shipped interface", p: 0.6 },
+      { text: "last pixel", p: 0.18 },
+      { text: "live product", p: 0.12 },
+      { text: "error message", p: 0.07 },
+      { text: "undo button", p: 0.03 },
     ],
   },
 ];
@@ -208,7 +208,7 @@ export function ResampleSentence({ controls = true, className }: { controls?: bo
     setChoices(next);
     bump("resamples", 5, "sampler");
     const words = next.map((c, i) => SLOTS[i].options[c].text);
-    setAnnounce(`I ${words[0]} ${words[1]} ${words[2]}, from the ${words[3]} to the ${words[4]} behind it.`);
+    setAnnounce(`I ${words[0]} ${words[1]} people can ${words[2]}, from the ${words[3]} to the ${words[4]}.`);
   };
 
   const choose = (slotIndex: number, option: number) => {
@@ -229,13 +229,13 @@ export function ResampleSentence({ controls = true, className }: { controls?: bo
   return (
     <div data-xr="ResampleSentence · top-k sampling with temperature">
       <p className={cn("resample-sentence text-muted", className)}>
-        I {T(0)} {T(1)} <span className="whitespace-nowrap">{T(2)},</span> from the {T(3)} to the {T(4)} behind it.
+        I {T(0)} {T(1)} people can <span className="whitespace-nowrap">{T(2)},</span> from the {T(3)} to the {T(4)}.
       </p>
       <p className="sr-only" aria-live="polite">
         {announce}
       </p>
       {controls === "screen" && (
-        <div className="js-only mt-3 flex flex-wrap items-center gap-x-2 gap-y-2 font-mono text-[10px] tracking-[0.12em] text-screen-muted uppercase">
+        <div className="js-only mt-3 flex flex-wrap items-center gap-x-2 gap-y-2 font-mono text-[10px] tracking-[0.12em] text-screen-muted uppercase max-sm:hidden">
           <button type="button" onClick={resampleAll} className="screen-key">
             <RefreshIcon width={11} height={11} /> Resample
           </button>
