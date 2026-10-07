@@ -209,7 +209,7 @@ export function CommandPalette() {
                 >
                   {item.kind === "ask" ? (
                     <>
-                      <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-[10px] bg-violet/15 text-16">
+                      <span aria-hidden="true" className="palette-key" data-on={selected}>
                         ?
                       </span>
                       <span className="min-w-0 flex-1">
@@ -219,7 +219,7 @@ export function CommandPalette() {
                     </>
                   ) : (
                     <>
-                      <span aria-hidden="true" className={cn("grid size-8 shrink-0 place-items-center rounded-[10px] text-16", selected ? "bg-surface shadow-sm" : "bg-surface-2")}>
+                      <span aria-hidden="true" className="palette-key" data-on={selected}>
                         {item.command.icon}
                       </span>
                       <span className="min-w-0 flex-1">

@@ -4,6 +4,7 @@ import { ViewTransition, useRef, useState, type ReactNode } from "react";
 import { ArrowRightIcon } from "@/components/icons";
 import type { Project } from "@/content/projects";
 import { sfx } from "@/lib/sound";
+import { PageHeader } from "@/components/PageHeader";
 import { ProjectIcon } from "../work/ProjectIcon";
 import { CaseChat, type CaseChatHandle } from "./CaseChat";
 
@@ -36,22 +37,24 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
 
   return (
     <>
-      <header className="container-page pt-36 text-center md:pt-44" data-xr="CaseStudyShell · ask box + two ways in">
-        <ViewTransition name={`card-${project.slug}`} share="card-morph" default="none">
-          <div className="mx-auto w-fit">
-            <ProjectIcon project={project} size={84} />
-          </div>
-        </ViewTransition>
-        <p className="mt-8 text-12 font-semibold tracking-[0.2em] text-muted uppercase">
-          Case study {pad(index)} of {pad(total)}
-        </p>
-        <h1 className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[clamp(44px,6.4vw,80px)] leading-none font-bold tracking-[-0.045em]">
-          {project.name}
-          <span className="chip min-h-7 translate-y-1 px-3 text-12 font-semibold tracking-normal">
-            Shipped · {project.year}
+      <PageHeader
+        id="case-title"
+        label={`Case study ${pad(index)} of ${pad(total)}`}
+        top={
+          <ViewTransition name={`card-${project.slug}`} share="card-morph" default="none">
+            <div className="mx-auto mb-6 w-fit">
+              <ProjectIcon project={project} size={84} />
+            </div>
+          </ViewTransition>
+        }
+        title={
+          <span className="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            {project.name}
+            <span className="chip min-h-7 translate-y-1 px-3 text-12 font-semibold tracking-normal text-ink">Shipped · {project.year}</span>
           </span>
-        </h1>
-        <p className="type-lead mx-auto mt-5 max-w-[38ch] text-muted">{project.tagline}</p>
+        }
+        lead={project.tagline}
+      >
         <p className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-16">
           <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="link-arrow">
             Visit the live site<span className="sr-only"> (opens in a new tab)</span>
@@ -61,7 +64,13 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
           </a>
         </p>
 
-        <div className="js-only mx-auto mt-12 max-w-[760px]">
+        {/* The console: one box to ask anything, and two keys for how to take it in. */}
+        <div className="js-only device mx-auto mt-12 max-w-[760px] text-left text-ink" data-xr="CaseStudyShell · ask box + two ways in, as a console">
+          <div className="flex items-center gap-3 px-2 pb-3">
+            <span className="led" aria-hidden="true" />
+            <span className="font-mono text-[10px] font-semibold tracking-[0.14em] text-muted uppercase">Ask anything · or pick a way in</span>
+            <span className="grille ml-auto hidden h-4 w-14 sm:block" aria-hidden="true" />
+          </div>
           <form
             className="well flex items-center gap-2 rounded-pill py-2 pr-2 pl-6 focus-within:shadow-[var(--recess),0_0_0_3px_color-mix(in_srgb,var(--accent)_30%,transparent)]"
             onSubmit={(e) => {
@@ -87,9 +96,9 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
               <ArrowRightIcon width={20} height={20} className="-rotate-90" />
             </button>
           </form>
-          <p className="mt-3 text-12 text-muted">The scripted part of the conversation carries the verified numbers. Live answers only use facts from this site.</p>
+          <p className="mt-3 px-2 text-12 text-muted">The scripted part of the conversation carries the verified numbers. Live answers only use facts from this site.</p>
 
-          <div role="group" aria-label="How do you want to read it?" className="mt-10 grid gap-4 text-left sm:grid-cols-2">
+          <div role="group" aria-label="How do you want to read it?" className="mt-5 grid gap-3 sm:grid-cols-2">
             {(
               [
                 { id: "chat", title: "Chat through it", body: "The story unfolds message by message. You decide when to continue, and you can ask your own questions anytime." },
@@ -104,7 +113,7 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
                   data-tour={m.id === "chat" ? "case-chat" : undefined}
                   aria-pressed={on}
                   onClick={() => go(m.id)}
-                  className="mode-key rounded-[22px] p-5 text-left md:p-6"
+                  className="mode-key rounded-[20px] p-5 text-left"
                 >
                   <span className="flex items-center justify-between gap-3">
                     <span className="text-18 font-semibold tracking-[-0.015em]">{m.title}</span>
@@ -116,7 +125,7 @@ export function CaseStudyShell({ project, next, index, total, children }: { proj
             })}
           </div>
         </div>
-      </header>
+      </PageHeader>
 
       <div ref={bodyRef} className="scroll-mt-24 pt-16 md:pt-24">
         {opened && (

@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { projects } from "@/content/projects";
-import { HoloCard } from "../work/HoloCard";
 import { ProjectIcon } from "../work/ProjectIcon";
+import { Polaroid } from "./Polaroid";
 
-/** Home: the three case studies as cards, with the app icons tucked into the headline (after Ossai). */
+const TILT = [-2.5, 1.5, -1];
+
+/** Home: the three products as polaroids on white, with the app icons tucked into the headline. */
 export function WorkTeaser() {
   return (
-    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y" data-xr="WorkTeaser · the three cards">
+    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16" data-xr="WorkTeaser · polaroids of the three products">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <div className="max-w-[44rem]">
           <p className="type-eyebrow">Selected work</p>
@@ -35,10 +37,14 @@ export function WorkTeaser() {
       </div>
 
       {/* CONTOH — ganti dengan data asli */}
-      <ol className="mt-14 grid gap-6 md:mt-20 md:grid-cols-2 lg:grid-cols-3" aria-label="Case studies">
-        {projects.map((project) => (
-          <li key={project.slug} className="min-w-0">
-            <HoloCard project={project} total={projects.length} morph={false} level={3} />
+      <ol className="mt-16 grid gap-x-10 gap-y-16 md:mt-24 md:grid-cols-3" aria-label="Case studies">
+        {projects.map((project, i) => (
+          <li key={project.slug} className="mx-auto w-full max-w-[340px]">
+            <Polaroid project={project} tilt={TILT[i]} />
+            <p className="mt-7 text-16 leading-snug">{project.tagline}</p>
+            <Link href={`/work/${project.slug}`} className="link-arrow mt-3 text-16">
+              Read the case study
+            </Link>
           </li>
         ))}
       </ol>

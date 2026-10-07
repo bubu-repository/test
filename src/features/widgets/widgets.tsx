@@ -2,71 +2,22 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
-import { CloudIcon, FogIcon, MoonIcon, RainIcon, SendIcon, StormIcon, SunIcon } from "@/components/icons";
-import { LiveClock } from "@/components/LiveClock";
+import { SendIcon } from "@/components/icons";
 import { MociAvatar } from "@/components/MociAvatar";
 import { Sticker } from "@/components/Sticker";
 import type { Note } from "@/content/guestbook";
 import { labItems } from "@/content/lab";
-import { identity } from "@/content/profile";
 import { dispatch } from "@/lib/actions";
 import { cn } from "@/lib/cn";
-import { useNow, useStoredString } from "@/lib/hooks";
 import { STICKERS, useStickers } from "@/lib/stickers";
-import { hourIn, probableStatus } from "@/lib/time";
 import { useLive, wave } from "../live/live-store";
-import { SkyCanvas } from "../sky/SkyCanvas";
 import { OverlapRing } from "./OverlapRing";
-import { describeWeather, useWeather } from "./weather";
 
 export function WidgetTitle({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-2">
       <h3 className="type-pixel text-muted">{children}</h3>
       {aside}
-    </div>
-  );
-}
-
-/* ---------- Bekasi now: a weather tile with the live sky inside ---------- */
-export function NowWidget() {
-  const weather = useWeather();
-  const now = useNow();
-  const date = now ? new Date(now * 1000) : null;
-  const status = date ? probableStatus(date) : null;
-  const hour = date ? hourIn(identity.timeZone, date) : 12;
-  const night = hour < 6 || hour >= 18;
-  const w = describeWeather(weather?.code ?? null);
-  const Icon = w.kind === "rain" ? RainIcon : w.kind === "storm" ? StormIcon : w.kind === "fog" ? FogIcon : w.kind === "clear" ? (night ? MoonIcon : SunIcon) : CloudIcon;
-
-  return (
-    <div data-tour="sky" className="sky-stage relative -m-6 flex h-[calc(100%+3rem)] min-h-[260px] flex-col overflow-hidden rounded-[21px] p-6">
-      <SkyCanvas />
-      <div className="relative z-10 flex h-full flex-col">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="text-16 font-semibold">Bekasi</h3>
-          <span className="rounded-pill bg-surface/70 px-2.5 py-1 text-12 font-medium backdrop-blur-sm">{night ? "Night" : "Day"} · WIB</span>
-        </div>
-        <p className="mt-1 text-[clamp(48px,5vw,64px)] leading-none font-semibold tracking-[-0.04em] tabular-nums">
-          <LiveClock zone={identity.timeZone} />
-        </p>
-        <p className="mt-2 flex items-center gap-2 text-16">
-          <Icon width={20} height={20} className="shrink-0" />
-          {weather?.ok ? (
-            <span>
-              {Math.round(weather.temperature ?? 0)}°C · {w.label}
-            </span>
-          ) : weather ? (
-            <span>Weather is shy right now</span>
-          ) : (
-            <span>Checking the sky…</span>
-          )}
-        </p>
-        <p className="mt-auto pt-6 text-14">
-          <span className="font-semibold">Probably:</span> {status ? status.label : "…"}
-        </p>
-        <p className="mt-1 text-12 opacity-75">A live shader. Cloud cover follows Bekasi&apos;s real weather; your cursor parts it.</p>
-      </div>
     </div>
   );
 }
@@ -265,41 +216,6 @@ export function TerminalWidget() {
       <button type="button" className="pill mt-3 self-start" data-variant="ink" data-size="sm" onClick={() => dispatch({ type: "open", panel: "terminal" })}>
         Open the terminal
       </button>
-    </div>
-  );
-}
-
-/* ---------- Game ---------- */
-const SNAKE = [
-  [2, 3],
-  [3, 3],
-  [4, 3],
-  [5, 3],
-  [5, 2],
-  [6, 2],
-  [7, 2],
-];
-
-export function GameWidget() {
-  const best = Number(useStoredString("adelia:context-best") ?? 0) || 0;
-  return (
-    <div className="flex h-full flex-col">
-      <WidgetTitle aside={<span className="type-pixel text-muted">Best {best}</span>}>Context Window</WidgetTitle>
-      <div aria-hidden="true" className="mt-4 grid grid-cols-10 gap-[3px] self-start rounded-[14px] bg-term-bg p-2.5">
-        {Array.from({ length: 50 }, (_, i) => {
-          const x = i % 10;
-          const y = Math.floor(i / 10);
-          const head = SNAKE[SNAKE.length - 1];
-          const on = SNAKE.some(([sx, sy]) => sx === x && sy === y);
-          const food = x === 8 && y === 2;
-          return <span key={i} className={cn("size-2.5 rounded-[2px]", on ? (head[0] === x && head[1] === y ? "bg-accent" : "bg-violet") : food ? "bg-lime" : "bg-white/6")} />;
-        })}
-      </div>
-      <p className="mt-4 text-24 leading-tight font-bold tracking-[-0.025em]">Snake, but you&apos;re an LLM.</p>
-      <p className="mt-1 text-14 text-muted">Eat tokens, dodge the context limit.</p>
-      <Link href="/play" className="link-arrow mt-auto pt-5 text-16">
-        Play a round
-      </Link>
     </div>
   );
 }

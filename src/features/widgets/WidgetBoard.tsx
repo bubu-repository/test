@@ -8,34 +8,33 @@ import { readJSON, writeJSON } from "@/lib/storage";
 import { createStore, useStore } from "@/lib/store";
 import { ui, useUI, type Lens } from "@/lib/ui";
 import { RevealCard } from "../hero/RevealCard";
-import { FindTimeWidget, KeycapsWidget, WorkspaceWidget } from "./demos";
-import { AskWidget, GameWidget, LabWidget, NowWidget, OverlapWidget } from "./widgets";
+import { FindTimeWidget, KeycapsWidget, PhoneWidget, WorkspaceWidget } from "./demos";
+import { AskWidget, LabWidget, OverlapWidget } from "./widgets";
 
-type WidgetId = "now" | "overlap" | "ask" | "reveal" | "lab" | "game" | "findtime" | "workspace" | "keys";
+type WidgetId = "now" | "overlap" | "ask" | "reveal" | "lab" | "findtime" | "workspace" | "keys";
 
-/** Nine widgets: live data, Moci, the lab and the game, plus three playable UI demos (after marco.fyi). */
+/** Eight widgets: her phone with the live sky, live data, Moci, the lab, plus three playable UI demos (after marco.fyi). */
 const WIDGETS: Record<WidgetId, { label: string; Component: ComponentType; span: string; tone?: string }> = {
-  now: { label: "Bekasi now", Component: NowWidget, span: "sm:col-span-1 lg:col-span-4" },
+  now: { label: "Bekasi now", Component: PhoneWidget, span: "sm:col-span-1 sm:row-span-2 lg:col-span-4 lg:row-span-2" },
   overlap: { label: "Working hours overlap", Component: OverlapWidget, span: "sm:col-span-1 lg:col-span-4", tone: "tone-sky" },
   ask: { label: "Ask Moci", Component: AskWidget, span: "sm:col-span-2 lg:col-span-4", tone: "tone-accent" },
   reveal: { label: "Availability", Component: RevealCard, span: "sm:col-span-1 lg:col-span-4" },
   lab: { label: "The lab", Component: LabWidget, span: "sm:col-span-1 lg:col-span-4", tone: "tone-violet" },
-  game: { label: "Context Window", Component: GameWidget, span: "sm:col-span-2 lg:col-span-4", tone: "tone-lime" },
   findtime: { label: "Find a time", Component: FindTimeWidget, span: "sm:col-span-1 lg:col-span-4" },
   workspace: { label: "Workspaces", Component: WorkspaceWidget, span: "sm:col-span-1 lg:col-span-4" },
   keys: { label: "Keyboard", Component: KeycapsWidget, span: "sm:col-span-2 lg:col-span-4" },
 };
 
-const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "findtime", "workspace", "keys", "reveal", "lab", "game"];
+const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "findtime", "workspace", "keys", "reveal", "lab"];
 
 const LENSES: { id: Lens; label: string; order: WidgetId[] }[] = [
-  { id: "recruiter", label: "Recruiter", order: ["findtime", "reveal", "ask", "overlap", "workspace", "now", "keys", "lab", "game"] },
-  { id: "engineer", label: "Engineer", order: ["workspace", "ask", "lab", "keys", "game", "now", "overlap", "findtime", "reveal"] },
-  { id: "designer", label: "Designer", order: ["lab", "keys", "reveal", "workspace", "game", "ask", "now", "overlap", "findtime"] },
-  { id: "curious", label: "Just curious", order: ["game", "keys", "lab", "reveal", "ask", "now", "overlap", "workspace", "findtime"] },
+  { id: "recruiter", label: "Recruiter", order: ["findtime", "reveal", "ask", "overlap", "workspace", "now", "keys", "lab"] },
+  { id: "engineer", label: "Engineer", order: ["workspace", "ask", "lab", "keys", "now", "overlap", "findtime", "reveal"] },
+  { id: "designer", label: "Designer", order: ["lab", "keys", "reveal", "workspace", "ask", "now", "overlap", "findtime"] },
+  { id: "curious", label: "Just curious", order: ["keys", "lab", "reveal", "ask", "now", "overlap", "workspace", "findtime"] },
 ];
 
-const KEY = "adelia:widgets:v3";
+const KEY = "adelia:widgets:v4";
 
 function valid(order: unknown): order is WidgetId[] {
   return Array.isArray(order) && order.length === DEFAULT_ORDER.length && DEFAULT_ORDER.every((id) => order.includes(id));

@@ -322,7 +322,7 @@ export const projects: Project[] = [
     name: "Lintas",
     year: "2024",
     kind: "Realtime commute copilot",
-    tone: "sun",
+    tone: "violet",
     rarity: "Uncommon",
     tagline: "Door-to-door commutes across KRL, MRT and TransJakarta, replanned live.",
     prompt: "KRL is packed again. When should I leave, and is there a better way to get to work today?",

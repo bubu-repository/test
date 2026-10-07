@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
+import { PageHeader } from "@/components/PageHeader";
 import { ContextWindow } from "@/features/play/ContextWindow";
 
 export const metadata: Metadata = pageMeta({
@@ -12,13 +13,21 @@ export const metadata: Metadata = pageMeta({
 export default function PlayPage() {
   return (
     <PageTransition>
-      <header className="container-page pt-36 text-center md:pt-44">
-        <p className="type-eyebrow">A mini-game</p>
-        <h1 className="type-display mx-auto mt-4 max-w-[14ch]">Context Window</h1>
-        <p className="type-lead mx-auto mt-6 max-w-[42ch] text-muted">Snake, but you&apos;re an LLM. Read 20 tokens in one go for a sticker.</p>
-      </header>
+      <PageHeader
+        id="play-title"
+        label="A mini-game"
+        title={
+          <>
+            Context <span className="sticker-text">Window</span>
+          </>
+        }
+        lead="Snake, but you're an LLM, on a pocket console. Read 20 tokens in one go for a sticker."
+      />
       <div className="container-page section-y">
-        <ContextWindow />
+        <div className="mx-auto max-w-[1000px]">
+          <ContextWindow variant="handheld" />
+          <p className="mt-8 text-center text-14 text-muted">Arrow keys or WASD steer, Space starts and pauses. On a phone, use the D-pad or swipe the screen.</p>
+        </div>
       </div>
     </PageTransition>
   );

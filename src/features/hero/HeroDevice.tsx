@@ -15,7 +15,6 @@ import { ui } from "@/lib/ui";
 import { isEditable } from "../shell/KeyboardShortcuts";
 import { describeWeather, useWeather } from "../widgets/weather";
 import { HeroName } from "./HeroName";
-import { DymoLabel } from "../desk/objects";
 import { ResampleSentence } from "./ResampleSentence";
 
 /** Where the dial can point. Detents sit on the diagonals, like a four-way selector. */
@@ -166,7 +165,6 @@ function PreferenceSwitches() {
 function Dial({ index, onChange }: { index: number; onChange: (next: number) => void }) {
   const knob = useRef<HTMLDivElement>(null);
   const [turn, setTurn] = useState<number>(STOPS[0].angle);
-  const touched = turn !== STOPS[0].angle;
 
   const set = (next: number) => {
     const i = (next + STOPS.length) % STOPS.length;
@@ -224,10 +222,6 @@ function Dial({ index, onChange }: { index: number; onChange: (next: number) => 
           {s.label}
         </button>
       ))}
-      {/* A marker circle drawn on the mat around the knob, until it has been turned once. */}
-      <svg className="dial-scribble" viewBox="0 0 176 176" aria-hidden="true" style={{ opacity: touched ? 0 : 1 }}>
-        <path d="M92 30c30 2 52 24 52 56 0 34-26 58-58 58-31 0-56-24-56-56 0-30 22-55 54-58 10-1 19 1 27 4" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" opacity="0.85" />
-      </svg>
       <div
         ref={knob}
         role="slider"
@@ -306,9 +300,6 @@ export function HeroDevice() {
       <div className="flex items-center gap-3 px-2 pb-3.5">
         <span className="font-display text-18 font-bold tracking-[-0.03em]">adelia</span>
         <span className="font-mono text-[10px] tracking-[0.16em] text-muted uppercase">AT-26</span>
-        <span className="ml-2 hidden md:inline-flex">
-          <DymoLabel tilt={-1.5}>Property of Adelia</DymoLabel>
-        </span>
         <span className="ml-auto flex items-center gap-2 font-mono text-[10px] font-semibold tracking-[0.14em] text-muted uppercase">
           <span className="led" data-off={!power} aria-hidden="true" />
           Open to work
@@ -373,7 +364,7 @@ export function HeroDevice() {
               <ArrowRightIcon width={20} height={20} />
             </a>
           ) : (
-            <Link href={dest.href} className="pill w-full justify-between" data-variant="magenta" data-size="lg" data-cursor="Go">
+            <Link href={dest.href} className="pill w-full justify-between" data-variant="magenta" data-size="lg" data-cursor="Go" data-tour="go">
               {dest.key}
               <ArrowRightIcon width={20} height={20} />
             </Link>

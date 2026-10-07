@@ -101,7 +101,7 @@ export function BoosterPack({ count }: { count: number }) {
       <button type="button" className="pill mt-6" data-variant="magenta" data-size="lg" data-tour="pack" data-magnetic="0.25" onClick={open}>
         Open the pack
       </button>
-      <p className="mt-2 text-14 text-muted">Or drag across the top of the pack to tear it.</p>
+      <p className="pack-hint mt-2 text-14 text-muted">Or drag across the top of the pack to tear it.</p>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { dispatch } from "@/lib/actions";
+import { cn } from "@/lib/cn";
 import { sfx } from "@/lib/sound";
 import { unlock } from "@/lib/stickers";
 import { notifyStorage, useStoredString } from "@/lib/hooks";
@@ -17,16 +19,14 @@ type Phase = "ready" | "playing" | "paused" | "over";
 
 const same = (a: Cell, b: Cell) => a.x === b.x && a.y === b.y;
 
-function css(name: string) {
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#111";
-}
 
 /**
- * Context Window: snake, but you're an LLM. Eat tokens to grow your context. The window holds
+ * Context Window: snake, but you're an LLM. In the "handheld" variant it runs on a PSP-style
+ * console: the board is the screen, and the D-pad and face buttons are real controls. Eat tokens to grow your context. The window holds
  * 28; past that you overflow, so grab a summary to compact yourself to half. Don't run into
  * yourself (that's a hallucination) or off the edge of the page.
  */
-export function ContextWindow() {
+export function ContextWindow({ variant = "page" }: { variant?: "page" | "handheld" }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [phase, setPhase] = useState<Phase>("ready");
   const [score, setScore] = useState(0);
@@ -127,6 +127,9 @@ export function ContextWindow() {
     }
 
     const draw = () => {
+      // Colours come from the canvas, so a screen (the PSP) can re-theme the board with variables.
+      const styles = getComputedStyle(canvas);
+      const css = (name: string) => styles.getPropertyValue(name).trim() || "#111";
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
@@ -270,6 +273,115 @@ export function ContextWindow() {
 
   const used = Math.min(100, Math.round((length / LIMIT) * 100));
 
+  /** ✕ / START: start, continue or play again. */
+  const primary = () => {
+    sfx.tick();
+    if (phase === "paused") {
+      game.current.phase = "playing";
+      setPhase("playing");
+      setMessage("Playing. Space pauses.");
+      canvasRef.current?.focus();
+    } else if (phase !== "playing") start();
+  };
+  /** ○: pause and continue. */
+  const pause = () => {
+    const g = game.current;
+    if (g.phase === "playing") {
+      g.phase = "paused";
+      setPhase("paused");
+      setMessage("Paused. Press ✕ to continue.");
+    } else if (g.phase === "paused") primary();
+  };
+
+  const board = (
+    <div className={variant === "handheld" ? "relative" : "widget relative overflow-hidden p-2"}>
+      <canvas
+        ref={canvasRef}
+        tabIndex={0}
+        role="img"
+        aria-label={`Context Window game board. ${message}`}
+        className={cn("block aspect-[3/2] w-full touch-none bg-surface outline-none focus-visible:ring-2 focus-visible:ring-accent", variant === "handheld" ? "rounded-[6px]" : "rounded-[16px]")}
+      />
+      {phase !== "playing" && (
+        <div className={cn("absolute grid place-items-center bg-surface/80 backdrop-blur-[2px]", variant === "handheld" ? "inset-0 rounded-[6px]" : "inset-2 rounded-[16px]")}>
+          <div className="max-w-[40ch] px-6 text-center">
+            <p className={cn("font-bold tracking-[-0.02em]", variant === "handheld" ? "text-18 sm:text-24" : "text-24")}>{phase === "over" ? "Game over" : phase === "paused" ? "Paused" : "Context Window"}</p>
+            <p className={cn("mt-2 text-muted", variant === "handheld" ? "hidden text-14 sm:block" : "text-16")}>
+              {phase === "ready" ? "Eat tokens to grow your context. Past 28 you overflow, so grab a TL;DR to compact. Don't hallucinate into yourself." : message}
+            </p>
+            <button type="button" className="pill mt-4" data-variant="magenta" data-size={variant === "handheld" ? "sm" : undefined} onClick={primary}>
+              {phase === "over" ? "Play again" : phase === "paused" ? "Continue" : "Start"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  if (variant === "handheld") {
+    return (
+      <div data-game className="psp" data-xr="ContextWindow · a PSP: canvas screen, real D-pad and buttons">
+        <div className="psp__brand" aria-hidden="true">
+          <span>adelia</span>
+          <span className="led" data-off={phase !== "playing"} />
+        </div>
+        <div className="psp__left">
+          <div className="psp-dpad" role="group" aria-label="Direction pad">
+            <button type="button" className="psp-dpad__up" aria-label="Up" onClick={() => turn(0, -1)} />
+            <button type="button" className="psp-dpad__left" aria-label="Left" onClick={() => turn(-1, 0)} />
+            <span className="psp-dpad__hub" aria-hidden="true" />
+            <button type="button" className="psp-dpad__right" aria-label="Right" onClick={() => turn(1, 0)} />
+            <button type="button" className="psp-dpad__down" aria-label="Down" onClick={() => turn(0, 1)} />
+          </div>
+          <span className="grille psp__grille" aria-hidden="true" />
+        </div>
+        <div className="psp__screen screen">
+          <div className="psp__hud" aria-hidden="true">
+            <span>
+              Tokens <b>{score}</b>
+            </span>
+            <span>
+              Best <b>{Math.max(best, phase === "over" ? score : 0)}</b>
+            </span>
+            <span className="psp__ctx">
+              Ctx
+              <span className="psp__bar">
+                <span style={{ width: `${used}%`, background: used > 80 ? "var(--orange)" : "var(--screen-accent)" }} />
+              </span>
+              {length}/{LIMIT}
+            </span>
+          </div>
+          {board}
+        </div>
+        <div className="psp__right">
+          <div className="psp-face" role="group" aria-label="Buttons">
+            <button type="button" className="psp-face__btn psp-face__tri" aria-label="Sound on or off" onClick={() => dispatch({ type: "sound" })}>
+              △
+            </button>
+            <button type="button" className="psp-face__btn psp-face__sq" aria-label="Restart" onClick={start}>
+              □
+            </button>
+            <button type="button" className="psp-face__btn psp-face__circle" aria-label="Pause" onClick={pause}>
+              ○
+            </button>
+            <button type="button" className="psp-face__btn psp-face__cross" aria-label={phase === "paused" ? "Continue" : "Start"} onClick={primary}>
+              ✕
+            </button>
+          </div>
+          <span className="grille psp__grille" aria-hidden="true" />
+        </div>
+        <div className="psp__bottom" aria-hidden="true">
+          <span className="psp__small">Select</span>
+          <span className="psp__logo">Context Window</span>
+          <span className="psp__small">Start</span>
+        </div>
+        <p className="sr-only" aria-live="polite">
+          {message}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div data-game className="mx-auto w-full max-w-[880px]" data-xr="ContextWindow · canvas game, fixed-step loop">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
@@ -302,42 +414,7 @@ export function ContextWindow() {
         </div>
       </div>
 
-      <div className="widget relative overflow-hidden p-2">
-        <canvas
-          ref={canvasRef}
-          tabIndex={0}
-          role="img"
-          aria-label={`Context Window game board. ${message}`}
-          className="block aspect-[3/2] w-full touch-none rounded-[16px] bg-surface outline-none focus-visible:ring-2 focus-visible:ring-accent"
-        />
-        {phase !== "playing" && (
-          <div className="absolute inset-2 grid place-items-center rounded-[16px] bg-surface/80 backdrop-blur-[2px]">
-            <div className="max-w-[40ch] px-6 text-center">
-              <p className="text-24 font-bold tracking-[-0.02em]">{phase === "over" ? "Game over" : phase === "paused" ? "Paused" : "Context Window"}</p>
-              <p className="mt-2 text-16 text-muted">
-                {phase === "ready" ? "Eat tokens to grow your context. Past 28 you overflow, so grab a TL;DR to compact. Don't hallucinate into yourself." : message}
-              </p>
-              <button
-                type="button"
-                className="pill mt-5"
-                data-variant="magenta"
-                onClick={
-                  phase === "paused"
-                    ? () => {
-                        game.current.phase = "playing";
-                        setPhase("playing");
-                        setMessage("Playing. Space pauses.");
-                        canvasRef.current?.focus();
-                      }
-                    : start
-                }
-              >
-                {phase === "over" ? "Play again" : phase === "paused" ? "Continue" : "Start"}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+      {board}
 
       {/* On-screen pad for touch screens */}
       <div className="mt-4 grid grid-cols-3 gap-2 sm:hidden" aria-label="Direction pad">

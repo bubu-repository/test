@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import Link from "next/link";
 import { PageTransition } from "@/components/PageTransition";
+import { PageHeader } from "@/components/PageHeader";
 import { projects } from "@/content/projects";
 import { BoosterPack, ResealPack } from "@/features/work/BoosterPack";
 import { HoloCard } from "@/features/work/HoloCard";
@@ -15,30 +16,31 @@ export const metadata: Metadata = pageMeta({
 export default function WorkPage() {
   return (
     <PageTransition>
-      <section aria-labelledby="work-title" className="pt-36 pb-20 md:pt-44 md:pb-28">
-        <div className="container-page relative text-center">
-          <p className="type-eyebrow">Selected work · 2024–2025</p>
-          <h1 id="work-title" className="type-display mx-auto mt-4 max-w-[16ch]">
+      <PageHeader
+        id="work-title"
+        label="Selected work · 2024–2025"
+        title={
+          <>
             Three products, shipped <span className="sticker-text">end to end</span>.
-          </h1>
-          <p className="type-lead mx-auto mt-6 max-w-[46ch] text-muted">
-            Each one started as somebody&apos;s messy request and ended as a product people use every day. Open the pack, then tap a card for the full case study.
-          </p>
+          </>
+        }
+        lead="Each one started as somebody's messy request and ended as a product people use every day. Open the pack, then tap a card for the full case study."
+      >
+        <BoosterPack count={projects.length} />
 
-          <BoosterPack count={projects.length} />
-
-          <ol className="cards-grid mt-14 grid gap-6 text-left md:grid-cols-2 lg:grid-cols-3" aria-label="Projects">
-            {projects.map((project) => (
-              <li key={project.slug} data-card className="min-w-0">
-                <HoloCard project={project} total={projects.length} />
-              </li>
-            ))}
-          </ol>
-          <div className="reseal mt-8 flex justify-center">
-            <ResealPack />
-          </div>
+        <ol className="cards-grid mt-14 grid gap-6 text-left md:grid-cols-2 lg:grid-cols-3" aria-label="Projects">
+          {projects.map((project) => (
+            <li key={project.slug} data-card className="min-w-0">
+              <HoloCard project={project} total={projects.length} />
+            </li>
+          ))}
+        </ol>
+        <div className="reseal mt-8 flex justify-center">
+          <ResealPack />
         </div>
-      </section>
+      </PageHeader>
+
+      <div className="h-[clamp(72px,9vw,128px)]" />
 
       <section aria-labelledby="quick-title" className="container-page pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">In a hurry?</p>

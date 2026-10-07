@@ -3,15 +3,15 @@
  * The single source of truth for adelia.cc and every *.adelia.cc experiment.
  * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
  *
- * World: modern skeuomorphism. A warm putty desk, light plastic panels with real bevels and soft
- * shadows, recessed LCD screens, keys that press in, toggles, a rotary dial, LEDs and a little
- * grain, like well-made hardware (Braun, Teenage Engineering). Type is Bricolage Grotesque, with
- * JetBrains Mono for the labels printed on the hardware. Magenta #F41B8D is the anchor: the power
- * LED, the primary key, the dial pointer. The one colour you always feel.
+ * World: clean, mostly white, cool-toned. Real objects you can touch (a small device, a PSP, a
+ * laptop, polaroids, an ID badge) sit on white with soft, slightly blue shadows and a lot of air.
+ * Type is Bricolage Grotesque, with JetBrains Mono for printed labels. Magenta #F41B8D is the
+ * anchor: the power LED, the primary key, the dial pointer. Every other colour is cool (blue,
+ * periwinkle, aqua, ice) and used in small doses.
  *
  * Contrast rules (checked on /styleguide):
  * - White text sits on --accent-strong (5.0:1), never on --accent (3.9:1).
- * - Text on a bright fill (lime, sun, pink, mint, cyan, sky, violet, orange) uses --on-fill.
+ * - Text on a bright fill (aqua, ice, pink, periwinkle, sky, cyan, violet) uses --on-fill.
  * - Magenta as small text: --accent-ink.
  */
 
@@ -20,118 +20,114 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: #EDE9E2;          /* the desk: warm cream putty */
-  --surface: #F7F6F3;     /* plastic panels, keys, cards */
-  --surface-2: #EEECE7;   /* recessed wells, inputs, seams */
-  --ink: #1B1A18;         /* text (13.9:1 on --bg) */
-  --muted: #5F5C55;       /* secondary text (5.4:1 on --bg, 6.2:1 on --surface) */
-  --line: #D8D5CE;        /* panel seams and hairlines */
+  --bg: #FFFFFF;          /* white */
+  --surface: #FFFFFF;     /* panels, keys, cards (separated by hairlines and soft shadows) */
+  --surface-2: #F3F5F8;   /* recessed wells, inputs, quiet fills */
+  --ink: #0E1726;         /* cool near-black (18.0:1 on white) */
+  --muted: #556070;       /* cool grey (6.4:1 on white, 5.8:1 on --surface-2) */
+  --line: #E3E7ED;        /* hairlines */
   --accent: #F41B8D;      /* MAGENTA, the anchor: LEDs, pointers, marks */
   --accent-strong: #D6087A; /* magenta key behind white text (5.0:1) */
-  --accent-ink: #B8006A;  /* magenta as small text (5.2:1 on --bg) */
+  --accent-ink: #B8006A;  /* magenta as small text (6.5:1 on white) */
 
-  /* Materials */
-  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 46%);
-  --bevel: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 -1px 0 rgba(40, 34, 24, .08);
-  --lift-sm: 0 1px 1px rgba(40, 34, 24, .1), 0 2px 4px rgba(40, 34, 24, .07);
-  --lift: 0 1px 1px rgba(40, 34, 24, .08), 0 4px 10px rgba(40, 34, 24, .07), 0 18px 36px rgba(40, 34, 24, .09);
-  --lift-lg: 0 2px 2px rgba(40, 34, 24, .08), 0 10px 24px rgba(40, 34, 24, .1), 0 40px 80px rgba(40, 34, 24, .16);
-  --recess: inset 0 2px 5px rgba(40, 34, 24, .16), inset 0 0 0 1px rgba(40, 34, 24, .08), 0 1px 0 rgba(255, 255, 255, .8);
-  --key-edge: 0 2px 0 #C9C5BC;
-  --screen: #141513;      /* LCD glass */
-  --screen-ink: #EAF0E6;  /* lit segments (15.8:1) */
-  --screen-muted: #9AA396; /* dim segments (7.0:1) */
-  --screen-accent: #FF6FB8; /* magenta on the screen (7.2:1) */
-  --metal-from: #FBFBF9;
-  --metal-to: #B9B7B1;
-  --led: #34C759;
-  --mat: #2864A3;         /* cutting mat blue */
-  --mat-line: rgba(255, 255, 255, .16);
+  /* Materials: white plastic and brushed aluminium, lit from above, shadows a little blue */
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, 0) 46%);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(15, 23, 42, .06);
+  --lift-sm: 0 1px 1px rgba(15, 23, 42, .06), 0 2px 6px rgba(15, 23, 42, .06);
+  --lift: 0 1px 1px rgba(15, 23, 42, .05), 0 6px 14px rgba(15, 23, 42, .06), 0 22px 44px rgba(15, 23, 42, .07);
+  --lift-lg: 0 2px 2px rgba(15, 23, 42, .05), 0 14px 30px rgba(15, 23, 42, .08), 0 48px 96px rgba(15, 23, 42, .12);
+  --recess: inset 0 2px 4px rgba(15, 23, 42, .08), inset 0 0 0 1px rgba(15, 23, 42, .06), 0 1px 0 rgba(255, 255, 255, .9);
+  --key-edge: 0 2px 0 #D7DDE6;
+  --screen: #0B0F17;      /* LCD glass */
+  --screen-ink: #E8EEF7;  /* lit segments (16.4:1) */
+  --screen-muted: #8B97A8; /* dim segments (6.5:1) */
+  --screen-accent: #FF6FB8; /* magenta on the screen (7.5:1) */
+  --metal-from: #FFFFFF;
+  --metal-to: #B9C1CD;
+  --led: #22C9A0;
 
-  /* Floating chrome (dock, popovers, dialogs): plastic, slightly translucent */
-  --glass: rgba(247, 246, 243, .9);
-  --glass-strong: rgba(247, 246, 243, .96);
-  --glass-edge: rgba(255, 255, 255, .95);
-  --glass-line: rgba(40, 34, 24, .1);
-  --glass-shadow: 0 1px 1px rgba(40, 34, 24, .08), 0 8px 20px rgba(40, 34, 24, .1), 0 24px 48px rgba(40, 34, 24, .1);
-  --glass-blur: 16px;
+  /* Floating chrome (dock, popovers, dialogs) */
+  --glass: rgba(255, 255, 255, .86);
+  --glass-strong: rgba(255, 255, 255, .95);
+  --glass-edge: rgba(255, 255, 255, 1);
+  --glass-line: rgba(15, 23, 42, .08);
+  --glass-shadow: 0 1px 1px rgba(15, 23, 42, .05), 0 8px 20px rgba(15, 23, 42, .08), 0 24px 48px rgba(15, 23, 42, .08);
+  --glass-blur: 18px;
 
-  --stage-from: #8DBEFF;  /* sky fallback gradient, top (the live sky lives in the weather widget) */
+  --stage-from: #8DBEFF;  /* sky fallback gradient, top (the live sky lives in the phone) */
   --stage-to: #EAF3FF;    /* sky fallback gradient, bottom */
   --sky-image: url("/sky/day.webp");
   --cloud: rgba(255, 255, 255, .9);
-  --dot: rgba(29, 29, 31, .07);
-  --glow: rgba(244, 27, 141, .22);
-  --check-a: #EFEDE8;     /* checkerboard pair (badge, reveal card) */
-  --check-b: #E2DFD8;
+  --dot: rgba(15, 23, 42, .06);
+  --glow: rgba(244, 27, 141, .2);
+  --check-a: #F4F6F9;     /* checkerboard pair (badge, reveal card) */
+  --check-b: #E6EAF0;
 }
 
 /* ---------- Color: night (dark) ---------- */
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #18181A;          /* graphite desk */
-  --surface: #262628;     /* graphite plastic */
-  --surface-2: #1E1E20;   /* wells */
-  --ink: #EDEDEA;         /* text (12.9:1 on --surface) */
-  --muted: #A6A39D;       /* secondary text (7.1:1 on --bg, 6.0:1 on --surface) */
-  --line: #36363A;
+  --bg: #0B0E13;          /* cool graphite */
+  --surface: #151A21;
+  --surface-2: #10141A;
+  --ink: #E9EEF5;         /* text (16.6:1 on --bg) */
+  --muted: #9AA5B5;       /* secondary text (7.8:1 on --bg, 7.0:1 on --surface) */
+  --line: #232A34;
   --accent: #F41B8D;      /* magenta stays the anchor */
   --accent-strong: #D6087A;
-  --accent-ink: #FF6FB8;  /* magenta as small text (6.9:1 on --bg) */
+  --accent-ink: #FF6FB8;  /* magenta as small text (7.6:1 on --bg) */
 
-  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, 0) 46%);
-  --bevel: inset 0 1px 0 rgba(255, 255, 255, .08), inset 0 -1px 0 rgba(0, 0, 0, .45);
-  --lift-sm: 0 1px 1px rgba(0, 0, 0, .4), 0 2px 4px rgba(0, 0, 0, .3);
-  --lift: 0 1px 1px rgba(0, 0, 0, .4), 0 4px 10px rgba(0, 0, 0, .3), 0 18px 36px rgba(0, 0, 0, .35);
-  --lift-lg: 0 2px 2px rgba(0, 0, 0, .4), 0 10px 24px rgba(0, 0, 0, .4), 0 40px 80px rgba(0, 0, 0, .5);
-  --recess: inset 0 2px 5px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 255, 255, .05);
-  --key-edge: 0 2px 0 #0E0E0F;
-  --screen: #0D0E0D;
-  --screen-ink: #EAF0E6;
-  --screen-muted: #9AA396;
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 46%);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, .07), inset 0 -1px 0 rgba(0, 0, 0, .45);
+  --lift-sm: 0 1px 1px rgba(0, 0, 0, .4), 0 2px 6px rgba(0, 0, 0, .3);
+  --lift: 0 1px 1px rgba(0, 0, 0, .4), 0 6px 14px rgba(0, 0, 0, .3), 0 22px 44px rgba(0, 0, 0, .35);
+  --lift-lg: 0 2px 2px rgba(0, 0, 0, .4), 0 14px 30px rgba(0, 0, 0, .4), 0 48px 96px rgba(0, 0, 0, .5);
+  --recess: inset 0 2px 5px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 255, 255, .04);
+  --key-edge: 0 2px 0 #06080B;
+  --screen: #070A0F;
+  --screen-ink: #E8EEF7;
+  --screen-muted: #8B97A8;
   --screen-accent: #FF6FB8;
-  --metal-from: #6A6A6E;
-  --metal-to: #2E2E31;
-  --led: #34C759;
-  --mat: #163A60;
-  --mat-line: rgba(255, 255, 255, .1);
+  --metal-from: #5B6573;
+  --metal-to: #232932;
+  --led: #22C9A0;
 
-  --glass: rgba(38, 38, 40, .9);
-  --glass-strong: rgba(38, 38, 40, .96);
-  --glass-edge: rgba(255, 255, 255, .08);
+  --glass: rgba(21, 26, 33, .86);
+  --glass-strong: rgba(21, 26, 33, .95);
+  --glass-edge: rgba(255, 255, 255, .07);
   --glass-line: rgba(0, 0, 0, .5);
   --glass-shadow: 0 1px 1px rgba(0, 0, 0, .4), 0 8px 20px rgba(0, 0, 0, .4), 0 24px 48px rgba(0, 0, 0, .4);
 
   --stage-from: #060814;
-  --stage-to: #1A1230;
+  --stage-to: #141a33;
   --sky-image: url("/sky/night.webp");
-  --cloud: rgba(140, 120, 200, .25);
-  --dot: rgba(245, 245, 247, .06);
-  --glow: rgba(244, 27, 141, .45);
-  --check-a: #222224;
-  --check-b: #2C2C2F;
+  --cloud: rgba(140, 150, 220, .25);
+  --dot: rgba(233, 238, 245, .06);
+  --glow: rgba(244, 27, 141, .4);
+  --check-a: #151A21;
+  --check-b: #1C222B;
 }
 
-/* ---------- Accent colours (theme-independent; used in small doses) ---------- */
+/* ---------- Accent colours (theme-independent, cool, used in small doses) ---------- */
 :root {
-  --red: #FF3B30;
-  --lime: #D4F53C;
-  --cobalt: #2860F0;
-  --sun: #FFCC00;
+  --red: #FF4D6D;         /* errors only */
+  --lime: #5EEAD4;        /* aqua (the old lime slot, cooled) */
+  --cobalt: #3060E6;      /* blue (white text 5.0:1) */
+  --sun: #A5B4FC;         /* periwinkle (the old sun slot, cooled) */
   --pink: #FFB2DC;
-  --mint: #34C759;
+  --mint: #2DD4BF;        /* teal */
   --cyan: #32D4E8;
   --violet: #8E7CFF;
-  --orange: #FF9500;
+  --orange: #38BDF8;      /* sky blue (the old orange slot, cooled) */
   --sky: #7CC4FF;
-  --charcoal: #2C2C2E;
-  --lcd: #1D1D1F;         /* the recessed screen of the clock widget */
-  --ok: #34C759;
+  --charcoal: #1E2530;
+  --lcd: #0B0F17;
+  --ok: #22C9A0;
 
-  --on-fill: #1D1D1F;     /* text on every bright fill */
+  --on-fill: #0E1726;     /* text on every bright fill */
   --on-accent: #FFFFFF;   /* text on --accent-strong */
-  --on-cobalt: #FFFFFF;   /* text on blue (5.2:1) and charcoal */
+  --on-cobalt: #FFFFFF;   /* text on blue and charcoal */
   --on-ink: #FFFFFF;
 
   /* Jelly shading for the small glossy mascot */
@@ -141,13 +137,13 @@
   --jelly-ink: #1A0614;
 
   /* Terminal: always a night console */
-  --term-bg: #141416;
-  --term-ink: #F5F5F7;
-  --term-muted: #A1A1A6;
-  --term-accent: #FF5FB2;
+  --term-bg: #0B0F17;
+  --term-ink: #E8EEF7;
+  --term-muted: #8B97A8;
+  --term-accent: #FF6FB8;
   --term-link: #7CC4FF;
-  --term-ok: #D4F53C;
-  --term-warn: #FFCC00;
+  --term-ok: #5EEAD4;
+  --term-warn: #A5B4FC;
 }
 
 /* ---------- Shape, depth, space, motion, type ---------- */
@@ -163,7 +159,7 @@
   --shadow-sm: var(--lift-sm);
   --shadow-lg: var(--lift-lg);
 
-  /* A little grain so plastic and paper don't look like flat vectors */
+  /* A whisper of grain, for paper only (polaroids, the poster, sticky notes) */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --shadow-glow: 0 8px 24px rgba(214, 8, 122, .22);
   --gloss: inset 0 1px 0 rgba(255, 255, 255, .5);

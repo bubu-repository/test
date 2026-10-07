@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
+import { PageHeader } from "@/components/PageHeader";
 import { labItems } from "@/content/lab";
 import { Gumball } from "@/features/lab/Gumball";
 import { FeatureGrid, SubdomainGrid } from "@/features/lab/LabGrid";
@@ -17,22 +18,25 @@ export const metadata: Metadata = pageMeta({
 export default function LabPage() {
   return (
     <PageTransition>
-      <header className="container-page pt-36 text-center md:pt-44">
-        <p className="text-12 font-semibold tracking-[0.2em] text-muted uppercase">The lab</p>
-        <h1 className="type-display mx-auto mt-4 max-w-[14ch]">
-          Toys, tools and <span className="sticker-text">experiments</span>.
-        </h1>
-        <p className="type-lead mx-auto mt-6 max-w-[44ch] text-muted">
-          {subs} live on their own subdomains. {site} more are built into this site, and every one of them runs from a button on this page.
-        </p>
-      </header>
+      <PageHeader
+        id="lab-title"
+        label="The lab"
+        title={
+          <>
+            Toys, tools and <span className="sticker-text">experiments</span>.
+          </>
+        }
+        lead={`${subs} live on their own subdomains. ${site} more are built into this site, and every one of them runs from a button on this page.`}
+      >
+        <section id="gacha" aria-labelledby="gacha-title" className="mt-14 scroll-mt-24 text-left">
+          <h2 id="gacha-title" className="sr-only">
+            Gumball machine
+          </h2>
+          <Gumball />
+        </section>
+      </PageHeader>
 
-      <section id="gacha" aria-labelledby="gacha-title" className="container-page section-y scroll-mt-24">
-        <h2 id="gacha-title" className="sr-only">
-          Gumball machine
-        </h2>
-        <Gumball />
-      </section>
+      <div className="section-y" />
 
       <section aria-labelledby="subdomains-title" className="container-page pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">*.adelia.cc</p>

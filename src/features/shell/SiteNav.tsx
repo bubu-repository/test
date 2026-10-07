@@ -72,12 +72,12 @@ const G = {
 const TINT = {
   work: "linear-gradient(180deg, #6CC4FF, #1F7BFF)",
   lab: "linear-gradient(180deg, #C995FF, #7A3CF0)",
-  about: "linear-gradient(180deg, #FF7C9C, #F21D5B)",
-  guestbook: "linear-gradient(180deg, #FFDB5C, #FFAA00)",
-  contact: "linear-gradient(180deg, #6BE38A, #1FB24A)",
+  about: "linear-gradient(180deg, #7FE3F2, #0EA5C6)",
+  guestbook: "linear-gradient(180deg, #99F6E4, #14B8A6)",
+  contact: "linear-gradient(180deg, #C7D2FE, #5B6CF0)",
   moci: "radial-gradient(120% 120% at 30% 15%, #FF9BD0 0%, #F41B8D 48%, #B8006A 100%)",
-  grey: "linear-gradient(180deg, #F4F4F6, #DCDCE2)",
-  night: "linear-gradient(180deg, #3A3A44, #15151A)",
+  grey: "linear-gradient(180deg, #F8FAFC, #DDE3EB)",
+  night: "linear-gradient(180deg, #2A3140, #0E131B)",
 };
 
 function Glyph({ children }: { children: ReactNode }) {
@@ -266,7 +266,7 @@ export function SiteNav() {
         <DockItem label="Search and commands (⌘K)" bg={TINT.grey} fg="#3A3A40" className="max-sm:hidden" onClick={() => dispatch({ type: "open", panel: "palette" })} cursor="⌘K">
           <Glyph>{G.search}</Glyph>
         </DockItem>
-        <DockItem label={isDark ? "Day sky" : "Night sky"} bg={isDark ? TINT.grey : TINT.night} fg={isDark ? "#FF9500" : "#F5F5F7"} pressed={isDark} className="max-md:hidden" onClick={toggleTheme} tour="theme">
+        <DockItem label={isDark ? "Day sky" : "Night sky"} bg={isDark ? TINT.grey : TINT.night} fg={isDark ? "#3060E6" : "#F5F8FC"} pressed={isDark} className="max-md:hidden" onClick={toggleTheme} tour="theme">
           <Glyph>{isDark ? G.sun : G.moon}</Glyph>
         </DockItem>
         <DockItem label={sound ? "Sound on" : "Sound off"} bg={TINT.grey} fg="#3A3A40" pressed={sound} className="max-lg:hidden" onClick={() => applySound(!sound, { persist: true })} cursor={sound ? "Mute" : "Sound"}>

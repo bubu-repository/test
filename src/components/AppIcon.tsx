@@ -6,14 +6,14 @@ import { cn } from "@/lib/cn";
 export const TONE_GRADIENT: Record<Tone, string> = {
   magenta: "radial-gradient(120% 120% at 30% 10%, #FF8CC8 0%, #F41B8D 50%, #B8006A 100%)",
   cobalt: "linear-gradient(180deg, #6CB2FF, #2860F0)",
-  sun: "linear-gradient(180deg, #FFDB5C, #FF9F0A)",
-  lime: "linear-gradient(180deg, #DDF76A, #7FBF00)",
+  sun: "linear-gradient(180deg, #C7D2FE, #6D7CF5)",
+  lime: "linear-gradient(180deg, #99F6E4, #14B8A6)",
   violet: "linear-gradient(180deg, #C995FF, #7A3CF0)",
-  mint: "linear-gradient(180deg, #6BE38A, #1FB24A)",
+  mint: "linear-gradient(180deg, #7FE3F2, #0EA5C6)",
   sky: "linear-gradient(180deg, #A6DBFF, #3BA0FF)",
-  ink: "linear-gradient(180deg, #3A3A44, #15151A)",
+  ink: "linear-gradient(180deg, #2A3140, #0E131B)",
   pink: "linear-gradient(180deg, #FFC9E4, #FF7AB8)",
-  red: "linear-gradient(180deg, #FF7C6E, #FF3B30)",
+  red: "linear-gradient(180deg, #FF8FA3, #F43F5E)",
 };
 
 /** A glossy squircle app icon in one tone. The glyph is decorative; label the parent instead. */

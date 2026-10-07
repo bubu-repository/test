@@ -17,6 +17,9 @@ export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
 }
 
+/** Every case study is prerendered from generateStaticParams; reading the slug may block navigation. */
+export const instant = false;
+
 export async function generateMetadata({ params }: PageProps<"/work/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
@@ -166,7 +169,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                     />
                     <div className="widget p-5 md:p-6">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <code className="rounded-xs bg-surface-2 px-2 py-1 text-14 font-semibold text-cobalt">
+                        <code className="max-w-full rounded-xs bg-surface-2 px-2 py-1 text-14 font-semibold [overflow-wrap:anywhere] text-cobalt">
                           {n + 1}. {step.call}
                         </code>
                         <span className="type-pixel text-muted">{step.duration}</span>

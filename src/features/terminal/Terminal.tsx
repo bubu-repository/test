@@ -23,8 +23,25 @@ const WELCOME: Line[] = [
   { kind: "out", text: "Type `help` to see what you can do. Try `ls`, `cd work`, `cat README.md`.", tone: "muted" },
 ];
 
+/** The terminal overlay (backtick): the same shell, on a laptop that slides up from the bottom. */
 export function Terminal() {
   const open = useUI((s) => s.overlay === "terminal");
+  const titleId = useId();
+  const close = () => ui.set({ overlay: null });
+  return (
+    <Dialog open={open} onClose={close} labelledBy={titleId} placement="bottom">
+      <Laptop>
+        <TerminalScreen titleId={titleId} onClose={close} autoFocus heightClass="h-[min(48vh,400px)]" />
+      </Laptop>
+    </Dialog>
+  );
+}
+
+/**
+ * The shell itself: a window with a title bar, the log and a prompt. Used in the overlay and
+ * inline on the home page's laptop. The session (history and output) is shared between them.
+ */
+export function TerminalScreen({ titleId: givenId, onClose, autoFocus = false, heightClass = "h-[320px]" }: { titleId?: string; onClose?: () => void; autoFocus?: boolean; heightClass?: string }) {
   const pathname = usePathname();
   // Mounted fresh on every open: start in the directory of the current page.
   const [cwd, setCwd] = useState(() => routeToCwd(pathname));
@@ -44,18 +61,19 @@ export function Terminal() {
   const [cursor, setCursor] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const titleId = useId();
+  const ownId = useId();
+  const titleId = givenId ?? ownId;
 
   useEffect(() => {
-    requestAnimationFrame(() => inputRef.current?.focus());
-  }, []);
+    if (autoFocus) requestAnimationFrame(() => inputRef.current?.focus());
+  }, [autoFocus]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [entries]);
 
   const prompt = `visitor@adelia.cc:~${cwd === "/" ? "" : cwd}$`;
-  const close = () => ui.set({ overlay: null });
+  const close = () => onClose?.();
 
   const submit = () => {
     const value = input;
@@ -120,12 +138,7 @@ export function Terminal() {
   };
 
   return (
-    <Dialog open={open} onClose={close} labelledBy={titleId} placement="bottom">
-      <div
-        className="overflow-hidden rounded-card border border-white/10 bg-term-bg text-term-ink shadow-lg"
-        data-xr="Terminal · virtual filesystem mapped to routes"
-        onClick={() => inputRef.current?.focus()}
-      >
+    <div className="bg-term-bg text-left text-term-ink" data-xr="Terminal · virtual filesystem mapped to routes" onClick={() => inputRef.current?.focus()}>
         <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
           <span aria-hidden="true" className="flex gap-1.5">
             <span className="size-3 rounded-full bg-accent" />
@@ -135,12 +148,14 @@ export function Terminal() {
           <h2 id={titleId} className="type-pixel ml-2 flex-1 truncate text-term-ink">
             moci-sh — {cwd === "/" ? "~" : `~${cwd}`}
           </h2>
-          <button type="button" onClick={close} className="rounded-pill px-2.5 py-1 text-12 text-term-muted hover:bg-white/10">
-            Close <span className="sr-only">terminal</span>
-            <kbd className="ml-1 border-white/20 bg-transparent text-term-muted">esc</kbd>
-          </button>
+          {onClose && (
+            <button type="button" onClick={close} className="rounded-pill px-2.5 py-1 text-12 text-term-muted hover:bg-white/10">
+              Close <span className="sr-only">terminal</span>
+              <kbd className="ml-1 border-white/20 bg-transparent text-term-muted">esc</kbd>
+            </button>
+          )}
         </div>
-        <div ref={scrollRef} role="log" aria-live="polite" aria-label="Terminal output" className="type-code h-[min(52vh,420px)] overflow-y-auto px-4 py-3 text-14">
+        <div ref={scrollRef} role="log" aria-live="polite" aria-label="Terminal output" className={cn("type-code overflow-y-auto px-4 py-3 text-14", heightClass)}>
           {entries.map((entry) => (
             <div key={entry.id} className="mb-1.5">
               {entry.prompt !== undefined && (
@@ -204,7 +219,21 @@ export function Terminal() {
             Type a command and press Enter. Type help for the list of commands.
           </p>
         </div>
+    </div>
+  );
+}
+
+/** A laptop: dark bezel with a camera, aluminium edge and base. Whatever you pass is the screen. */
+export function Laptop({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("laptop", className)} data-xr="Laptop · CSS hardware around the terminal">
+      <div className="laptop__lid">
+        <span className="laptop__camera" aria-hidden="true" />
+        <div className="laptop__screen">{children}</div>
       </div>
-    </Dialog>
+      <div className="laptop__base" aria-hidden="true">
+        <span className="laptop__notch" />
+      </div>
+    </div>
   );
 }

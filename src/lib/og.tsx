@@ -10,7 +10,7 @@ export const ogContentType = "image/png";
 const fontDir = join(process.cwd(), "node_modules/@fontsource/bricolage-grotesque/files");
 const fonts = Promise.all([readFile(join(fontDir, "bricolage-grotesque-latin-400-normal.woff")), readFile(join(fontDir, "bricolage-grotesque-latin-700-normal.woff"))]);
 
-const ICONS = ["linear-gradient(180deg, #6CC4FF, #1F7BFF)", "linear-gradient(180deg, #C995FF, #7A3CF0)", "linear-gradient(180deg, #FF7C9C, #F21D5B)", "linear-gradient(180deg, #FFDB5C, #FFAA00)", "linear-gradient(180deg, #6BE38A, #1FB24A)", "radial-gradient(120% 120% at 30% 15%, #FF9BD0 0%, #F41B8D 48%, #B8006A 100%)"];
+const ICONS = ["linear-gradient(180deg, #6CC4FF, #1F7BFF)", "linear-gradient(180deg, #C995FF, #7A3CF0)", "linear-gradient(180deg, #7FE3F2, #0EA5C6)", "linear-gradient(180deg, #99F6E4, #14B8A6)", "linear-gradient(180deg, #C7D2FE, #5B6CF0)", "radial-gradient(120% 120% at 30% 15%, #FF9BD0 0%, #F41B8D 48%, #B8006A 100%)"];
 
 export async function renderOg({ eyebrow, title, accent, subtitle }: { eyebrow: string; title: string; accent?: string; subtitle: string }) {
   const [regular, bold] = await fonts;

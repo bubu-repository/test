@@ -219,7 +219,7 @@ export function run(raw: string, cwd: string, history: string[]): ShellResult {
           { kind: "out", text: `${identity.name.toLowerCase().replace(" ", "")}@${identity.domain}`, tone: "accent" },
           { kind: "out", text: "-----------------------" },
           { kind: "out", text: `role      ${identity.role}` },
-          { kind: "out", text: `location  ${identity.location} (${identity.timeZoneLabel})` },
+          { kind: "out", text: `location  ${identity.location} · ${identity.timeZoneLabel}` },
           { kind: "out", text: "shell     moci-sh 1.0 (jelly)" },
           { kind: "out", text: "stack     Next.js · TypeScript · Claude · Postgres · WebGL" },
           { kind: "out", text: `projects  ${projects.map((p) => p.name).join(", ")}` },

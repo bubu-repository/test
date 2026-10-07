@@ -4,7 +4,7 @@ import { projects } from "./projects";
 
 /** Pages an agent or command may navigate to. */
 export const siteMap = [
-  { path: "/", title: "Home", description: "The hub: a small device called the AT-26 on a blue cutting mat. Its screen shows her name, role, city, her time next to yours and an ask line for Moci; a dial picks where to go; switches and keys run night mode, sound, the tour, the brief and the CV; P turns the screen off. Draggable polaroids of the three projects lie around it. Below: the case studies and live widgets (Bekasi weather with a live sky shader, working-hours overlap, the lab, the game)." },
+  { path: "/", title: "Home", description: "One small device, the AT-26, on white: its screen shows her name, role, city, her time next to yours and an ask line for Moci; a dial picks where to go; switches and keys run night mode, sound, the tour, the brief and the CV; P turns the screen off. Scroll down for polaroids of the three projects, a live board (her phone with the Bekasi sky, working-hours overlap, Ask Moci, find a time, workspaces, keycaps, the lab), the game on a PSP and a terminal on a laptop." },
   { path: "/work", title: "Work", description: "Three products as cards in a booster pack. Every case study reads as an article or plays out as a chat." },
   ...projects.map((p) => ({ path: `/work/${p.slug}`, title: `${p.name} case study`, description: p.tagline })),
   { path: "/lab", title: "Lab", description: "Every experiment: subdomain experiments and features built into this site. Has a gumball machine." },

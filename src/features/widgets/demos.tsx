@@ -13,6 +13,7 @@ import { useVisitorZone } from "@/lib/hooks";
 import { sfx } from "@/lib/sound";
 import { formatHour, workingOverlap, zoneCity } from "@/lib/time";
 import { toast } from "@/lib/ui";
+import { Phone } from "../objects/Phone";
 import { WidgetTitle } from "./widgets";
 
 /** The round ↗ in the corner of a tile (after marco.fyi): where this demo leads. */
@@ -328,5 +329,21 @@ function Keycap({ children, down, onPress, label, first }: { children: ReactNode
     <button type="button" className="keycap" data-down={down} onClick={onPress} aria-label={first ? label : undefined} aria-hidden={first ? undefined : true} tabIndex={first ? 0 : -1}>
       {children}
     </button>
+  );
+}
+
+/* ---------- Bekasi now: her phone, lying on the table, showing the live sky ---------- */
+
+export function PhoneWidget() {
+  return (
+    <div data-tour="sky" className="flex h-full flex-col" data-xr="PhoneWidget · the live sky on a lock screen">
+      <WidgetTitle>Bekasi, right now</WidgetTitle>
+      <div className="grid flex-1 place-items-center py-4">
+        <div className="rotate-[-3deg]">
+          <Phone />
+        </div>
+      </div>
+      <p className="text-12 text-muted">A live shader: the clouds follow Bekasi&apos;s real weather, and your cursor parts them.</p>
+    </div>
   );
 }

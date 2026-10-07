@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
+import { PageHeader } from "@/components/PageHeader";
 import { bio, experience, identity, modelCard, skills } from "@/content/profile";
 import { JdMatcher } from "@/features/about/JdMatcher";
 import { IdBadge } from "@/features/hero/IdBadge";
@@ -39,18 +40,22 @@ function CardList({ title, items }: { title: string; items: readonly string[] })
 export default function AboutPage() {
   return (
     <PageTransition>
-      <header className="container-page relative pt-36 text-center md:pt-44">
-        {/* The lanyard badge hangs from the top of the page: drag it, flip it for a QR code. */}
+      {/* CONTOH — ganti dengan data asli (bio.short) */}
+      <PageHeader
+        id="about-title"
+        label="About"
+        title={
+          <>
+            Hi, I&apos;m <span className="sticker-text">{identity.firstName}</span>.
+          </>
+        }
+        lead={bio.short}
+      >
+        {/* The lanyard badge hangs from the top edge of the mat: drag it, flip it for a QR code. */}
         <div className="pointer-events-none absolute top-0 right-[var(--gutter)] hidden xl:block">
-          <IdBadge strap={96} className="pointer-events-auto origin-top scale-90" />
+          <IdBadge strap={64} className="pointer-events-auto origin-top scale-90" />
         </div>
-        <p className="text-12 font-semibold tracking-[0.2em] text-muted uppercase">About</p>
-        <h1 className="type-display mx-auto mt-4">
-          Hi, I&apos;m <span className="sticker-text">{identity.firstName}</span>.
-        </h1>
-        {/* CONTOH — ganti dengan data asli */}
-        <p className="type-lead mx-auto mt-6 max-w-[46ch] text-muted">{bio.short}</p>
-      </header>
+      </PageHeader>
 
       <div className="container-page section-y grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-20">
         <div className="min-w-0">

@@ -30,13 +30,17 @@ const GLYPHS: Record<string, string> = {
   "pixel-moci": "▚",
   "find-time": "◔",
   keycaps: "⌥",
-  desk: "▧",
+  psp: "✕",
+  laptop: ">_",
   dock: "▭",
   "case-chat": "❝",
   ticker: "⏱",
   sound: "♪",
   secret: "↑↑",
 };
+
+/** The glyph as text (for places that print it, like the palette's keys). */
+export const labGlyphText = (slug: string) => GLYPHS[slug] ?? "•";
 
 export function labGlyph(slug: string) {
   const g = GLYPHS[slug] ?? "•";

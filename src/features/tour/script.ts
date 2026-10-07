@@ -108,7 +108,7 @@ export async function runTour(signal: AbortSignal) {
   ui.set({ agentOpen: false, overlay: null });
 
   try {
-    await say("Hi! I'm Moci. I'll drive for about 40 seconds. Move your mouse or press any key to take the wheel.", signal, 2600);
+    await say("Hi! I'm Moci. I'll drive for about 40 seconds. Move your mouse or press any key to take the wheel.", signal, 1700);
 
     // 1. Home: who she is
     await goto("/", signal);
@@ -116,7 +116,7 @@ export async function runTour(signal: AbortSignal) {
     const name = await waitFor('[data-tour="name"]', signal);
     if (name) {
       await moveTo(name, signal, "left");
-      await say("This is Adelia Tiara, an AI Product Engineer in Bekasi, Indonesia.", signal, 2600);
+      await say("This is Adelia Tiara, an AI Product Engineer in Bekasi, Indonesia.", signal, 1700);
     }
 
     // 2. The headline is sampled
@@ -125,30 +125,23 @@ export async function runTour(signal: AbortSignal) {
       await moveTo(token, signal);
       await say("Even the headline is a model output. Watch me resample a word.", signal, 900);
       await press(token, signal);
-      await sleep(900, signal);
+      await sleep(700, signal);
       const option = findVisible('[data-tour="token-option"]');
       if (option) {
         await moveTo(option, signal);
         await press(option, signal);
       }
-      await sleep(900, signal);
+      await sleep(600, signal);
     }
 
-    // 3. The live sky
+    // 3. The live sky, on her phone in the live board further down
     const sky = await waitFor('[data-tour="sky"]', signal, 2000);
     if (sky) {
       await moveTo(sky, signal);
-      await say("This sky is a live shader, not a photo. Its clouds follow the real weather over Bekasi right now.", signal, 2800);
+      await say("That sky on her phone is a live shader. Its clouds follow the real weather over Bekasi right now.", signal, 2000);
     }
 
-    // 4. Widgets: overlap ring
-    const overlap = await waitFor('[data-tour="overlap"]', signal, 2000);
-    if (overlap) {
-      await moveTo(overlap, signal);
-      await say("This ring shows when her working day overlaps with yours, from your time zone.", signal, 3000);
-    }
-
-    // 5. Work: the booster pack and the cards
+    // 4. Work: through the dock on wide screens
     const navWork = wide ? findVisible('[data-tour="nav-work"]') : null;
     if (navWork) {
       await moveTo(navWork, signal);
@@ -161,12 +154,12 @@ export async function runTour(signal: AbortSignal) {
       await moveTo(pack, signal);
       await say("Fresh pack. Let's open it.", signal, 600);
       await press(pack, signal);
-      await sleep(1600, signal);
+      await sleep(1200, signal);
     }
     const card = await waitFor('[data-tour="card-tenderlens"]', signal);
     if (card) {
       await moveTo(card, signal);
-      await say("Tenderlens reads 200-page government tenders so small contractors don't have to.", signal, 2400);
+      await say("Tenderlens reads 200-page government tenders so small contractors don't have to.", signal, 1500);
       await goto("/work/tenderlens", signal);
     }
 
@@ -177,12 +170,6 @@ export async function runTour(signal: AbortSignal) {
       await say("Every case study can be read as an article, or told as a chat. Let's chat.", signal, 400);
       await press(chat, signal);
       await sleep(1600, signal);
-      const next = findVisible('[data-tour="case-next"]');
-      if (next) {
-        await moveTo(next, signal);
-        await press(next, signal);
-        await sleep(1500, signal);
-      }
     } else {
       await scrollPage(window.innerHeight * 0.9, signal, 1300);
     }
@@ -193,7 +180,7 @@ export async function runTour(signal: AbortSignal) {
       await moveTo(theme, signal);
       await say("Night sky, for the night owls.", signal, 300);
       await press(theme, signal);
-      await sleep(1300, signal);
+      await sleep(700, signal);
     }
 
     // 8. ⌘K palette → Lab
@@ -216,7 +203,7 @@ export async function runTour(signal: AbortSignal) {
       await moveTo(gacha, signal);
       await say("Can't choose an experiment? The gumball machine picks for you.", signal, 400);
       await press(gacha, signal);
-      await sleep(2000, signal);
+      await sleep(1300, signal);
     }
 
     // 10. Ask me
@@ -224,7 +211,7 @@ export async function runTour(signal: AbortSignal) {
     void dispatch({ type: "ask", question: "What's her strongest project?" });
     await sleep(600, signal);
     await until(() => !agentStore.get().busy, signal, 15000);
-    await sleep(2200, signal);
+    await sleep(1300, signal);
 
     // 11. Contact
     ui.set({ agentOpen: false });
@@ -233,9 +220,9 @@ export async function runTour(signal: AbortSignal) {
     if (email) {
       await moveTo(email, signal);
       await press(email, signal);
-      await say("Her email is on your clipboard now. Your move!", signal, 2600);
+      await say("Her email is on your clipboard now. Your move!", signal, 1700);
     } else {
-      await say("That's the tour. Your move!", signal, 2200);
+      await say("That's the tour. Your move!", signal, 2000);
     }
     unlock("passenger");
   } finally {
