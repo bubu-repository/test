@@ -72,7 +72,8 @@ export async function POST(request: Request) {
   const id = typeof body.id === "string" ? body.id : "";
   if (!ID.test(id)) return new Response(null, { status: 400 });
   const peer = touch(id);
-  if (!peer) return new Response(null, { status: 404 });
+  // A peer that already left (e.g. the "bye" a closing tab sends): nothing to do, and not an error.
+  if (!peer) return new Response(null, { status: 204 });
 
   switch (body.type) {
     case "move": {

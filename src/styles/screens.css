@@ -1966,10 +1966,17 @@
 }
 
 .work-card__stats dd {
-  font-size: var(--text-24);
+  font-size: clamp(20px, 5.4vw, var(--text-24));
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
+  white-space: nowrap;
+}
+
+@media (max-width: 479px) {
+  .work-card__stats {
+    column-gap: 18px;
+  }
 }
 
 /* ---------- The work in the hero's sky window (wide screens) ---------- */
