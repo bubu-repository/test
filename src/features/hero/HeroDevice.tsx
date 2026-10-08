@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useEffectEvent, useState, type ReactNode } from "react";
 import { ArrowRightIcon } from "@/components/icons";
 import { identity } from "@/content/profile";
+import { projects } from "@/content/projects";
 import { dispatch } from "@/lib/actions";
 import { useNow, useVisitorZone } from "@/lib/hooks";
 import { sfx } from "@/lib/sound";
@@ -38,7 +39,6 @@ function ScreenStatus() {
               <span className="text-screen-ink tabular-nums">{formatTime(zone, date)}</span> in {zoneCity(zone)}
             </>
           )}
-          {date && same && " · same as you"}
         </span>
       </p>
       {/* The weather only shows when there is some: no "offline" states on the first screen. */}
@@ -162,6 +162,20 @@ export function HeroDevice() {
           </Keycap>
         </div>
       </div>
+
+      {/* Where the floating phones don't fit (phones, tablets), the work is one tap away on the first screen. */}
+      <ul className="hero-work mt-4 px-1" aria-label="The work, with one number each">
+        {projects.map((p) => (
+          <li key={p.slug}>
+            <Link href={`/work/${p.slug}`} className="hero-work__item">
+              <span className="font-semibold text-ink">{p.name}</span>
+              <span className="text-12 text-muted">
+                {p.stats[0].label} <b className="font-semibold text-ink tabular-nums">{p.stats[0].value}</b>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
 
       {/* Bottom label. */}
       <div className="mt-5 flex items-center gap-3 px-2 font-mono text-[9px] tracking-[0.18em] text-muted uppercase">

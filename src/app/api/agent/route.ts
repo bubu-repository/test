@@ -18,7 +18,7 @@ import { clientKey, rateLimit } from "@/lib/rate-limit";
  * replaced before it's signed, and the browser swaps it out.
  *
  * Env: ANTHROPIC_API_KEY (required for the online brain), ANTHROPIC_MODEL (optional),
- * AGENT_DAILY_CAP (answers per day across all visitors, default 1,500).
+ * AGENT_DAILY_CAP (answers per day across all visitors, default 300).
  */
 
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
@@ -110,11 +110,14 @@ Rules:
 Knowledge base:
 ${buildKnowledgeText()}`;
 
+/** What the claim check compares figures against: the same knowledge base the model reads. */
+const KNOWLEDGE = buildKnowledgeText();
+
 /** Signs Moci's answers. A per-process key is fine: losing it on a redeploy only means Moci forgets the earlier answers. */
 const { sign, parse: parseBody } = conversation(process.env.AGENT_HISTORY_SECRET || randomBytes(32).toString("hex"));
 
 /** Answers per day across all visitors, per server instance. */
-const withinDailyCap = dailyCap(Number(process.env.AGENT_DAILY_CAP) || 1500);
+const withinDailyCap = dailyCap(Number(process.env.AGENT_DAILY_CAP) || 300);
 
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -147,9 +150,38 @@ export async function POST(request: Request) {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       let answer = "";
-      const send = (event: Record<string, unknown>) => {
-        if (event.t === "text") answer += String(event.v);
-        controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      const send = (event: Record<string, unknown>) => controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+
+      // Text goes out a sentence at a time, and only after that sentence passes the claim check, so
+      // a claim that fails never reaches the screen. Once one fails, nothing more is shown.
+      let pending = "";
+      let shown = "";
+      let blocked: string[] = [];
+      const emit = (sentence: string) => {
+        if (blocked.length) return;
+        const problems = sentence.trim() ? claimProblems(sentence, KNOWLEDGE) : [];
+        if (problems.length) blocked = problems;
+        else {
+          shown += sentence;
+          send({ t: "text", v: sentence });
+        }
+      };
+      const release = (final: boolean) => {
+        for (;;) {
+          const end = pending.match(/[.!?]\s+|\n+/);
+          if (!end || end.index === undefined) break;
+          const cut = end.index + end[0].length;
+          if (cut === pending.length && !final) break; // the space after it may still be arriving
+          emit(pending.slice(0, cut));
+          pending = pending.slice(cut);
+        }
+        if (final && pending) emit(pending);
+        if (final) pending = "";
+      };
+      const write = (delta: string) => {
+        answer += delta;
+        pending += delta;
+        release(false);
       };
       try {
         for (let turn = 0; turn < MAX_TURNS; turn++) {
@@ -163,7 +195,7 @@ export async function POST(request: Request) {
             betas: ["server-side-fallback-2026-07-01"],
             fallbacks: "default",
           });
-          response.on("text", (delta) => send({ t: "text", v: delta }));
+          response.on("text", write);
 
           let message: Anthropic.Beta.BetaMessage;
           try {
@@ -175,7 +207,7 @@ export async function POST(request: Request) {
           }
 
           if (message.stop_reason === "refusal") {
-            send({ t: "text", v: " I can't help with that one, but I'm happy to talk about Adelia's work." });
+            write(" I can't help with that one, but I'm happy to talk about Adelia's work.");
             break;
           }
           const toolUses = message.content.filter((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === "tool_use");
@@ -191,14 +223,14 @@ export async function POST(request: Request) {
           });
           messages.push({ role: "user", content: results });
         }
-        // The claim check: an answer that calls her senior, invents experience or an employer, or
-        // links off the site is replaced before it's signed, so it can't come back as history either.
-        const problems = claimProblems(answer);
-        if (problems.length) {
-          answer = SAFE_ANSWER;
-          send({ t: "replace", v: SAFE_ANSWER, problems });
-        }
-        send({ t: "done", sig: sign(answer) });
+        release(true);
+        // The whole answer is checked once more (a link can span sentences). If anything failed, the
+        // visitor gets the safe answer instead, and that's what is signed, so the failed text can't
+        // come back as history either.
+        const problems = blocked.length ? blocked : claimProblems(answer, KNOWLEDGE);
+        if (problems.length) send({ t: "replace", v: SAFE_ANSWER, problems });
+        // Sign exactly what the visitor's screen now holds; that's what comes back as history.
+        send({ t: "done", sig: sign(problems.length ? SAFE_ANSWER : shown) });
       } catch (error) {
         const message =
           error instanceof Anthropic.RateLimitError

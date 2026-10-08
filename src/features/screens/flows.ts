@@ -18,13 +18,13 @@ export const FLOWS: Record<string, FlowStep[]> = {
     {
       key: "tl-brief-misread",
       title: "The brief",
-      note: "A brief from the error log, before the fix: the scan of page 88 was misread, so it says 5% (and Rp 120 M) where the page says 3%.",
-      tap: { target: ".tl-reasons li:nth-child(3) .tl-page", label: "Check the bank guarantee on p. 88" },
+      note: "A brief from the error log, before the fix: the scan of page 88 was misread, so it says a 30% advance (Rp 720 M) where the page says 20%.",
+      tap: { target: ".tl-reasons li:nth-child(3) .tl-page", label: "Check the advance payment on p. 88" },
     },
     {
       key: "tl-source",
       title: "The receipt",
-      note: "The source page opens with the sentence highlighted, next to the claim. Here the scan was misread: the page says 3%, not 5%.",
+      note: "The source page opens with the sentence highlighted, next to the claim. Here the scan was misread: the page says 20%, not 30%.",
       tap: { target: ".tl-row .tl-btn:last-child", label: "Say it's wrong" },
     },
     {
@@ -80,7 +80,7 @@ export const FLOWS: Record<string, FlowStep[]> = {
     {
       key: "ct-summary",
       title: "The Sunday summary",
-      note: "The week's takings, the best sellers and who still owes. The reason owners kept using it.",
+      note: "What the owner logged this week, who still owes, and the day with no notes. It says 'from your notes', because it isn't every sale.",
     },
   ],
   lintas: [

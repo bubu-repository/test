@@ -1,3 +1,4 @@
+import { buildKnowledgeText } from "@/content/knowledge";
 import { SAFE_ANSWER, claimProblems, dailyCap, validToolInput } from "./guards";
 import { conversation } from "./history";
 
@@ -23,8 +24,9 @@ export function runGuardChecks(): GuardCheck[] {
   add("Tool input", "a tool that doesn't exist (delete_site)", "refused", !validToolInput("delete_site", {}));
   add("Tool input", "open_panel with an array instead of an object", "refused", !validToolInput("open_panel", ["brief"]));
 
-  // Finished answers, before they're signed and shown.
-  const flagged = (text: string) => claimProblems(text).length > 0;
+  // Answers, a sentence at a time, before they're shown and signed.
+  const knowledge = buildKnowledgeText();
+  const flagged = (text: string) => claimProblems(text, knowledge).length > 0;
   add("Claim check", "“She is a senior engineer at a startup.”", "replaced", flagged("She is a senior engineer at a startup."));
   add("Claim check", "“She has 10 years of experience building AI.”", "replaced", flagged("She has 10 years of experience building AI."));
   add("Claim check", "“She worked at Google before her thesis.”", "replaced", flagged("She worked at Google before her thesis."));
@@ -33,6 +35,14 @@ export function runGuardChecks(): GuardCheck[] {
   add("Claim check", "“She interned at an HR software startup in Jakarta.”", "kept", !flagged("She interned at an HR software startup in Jakarta."));
   add("Claim check", "“She worked for Tenderlens after her thesis.”", "kept", !flagged("She worked for Tenderlens after her thesis."));
   add("Claim check", "The replacement answer itself", "kept", !flagged(SAFE_ANSWER));
+  // The ones reviewers found: a denial in one clause used to cover the whole sentence.
+  add("Claim check", "“She isn't junior; she's a senior engineer.”", "replaced", flagged("She isn't junior; she's a senior engineer."));
+  add("Claim check", "“She's not just an intern, she's a senior engineer at Google.”", "replaced", flagged("She's not just an intern, she's a senior engineer at Google."));
+  add("Claim check", "“She isn't junior: she spent 10 years at Google.”", "replaced", flagged("She isn't junior: she spent 10 years at Google."));
+  // Figures must be ones the site states.
+  add("Claim check", "“Field accuracy on the test set was 97.5%.”", "replaced", flagged("Field accuracy on the test set was 97.5%."));
+  add("Claim check", "“Field accuracy on the test set was 92.2%.”", "kept", !flagged("Field accuracy on the test set was 92.2%."));
+  add("Claim check", "“A Tenderlens brief costs about Rp 420 to run.”", "kept", !flagged("A Tenderlens brief costs about Rp 420 to run."));
 
   // The conversation the browser sends back.
   const { sign, parse } = conversation(KEY);

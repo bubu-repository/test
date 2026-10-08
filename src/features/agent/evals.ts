@@ -19,6 +19,8 @@ const has = (a: BrainAnswer, s: string) => a.text.toLowerCase().includes(s.toLow
 /** A fact answer must read as whole sentences: it starts like a sentence and ends with punctuation. */
 const whole = (a: BrainAnswer) => /^[A-Z0-9"'“(]/.test(a.text) && /[.!?)"”]$/.test(a.text.trim());
 const acts = (a: BrainAnswer, type: string) => a.actions.some((x) => x.type === type);
+/** "A few sentences, not a dump": counts sentences, so a comma-separated list of 25 tools fails. */
+const sentenceCount = (a: BrainAnswer) => a.text.split(/(?<=[.!?])\s+/).filter(Boolean).length;
 const abstains = (a: BrainAnswer) => a.confidence <= 0.2 && a.actions.length === 0;
 
 export const MOCI_CASES: MociCase[] = [
@@ -34,7 +36,7 @@ export const MOCI_CASES: MociCase[] = [
     q: "What's her stack?",
     kind: "Fact",
     expect: "TypeScript and the LLM work, in a few sentences, not a dump",
-    check: (a) => whole(a) && has(a, "typescript") && has(a, "claude") && a.text.length <= 600,
+    check: (a) => whole(a) && has(a, "typescript") && has(a, "claude") && sentenceCount(a) <= 4 && (a.text.match(/,/g) ?? []).length <= 8,
   },
   { q: "What's her strongest project?", kind: "Fact", expect: "Tenderlens, with a link", check: (a) => a.href === "/work/tenderlens" },
   {

@@ -28,7 +28,7 @@ const Head = ({ t = ROAD }: { t?: typeof ROAD }) => (
 /**
  * The one-page brief, when Tenderlens is confident: a score, three cited reasons, the money (each
  * figure cites its page too), the checklist. `misread` is the brief from the click-through, where
- * the scan was misread as 5% and the money figure was computed from that claim.
+ * a faint scan of the advance payment (20%) was read as 30%, and the money figure followed it.
  */
 export function TenderlensBrief({ hot = false, misread = false }: { hot?: boolean; misread?: boolean }) {
   return (
@@ -58,20 +58,20 @@ export function TenderlensBrief({ hot = false, misread = false }: { hot?: boolea
           </li>
           <li>
             <i className="warn">!</i>
-            <span>Needs a {misread ? "5%" : "3%"} bank guarantee</span>
+            <span>{misread ? "30%" : "20%"} advance payment, against a guarantee</span>
             <em className="tl-page">p. 88</em>
           </li>
         </ul>
         <p className="tl-h">Money</p>
         <div className="tl-money">
           <span>
-            <small>Contract value</small>
+            <small>HPS (estimate)</small>
             <b>Rp 2.4 B</b>
             <em>p. 3</em>
           </span>
           <span>
-            <small>Bank guarantee</small>
-            <b>Rp {misread ? "120" : "72"} M</b>
+            <small>Advance, up to</small>
+            <b>Rp {misread ? "720" : "480"} M</b>
             <em>p. 88</em>
           </span>
           <span>
@@ -98,7 +98,7 @@ export function TenderlensBrief({ hot = false, misread = false }: { hot?: boolea
   );
 }
 
-/** The brief from the click-through: the bank guarantee was misread from a faint scan. */
+/** The brief from the click-through: the advance payment was misread from a faint scan. */
 export const TenderlensBriefMisread = () => <TenderlensBrief misread />;
 
 /** When it can't tell (a different tender, with a blurry scan): no score, why it won't guess, and a person to ask. */
@@ -145,7 +145,7 @@ export function TenderlensUnsure() {
 
 /**
  * Tap a page chip: the page the claim came from, the sentence highlighted, next to the claim, and a
- * way to say it's wrong. Here the scan was misread: the brief says 5%, the page says 3%.
+ * way to say it's wrong. Here the scan was misread: the brief says 30%, the page says 20%.
  */
 export function TenderlensSource() {
   return (
@@ -157,14 +157,14 @@ export function TenderlensSource() {
       <span className="dp-dim" />
       <div className="tl-sheet">
         <span className="tl-grab" />
-        <p className="tl-meta">Page 88 of 214 · Syarat jaminan</p>
+        <p className="tl-meta">Page 88 of 214 · Uang muka</p>
         <div className="tl-doc">
           <div className="tl-lines">
             <i style={{ width: "92%" }} />
             <i style={{ width: "84%" }} />
           </div>
           <p>
-            Besaran Jaminan Pelaksanaan adalah <mark>3% (tiga persen) dari nilai kontrak</mark>, diserahkan sebelum penandatanganan.
+            Uang muka dapat diberikan sebesar <mark>20% (dua puluh persen) dari nilai kontrak</mark>, dengan menyerahkan jaminan uang muka.
           </p>
           <div className="tl-lines">
             <i style={{ width: "88%" }} />
@@ -172,7 +172,7 @@ export function TenderlensSource() {
           </div>
         </div>
         <p className="tl-match">
-          The brief says: <b>Needs a 5% bank guarantee</b>
+          The brief says: <b>30% advance payment</b>
         </p>
         <div className="tl-row">
           <span className="tl-btn tl-btn--go">✓ Looks right</span>
@@ -197,13 +197,13 @@ export function TenderlensDisagree() {
         <p className="tl-title" style={{ fontSize: "1.1em" }}>
           What&apos;s wrong with this reason?
         </p>
-        <p className="tl-sub">&ldquo;Needs a 5% bank guarantee&rdquo; · p. 88</p>
+        <p className="tl-sub">&ldquo;30% advance payment&rdquo; · p. 88</p>
         <div className="tl-options">
           <span>It&apos;s on a different page</span>
           <span data-on="">It misread a number</span>
           <span>That rule doesn&apos;t apply to us</span>
         </div>
-        <p className="tl-input">The page says 3%, not 5%.</p>
+        <p className="tl-input">The page says 20%, not 30%.</p>
         <div className="tl-row">
           <span className="tl-btn">Cancel</span>
           <span className="tl-btn tl-btn--go">Send</span>

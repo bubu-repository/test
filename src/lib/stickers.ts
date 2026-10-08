@@ -77,7 +77,9 @@ export function unlock(id: string, { silent = false }: { silent?: boolean } = {}
   if (!def) return false;
   stickerStore.set({ unlocked: [...state.unlocked, id] });
   persist();
-  if (silent) return true;
+  // No confetti while someone is reading a case study or the colophon: the sticker still counts.
+  const reading = typeof window !== "undefined" && /^\/(work\/|colophon)/.test(window.location.pathname);
+  if (silent || reading) return true;
   sfx.sparkle();
   toast({ title: `Sticker unlocked: ${def.name}`, body: "Open the sticker book to peel it off and stick it anywhere.", tone: "sun", icon: def.emoji });
   return true;

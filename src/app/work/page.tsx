@@ -28,7 +28,7 @@ export default function WorkPage() {
         id="work-title"
         label="Case studies"
         title="Four products, read in any order."
-        lead="Tenderlens is the full case, about a quarter of an hour; the other three are shorter. Each has the problem, my role, the research and the design, then the engineering in its own section (pipeline, models, evals, budgets, failures, code) and the results. If you only have time for one, pick the question you're hiring for."
+        lead="Tenderlens is the full case, under 20 minutes; the other three take 10 to 15. Each has the problem, my role, the research and the design, then the engineering in its own section (pipeline, models, evals, budgets, failures, code) and the results. If you only have time for one, pick the question you're hiring for."
       >
         <ul className="mx-auto mt-10 grid max-w-[880px] gap-2 text-left sm:grid-cols-2">
           {GUIDE.map((g) => {

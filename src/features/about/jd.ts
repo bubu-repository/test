@@ -92,7 +92,7 @@ export const SIGNALS: Signal[] = [
     weight: 1,
     have: true,
     patterns: [/latency/, /cost/, /performance/, /scal(e|ing)/, /optimi[sz]/],
-    evidence: "Cost per brief cut from Rp 1,900 to Rp 420; p50/p95 tracked",
+    evidence: "Cost per tender cut from Rp 3,900 to Rp 1,650 with page triage (Rp 420 on today's models); p50/p95 tracked",
     project: "tenderlens",
   },
   {

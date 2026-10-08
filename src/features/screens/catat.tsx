@@ -153,7 +153,7 @@ export function CatatUndo() {
   );
 }
 
-/** The Sunday summary: the reason owners kept using it. */
+/** The Sunday summary: the reason owners kept using it. Only what was logged, and it says so. */
 export function CatatSummary() {
   return (
     <Chat>
@@ -161,18 +161,14 @@ export function CatatSummary() {
       <In time="19:00">
         <strong>📒 Ringkasan minggu ini</strong>
         <br />
-        Omzet: <strong>Rp4.230.000</strong>
-        <br />
-        Untung kira-kira: <strong>Rp860.000</strong> (naik 6%)
+        <span className="ct-quiet">Dari catatanmu, bukan semua penjualan</span>
         <br />
         <br />
-        <strong>Paling laku</strong>
+        Penjualan yang dicatat: <strong>Rp1.840.000</strong> (6 dari 7 hari)
         <br />
-        1. Indomie Goreng · 142
+        Belanja stok: <strong>Rp1.120.000</strong>
         <br />
-        2. Aqua Gelas · 96
-        <br />
-        3. Kopi Kapal Api · 71
+        Utang lunas: <strong>4 orang · Rp96.000</strong>
         <br />
         <br />
         <strong>Yang masih utang</strong>
@@ -182,10 +178,10 @@ export function CatatSummary() {
         Mas Andi · Rp32.000 · 12 hari
         <br />
         <br />
-        Stok Aqua tinggal 1 dus. Belanja besok?
+        Hari Kamis belum ada catatan. Mau diisi sekarang?
       </In>
       <div className="ct-btns ct-btns--two">
-        <span>Ingatkan besok</span>
+        <span>Isi sekarang</span>
         <span>Nanti saja</span>
       </div>
     </Chat>

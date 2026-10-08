@@ -46,7 +46,7 @@ const NEGATED = /\b(not|no|never|isn't|wasn't|hasn't|doesn't|didn't|nor|without)
 /** "Did she work at Google?" → "Google". The organisation a sentence says she worked at, if any. */
 export function namedEmployer(text: string, { capitalised = false } = {}): string | null {
   const pattern = capitalised
-    ? /\b(?:work(?:ed|s|ing)?|intern(?:ed|ing)?|employed|job)\s+(?:at|for|by)\s+((?:[A-Z][\w&.'-]*\s?){1,3})/
+    ? /\b(?:work(?:ed|s|ing)?|intern(?:ed|ing)?|employed|job|engineer|developer|designer|scientist)\s+(?:at|for|by)\s+((?:[A-Z][\w&.'-]*\s?){1,3})/
     : /\b(?:work(?:ed|s|ing)?|intern(?:ed|ing)?|employed|job)\s+(?:at|for|by)\s+(?:the\s+|a\s+|an\s+)?([\w&.' -]{2,40}?)\s*(?:[?.!,]|$)/i;
   const m = text.match(pattern);
   return m ? m[1].trim() : null;
@@ -63,24 +63,41 @@ export function onRecord(org: string): boolean {
 const GENERIC = new Set(["the", "company", "inc", "ltd", "pt", "tbk", "corp", "group"]);
 
 const SENIOR = /\b(senior|staff|principal|lead|seasoned|veteran)\s+(\w+\s+)?(engineer|developer|designer|scientist)\b/i;
-const YEARS = /\b(\d+|two|three|four|five|six|seven|eight|nine|ten|many)\+?\s+years?\s+(of\s+)?(professional\s+|industry\s+|work\s+)?experience\b/i;
+const YEARS = /\b(\d+|two|three|four|five|six|seven|eight|nine|ten|many)\+?\s+years?\s+(of|at|in|as)\b/i;
 const EXTERNAL_LINK = /\bhttps?:\/\/(?!(www\.)?adelia\.cc\b)\S+/i;
 
 /**
- * What's wrong with an answer before it reaches a visitor: calling her senior, giving her years of
- * experience she doesn't have, naming an employer that isn't on record, or linking off the site.
- * Sentences that deny the claim ("she isn't senior") are fine. An empty list means it can go out.
+ * Clauses, not sentences: a denial only covers its own clause, so "She isn't junior; she's a senior
+ * engineer" is two claims, and the second one is checked on its own.
  */
-export function claimProblems(answer: string): string[] {
+const clauses = (text: string) => text.split(/(?<=[.!?;:])\s+|\s*[,—–]\s+(?=(?:but|yet|and|so|she|she's|her|in fact)\b)|\s+(?:but|yet)\s+/i);
+
+/** Figures worth checking: percentages, decimals, and whole numbers of 10 or more that aren't years. */
+const FIGURE = /\d+(?:[.,]\d+)*/g;
+const figures = (text: string) =>
+  (text.match(FIGURE) ?? []).map((n) => n.replace(/,(?=\d{3}\b)/g, "")).filter((n) => n.includes(".") || (Number(n) >= 10 && !(Number(n) >= 1990 && Number(n) <= 2035)));
+
+/**
+ * What's wrong with an answer before it reaches a visitor: calling her senior, giving her years she
+ * doesn't have, naming an employer that isn't on record, linking off the site, or (when the
+ * knowledge base is given) quoting a figure that isn't in it. A clause that denies the claim ("she
+ * isn't senior") is fine. An empty list means it can go out. It catches the patterns it knows; it
+ * can't prove an answer true.
+ */
+export function claimProblems(answer: string, knowledge?: string): string[] {
   const problems: string[] = [];
-  for (const sentence of answer.split(/(?<=[.!?])\s+/)) {
-    const denied = NEGATED.test(sentence);
-    if (SENIOR.test(sentence) && !denied) problems.push("calls_her_senior");
-    if (YEARS.test(sentence) && !denied) problems.push("years_of_experience");
-    const org = namedEmployer(sentence, { capitalised: true });
+  for (const clause of clauses(answer)) {
+    const denied = NEGATED.test(clause);
+    if (SENIOR.test(clause) && !denied) problems.push("calls_her_senior");
+    if (YEARS.test(clause) && !denied) problems.push("years_of_experience");
+    const org = namedEmployer(clause, { capitalised: true });
     if (org && !denied && !onRecord(org)) problems.push(`employer_not_on_record:${org}`);
   }
   if (EXTERNAL_LINK.test(answer)) problems.push("external_link");
+  if (knowledge) {
+    const known = new Set(figures(knowledge));
+    for (const n of figures(answer)) if (!known.has(n)) problems.push(`figure_not_on_record:${n}`);
+  }
   return [...new Set(problems)];
 }
 

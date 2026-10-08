@@ -60,7 +60,7 @@ export function ArchitectureDiagram({ project }: { project: Project }) {
             const w = Math.max(130, n.label.length * 10.5 + 40);
             return (
               <g key={n.id} transform={`translate(${x} ${y})`}>
-                <rect x={-w / 2} y={-30} width={w} height={60} rx="30" fill="var(--surface)" stroke="#fff" strokeWidth="5" />
+                <rect x={-w / 2} y={-30} width={w} height={60} rx="30" fill="var(--surface-solid)" stroke="var(--surface-solid)" strokeWidth="5" />
                 <rect x={-w / 2} y={-30} width={w} height={60} rx="30" fill="none" stroke="var(--line)" strokeWidth="1.5" />
                 <circle cx={-w / 2 + 26} cy="0" r="11" fill={KIND[n.kind].fill} stroke="#fff" strokeWidth="2" />
                 <text x={-w / 2 + 46} y="6" className="fill-ink font-body" fontSize="17" fontWeight="650">

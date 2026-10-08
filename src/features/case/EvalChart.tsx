@@ -123,6 +123,7 @@ export function EvalChart({ evals }: { evals: Engineering["evals"] }) {
                   <td key={evals.series[i].name}>
                     {Number.isInteger(v) ? v : v.toFixed(1)}
                     {evals.series[i].unit}
+                    {h.counts?.[i] && <span className="ml-1.5 text-12 font-normal text-muted">({h.counts[i]})</span>}
                   </td>
                 ))}
               </tr>

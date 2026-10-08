@@ -24,7 +24,7 @@ const ONLINE = [
   {
     step: "Limit",
     detail:
-      "20 requests per visitor per 10 minutes, and a ceiling of 1,500 answers a day across everyone, so a busy day or a script can't run up the bill. Past either, or with no API key, the browser switches to the offline brain.",
+      "20 requests per visitor per 10 minutes, and a ceiling of 300 answers a day across everyone, so a busy day or a script can't run up the bill. Past either, or with no API key, the browser switches to the offline brain.",
   },
   { step: "Ground", detail: "The system prompt is the knowledge base, generated from the same content files as these pages, so Moci can't drift from the site. It's prompt-cached." },
   { step: "Act", detail: "Claude can call 7 tools (navigate, theme, tour, copy email, CV, panels, lens). Every tool input is checked against an allow-list on the server before your screen changes." },
@@ -33,7 +33,7 @@ const ONLINE = [
   {
     step: "Check",
     detail:
-      "When the answer is finished, code checks its claims: calling her senior, years of experience she doesn't have, an employer that isn't on her record, a link off the site. An answer that fails is replaced on your screen before it's signed.",
+      "Each sentence is checked before it's shown: calling her senior, years she doesn't have, an employer that isn't on her record, a link off the site, a figure the site never states. If one fails, nothing more is shown and the answer is replaced before it's signed. It catches the patterns it knows; it can't prove an answer true.",
   },
   {
     step: "Sign",
@@ -71,16 +71,20 @@ const STACK = [
   ],
 ];
 
-const CLAIMS = `export function claimProblems(answer: string): string[] {
+const CLAIMS = `export function claimProblems(answer: string, knowledge?: string): string[] {
   const problems: string[] = [];
-  for (const sentence of answer.split(/(?<=[.!?])\\s+/)) {
-    const denied = NEGATED.test(sentence); // "she isn't senior" is fine
-    if (SENIOR.test(sentence) && !denied) problems.push("calls_her_senior");
-    if (YEARS.test(sentence) && !denied) problems.push("years_of_experience");
-    const org = namedEmployer(sentence, { capitalised: true });
+  for (const clause of clauses(answer)) {
+    const denied = NEGATED.test(clause); // "she isn't senior" is fine; a denial covers its own clause only
+    if (SENIOR.test(clause) && !denied) problems.push("calls_her_senior");
+    if (YEARS.test(clause) && !denied) problems.push("years_of_experience");
+    const org = namedEmployer(clause, { capitalised: true });
     if (org && !denied && !onRecord(org)) problems.push(\`employer_not_on_record:\${org}\`);
   }
   if (EXTERNAL_LINK.test(answer)) problems.push("external_link");
+  if (knowledge) {
+    const known = new Set(figures(knowledge)); // every figure must be one the site states
+    for (const n of figures(answer)) if (!known.has(n)) problems.push(\`figure_not_on_record:\${n}\`);
+  }
   return [...new Set(problems)];
 }`;
 
@@ -113,11 +117,13 @@ function onlineEval(): OnlineEval | null {
   return existsSync(file) ? (JSON.parse(readFileSync(file, "utf8")) as OnlineEval) : null;
 }
 
-/** A rough cost per online answer from the prompt's size and list prices: an estimate, not a measurement. */
-function costPerAnswer(): string {
-  const promptTokens = Math.round(buildKnowledgeText().length / 4) + 900; // knowledge base + rules and tools
-  const usd = promptTokens * 0.2e-6 + 600 * 4e-6 + 450 * 20e-6; // cached prompt read, ~600 new input tokens, ~450 out (thinking included)
-  return `about ${Math.round(promptTokens / 100) / 10}k-token cached prompt, roughly US$${usd.toFixed(3)} per answer at list prices`;
+/** Cost per online answer from the prompt's size and Opus 5.5 list prices: an estimate, not a measurement. */
+function costs() {
+  const prompt = Math.round(buildKnowledgeText().length / 4) + 900; // knowledge base, rules and tools
+  const turn = 600 * 4e-6 + 450 * 20e-6; // ~600 new input tokens, ~450 out (thinking included)
+  const warm = prompt * 0.2e-6 + turn; // the prompt read from cache
+  const worst = prompt * 5e-6 + 3 * prompt * 0.2e-6 + 4 * turn; // a cold cache write, then four tool turns
+  return { prompt: `${Math.round(prompt / 100) / 10}k`, warm: warm.toFixed(3), worst: worst.toFixed(2), day: Math.ceil(worst * 300) };
 }
 
 function Steps({ items }: { items: { step: string; detail: string }[] }) {
@@ -179,6 +185,7 @@ function GuardTable({ checks }: { checks: ReturnType<typeof runGuardChecks> }) {
 export default function ColophonPage() {
   const guards = runGuardChecks();
   const online = onlineEval();
+  const cost = costs();
   return (
     <PageTransition>
       <PageHeader
@@ -207,7 +214,7 @@ export default function ColophonPage() {
             <Steps items={OFFLINE} />
           </div>
         </div>
-        <div className="mt-12 grid gap-6 xl:grid-cols-2">
+        <div className="mt-12 grid gap-6">
           <CodeBlock
             file="features/agent/guards.ts"
             lang="ts"
@@ -217,11 +224,14 @@ export default function ColophonPage() {
           <CodeBlock
             file="features/agent/guards.ts"
             lang="ts"
-            caption="The claim check on every finished answer. The prompt asks Moci to be honest; this makes sure."
+            caption="The claim check, run on each sentence before you see it. The prompt asks Moci to be honest; this catches the patterns it knows about."
             source={CLAIMS}
           />
         </div>
-        <p className="mt-6 max-w-[80ch] text-16 text-muted">Cost: {costPerAnswer()}. The daily ceiling keeps the worst day under about US$25.</p>
+        <p className="mt-6 max-w-[80ch] text-16 text-muted">
+          Cost, estimated from token counts and Opus 5.5 list prices (not measured): about US${cost.warm} an answer with the {cost.prompt}-token prompt cached, up to US${cost.worst} with a cold
+          cache and four tool turns. At 300 answers a day, the worst day stays under about US${cost.day}.
+        </p>
       </section>
 
       <section id="guards" aria-labelledby="guards-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
@@ -261,8 +271,8 @@ export default function ColophonPage() {
             <span className="type-pixel shrink-0 pt-1 text-ink">Online brain</span>
             <span>
               Not run yet. The same cases plus four attacks (a forged earlier answer, instructions hidden in a question, a link to open, a request for the prompt) run against Claude with{" "}
-              <code className="font-mono text-14">npm run eval:moci</code>, and weekly in CI once an API key is set. Each run is about 30 model calls, so I don&apos;t publish a number I
-              haven&apos;t paid for. Until then, the claim check and the guardrails above are what stand between the model and you.
+              <code className="font-mono text-14">npm run eval:moci</code>, and weekly in CI once an API key is set (about 30 calls, under US$1). The result will show here, failures included.
+              Until then, the online brain is protected by the claim check and the guardrails above, not by a measured pass rate.
             </span>
           </p>
         )}

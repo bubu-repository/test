@@ -245,6 +245,17 @@ export function think(raw: string): BrainAnswer {
     };
   }
 
+  // Stack: a short answer in sentences; the full list lives on /about.
+  if (/\b(stack|tech|tools|languages|frameworks)\b/i.test(q) && !/\b(open|show|go to)\b/i.test(q) && !projects.some((p) => q.toLowerCase().includes(p.name.toLowerCase()))) {
+    return {
+      text: "TypeScript and Next.js for products, Python for ML services, PostgreSQL with pgvector for data. On the AI side: Claude with tool use, retrieval, Whisper for speech, and evals that run in CI. The full list is on her About page.",
+      actions: [],
+      followups: ["Show me a project using agents", "How did she evaluate Tenderlens?"],
+      href: "/about",
+      confidence: 0.95,
+    };
+  }
+
   // Availability
   if (/\b(available|availability|open to work|hiring|hire her|looking for|job|role|start date|notice)\b/i.test(q)) {
     return {

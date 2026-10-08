@@ -114,7 +114,7 @@ export function LintasCarriages() {
         <span className="ln-time" style={{ fontSize: "2.6em" }}>
           Car 5
         </span>
-        <p className="ln-sub">From 214 rider reports this month, weekdays 06:30–07:30</p>
+        <p className="ln-sub">From 64 rider reports this month, weekdays 06:30–07:30</p>
         <div className="ln-train">
           {cars.map((c, i) => (
             <span key={i} className={`ln-car ${c}`} data-best={i === 4 ? "" : undefined}>
@@ -158,12 +158,12 @@ export function LintasCalm() {
         <span className="ln-label">Leave by</span>
         <span className="ln-time">07:05</span>
         <p className="ln-sub">
-          At the office by <b>08:12</b> · running 12 min late today
+          At the office by <b>08:11</b> · your train is running 13 min late
         </p>
       </div>
       <div className="ln-calm">
         <h4>Nothing faster right now</h4>
-        <p>Your 07:12 train is still your best option. I&apos;ll only ping you if that changes.</p>
+        <p>Your 06:58 train, now leaving at 07:11, is still your best option. I&apos;ll only ping you if that changes.</p>
         <p className="ln-why">Why: the LRT from Bekasi Barat would get you in 3 min later today, for Rp 12k more.</p>
       </div>
       <div className="ln-tabs">

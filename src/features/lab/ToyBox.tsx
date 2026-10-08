@@ -37,8 +37,8 @@ export function ToyBox({ count, children }: { count: number; children: React.Rea
   return (
     <details ref={ref} id="toys" className="toybox scroll-mt-24">
       <summary className="toybox__summary container-page">
-        <span>
-          <span className="type-eyebrow block">Off the clock</span>
+        <span className="flex flex-col items-start">
+          <span className="type-eyebrow">Off the clock</span>
           <span className="type-title mt-3 block">The toys</span>
           <span className="mt-3 block max-w-[52ch] text-16 text-muted">
             {count} things I built for fun, to practise motion, physics and sound. Nothing here is needed to judge the work, so it stays closed.

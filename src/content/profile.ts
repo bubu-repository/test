@@ -123,7 +123,7 @@ export const experience: Experience[] = [
     summary:
       "Thesis (Sep 2025 – Mar 2026): 'Answer or abstain: citation-grounded extraction from Indonesian tender documents', the research behind Tenderlens. Teaching assistant for Human–Computer Interaction; ran the campus design and web club.",
     highlights: [
-      "Thesis: a 610-field eval set (dev and held-out test, κ 0.87), and cost per brief cut from Rp 1,900 to Rp 420 with page triage",
+      "Thesis: a 610-field eval set (dev and held-out test, κ 0.87), and cost per tender cut from Rp 3,900 to Rp 1,650 with page triage (Rp 420 on today's models)",
       "During the beta, the rejected-claims alert caught a portal's broken PDF text layer (March 2026); those pages now go through OCR",
       "Built Lintas (Mar – Jun 2024) and Catat (campus incubator, Sep – Dec 2024) during my studies",
       "Published the dev set and part of the test set so other students can test against it",
@@ -138,8 +138,9 @@ export const practical: { label: string; value: string }[] = [
   { label: "Experience", value: "A 6-month AI engineering internship in a product squad (2025), a part-time contract maintaining Tenderlens (2026), and four products with real users" },
   { label: "Where", value: "Bekasi, Indonesia (GMT+7). First choice: a Jakarta team, in the office up to 3 days a week. Also remote" },
   { label: "Time zones", value: "Usual hours 09:00–18:00 WIB (GMT+7): 4+ hours of overlap from Dubai to Sydney. For European teams, 12:00–21:00 WIB gives about 6 hours with CET. For US teams, async first, with a daily 07:00–09:00 WIB call (16:00–18:00 the day before in San Francisco)" },
-  { label: "Work setup", value: "Indonesian citizen, no visa needed in Indonesia. Teams abroad can hire me as a contractor or through an employer of record; open to relocating with sponsorship (Singapore, Dubai, Europe)" },
-  { label: "Start", value: "Within 2 weeks of an offer" },
+  { label: "Work setup", value: "Indonesian citizen, no visa needed in Indonesia. Teams abroad can hire me as a contractor or through an employer of record; open to relocating with sponsorship (Singapore, Dubai, Europe, the US)" },
+  { label: "Start", value: "Within 2 weeks of an offer. The Tenderlens contract hands over to the consultancy's engineer" },
+  { label: "Salary", value: "On request, by email; happy to share a range early" },
   { label: "Languages", value: "Indonesian (native), English (full professional)" },
   { label: "AI in my work", value: "Claude Code for scaffolding, refactors and tests, with every diff reviewed. The evals, the labels, the rules and the verification code I write myself" },
   { label: "References", value: "Bayu (my internship mentor, senior engineer), Nadia (PM), my thesis supervisor, and Bu Ratna (Tenderlens). On request" },
