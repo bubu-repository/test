@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMeta } from "@/lib/meta";
@@ -5,31 +7,51 @@ import { PageTransition } from "@/components/PageTransition";
 import { PageHeader } from "@/components/PageHeader";
 import { MociEval } from "@/features/agent/MociEval";
 import { MOCI_CASES } from "@/features/agent/evals";
+import { runGuardChecks } from "@/features/agent/guard-checks";
+import { buildKnowledgeText } from "@/content/knowledge";
+import { perf } from "@/content/perf";
 import { CodeBlock } from "@/features/case/CodeBlock";
 
 export const metadata: Metadata = pageMeta({
   title: "How this site is built",
   description:
-    "The engineering behind adelia.cc: Moci, its AI agent (Claude with tool use, server-side validation, an offline retrieval fallback and an eval you can run in your browser), and the rest of the stack.",
+    "The engineering behind adelia.cc: Moci, its AI agent (Claude with tool use, server-side validation, a claim check on every answer, an offline retrieval fallback and an eval you can run in your browser), and the rest of the stack.",
   path: "/colophon",
 });
 
 const ONLINE = [
   { step: "Ask", detail: "The browser sends the last 12 messages and the page you're on to /api/agent. Each message is capped at 2,000 characters." },
-  { step: "Limit", detail: "20 requests per visitor per 10 minutes. Over the limit, or with no API key, the browser switches to the offline brain." },
+  {
+    step: "Limit",
+    detail:
+      "20 requests per visitor per 10 minutes, and a ceiling of 1,500 answers a day across everyone, so a busy day or a script can't run up the bill. Past either, or with no API key, the browser switches to the offline brain.",
+  },
   { step: "Ground", detail: "The system prompt is the knowledge base, generated from the same content files as these pages, so Moci can't drift from the site. It's prompt-cached." },
   { step: "Act", detail: "Claude can call 7 tools (navigate, theme, tour, copy email, CV, panels, lens). Every tool input is checked against an allow-list on the server before your screen changes." },
   { step: "Stream", detail: "Text and tool events stream back as NDJSON, at most 4 tool turns per answer. A refusal is answered politely instead of erroring." },
   { step: "Cite", detail: "Every factual answer ends with the page it came from, shown as a link. Only internal paths are linked, so a prompt can't inject a URL." },
   {
+    step: "Check",
+    detail:
+      "When the answer is finished, code checks its claims: calling her senior, years of experience she doesn't have, an employer that isn't on her record, a link off the site. An answer that fails is replaced on your screen before it's signed.",
+  },
+  {
     step: "Sign",
     detail:
       "Each answer is signed (HMAC) when it's sent. The browser sends the conversation back each turn, and the server drops any earlier answer whose signature doesn't match, so nobody can put words in Moci's mouth.",
+  },
+  {
+    step: "Break",
+    detail: "If the stream breaks halfway, the half answer is thrown away and the offline brain answers instead. A tool that already ran stays done; nothing runs twice.",
   },
 ];
 
 const OFFLINE = [
   { step: "Intents first", detail: "Rules for things you want done: open a page, switch the theme, copy the email, download the CV." },
+  {
+    step: "Honesty",
+    detail: "Questions that invite an exaggeration ('is she senior?', 'did she work at Google?') get a plain answer from the record, using the same employer check as the server.",
+  },
   { step: "Then retrieval", detail: "BM25 over about 40 small documents built from the content files, with a boost for each document's keywords." },
   { step: "Abstain", detail: "No answer if the best match scores low, or shares fewer than half of the question's words. It says so and suggests email." },
   { step: "Cite", detail: "Every answer links the page it came from." },
@@ -43,7 +65,24 @@ const STACK = [
   ["Live bits", "Presence and cursors over Server-Sent Events; weather and sea data from Open-Meteo, hidden when unavailable"],
   ["Accessibility", "Keyboard paths for everything, visible focus, reduced-motion versions of every animation, contrast checked on both themes"],
   ["Cheap phones", "With Save-Data on, or on phones that report 2 GB of memory or less, the WebGL sky stays a still image"],
+  [
+    "AI in how I build",
+    "I use Claude Code for scaffolding, refactors and tests, and I review every diff. The eval sets, the labels, the rules and the verification code I write myself, because that's where the judgement is.",
+  ],
 ];
+
+const CLAIMS = `export function claimProblems(answer: string): string[] {
+  const problems: string[] = [];
+  for (const sentence of answer.split(/(?<=[.!?])\\s+/)) {
+    const denied = NEGATED.test(sentence); // "she isn't senior" is fine
+    if (SENIOR.test(sentence) && !denied) problems.push("calls_her_senior");
+    if (YEARS.test(sentence) && !denied) problems.push("years_of_experience");
+    const org = namedEmployer(sentence, { capitalised: true });
+    if (org && !denied && !onRecord(org)) problems.push(\`employer_not_on_record:\${org}\`);
+  }
+  if (EXTERNAL_LINK.test(answer)) problems.push("external_link");
+  return [...new Set(problems)];
+}`;
 
 const VALIDATOR = `function validToolInput(name: string, input: unknown): input is Record<string, unknown> {
   if (!input || typeof input !== "object" || Array.isArray(input)) return false;
@@ -66,6 +105,21 @@ const VALIDATOR = `function validToolInput(name: string, input: unknown): input 
   }
 }`;
 
+type OnlineEval = { ranAt: string; passed: number; total: number; results: { q: string; kind: string; pass: boolean; answer: string }[] };
+
+/** The last run of scripts/eval-moci.mjs against the online brain, if there has been one. */
+function onlineEval(): OnlineEval | null {
+  const file = join(process.cwd(), "src/content/moci-online-eval.json");
+  return existsSync(file) ? (JSON.parse(readFileSync(file, "utf8")) as OnlineEval) : null;
+}
+
+/** A rough cost per online answer from the prompt's size and list prices: an estimate, not a measurement. */
+function costPerAnswer(): string {
+  const promptTokens = Math.round(buildKnowledgeText().length / 4) + 900; // knowledge base + rules and tools
+  const usd = promptTokens * 0.2e-6 + 600 * 4e-6 + 450 * 20e-6; // cached prompt read, ~600 new input tokens, ~450 out (thinking included)
+  return `about ${Math.round(promptTokens / 100) / 10}k-token cached prompt, roughly US$${usd.toFixed(3)} per answer at list prices`;
+}
+
 function Steps({ items }: { items: { step: string; detail: string }[] }) {
   return (
     <ol className="eng-pipeline">
@@ -84,7 +138,47 @@ function Steps({ items }: { items: { step: string; detail: string }[] }) {
   );
 }
 
+function GuardTable({ checks }: { checks: ReturnType<typeof runGuardChecks> }) {
+  const passed = checks.filter((c) => c.pass).length;
+  return (
+    <div>
+      <p className="mb-4 text-16 font-bold" role="status">
+        {passed} of {checks.length} passed{passed === checks.length ? "." : ": a guard is broken, and this page says so."}
+      </p>
+      <div className="case-table">
+        <table>
+          <caption>Each check: what was sent, what the guard must do, and whether it did</caption>
+          <thead>
+            <tr>
+              <th scope="col">Guard</th>
+              <th scope="col">Sent</th>
+              <th scope="col">Must be</th>
+              <th scope="col">Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            {checks.map((c) => (
+              <tr key={c.what}>
+                <th scope="row">{c.area}</th>
+                <td className="case-table__wrap">{c.what}</td>
+                <td>{c.expect}</td>
+                <td>
+                  <span className="chip font-semibold" data-tone={c.pass ? "lime" : "red"}>
+                    {c.pass ? "✓ Pass" : "✗ Fail"}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export default function ColophonPage() {
+  const guards = runGuardChecks();
+  const online = onlineEval();
   return (
     <PageTransition>
       <PageHeader
@@ -113,14 +207,33 @@ export default function ColophonPage() {
             <Steps items={OFFLINE} />
           </div>
         </div>
-        <div className="mt-12">
+        <div className="mt-12 grid gap-6 xl:grid-cols-2">
           <CodeBlock
-            file="app/api/agent/route.ts"
+            file="features/agent/guards.ts"
             lang="ts"
             caption="The model proposes; the server disposes. A tool call only reaches your screen if its input passes this check."
             source={VALIDATOR}
           />
+          <CodeBlock
+            file="features/agent/guards.ts"
+            lang="ts"
+            caption="The claim check on every finished answer. The prompt asks Moci to be honest; this makes sure."
+            source={CLAIMS}
+          />
         </div>
+        <p className="mt-6 max-w-[80ch] text-16 text-muted">Cost: {costPerAnswer()}. The daily ceiling keeps the worst day under about US$25.</p>
+      </section>
+
+      <section id="guards" aria-labelledby="guards-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
+        <p className="type-eyebrow">Guardrails</p>
+        <h2 id="guards-title" className="type-title mt-3">
+          Checked when this page was built
+        </h2>
+        <p className="mt-4 mb-8 max-w-[62ch] text-18 text-muted">
+          These call the same code the server runs on Claude&apos;s answers, with the inputs a model or a visitor could send. They run every time the site is built; a failure would show
+          here.
+        </p>
+        <GuardTable checks={guards} />
       </section>
 
       <section id="eval" aria-labelledby="eval-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
@@ -129,18 +242,68 @@ export default function ColophonPage() {
           Moci&apos;s eval, in your browser
         </h2>
         <p className="mt-4 mb-8 max-w-[62ch] text-18 text-muted">
-          {MOCI_CASES.length} questions visitors actually ask, with what a good answer has to do: facts from the right source as whole sentences, actions, saying &ldquo;I don&apos;t know&rdquo;, and
-          not being talked into exaggerating. It runs the offline brain, which is deterministic, so you can run it here. A known failure stays in the list until it&apos;s fixed.
+          {MOCI_CASES.length} questions: ones visitors ask, and ones that try to make it guess, exaggerate or leave the site. Each says what a good answer has to do: facts from the right source
+          as whole sentences, actions, &ldquo;I don&apos;t know&rdquo;, and a plain &ldquo;no&rdquo; when the honest answer is no. It runs the offline brain, which is deterministic, so you can
+          run it here. A known failure stays in the list until it&apos;s fixed.
         </p>
         <MociEval />
-        <p className="mt-6 flex max-w-[80ch] gap-3 rounded-[20px] border border-line px-5 py-4 text-16">
-          <span className="type-pixel shrink-0 pt-1 text-ink">Not covered</span>
-          <span>
-            The online brain (Claude) isn&apos;t in this eval yet: grading it costs a model call per case, so it can&apos;t run free in your browser, and the honesty cases above can&apos;t fail on a
-            brain that only retrieves. Next: the same cases plus prompt-injection and forged-history attempts, graded against the Claude path in CI, with the pass rate published here.
-          </span>
-        </p>
+        {online ? (
+          <p className="mt-6 flex max-w-[80ch] gap-3 rounded-[20px] border border-line px-5 py-4 text-16">
+            <span className="type-pixel shrink-0 pt-1 text-ink">Online brain</span>
+            <span>
+              Last run against Claude on {online.ranAt.slice(0, 10)}: {online.passed} of {online.total} passed, including four attacks (a forged earlier answer, instructions hidden in a
+              question, a link to open, a request for the prompt).
+              {online.results.some((r) => !r.pass) && <> Failed: {online.results.filter((r) => !r.pass).map((r) => `“${r.q}”`).join(", ")}.</>}
+            </span>
+          </p>
+        ) : (
+          <p className="mt-6 flex max-w-[80ch] gap-3 rounded-[20px] border border-line px-5 py-4 text-16">
+            <span className="type-pixel shrink-0 pt-1 text-ink">Online brain</span>
+            <span>
+              Not run yet. The same cases plus four attacks (a forged earlier answer, instructions hidden in a question, a link to open, a request for the prompt) run against Claude with{" "}
+              <code className="font-mono text-14">npm run eval:moci</code>, and weekly in CI once an API key is set. Each run is about 30 model calls, so I don&apos;t publish a number I
+              haven&apos;t paid for. Until then, the claim check and the guardrails above are what stand between the model and you.
+            </span>
+          </p>
+        )}
       </section>
+
+      {perf.measuredOn && (
+        <section id="speed" aria-labelledby="speed-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
+          <p className="type-eyebrow">On a cheap phone</p>
+          <h2 id="speed-title" className="type-title mt-3">
+            What this site costs to load
+          </h2>
+          <p className="mt-4 mb-8 max-w-[62ch] text-18 text-muted">
+            Measured on {perf.measuredOn}: {perf.setup}, the median of three loads per page with scripts/measure-perf.mjs. The sky and the toys are the price of this site&apos;s personality;
+            this is what that price is.
+          </p>
+          <div className="case-table">
+            <table>
+              <caption>Median of three loads per page</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Page</th>
+                  <th scope="col">JavaScript downloaded</th>
+                  <th scope="col">Largest content painted</th>
+                  <th scope="col">Main thread blocked</th>
+                </tr>
+              </thead>
+              <tbody>
+                {perf.pages.map((r) => (
+                  <tr key={r.page}>
+                    <th scope="row">{r.page}</th>
+                    <td>{r.js}</td>
+                    <td>{r.lcp}</td>
+                    <td>{r.blocking}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {perf.note && <p className="mt-4 max-w-[80ch] text-16">{perf.note}</p>}
+        </section>
+      )}
 
       <section aria-labelledby="stack-title" className="container-page pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">The rest</p>

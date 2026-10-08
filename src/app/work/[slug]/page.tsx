@@ -7,7 +7,6 @@ import { PageTransition } from "@/components/PageTransition";
 import { adjacentProjects, getProject, projects, type Project } from "@/content/projects";
 import { AskAboutProject } from "@/features/case/AskAboutProject";
 import { CaseStudyShell } from "@/features/case/CaseStudyShell";
-import { CountUp } from "@/features/case/CountUp";
 import { Engineering } from "@/features/case/Engineering";
 import { TraceRail, type TraceStep } from "@/features/case/TraceRail";
 import { FlowPlayer } from "@/features/screens/FlowPlayer";
@@ -72,14 +71,15 @@ function SectionHead({ index, eyebrow, title, id, lead }: { index: number; eyebr
 
 /** The case's cover: three shipped screens on a tinted stage, then the twenty-second version. */
 function Cover({ project }: { project: Project }) {
-  const [a, b, c] = project.screens;
+  const [main, left, right] = project.cover ?? project.screens.slice(0, 3).map((x) => x.key);
+  const a = project.screens.find((x) => x.key === main) ?? project.screens[0];
   return (
     <section aria-label="Overview" className="container-page">
       <div className={`case-stage case-stage--${project.slug}`}>
         <div className="case-stage__phones">
-          <Screen id={b.key} className="case-stage__side case-stage__side--l" />
-          <Screen id={a.key} className="case-stage__main" label={`${project.name}: ${a.title}. ${a.caption}`} />
-          <Screen id={c.key} className="case-stage__side case-stage__side--r" />
+          <Screen id={left} className="case-stage__side case-stage__side--l" />
+          <Screen id={main} className="case-stage__main" label={`${project.name}: ${a.title}. ${a.caption}`} />
+          <Screen id={right} className="case-stage__side case-stage__side--r" />
         </div>
       </div>
       <dl className="mt-6 grid gap-3 md:grid-cols-3">
@@ -462,10 +462,9 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   <div key={m.label} className={n === 0 ? `widget ${TONE_TINT[project.tone] ?? "tone-accent"} p-7` : "widget p-7"}>
                     <dt className="sr-only">{m.label}</dt>
                     <dd>
-                      <CountUp
-                        value={m.value}
-                        className={n === 0 ? "iris-text block w-fit text-64 leading-none font-bold tracking-[-0.045em]" : "block text-64 leading-none font-bold tracking-[-0.045em]"}
-                      />
+                      <span className={n === 0 ? "iris-text block w-fit text-64 leading-none font-bold tracking-[-0.045em]" : "block text-64 leading-none font-bold tracking-[-0.045em]"}>
+                        {m.value}
+                      </span>
                       <span className="mt-3 block text-16" aria-hidden="true">
                         {m.label}
                       </span>

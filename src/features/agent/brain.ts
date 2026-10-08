@@ -4,6 +4,7 @@ import { bio, identity } from "@/content/profile";
 import { projects } from "@/content/projects";
 import type { SiteAction } from "@/lib/actions";
 import { fuzzyScore } from "@/lib/fuzzy";
+import { namedEmployer, onRecord } from "./guards";
 
 /**
  * Moci's offline brain. Used when the Claude API is unavailable (no key, rate limit, outage)
@@ -210,6 +211,36 @@ export function think(raw: string): BrainAnswer {
       actions: [],
       followups: [`Open ${p.name}`, "What was hard about it?", "What's her stack?"],
       href: `/work/${p.slug}`,
+      confidence: 0.95,
+    };
+  }
+
+  // Honesty: questions that invite her to sound more experienced than she is get a straight answer.
+  const org = namedEmployer(q);
+  if (org && !onRecord(org)) {
+    return {
+      text: `No: there's no job at ${org.replace(/^\w/, (c) => c.toUpperCase())} on her record. She did a six-month AI engineering internship at an HR software startup in Jakarta (2025) and has a part-time contract maintaining Tenderlens (2026); the rest is her own products.`,
+      actions: [],
+      followups: ["What did she do at the HR startup?", "Is she open to work?"],
+      href: "/about",
+      confidence: 0.9,
+    };
+  }
+  if (/\bsenior\b|\b(lead|staff|principal|expert|seasoned|veteran)\s+(engineer|developer|designer)\b/i.test(q)) {
+    return {
+      text: "No. She's a fresh graduate (Informatics, class of 2026), not a senior engineer: a six-month internship in a product squad, a part-time contract, and products she shipped with real users and evals.",
+      actions: [],
+      followups: ["What's her strongest project?", "Is she open to work?"],
+      href: "/about",
+      confidence: 0.95,
+    };
+  }
+  if (/\byears?\b.*\bexperience\b|\bexperience\b.*\byears?\b|\bhow (long|many years)\b.*\b(work|engineer|build|industry)/i.test(q)) {
+    return {
+      text: "She doesn't have full-time years yet: a six-month internship in 2025 and a part-time contract since April 2026, plus her own products since 2024. She graduated in 2026.",
+      actions: [],
+      followups: ["What did she do at the HR startup?", "What's her strongest project?"],
+      href: "/about",
       confidence: 0.95,
     };
   }

@@ -13,7 +13,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "eval:moci": "node --experimental-strip-types scripts/eval-moci.mjs"
   },
   "dependencies": {
     "@adelia/tokens": "0.1.0",

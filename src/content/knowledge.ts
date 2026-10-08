@@ -21,13 +21,13 @@ export const siteMap = [
     path: "/colophon",
     title: "How this site is built",
     description:
-      "The engineering behind the site: Moci the agent (Claude with tool use, server-side validation, an offline retrieval fallback that cites its sources), an eval of Moci you can run in the browser, and the stack.",
+      "The engineering behind the site: Moci the agent (Claude with tool use, server-side validation, a claim check on every answer, signed history, a daily budget, an offline retrieval fallback that cites its sources), guardrail checks run at build time, an eval of Moci you can run in the browser, the site's speed on a cheap phone, and the stack.",
   },
   {
     path: "/lab",
     title: "Lab",
     description:
-      "Every experiment: a gumball machine, a live board from Bekasi, a terminal, her own products as booster packs of trading cards, a job-description matcher, her model card, subdomain experiments and features built into this site.",
+      "Experiments on their own subdomains, a job-description matcher and her model card. At the bottom, in a box that starts closed: the toys (a gumball machine, a live board from Bekasi, a terminal, her products as booster packs of trading cards, and the features built into this site).",
   },
   {
     path: "/about",

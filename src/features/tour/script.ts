@@ -1,6 +1,7 @@
 "use client";
 
 import { dispatch } from "@/lib/actions";
+import { openToyBox } from "@/features/lab/ToyBox";
 import { getTheme } from "@/lib/preferences";
 import { sfx } from "@/lib/sound";
 import { unlock } from "@/lib/stickers";
@@ -137,7 +138,7 @@ export async function runTour(signal: AbortSignal) {
     const work = await waitFor('[data-tour="work-card"]', signal, 2000);
     if (work) {
       await moveTo(work, signal);
-      await say("Her work: three AI products, each with the real screens, the decisions and the numbers.", signal, 1600);
+      await say("Her work: four products with real users, each with the real screens, the decisions, the evals and the numbers.", signal, 1600);
       await press(work, signal);
     }
     await goto("/work/tenderlens", signal);
@@ -176,7 +177,8 @@ export async function runTour(signal: AbortSignal) {
     await until(() => window.location.pathname === "/lab", signal, 6000);
     await sleep(500, signal);
 
-    // 9. Gumball machine
+    // 9. Gumball machine (in the toy box, which starts closed)
+    openToyBox();
     const gacha = await waitFor('[data-tour="gacha"]', signal, 3000);
     if (gacha) {
       await moveTo(gacha, signal);

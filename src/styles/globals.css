@@ -2984,7 +2984,7 @@ html[data-theme-swap]::view-transition-new(root) {
 
 .screen .resample-token {
   color: var(--screen-ink);
-  text-decoration-color: color-mix(in srgb, var(--screen-ink) 40%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--screen-ink) 22%, transparent);
 }
 
 .screen .resample-token:hover,
@@ -3044,10 +3044,11 @@ html[data-theme-swap]::view-transition-new(root) {
   background: transparent;
   color: var(--ink);
   font: inherit;
-  text-decoration: underline dotted;
-  text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  /* A quiet solid line, not dots: dotted underlines read as a spellchecker's squiggle. */
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 18%, transparent);
   text-decoration-thickness: 1.5px;
-  text-underline-offset: 0.22em;
+  text-underline-offset: 0.26em;
   cursor: pointer;
   transition:
     background-color var(--dur-micro) var(--ease-out),

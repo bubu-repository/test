@@ -160,7 +160,7 @@ function Token({ slot, choice, onChoose, first, color }: { slot: Slot; choice: n
             }
           }}
         >
-          <span className="type-pixel block px-2 pt-1 pb-2 text-muted">Other words she might use</span>
+          <span className="type-pixel block px-2 pt-1 pb-2 text-muted">Other words she might use · odds are illustrative</span>
           {slot.options.map((o, i) => (
             <span
               key={o.text}

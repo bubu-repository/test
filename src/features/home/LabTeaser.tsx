@@ -12,8 +12,8 @@ export function LabTeaser() {
             The site is a product too.
           </h2>
           <p className="mt-2 max-w-[60ch] text-muted">
-            Moci, its agent, is Claude with tool use, checked on the server, with an offline brain that cites its sources. Read how it&apos;s built, and run its {MOCI_CASES.length}-question eval in
-            your browser.
+            Moci, its agent, is Claude with tool use. The server checks every tool call and every claim before you see it, and an offline brain cites its sources when the API is away.
+            Read how it&apos;s built, see the guardrail checks, and run the offline brain&apos;s {MOCI_CASES.length}-question eval in your browser.
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-3">

@@ -9,7 +9,7 @@ import { WorkCards } from "@/features/work/WorkCards";
 export const metadata: Metadata = pageMeta({
   title: "Work",
   description:
-    "Four AI products designed by Adelia Tiara: Tenderlens, Ask HR, Catat and Lintas. Each case study shows the research, the design decisions and what they cost, the rounds that failed, the shipped screens and the results.",
+    "Four products designed and built by Adelia Tiara: Tenderlens, Ask HR, Catat and Lintas. Each case study shows the research, the design decisions and what they cost, the rounds that failed, the shipped screens and the results.",
   path: "/work",
 });
 
@@ -28,7 +28,7 @@ export default function WorkPage() {
         id="work-title"
         label="Case studies"
         title="Four products, read in any order."
-        lead="Each case is about ten minutes: the problem, my role, the research and the design, then the engineering in its own section (pipeline, models, evals, budgets, failures, code) and the results. If you only have time for one, pick the question you're hiring for."
+        lead="Tenderlens is the full case, about a quarter of an hour; the other three are shorter. Each has the problem, my role, the research and the design, then the engineering in its own section (pipeline, models, evals, budgets, failures, code) and the results. If you only have time for one, pick the question you're hiring for."
       >
         <ul className="mx-auto mt-10 grid max-w-[880px] gap-2 text-left sm:grid-cols-2">
           {GUIDE.map((g) => {

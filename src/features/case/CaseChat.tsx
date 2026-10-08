@@ -13,7 +13,6 @@ import { think } from "../agent/brain";
 import { streamFromApi, streamOfflineText } from "../agent/agent-store";
 import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import { BeforeAfter } from "./BeforeAfter";
-import { CountUp } from "./CountUp";
 
 type Beat = { ask: string; reply: ReactNode };
 
@@ -135,7 +134,7 @@ function buildBeats(project: Project, next: Project): Beat[] {
               <div key={m.label} className="rounded-[16px] bg-surface-2 px-4 py-3">
                 <dt className="sr-only">{m.label}</dt>
                 <dd>
-                  <CountUp value={m.value} className={cn("block text-32 leading-none font-bold tracking-[-0.04em]", n === 0 && "iris-text w-fit")} />
+                  <span className={cn("block text-32 leading-none font-bold tracking-[-0.04em]", n === 0 && "iris-text w-fit")}>{m.value}</span>
                   <span className="mt-1 block text-14 text-muted" aria-hidden="true">
                     {m.label}
                   </span>

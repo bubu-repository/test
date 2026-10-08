@@ -94,13 +94,13 @@ export const FLOWS: Record<string, FlowStep[]> = {
       key: "ln-replan",
       title: "A replan, in one sentence",
       note: "What changed, what to do, and what it costs, compared with your plan.",
-      tap: { target: ".ln-btn--go", label: "Switch to 07:01" },
+      tap: { target: ".ln-btn--go", label: "Switch to the LRT" },
     },
     {
       key: "ln-cars",
       title: "Which carriage",
       note: "Crowding front to back, from riders' one-tap reports.",
-      tap: { target: ".ln-car[data-best]", label: "Board car 9" },
+      tap: { target: ".ln-car[data-best]", label: "Board car 5" },
     },
     {
       key: "ln-calm",

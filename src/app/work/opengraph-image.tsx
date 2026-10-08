@@ -1,6 +1,6 @@
 import { ogContentType, ogSize, renderOg } from "@/lib/og";
 
-export const alt = "Three AI products by Adelia Tiara";
+export const alt = "Four products by Adelia Tiara";
 export const size = ogSize;
 export const contentType = ogContentType;
 

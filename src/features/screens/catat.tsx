@@ -79,8 +79,8 @@ export function CatatSale({ before = false }: { before?: boolean }) {
             <Voice length="0:04" />
           </Out>
           <In time="07:44">
-            <span className="ct-quiet">&ldquo;Aqua gelas sedus, ceban&rdquo;</span>
-            <br />✓ <strong>Stok masuk 1 dus Aqua Gelas (48) · Rp10.000</strong>
+            <span className="ct-quiet">&ldquo;Aqua gelas sedus, tiga puluh lima rebu&rdquo;</span>
+            <br />✓ <strong>Stok masuk 1 dus Aqua Gelas (48) · Rp35.000</strong>
           </In>
           <div className="ct-btns ct-btns--two">
             <span>✓ Benar</span>

@@ -98,6 +98,8 @@ export type StreamEvents = {
   onText: (chunk: string) => void;
   onTool?: (action: SiteAction) => void;
   onFollowups?: (followups: string[]) => void;
+  /** The server's claim check rejected the answer: show this text instead. */
+  onReplace?: (text: string) => void;
   onDone?: (sig?: string) => void;
 };
 
@@ -134,6 +136,7 @@ export async function streamFromApi(messages: { role: "user" | "assistant"; cont
           | { t: "tool"; name: string; input: Record<string, unknown> }
           | { t: "followups"; v: string[] }
           | { t: "error"; message: string }
+          | { t: "replace"; v: string }
           | { t: "done"; sig?: string };
         if (event.t === "text") {
           gotText = true;
@@ -143,6 +146,8 @@ export async function streamFromApi(messages: { role: "user" | "assistant"; cont
           if (action) events.onTool?.(action);
         } else if (event.t === "followups") {
           events.onFollowups?.(event.v);
+        } else if (event.t === "replace") {
+          events.onReplace?.(event.v);
         } else if (event.t === "error") {
           throw new Error(event.message);
         } else if (event.t === "done") {
@@ -194,6 +199,7 @@ export async function askAgent(question: string) {
         void Promise.resolve(dispatch(action)).then(() => patchMessage(botMsg.id, (m) => ({ tools: m.tools.map((t) => (t.label === label ? { ...t, done: true } : t)) })));
       },
       onFollowups: (v) => patchMessage(botMsg.id, { followups: v.slice(0, 3) }),
+      onReplace: (text) => patchMessage(botMsg.id, { text }),
       onDone: (sig) => patchMessage(botMsg.id, { sig }),
     });
     agentStore.set({ mode: "online" });

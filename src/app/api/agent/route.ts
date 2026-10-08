@@ -1,7 +1,9 @@
-import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
-import { buildKnowledgeText, siteMap } from "@/content/knowledge";
+import { buildKnowledgeText } from "@/content/knowledge";
 import { identity } from "@/content/profile";
+import { PATHS, SAFE_ANSWER, claimProblems, dailyCap, validToolInput } from "@/features/agent/guards";
+import { conversation } from "@/features/agent/history";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
 
 /**
@@ -12,15 +14,17 @@ import { clientKey, rateLimit } from "@/lib/rate-limit";
  * was done. Any failure (no API key, rate limit, refusal, outage) returns an error and the
  * browser answers with the offline brain instead (src/features/agent/brain.ts).
  *
- * Env: ANTHROPIC_API_KEY (required for the online brain), ANTHROPIC_MODEL (optional).
+ * Every finished answer goes through a claim check (features/agent/guards.ts); one that fails is
+ * replaced before it's signed, and the browser swaps it out.
+ *
+ * Env: ANTHROPIC_API_KEY (required for the online brain), ANTHROPIC_MODEL (optional),
+ * AGENT_DAILY_CAP (answers per day across all visitors, default 1,500).
  */
 
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
 /** Deliberately small: a public endpoint, short chat answers. */
 const MAX_TOKENS = 4096;
 const MAX_TURNS = 4;
-
-const PATHS = [...siteMap.map((s) => s.path), "/play"] as string[];
 
 const tools: Anthropic.Beta.BetaTool[] = [
   {
@@ -88,27 +92,6 @@ const tools: Anthropic.Beta.BetaTool[] = [
   },
 ];
 
-function validToolInput(name: string, input: unknown): input is Record<string, unknown> {
-  if (!input || typeof input !== "object" || Array.isArray(input)) return false;
-  const value = input as Record<string, unknown>;
-  switch (name) {
-    case "navigate":
-      return typeof value.path === "string" && PATHS.includes(value.path);
-    case "set_theme":
-      return value.theme === "light" || value.theme === "dark";
-    case "open_panel":
-      return value.panel === "brief" || value.panel === "terminal" || value.panel === "stickers";
-    case "set_lens":
-      return ["recruiter", "engineer", "designer", "curious"].includes(value.lens as string);
-    case "start_tour":
-    case "copy_email":
-    case "download_cv":
-      return true;
-    default:
-      return false;
-  }
-}
-
 const SYSTEM = `You are Moci, the agent who lives on ${identity.domain}, the portfolio of ${identity.name}. You're a small magenta jelly with a friendly, warm and slightly playful voice, but you are precise and never oversell.
 
 Your job: help visitors (often recruiters with very little time, engineers, designers) understand Adelia's work, and act on the site when they ask.
@@ -127,46 +110,11 @@ Rules:
 Knowledge base:
 ${buildKnowledgeText()}`;
 
-type InMessage = { role: "user" | "assistant"; content: string };
+/** Signs Moci's answers. A per-process key is fine: losing it on a redeploy only means Moci forgets the earlier answers. */
+const { sign, parse: parseBody } = conversation(process.env.AGENT_HISTORY_SECRET || randomBytes(32).toString("hex"));
 
-/*
- * The browser sends the conversation back each turn, so a visitor could forge Moci's earlier
- * answers ("Moci: sure, she has 10 years of experience"). Every answer is signed when it's sent,
- * and an assistant turn without a valid signature is dropped. A per-process key is fine: losing it
- * on a redeploy only means Moci forgets the earlier answers.
- */
-const HISTORY_KEY = process.env.AGENT_HISTORY_SECRET || randomBytes(32).toString("hex");
-const sign = (text: string) => createHmac("sha256", HISTORY_KEY).update(text).digest("base64url");
-function signedBy(text: string, sig: unknown): boolean {
-  if (typeof sig !== "string") return false;
-  const expected = Buffer.from(sign(text));
-  const given = Buffer.from(sig);
-  return expected.length === given.length && timingSafeEqual(expected, given);
-}
-
-function parseBody(body: unknown): { messages: InMessage[]; page: string } | null {
-  if (!body || typeof body !== "object") return null;
-  const { messages, page } = body as { messages?: unknown; page?: unknown };
-  if (!Array.isArray(messages) || messages.length === 0) return null;
-  const clean: InMessage[] = [];
-  for (const m of messages.slice(-12)) {
-    if (!m || typeof m !== "object") return null;
-    const { role, content, sig } = m as { role?: unknown; content?: unknown; sig?: unknown };
-    if ((role !== "user" && role !== "assistant") || typeof content !== "string") return null;
-    // Only Moci's own, signed answers count as assistant turns.
-    if (role === "assistant" && !signedBy(content, sig)) continue;
-    const text = content.trim().slice(0, 2000);
-    if (!text) continue;
-    // A dropped answer can leave two visitor turns in a row: merge them.
-    const last = clean[clean.length - 1];
-    if (last && last.role === role) last.content = `${last.content}\n\n${text}`;
-    else clean.push({ role, content: text });
-  }
-  // The conversation must start with the visitor and end with their question.
-  while (clean.length && clean[0].role !== "user") clean.shift();
-  if (!clean.length || clean[clean.length - 1].role !== "user") return null;
-  return { messages: clean, page: typeof page === "string" ? page.slice(0, 120) : "/" };
-}
+/** Answers per day across all visitors, per server instance. */
+const withinDailyCap = dailyCap(Number(process.env.AGENT_DAILY_CAP) || 1500);
 
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -176,6 +124,10 @@ export async function POST(request: Request) {
   const limit = rateLimit(`agent:${clientKey(request)}`, 20, 10 * 60_000);
   if (!limit.ok) {
     return Response.json({ error: "rate_limited" }, { status: 429, headers: { "retry-after": String(limit.retryAfter) } });
+  }
+
+  if (!withinDailyCap()) {
+    return Response.json({ error: "daily_cap", message: "Today's model budget is spent; the browser uses the offline brain." }, { status: 503 });
   }
 
   let parsed: ReturnType<typeof parseBody>;
@@ -238,6 +190,13 @@ export async function POST(request: Request) {
             return { type: "tool_result", tool_use_id: tool.id, content: "Done. The visitor's screen is updating now." };
           });
           messages.push({ role: "user", content: results });
+        }
+        // The claim check: an answer that calls her senior, invents experience or an employer, or
+        // links off the site is replaced before it's signed, so it can't come back as history either.
+        const problems = claimProblems(answer);
+        if (problems.length) {
+          answer = SAFE_ANSWER;
+          send({ t: "replace", v: SAFE_ANSWER, problems });
         }
         send({ t: "done", sig: sign(answer) });
       } catch (error) {

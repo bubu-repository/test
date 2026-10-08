@@ -72,7 +72,7 @@ export function Engineering({ project }: { project: Project }) {
       </div>
       {e.confusion && (
         <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:items-center">
-          <div className="case-table">
+          <div className="case-table case-table--compact">
             <table>
               <caption>{e.confusion.caption}</caption>
               <thead>

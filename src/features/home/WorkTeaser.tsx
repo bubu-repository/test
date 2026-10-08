@@ -14,7 +14,7 @@ export function WorkTeaser() {
           </h2>
         </div>
         <p className="max-w-[40ch] pb-2 text-muted">
-          Four AI products with real users: my thesis, my internship feature in a product squad, a product I co-founded in a campus incubator, and a side project. Each case shows the pipeline, the
+          Four products with real users: my thesis, my internship feature in a product squad, a product I co-founded in a campus incubator, and a side project. Each case shows the pipeline, the
           evals and the design.
         </p>
       </div>

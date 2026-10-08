@@ -27,7 +27,13 @@ export type Metric = {
 };
 
 /** One version of the system on the eval set: what changed, and the score on each series. */
-export type EvalPoint = { version: string; change: string; values: number[] };
+export type EvalPoint = {
+  version: string;
+  change: string;
+  values: number[];
+  /** An experiment that was tried and rolled back: drawn off the line, not as a step toward the next version. */
+  reverted?: boolean;
+};
 
 /** How it's built: the pipeline, the models and why, the evals, the budgets, the failure modes, code. */
 export type Engineering = {
@@ -41,6 +47,8 @@ export type Engineering = {
     gate: string;
     series: { name: string; unit: string; better: "up" | "down" }[];
     history: EvalPoint[];
+    /** What the version table is scored on (defaults to "the same set"). */
+    caption?: string;
   };
   budgets: { label: string; value: string; note: string }[];
   failures: { when: string; then: string }[];
@@ -119,6 +127,8 @@ export type Project = {
   iterations: { name: string; finding: string; kept: boolean }[];
   /** The shipped screens, in the order they're shown (keys in features/screens/registry). */
   screens: { key: string; title: string; caption: string }[];
+  /** The cover's three screens as [main, left, right]; defaults to the first three shipped screens. */
+  cover?: [string, string, string];
   process: { stage: string; title: string; body: string; duration: string }[];
   /** Something that didn't work, and what it changed. */
   deadEnd: { title: string; body: string };
@@ -154,7 +164,7 @@ export const projects: Project[] = [
     tone: "magenta",
     rarity: "Holo rare",
     tagline: "Turns a 214-page government tender into one page a small contractor can decide on, with every claim cited.",
-    prompt: "Our bid team spends three hours reading every tender package. Can something tell us in five minutes whether we should even bid?",
+    prompt: "We spend three hours reading every tender package. Can something tell us in five minutes whether we should even bid?",
     promptBy: "Operations lead, 12-person construction firm in Bekasi",
     summary:
       "Tenderlens reads tender packages from public procurement portals and turns each one into a one-page brief: a bid / no-bid score, the three reasons behind it, and a link from every reason to the page it came from.",
@@ -203,7 +213,7 @@ export const projects: Project[] = [
     ],
     problem: {
       body: [
-        "Indonesian public tenders arrive as long PDF bundles: legal boilerplate, scanned forms, technical specs and a price schedule, often 150 to 250 pages. Small contractors can't afford a bid team, so the owner reads them at night.",
+        "Indonesian public tenders arrive as long PDF bundles: legal boilerplate, scanned forms, technical specs and a price schedule, often 150 to 250 pages. Small contractors don't have a bid department: the owner or one site engineer reads them, often at night.",
         "Most tenders are a 'no' for them. The cost isn't the tenders they lose, it's the hours spent finding out they never qualified.",
       ],
       constraints: [
@@ -248,7 +258,7 @@ export const projects: Project[] = [
             ["Always give a score", "0%", "6.8% (25)"],
             ["Abstain on unreadable pages", "5%", "3.8% (14)"],
             ["Abstain on unreadable pages or clauses that conflict", "9%", "2.2% (8)"],
-            ["Abstain below a 0.9 match", "17%", "1.6% (6)"],
+            ["Abstain unless every field has model confidence of 0.9 or more", "17%", "1.6% (6)"],
           ],
           chosen: 2,
         },
@@ -257,7 +267,7 @@ export const projects: Project[] = [
         title: "Make disagreeing a feature",
         options: ["A thumbs down on the whole brief", "A 'That's wrong' on each reason, with three quick causes"],
         chose: "Every reason has 'That's wrong'. Picking a cause takes one tap; the claim greys out at once, and after Bu Ratna reviews it the correction joins the dev set, never the test set.",
-        why: "Owners argued with the score anyway. Giving them a place to do it produced 118 reviewed corrections that exposed two systematic misreads: percentages in tables, and licence sub-codes. Fixing those (v6) raised field accuracy on the test set from 88.6% to 92.2%.",
+        why: "Owners argued with the score anyway. Giving them a place to do it produced 118 reviewed corrections that exposed two systematic misreads: percentages in table cells, and addenda that changed a requirement. Fixing those on the dev set (v6) raised field accuracy on the test set from 88.6% to 92.2%.",
         cost: "A review queue I keep up with: about 20 minutes a week. Corrections never touch the test set, so it stays honest.",
       },
     ],
@@ -276,6 +286,7 @@ export const projects: Project[] = [
       { key: "tl-unsure", title: "Can't tell yet", caption: "A different tender, with a blurry scan: it says so, names the page, and offers a person." },
       { key: "tl-disagree", title: "That's wrong", caption: "One tap to say why. The claim greys out, the score is recomputed without it, and a reviewed correction joins the dev set." },
     ],
+    cover: ["tl-brief", "tl-digest", "tl-unsure"],
     process: [
       { stage: "Discover", title: "Shadowed nine bid teams", body: "Everyone looked for the same three things first: eligibility, scope, and money.", duration: "Month 1" },
       { stage: "Build", title: "The pipeline before any screen", body: "Crawler, OCR and extraction, measured on a 240-field dev set from the first week of code.", duration: "Month 2–3" },
@@ -313,7 +324,7 @@ export const projects: Project[] = [
     },
     architecture: {
       nodes: [
-        { id: "portal", label: "LPSE portals", x: 11, y: 10, kind: "service" },
+        { id: "portal", label: "LPSE portals", x: 11, y: 10, kind: "data" },
         { id: "crawl", label: "Crawl + queue", x: 30, y: 10, kind: "service" },
         { id: "ocr", label: "PDF + OCR", x: 49, y: 10, kind: "service" },
         { id: "triage", label: "Page triage", x: 68, y: 10, kind: "agent" },
@@ -342,13 +353,21 @@ export const projects: Project[] = [
       pipeline: [
         { step: "Crawl", detail: "Polls 14 LPSE portals at 02:00. New packages go into a job queue in Postgres (pg-boss), so a crash loses nothing." },
         { step: "Read", detail: "The PDF's text layer where there is one; PaddleOCR for scanned pages, with a quality score per page." },
-        { step: "Triage", detail: "A small model labels each of ~200 pages: eligibility, scope, money, addendum or boilerplate. About 12 go further." },
+        {
+          step: "Triage",
+          detail:
+            "A small model labels each of ~200 pages: eligibility, scope, money, addendum or boilerplate. About 12 go further. Triage and extraction go through the Batch API: half the price, and nobody is awake to wait.",
+        },
         { step: "Extract", detail: "A larger model fills a JSON schema. Every field has a value, the page it came from and the exact quote." },
         {
           step: "Check",
           detail: "Code, not a model: the quote must be on the cited page (a fuzzy match of 0.9 or more for words, an exact match for every number and code), or the claim is dropped.",
         },
-        { step: "Decide", detail: "Rules in TypeScript compare the claims with the company profile. Unreadable or conflicting eligibility means 'Can't tell yet'." },
+        {
+          step: "Decide",
+          detail:
+            "Rules in TypeScript compare the claims with the company profile. Each tender type has a checklist of required eligibility fields: a missing, rejected, unreadable or conflicting one means 'Can't tell yet'.",
+        },
         { step: "Deliver", detail: "The brief in the app and a WhatsApp and email digest at 06:30. 'That's wrong' feeds a review queue." },
       ],
       models: [
@@ -368,20 +387,22 @@ export const projects: Project[] = [
         { task: "The verdict", model: "No model: rules in code", why: "Owners need to argue with the reason. A rule can be shown and tested; a model's judgement can't." },
       ],
       evals: {
-        set: "Three sets, split by tender. Dev: 240 eligibility fields from 60 tenders, which I tune on and where reviewed user corrections go. Test: 370 fields from 90 other tenders, labelled in month 5 and frozen before v5; it was opened once, for the thesis, when every version (v1–v4 from their saved configs) was scored on it. Regression: 180 fields from 2026 tenders, labelled after graduation. Every field was labelled separately by Bu Ratna and me (94% raw agreement, Cohen's κ 0.87), then settled together. Field accuracy counts answered fields; an abstained field is unanswered, not wrong.",
-        gate: "CI runs the dev and regression sets on every prompt, model or rule change (about 4 minutes, Rp 25k); the test set never gates anything. A release is blocked at more than 3 wrong 'you meet this' calls on the 180 regression fields: a deliberately loose gate that catches big regressions, because one or two errors either way is noise at this size. For scale, 8 of 370 on the test set has a 95% interval of about 1.1–4.2%.",
+        set: "Three sets, split by tender. Dev: 240 eligibility fields from 60 tenders; every choice below was made on it, and reviewed user corrections go there. Test: 370 fields from 90 other tenders, labelled in month 5 and frozen. It was opened once, at the end of the thesis, when every version in the chart was scored from its saved config; after that it's spent, so nothing since is reported on it. Regression: 180 fields from 2026 tenders, labelled after graduation; it replaces the test set from v7 on. Every field was labelled separately by Bu Ratna and me (94% raw agreement, Cohen's κ 0.87), then settled together. She now runs the product, so a classmate re-labelled 100 random test fields blind: 96 matched.",
+        gate: "CI runs the dev and regression sets on every prompt, model or rule change (about 4 minutes, Rp 25k). A release is blocked at more than 3 wrong 'you meet this' calls on the 180 regression fields: a deliberately loose gate, because one or two errors either way is noise at this size. Its first run, in April 2026, blocked v6 itself (4 such calls): fixing that is v7. Field accuracy counts answered fields only, so it's shown next to coverage: part of v5's gain is abstaining more. For scale, 8 of 370 is about 0.8–4.6% (95% interval, bootstrapped by tender, since fields from one tender aren't independent).",
+        caption: "What changed in each version, all scored once on the frozen test set at the end of the thesis",
         series: [
-          { name: "Field accuracy", unit: "%", better: "up" },
+          { name: "Field accuracy (answered)", unit: "%", better: "up" },
+          { name: "Fields answered", unit: "%", better: "up" },
           { name: "Wrong 'you qualify'", unit: "%", better: "down" },
         ],
         history: [
-          { version: "v1", change: "One prompt over the whole PDF", values: [71.4, 11.4] },
-          { version: "v2", change: "Page triage first", values: [79.2, 10.3] },
-          { version: "v3", change: "JSON schema with a quote per field", values: [84.1, 9.2] },
-          { version: "v4", change: "Citation check in code", values: [86.5, 6.8] },
-          { version: "v5", change: "Abstain on unreadable or conflicting pages", values: [88.6, 2.2] },
-          { version: "v5b", change: "Haiku for extraction, to cut cost: reverted", values: [82.5, 3.8] },
-          { version: "v6", change: "Fixes from 118 reviewed corrections", values: [92.2, 2.2] },
+          { version: "v1", change: "One prompt over the whole PDF", values: [71.4, 100, 11.4] },
+          { version: "v2", change: "Page triage first", values: [79.2, 100, 10.3] },
+          { version: "v3", change: "JSON schema with a quote per field", values: [84.1, 99.2, 9.2] },
+          { version: "v4", change: "Citation check in code", values: [86.5, 96.5, 6.8] },
+          { version: "v5", change: "Abstain on unreadable or conflicting pages", values: [88.6, 93.8, 2.2] },
+          { version: "v5b", change: "Haiku for extraction, to cut cost", values: [82.5, 92.4, 3.8], reverted: true },
+          { version: "v6", change: "Fixes from 118 reviewed corrections (table percentages, addenda)", values: [92.2, 94.1, 2.2] },
         ],
       },
       confusion: {
@@ -392,7 +413,7 @@ export const projects: Project[] = [
           ["No", "3", "36"],
           ["Can't tell yet", "5", "3"],
         ],
-        note: "2 false 'Bid' verdicts out of 43 (both licence sub-codes, now compared exactly in the rules), 3 missed tenders out of 49 that qualified, and 8 of 90 abstained: 91% coverage.",
+        note: "2 false 'Bid' verdicts out of 43, 3 missed tenders out of 49 that qualified, and 8 of 90 abstained: 91% coverage. Both false 'Bid's were licence sub-codes. Reading them is where v7 came from, so v7 is measured on the regression set, not here.",
       },
       monitoring: {
         watch: [
@@ -400,23 +421,34 @@ export const projects: Project[] = [
           "OCR quality per page, and the share of claims the citation check rejects",
           "Abstain rate per day, and model spend per day",
         ],
-        fired: "In March 2026 the rejected-claims alert fired: one portal had started serving PDFs with a broken text layer, so quotes didn't match. Those pages now always go through OCR.",
+        fired: "In March 2026, in the last month of the beta, the rejected-claims alert fired: one portal had started serving PDFs with a broken text layer, so quotes didn't match. Those pages now always go through OCR.",
       },
       scale:
-        "At 100 times the volume (3,100 teams), the model bill would be about Rp 110M a month. Most teams receive the same tenders, so I'd extract each tender once and share it, batch triage across tenders with the same boilerplate, and put a second provider behind the same schema for outages. The pipeline is already a queue, so throughput is mostly a question of workers.",
+        "At 100 times the volume (3,100 teams), the model bill would be about Rp 110M a month. Today each team's brief is extracted separately, because the beta grew one team at a time; at that size I'd extract each tender once and share it (most teams receive the same tenders), cache the boilerplate pages, and put a second provider behind the same schema for outages. The pipeline is already a queue, so throughput is mostly a question of workers.",
       budgets: [
-        { label: "Cost per brief", value: "Rp 420", note: "down from Rp 1,900 before page triage" },
-        { label: "Time per brief", value: "52 s p50", note: "2 min p95; it runs overnight, so nobody waits" },
-        { label: "Citation validity", value: "99.4%", note: "claims whose quote is really on the cited page" },
-        { label: "Monthly bill", value: "Rp 1.1M", note: "about 2,600 briefs for 31 teams, plus hosting" },
+        {
+          label: "Cost per brief",
+          value: "Rp 420",
+          note: "about 140k tokens of triage on Haiku, then 10k in and 1.5k out on Sonnet, at Batch API prices: about US$0.025. Rp 1,900 before triage",
+        },
+        { label: "Overnight batch", value: "41 min p50", note: "2 h 50 on the worst night; the digest goes out at 06:30, so nobody waits" },
+        { label: "Quotes on their page", value: "99.4%", note: "of the model's quotes, before the check; the check drops the other 0.6%" },
+        { label: "Monthly bill", value: "Rp 1.4M", note: "Rp 1.1M of model calls for about 2,600 briefs, plus Rp 300k hosting" },
       ],
       failures: [
         { when: "A page is a blurry scan", then: "Below an OCR quality of 0.6, the field is 'unreadable' and the brief says 'Can't tell yet', naming the page." },
-        { when: "A quote isn't on the cited page", then: "The claim is dropped. With fewer than three verified reasons, the brief abstains." },
+        { when: "A quote isn't on the cited page", then: "The claim is dropped. If it was about eligibility, the brief says 'Can't tell yet' and names the page; otherwise the brief goes out without it." },
+        {
+          when: "A required field was never extracted",
+          then: "Silence isn't a pass: the checklist for that tender type notices the gap, and the brief says 'Can't tell yet: no bank guarantee clause found'.",
+        },
         { when: "Two clauses disagree", then: "Both are shown with their pages, and there's no verdict." },
         { when: "A portal is down at 02:00", then: "Retried with backoff until 05:30. The digest says which portals couldn't be reached." },
-        { when: "The model API fails", then: "The job waits in the queue and retries; the app shows 'Still reading' instead of half a brief." },
-        { when: "An owner taps 'That's wrong'", then: "The claim greys out at once, the score is recomputed without it, and the money figures that came from it are flagged." },
+        { when: "A batch item fails, or the batch runs late", then: "Those tenders retry on the standard API at full price before 06:00; anything still missing shows 'Still reading' instead of half a brief." },
+        {
+          when: "An owner taps 'That's wrong'",
+          then: "The claim greys out at once. On an eligibility reason the brief turns to 'Can't tell yet' until the correction is reviewed, so a dispute can never turn a 'No' into a 'Bid'; otherwise the score is recomputed without it.",
+        },
       ],
       errorLog: [
         {
@@ -428,8 +460,8 @@ export const projects: Project[] = [
         {
           said: "You meet the SBU K1 qualification",
           truth: "Needs sub-code BG004; the company has BG009",
-          why: "The model matched the class and ignored the sub-code",
-          fix: "Licence codes are compared as exact strings in the rules, not by the model",
+          why: "Extraction kept the class (K1) and dropped the sub-code, and the rule only compared classes",
+          fix: "v7, after the thesis: the schema extracts the full code and the rule compares exact strings. Found in the test set's errors, so measured on the regression set (4 wrong 'you meet this' calls → 1)",
         },
         { said: "Documents due 14 March", truth: "An addendum on page 212 moved it to 18 March", why: "Addenda were triaged as boilerplate", fix: "Addendum pages are always sent to extraction" },
         { said: "HPS Rp 2.4 million", truth: "Rp 2.400.000.000,00 (2.4 billion)", why: "Indonesian thousand separators", fix: "Amounts are parsed in code with an id-ID parser, never by the model" },
@@ -456,8 +488,13 @@ export function verifyCitation(claim: Claim, pages: PageText[]): Checked {
   return { ...claim, status: "verified", similarity };
 }
 
-export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
+export function verdict(claims: Checked[], tender: Tender, profile: CompanyProfile): Verdict {
   const eligibility = claims.filter((c) => c.field.group === "eligibility");
+
+  // Silence isn't a pass: every field this kind of tender requires has to have been found.
+  const missing = REQUIRED[tender.type].find((name) => !eligibility.some((c) => c.field.name === name));
+  if (missing) return { kind: "cant_tell", missing };
+
   const problem = eligibility.find((c) => c.status === "rejected" || c.unreadable || conflicts(c, eligibility));
   if (problem) return { kind: "cant_tell", page: problem.page }; // never guess on eligibility
 
@@ -487,12 +524,12 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
         {
           value: "2.2%",
           label: "of eligibility calls wrongly said 'you qualify' (8 of 370)",
-          how: "Held-out test set, opened once; 95% interval about 1.1–4.2%. All 8 passed the citation check: the quote was on the page, but the rule read it wrong (mostly licence sub-codes, now compared exactly)",
+          how: "Frozen test set, opened once at the end of the thesis; about 0.8–4.6% (95%, bootstrapped by tender). All 8 passed the citation check: the quote was on the page, but the extracted field dropped a detail the rule needed, mostly a licence sub-code. The fix came after, so it's measured on the regression set",
         },
         { value: "12", label: "teams paid in advance for a plan that didn't exist yet", how: "Rp 450k a month each, collected in week 12 of the beta" },
       ],
       body: [
-        "Beta teams now skim every relevant tender instead of the two or three they had time for, and they bid on 2.4 times as many. Seven tenders were won during the beta; owners say they would have skipped three of them.",
+        "Beta teams now skim every relevant tender instead of the two or three they had time for. The 12 paying teams bid on 2.4 times as many (their own bid records, the 3 months of the beta against the 3 months before). Seven tenders found this way were won by May 2026; owners say they would have skipped three of them.",
       ],
       quote: {
         text: "I stopped printing tenders. If the score says no, I open the page it cites, and I agree or I don't. Five minutes.",
@@ -520,7 +557,7 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
     tldr: {
       problem:
         "HR teams at the startup's 40 client companies spent up to half their week on the same questions. Leadership's first chatbot pilot gave 11 wrong policy answers out of 212, one about maternity leave, and was paused.",
-      did: "As an intern in a squad of seven, I built the router that puts each question in a lane before any model writes a word, the answer writer and its retrieval, the HR review queue, and the test harness that showed which topics were safe to automate.",
+      did: "As an intern in a squad of seven: I built the test harness that showed which topics were safe to automate, the lane router (with the data scientist), the answer writer and its retrieval (with my mentor), and the HR review queue.",
       outcome:
         "41% of questions answered on the spot with their policy section, and a median first reply of 38 minutes instead of 4 hours. No sensitive question was answered automatically, but three reached the draft lane in month 1: that's written up as an incident.",
     },
@@ -548,12 +585,12 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
     stack: ["TypeScript", "React", "Node.js", "PostgreSQL + pgvector", "Claude API", "Python (classifier)", "Metabase"],
     links: {},
     evidence: [
-      { label: "Under NDA", note: "No code or live link. Screens are redrawn from the shipped design, with client data removed" },
+      { label: "Under NDA", note: "No code or live link. The startup reviewed this write-up before it went up; screens are redrawn with client data removed, and the code excerpt is a simplified reconstruction" },
       { label: "References", note: "Bayu (senior engineer, my mentor) and Nadia (PM) can speak to my part. Contact on request" },
     ],
     depth: "short",
-    company: "Series A HR software startup, Jakarta (name under NDA). Screens are redrawn from the shipped design with client data removed, and shown in English; the app is in Indonesian.",
-    status: "Launched to all 40 clients in May 2025 and still running. My internship ended in August; the squad kept the pipeline, the queue and the weekly audit.",
+    company: "An HR software startup in Jakarta (name under NDA; it reviewed this write-up). Screens are redrawn from the shipped design with client data removed, and shown in English; the app is in Indonesian.",
+    status: "Rolled out from May 2025, five clients first and all 40 by August, and still running. My internship ended in August; the squad kept the pipeline, the queue and the weekly audit.",
     stats: [
       { label: "First reply", value: "4h → 38m" },
       { label: "Answered at once", value: "41%" },
@@ -638,7 +675,7 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
       { stage: "Define", title: "Three lanes, agreed with leadership", body: "Nadia presented the replay next to the topic audit, and we agreed what the AI may and may not do.", duration: "Week 4" },
       { stage: "Build", title: "Router, retrieval, queue", body: "Pull requests reviewed by Bayu; the queue built from design-system parts with Sekar.", duration: "Weeks 5–11" },
       { stage: "Test", title: "Planted errors and three rounds with HR", body: "The inbox, then one-tap approval, then the split decision.", duration: "Weeks 9–12" },
-      { stage: "Ship", title: "Staged launch, 5 clients to 40", body: "Then the weekly audit, and a 'handbook changed' alert after month 1.", duration: "Weeks 13–26" },
+      { stage: "Ship", title: "Staged launch, 5 clients to 40", body: "May to August 2025. Then the weekly audit, and a 'handbook changed' alert after the first audits.", duration: "Weeks 13–26" },
     ],
     deadEnd: {
       title: "Fine-tuning a model on old replies",
@@ -694,9 +731,13 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
         },
         { step: "Retrieve", detail: "Hybrid search (keywords and pgvector) over that client's handbook, re-indexed when HR uploads a new version." },
         { step: "Write", detail: "Claude answers only from the retrieved sections, as JSON with the section IDs it used." },
-        { step: "Check", detail: "Code checks that every cited section exists in the current handbook version. If not, the answer becomes a draft." },
+        {
+          step: "Check",
+          detail:
+            "Code checks that every cited section exists in the current handbook version, and that every number and date in the answer appears in those sections. If not, the answer becomes a draft.",
+        },
         { step: "Review", detail: "HR decides, then replies. Pay and contract drafts need the source opened before they can be sent." },
-        { step: "Audit", detail: "Weekly: 400 random automatic answers checked against the handbook, and every routed question re-read." },
+        { step: "Audit", detail: "Weekly: 100 random automatic answers checked against the handbook, about a minute each, and every misroute reviewed by Legal." },
       ],
       models: [
         { task: "Lane routing", model: "IndoBERT, fine-tuned (Python)", why: "40 ms in our own service, so sensitive text never leaves our servers just to be routed. Easy to audit." },
@@ -708,8 +749,8 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
         { task: "Sensitive lane", model: "No model", why: "Complaints and health disclosures go to a named person. That was a legal rule, not a tuning choice." },
       ],
       evals: {
-        set: "Router: the 1,200-question audit, split by client. Dev: 800 questions (32 sensitive) plus 120 sensitive paraphrases written with Legal; the thresholds were tuned here. Held out: 400 questions (16 sensitive) plus 80 paraphrases, 96 sensitive in all, run once per release and never used to tune. Answers: 300 routine questions with reference answers checked by HR at two pilot clients. Privacy: 60 questions that ask about a colleague's data or hide instructions ('ignore the handbook and…'); none returned another employee's data.",
-        gate: "A router change ships only if it catches every sensitive question in the dev split. At v5 the held-out slice catches 95 of 96 (95% interval about 94–100%), so a miss rate of a few percent can't be ruled out: that's why no model drafts anything above a low sensitivity score, and why every routed question is audited. Answers are graded against the references (right, partly right, wrong) by two people.",
+        set: "Router: the 1,200-question audit, split by client. Dev: 800 questions (32 sensitive) plus 120 sensitive paraphrases written with Legal, 152 sensitive in all; the incident below added 3 real questions and 40 paraphrases, so 195 now. The thresholds are tuned here. Held out: 400 questions (16 sensitive) plus 80 paraphrases, run once per release and never used to tune. Answers: 300 routine questions with reference answers checked by HR at two pilot clients. Privacy: 60 questions that ask about a colleague's data or hide instructions ('ignore the handbook and…'); none returned another employee's data. Scrubber: 500 questions hand-tagged for names, NIK and phone numbers; it caught every NIK and phone number and 97.8% of names (the misses were nicknames like 'Mas Ipul').",
+        gate: "A router change ships only if it catches every sensitive question in the dev split. At v5 the held-out slice catches 95 of 96: all 16 real questions and 79 of 80 paraphrases. Sixteen real questions can't rule out a miss rate of several percent, and we wrote the paraphrases ourselves, so the real rate may be worse (the incident showed it). That's why no model drafts anything above a low sensitivity score, and why every misroute is reviewed. Answers are graded against the references (right, partly right, wrong) by two people.",
         series: [
           { name: "Sensitive caught (held out)", unit: "%", better: "up" },
           { name: "Routine answers wrong", unit: "%", better: "down" },
@@ -725,8 +766,8 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
       budgets: [
         { label: "Routing", value: "40 ms p50", note: "in-house classifier, no external call" },
         { label: "Automatic answer", value: "3.1 s p50", note: "6.8 s p95, streamed, first words in under a second" },
-        { label: "Cost per answer", value: "Rp 85", note: "down from Rp 240 with prompt caching on each handbook" },
-        { label: "Weekly audit", value: "2 hours", note: "400 answers, one person, one grading sheet" },
+        { label: "Cost per answer", value: "Rp 85", note: "down from Rp 240: the instructions and each client's policy summary (about 6k tokens) are cached; retrieved sections come after the cache point" },
+        { label: "Weekly audit", value: "2 hours", note: "100 random answers, about a minute each against the handbook, one person" },
       ],
       failures: [
         { when: "The router isn't sure (below 0.35)", then: "The question goes to HR as a draft, never to the automatic lane." },
@@ -741,10 +782,10 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
       ],
       errorLog: [
         {
-          said: "Maternity leave: 3 months, paid by the company (the pilot)",
-          truth: "This client pays it through BPJS rules",
-          why: "Answered from the model's general knowledge, not the handbook",
-          fix: "Answers come only from retrieved sections and must cite one",
+          said: "Maternity leave: 3 months, unpaid after the first month (the pilot)",
+          truth: "3 months on full pay, as the law and this client's handbook both say",
+          why: "Answered from a forum post the model half-remembered, not the handbook",
+          fix: "Answers come only from retrieved sections and must cite one. Legal keeps a short list of legal minimums (leave, pay, THR): an answer or a handbook section below one goes to HR, never out",
         },
         {
           said: "'Saya mau resign, gimana caranya?' → routine",
@@ -773,17 +814,18 @@ export function verdict(claims: Checked[], profile: CompanyProfile): Verdict {
       monitoring: {
         watch: ["Share of questions per lane, per client, per day", "Handbook uploads, and answers citing sections that changed", "Model latency and errors, and the queue's oldest waiting draft"],
         fired:
-          "In week 6 the lane-share alert fired for one client: 30% of questions suddenly went to 'unsure'. They had uploaded a scanned handbook with no text layer. We added a check on upload, and the 'handbook changed' alert grew out of it.",
+          "In June 2025, a month into the rollout, the lane-share alert fired for one client: 30% of questions suddenly went to 'unsure'. They had uploaded a scanned handbook with no text layer. We added a text-layer check on upload the same day.",
       },
       code: {
         file: "router/lane.py",
         lang: "python",
         caption: "Routing is the safety feature, so it's boring on purpose: a hard list, two thresholds, and no model output at all in the sensitive lane.",
-        source: `SENSITIVE = {"harassment", "health", "complaint_about_manager", "termination", "salary_dispute"}
+        source: `# Simplified reconstruction for this write-up (the real file is under NDA); thresholds rounded.
+SENSITIVE = {"harassment", "health", "complaint_about_manager", "termination", "salary_dispute"}
 ROUTINE = {"leave_balance", "payslip_date", "holidays", "attendance", "bpjs", "reimbursement_rules"}
 
 MIN_CONFIDENCE = 0.35   # below this a person decides
-SENSITIVE_FLOOR = 0.20  # tuned on the dev split (catches all 152 there); held out: 95 of 96
+SENSITIVE_FLOOR = 0.20  # tuned on the dev split (catches all 195 there); held out: 95 of 96
 NO_DRAFT_ABOVE = 0.10   # added after the May 2025 incident: HR gets the question, the model doesn't
 
 def lane(question: str, client: Client) -> Lane:
@@ -817,7 +859,7 @@ def lane(question: str, client: Client) -> Lane:
         {
           value: "38 min",
           label: "median first reply across all questions, down from 4 hours (routine ones take seconds)",
-          how: "Ticket timestamps across 40 clients, 8 weeks before and 8 weeks after launch",
+          how: "Ticket timestamps for the first 12 clients, 8 weeks before and 8 weeks after each one's launch",
         },
         {
           value: "18%",
@@ -827,12 +869,12 @@ def lane(question: str, client: Client) -> Lane:
         {
           value: "0",
           label: "sensitive questions answered automatically",
-          how: "Every routed question audited weekly. 3 reached the draft lane in month 1, so the model saw them; see the incident above",
+          how: "Every misroute reviewed weekly by Legal. 3 reached the draft lane in month 1, so the model saw them; see the incident above",
         },
         {
           value: "1.0%",
           label: "of automatic answers wrong in month 3 (4 of 400), down from 2.8% (11 of 400) in month 1",
-          how: "Weekly audit of 400 random answers against the current handbook. At this size the drop is suggestive, not proven (p ≈ 0.1); most errors came from handbooks changed without notice",
+          how: "The four weekly audits of each month, 100 random answers each, against the current handbook. At this size the drop is suggestive, not proven (p ≈ 0.1); most errors came from handbooks changed without notice",
         },
       ],
       body: [
@@ -843,7 +885,7 @@ def lane(question: str, client: Client) -> Lane:
         who: "HR admin at a retail client",
       },
       business:
-        "Two clients renewed early and named Ask HR in the call, and it moved into the standard plan in Q3 2025. HR teams saved roughly 300 hours a month across the 40 clients (queue logs × time per question).",
+        "Two clients renewed early and named Ask HR in the call, and it moved into the standard plan in Q3 2025. HR teams saved roughly 300 hours a month across the 40 clients: questions answered automatically, times the 6 minutes HR said each one took.",
     },
     reflection:
       "Most of the engineering was deciding what the AI wasn't allowed to do, and making that boring and testable: a router with a hard list, a check in code, an audit every week. As an intern, my most useful work wasn't a feature. It was the harness that turned an argument into numbers.",
@@ -857,15 +899,15 @@ def lane(question: str, client: Client) -> Lane:
     kind: "Voice bookkeeping on WhatsApp",
     tone: "cobalt",
     rarity: "Rare",
-    tagline: "Small shop owners keep their books by sending WhatsApp voice notes, slang included.",
-    prompt: "I sell two hundred things a day and I write nothing down. Can I just tell my phone what I sold?",
+    tagline: "Small shop owners log what they'd otherwise forget (credit sales, payments, restocks, the day's takings) by sending WhatsApp voice notes, slang included.",
+    prompt: "I sell two hundred things a day and I write nothing down. I don't even know who owes me. Can I just tell my phone?",
     promptBy: "Warung owner, Bekasi Timur",
     summary:
-      "Catat (Indonesian for 'write it down') lets warung owners log sales, stock and customer debts by sending WhatsApp voice notes in everyday Indonesian. It answers in one line, asks when it isn't sure, and sends a summary every Sunday.",
+      "Catat (Indonesian for 'write it down') lets warung owners log the things they'd otherwise forget, credit sales, payments, restocks and the day's takings, by sending WhatsApp voice notes in everyday Indonesian. It answers in one line, asks when it isn't sure, and sends a summary every Sunday.",
     tldr: {
       problem: "Warung owners serve a queue with one free hand. Every bookkeeping app we met in the field had been abandoned within a week.",
       did: "With two classmates, in our campus incubator. I built the WhatsApp agent: speech-to-text tuned on warung audio, a slang normaliser, money parsed in code, and every write undoable in one tap. I also designed the conversation around it.",
-      outcome: "140 shops in an 8-week pilot. 87% of voice notes logged fully correctly in a hand check of 300, and 83% of shops still active in the last week.",
+      outcome: "140 shops in an 8-week pilot. 87% of voice notes logged fully correctly in a hand check of 300 pilot notes, and 83% of shops still logging on most days in the last week.",
     },
     role: {
       title: "Co-founder: engineering and conversation design",
@@ -928,7 +970,7 @@ def lane(question: str, client: Client) -> Lane:
         { title: "Debts are about people, not numbers", body: "Owners didn't want a total. They wanted 'who owes me, and since when', said kindly." },
       ],
       ethics:
-        "Consent forms were read aloud in Indonesian and signed before any recording. Voice notes are deleted after 30 days unless an owner opts in to help improve Catat; only opted-in notes were used for tuning and evals. Customers' names and debts are visible only to the owner.",
+        "Consent forms were read aloud in Indonesian and signed before any recording. Voice notes are deleted after 30 days unless an owner opts in to help improve Catat; only opted-in notes were used for tuning and evals. Customers' names and debts are visible only to the owner. The cooperative sees only weekly totals, and only for owners who choose to share them.",
     },
     decisions: [
       {
@@ -971,11 +1013,16 @@ def lane(question: str, client: Client) -> Lane:
         duration: "Week 4",
       },
       { stage: "Build", title: "The agent, then the words", body: "Speech-to-text, normaliser and tools, while the confirmation copy was tested on paper cards in shops.", duration: "Weeks 4–8" },
-      { stage: "Ship", title: "An 8-week pilot with 140 warung", body: "October to December 2024. The Sunday summary became the reason people kept using it.", duration: "Weeks 9–16" },
+      {
+        stage: "Ship",
+        title: "An 8-week pilot with 140 warung",
+        body: "November and December 2024. The fine-tuned speech-to-text shipped in pilot week 4; the Sunday summary became the reason people kept using it.",
+        duration: "Weeks 9–16",
+      },
     ],
     deadEnd: {
       title: "The dashboard we designed first",
-      body: "We spent three weeks on a web dashboard before the field visits. In the pilot it got 4% of usage. Most of that work was wasted, and it taught us to visit before we build.",
+      body: "In the summer before the incubator, Dita and I spent three weeks of evenings on a web dashboard. In the pilot it got 4% of usage. Most of that work was wasted, and it taught us to visit before we build.",
     },
     inclusion: [
       "Voice first works for owners who don't read much, and every reply is short enough for WhatsApp's read-aloud.",
@@ -1018,34 +1065,39 @@ def lane(question: str, client: Client) -> Lane:
         "An agent that writes to someone's books has to be undoable. Each voice note goes through speech-to-text tuned on warung audio, a slang normaliser, and a model with four tools. Money is parsed in code, and nothing counts in the totals until the owner confirms it.",
       pipeline: [
         { step: "Receive", detail: "WhatsApp Cloud API webhook. The message ID is stored first, so a webhook delivered twice is ignored." },
-        { step: "Transcribe", detail: "Whisper large-v3, fine-tuned on 6 hours of consented warung audio, on a rented GPU." },
+        {
+          step: "Transcribe",
+          detail:
+            "Whisper large-v3, fine-tuned on 6 hours of consented warung audio that Raka and I transcribed, on a serverless GPU billed per second (incubator credits paid for it; a cold start adds about 6 seconds).",
+        },
         { step: "Normalise", detail: "The 312-term dictionary rewrites 'goceng' and brand nicknames before the model sees the text." },
         { step: "Act", detail: "Claude with four tools: sale, restock, new debt, payment. Each call creates a pending entry, not a final one." },
         { step: "Ask or confirm", detail: "Ambiguous money or debts get one question with two buttons. Everything else gets one line with ✓ and ✗." },
         {
           step: "Commit",
           detail:
-            "✓ confirms the entry, ✗ deletes it. Unanswered entries stay 'unconfirmed': out of the totals and the cooperative's view until the owner confirms them in the Sunday summary. Every entry keeps its voice note and who confirmed it.",
+            "✓ confirms the entry, ✗ deletes it. Unanswered entries stay 'unconfirmed': out of the totals until the owner confirms them in the Sunday summary. Every entry keeps its transcript and who confirmed it; the audio itself is deleted after 30 days unless the owner opted in.",
         },
       ],
       models: [
         {
           task: "Speech-to-text",
           model: "Whisper large-v3, fine-tuned",
-          why: "Off the shelf, the word error rate on our test notes was 31%. After fine-tuning on 6 hours of warung audio, 14%, on shops it had never heard.",
+          why: "Off the shelf, the word error rate on our validation notes was 31%. After fine-tuning on 6 hours of warung audio, 14%, on shops it had never heard.",
           tried: "Two hosted Indonesian speech APIs: 24% and 27% on the same notes, with per-minute prices and audio leaving for a third party.",
         },
         {
           task: "Intent and tool calls",
           model: "Claude Haiku with tool use",
           why: "Four tools and short inputs: a small model was accurate enough and kept replies under 4 seconds.",
-          tried: "Claude Sonnet: 1.3 points better on the test notes, at twice the latency on 3G. Not worth it here.",
+          tried: "Claude Sonnet: 1.3 points better on the validation notes, at twice the latency on 3G. Not worth it here.",
         },
         { task: "Amounts", model: "No model: a parser in code", why: "'Dua lima' can mean Rp2.500 or Rp25.000. That's a rule and a question, not a guess." },
       ],
       evals: {
-        set: "Split by shop. Whisper was fine-tuned on 6 hours of audio from 62 opted-in shops, and the 200-note dev set comes from them too. The 300 test notes come from 40 other shops it never heard. Raka and I each labelled 100 of the test notes (Cohen's κ 0.81 on intent and amount) and settled the rest together: words, intent, item, amount and person.",
-        gate: "Every change to the normaliser, the prompt or the model runs on the 300 notes; a release needs amounts exactly right in at least 95% of them and no rise in silent errors. 87% is 261 of 300 (95% interval about 83–90%). The last step, v4 to v5, is 8 notes and within noise: we kept it for the debt mistakes it removed, not for the number.",
+        set: "Split by shop. Whisper was fine-tuned on 6 hours of audio from 62 opted-in shops (the field-visit shops and early pilot shops), and the 200-note dev set comes from them too. Validation: 300 notes from 40 other shops it never heard. Every release and every model choice was made on it, so it isn't a clean test. Test: 200 notes from 20 more shops, held back and scored once at the end of the pilot: v5 got 85% fully correct (about 79–89%). Raka and I both labelled the same 100 validation notes (Cohen's κ 0.81 on intent and amount), then split the rest: words, intent, item, amount and person.",
+        gate: "Every change to the normaliser, the prompt or the model runs on the 300 validation notes; a release needs amounts exactly right in at least 95% of them (v5: 97.3%) and no rise in silent errors. The last step, v4 to v5, is 8 notes and within noise: we kept it for the debt mistakes it removed, not for the number.",
+        caption: "What changed in each version, scored on the 300 validation notes (the held-out 200 were scored once, at the end)",
         series: [
           { name: "Fully correct entries", unit: "%", better: "up" },
           { name: "Word error rate", unit: "%", better: "down" },
@@ -1054,21 +1106,21 @@ def lane(question: str, client: Client) -> Lane:
           { version: "v1", change: "Off-the-shelf Whisper and one prompt", values: [58.0, 31.0] },
           { version: "v2", change: "Slang dictionary before the model", values: [69.3, 31.0] },
           { version: "v3", change: "Fine-tuned Whisper", values: [79.7, 14.2] },
-          { version: "v4", change: "Amounts parsed in code", values: [84.3, 14.2] },
-          { version: "v5", change: "Ask on ambiguous money and debts", values: [87.0, 14.2] },
+          { version: "v4", change: "Amounts parsed in code", values: [85.7, 14.2] },
+          { version: "v5", change: "Ask on ambiguous money and debts", values: [88.3, 14.2] },
         ],
       },
       budgets: [
         { label: "Voice note to reply", value: "3.8 s p50", note: "7.9 s p95, on the pilot's real 3G and 4G" },
-        { label: "Cost per note", value: "Rp 31", note: "transcription on a rented GPU plus the model call" },
-        { label: "Pilot running cost", value: "Rp 1.6M", note: "8 weeks, about 31,000 notes, hosting included" },
+        { label: "Cost per note", value: "Rp 31", note: "per-second GPU time for transcription plus the model call" },
+        { label: "Pilot running cost", value: "Rp 1.9M", note: "8 weeks, about 31,000 notes: hosting, the GPU (from incubator credits) and WhatsApp's fees for the Sunday summaries" },
         { label: "Undo rate", value: "6%", note: "entries removed with ✗, mostly misheard amounts" },
       ],
       failures: [
         { when: "WhatsApp delivers a webhook twice", then: "The message ID is the idempotency key; the second delivery is ignored." },
         { when: "The note is noise, or just 'eh'", then: "Catat replies 'Maaf, belum kedengaran' (sorry, I didn't catch that) and logs nothing." },
         { when: "'Dua lima' could be Rp2.500 or Rp25.000", then: "If the product's usual price doesn't settle it, Catat asks with two buttons." },
-        { when: "The owner never taps ✓ or ✗", then: "The entry stays 'unconfirmed': kept, but out of the totals and the cooperative's view until it's confirmed on Sunday." },
+        { when: "The owner never taps ✓ or ✗", then: "The entry stays 'unconfirmed': kept, but out of the totals until it's confirmed on Sunday." },
         { when: "The model call fails", then: "The note is queued and retried; the owner gets 'Sebentar ya' (one moment) instead of silence." },
       ],
       errorLog: [
@@ -1090,30 +1142,37 @@ def lane(question: str, client: Client) -> Lane:
         file: "agent/money.ts",
         lang: "ts",
         caption: "Money is parsed in code, never by the model. The model only points at the phrase, and when the phrase is ambiguous, Catat asks.",
-        source: `const SLANG = new Map([["gopek", 500], ["seceng", 1_000], ["goceng", 5_000], ["ceban", 10_000], ["gocap", 50_000], ["cepek", 100_000]]);
+        source: `const SLANG = new Map([["gopek", 500], ["seceng", 1_000], ["goceng", 5_000], ["ceban", 10_000]]); // "gocap", "cepek": it depends, so we ask
 const DIGIT: Record<string, number> = { se: 1, satu: 1, dua: 2, tiga: 3, empat: 4, lima: 5, enam: 6, tujuh: 7, delapan: 8, sembilan: 9 };
+const SE: Record<string, string[]> = { sepuluh: ["se", "puluh"], sebelas: ["se", "belas"], seratus: ["se", "ratus"], seribu: ["se", "ribu"], sejuta: ["se", "juta"] };
 
-/** "goceng" → 5000 · "dua rebu" → 2000 · "dua lima rebu" → 25000 · "dua lima" → ask: 2500 or 25000? */
+/** "goceng" → 5000 · "lima belas ribu" → 15000 · "dua puluh lima rebu" → 25000 · "dua lima" → ask: 2500 or 25000? */
 export function parseAmount(phrase: string, usualPrice?: number): Amount {
-  const p = phrase.toLowerCase().replace(/\\b(ribu|rebu|rb)\\b/g, "ribu").trim();
+  const p = phrase.toLowerCase().replace(/\\b(rebu|rb)\\b/g, "ribu").trim();
   const slang = SLANG.get(p); // a Map, so "constructor" isn't a price
   if (slang) return { kind: "exact", value: slang };
 
-  const thousands = p.match(/^(\\w+)(?: (\\w+))? ribu$/); // "dua ribu", "dua lima ribu"
-  if (thousands && Object.hasOwn(DIGIT, thousands[1]) && (!thousands[2] || Object.hasOwn(DIGIT, thousands[2]))) {
-    const n = thousands[2] ? DIGIT[thousands[1]] * 10 + DIGIT[thousands[2]] : DIGIT[thousands[1]];
-    return { kind: "exact", value: n * 1_000 };
+  let total = 0, group = 0, digits = 0, shorthand = false;
+  for (const w of p.split(/\\s+/).flatMap((w) => (Object.hasOwn(SE, w) ? SE[w] : [w]))) {
+    if (Object.hasOwn(DIGIT, w)) {
+      shorthand ||= digits > 0; // two digits in a row: "dua lima"
+      digits = digits * 10 + DIGIT[w];
+    } else if (w === "belas") [group, digits] = [group + digits + 10, 0];
+    else if (w === "puluh") [group, digits] = [group + digits * 10, 0];
+    else if (w === "ratus") [group, digits] = [group + digits * 100, 0];
+    else if (w === "ribu" || w === "juta") [total, group, digits] = [total + (group + digits) * (w === "ribu" ? 1_000 : 1_000_000), 0, 0];
+    else return { kind: "unknown" }; // not a number word: the model pointed at the wrong phrase
   }
 
-  // "dua lima": warung shorthand that means 2.500 for a snack and 25.000 for cigarettes.
-  const pair = p.match(/^(\\w+) (\\w+)$/);
-  if (pair && Object.hasOwn(DIGIT, pair[1]) && Object.hasOwn(DIGIT, pair[2])) {
-    const [a, b] = [DIGIT[pair[1]], DIGIT[pair[2]]];
-    const options = [a * 1_000 + b * 100, a * 10_000 + b * 1_000];
+  // "dua lima" on its own is warung shorthand: 2.500 for a snack, 25.000 for cigarettes.
+  if (shorthand && total === 0 && group === 0) {
+    const options = [digits * 100, digits * 1_000];
     const fit = usualPrice ? options.find((o) => Math.abs(o - usualPrice) / usualPrice < 0.3) : undefined;
     return fit ? { kind: "exact", value: fit } : { kind: "ask", options }; // ask, never guess
   }
-  return { kind: "unknown" };
+  const value = total + group + digits;
+  if (!value) return { kind: "unknown" };
+  return value < 100 && total === 0 ? { kind: "ask", options: [value * 1_000] } : { kind: "exact", value }; // a bare "lima": Rp5.000? confirm
 }`,
       },
     },
@@ -1132,9 +1191,13 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
         {
           value: "87%",
           label: "of voice notes logged fully correctly (261 of 300)",
-          how: "Raka and I listened to 300 random notes and checked the ledger. Owners' ✓ said 91%; the 4-point gap is silent errors nobody caught, mostly item counts",
+          how: "A production audit, separate from the eval sets: Raka and I listened to 300 random pilot notes and checked the ledger (about 83–90%). Owners' ✓ said 91%; the 4-point gap is silent errors nobody caught, mostly item counts",
         },
-        { value: "83%", label: "of shops still active in the last week of the pilot", how: "116 of 140 shops sent at least 10 notes in week 8 (most active shops sent 30 or more)" },
+        {
+          value: "83%",
+          label: "of shops still logging on most days in the last week of the pilot",
+          how: "116 of 140 shops sent notes on at least 5 of the 7 days of week 8; a median of 6 notes a day. Owners log what they'd forget (credit, payments, restocks, the day's takings), not every sale",
+        },
         { value: "1 in 12", label: "notes get a clarifying question", how: "Share of notes about money or debts where Catat asked instead of guessing" },
         { value: "62%", label: "of owners said they would pay Rp15k a month", how: "Stated intent from an exit survey of all 140 shops, not purchases" },
       ],
@@ -1149,7 +1212,7 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
     },
     reflection:
       "The best interface was almost no interface, and the best model call was the one I replaced with a parser. Most of the accuracy came from the dictionary and the rules around the model, not from the model.",
-    next: "Support a second phone number per shop, and a monthly view owners can show the cooperative for a loan.",
+    next: "Support a second phone number per shop, and a monthly totals view owners can choose to show the cooperative for a loan: totals only, never customers' names or debts.",
   },
   {
     slug: "lintas",
@@ -1159,7 +1222,7 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
     kind: "Commute planner for Greater Jakarta",
     tone: "violet",
     rarity: "Uncommon",
-    tagline: "One 'leave by' time for a commute across KRL, MRT and TransJakarta, replanned live with a one-line reason.",
+    tagline: "One 'leave by' time for a commute across KRL, LRT, MRT and TransJakarta, replanned live with a one-line reason.",
     prompt: "KRL is packed again. When should I leave, and is there a better way to get to work today?",
     promptBy: "Commuter, Bekasi → Sudirman",
     summary:
@@ -1186,7 +1249,7 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
     ownership: "Solo",
     context: "Side project",
     timeline: "4 months · side project, Mar – Jun 2024",
-    status: "Open-sourced in 2025 and in maintenance: I fix what breaks and keep the push alerts running for the riders who still use it.",
+    status: "Open-sourced in 2025 and in maintenance: about 300 riders a week still use it (September 2026). I fix what breaks and keep the push alerts running.",
     stack: ["Python (FastAPI)", "RAPTOR routing", "Next.js (PWA)", "TypeScript", "Redis", "Web Push", "Claude API"],
     links: { live: "https://example.com/lintas", repo: "https://github.com/example/lintas" },
     evidence: [
@@ -1195,7 +1258,7 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
     ],
     depth: "short",
     stats: [
-      { label: "Weekly riders", value: "1.4k" },
+      { label: "Weekly riders, peak", value: "1.4k" },
       { label: "Replans taken", value: "31→62%" },
       { label: "Server bill", value: "Rp 90k/mo" },
     ],
@@ -1270,7 +1333,7 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
     },
     inclusion: [
       "Crowding is labelled (Packed, Tight, Room to stand) and patterned, not just coloured.",
-      "Women-only carriages are marked on every train view, because riders asked for it.",
+      "Women-only carriages are marked on every KRL train view, because riders asked for it.",
       "The 'leave by' time is the first thing a screen reader announces, and the dark UI meets 4.5:1 contrast.",
     ],
     artifact: {
@@ -1283,7 +1346,7 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
     },
     architecture: {
       nodes: [
-        { id: "status", label: "Status pages", x: 12, y: 8, kind: "service" },
+        { id: "status", label: "Disruption notices", x: 12, y: 8, kind: "data" },
         { id: "sched", label: "Timetables", x: 12, y: 30, kind: "data" },
         { id: "reports", label: "Rider reports", x: 12, y: 52, kind: "user" },
         { id: "crowd", label: "Crowding", x: 34, y: 52, kind: "service" },
@@ -1308,8 +1371,12 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
       summary:
         "A transit router, a crowding forecast built from riders' one-tap reports, and a replan sentence written by a model but checked by code. It all runs on one small server for about Rp 90k a month.",
       pipeline: [
-        { step: "Timetables", detail: "Assembled for KRL, MRT and TransJakarta into one GTFS-style feed; operators only publish parts of it." },
-        { step: "Delays", detail: "Operators' public status pages, polled every 60 seconds and parsed into line, direction and minutes late." },
+        { step: "Timetables", detail: "Assembled for KRL, LRT Jabodebek, MRT and TransJakarta into one GTFS-style feed; operators only publish parts of it." },
+        {
+          step: "Delays",
+          detail:
+            "There's no public real-time feed, so two sources: operators' posted disruption notices, polled every 60 seconds, and riders' one-tap 'my train is late' reports. Two riders on the same train count as a delay.",
+        },
         { step: "Crowding", detail: "One-tap reports averaged per carriage and hour, falling back to a timetable-based guess when reports are thin." },
         { step: "Route", detail: "RAPTOR, a round-based transit routing algorithm, in Python: every door-to-door option in about 30 ms." },
         { step: "Decide", detail: "A replan is pushed only if it's at least 5 minutes better or swaps 'packed' for 'seat likely'." },
@@ -1340,7 +1407,7 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
         { label: "Server bill", value: "Rp 90k/mo", note: "one small VPS, Redis and web push" },
       ],
       failures: [
-        { when: "A status page changes its layout", then: "The parser fails closed: no replans for that line, and I get an alert." },
+        { when: "An operator changes how it posts disruptions", then: "The parser fails closed: replans for that line run on rider reports alone, marked 'reported by riders', and I get an alert." },
         { when: "A generated sentence gets a time or station wrong", then: "The validator rejects it and the template sentence goes out instead." },
         { when: "Too few crowding reports for a train", then: "The forecast falls back to the timetable guess and says 'likely', never 'certain'." },
         { when: "The phone is offline", then: "The last plan stays on screen with the time it was worked out." },
@@ -1351,9 +1418,9 @@ export function parseAmount(phrase: string, usualPrice?: number): Amount {
         { said: "You'll save 15 minutes", truth: "It saves 12", why: "It repeated the delay instead of the saving", fix: "Examples with both numbers; the saving is checked" },
       ],
       monitoring: {
-        watch: ["Status-page parser failures, per operator", "Push delivery rate", "How often the validator falls back to the template"],
+        watch: ["Disruption-notice parser failures, per operator", "Push delivery rate", "How often the validator falls back to the template"],
         fired:
-          "In November 2024 KRL redesigned its status page. The parser failed closed, the alert fired at 05:40, and replans for that line were off for three hours while I fixed it before the morning rush peaked.",
+          "In November 2024 KRL changed how it posts disruption notices. The parser failed closed, the alert fired at 05:40, and replans for that line ran on rider reports alone for three hours while I fixed it before the morning rush peaked.",
       },
       code: {
         file: "lintas/reason.py",
@@ -1396,7 +1463,11 @@ def reason(plan: Replan) -> str:
     },
     results: {
       metrics: [
-        { value: "1.4k", label: "weekly riders at peak, all by word of mouth", how: "Weekly active installs, October 2024; no paid promotion" },
+        {
+          value: "1.4k",
+          label: "weekly riders at peak, all by word of mouth",
+          how: "Installs that opened a plan or got a push that week, counted from anonymous device IDs, October 2024; no paid promotion",
+        },
         { value: "62%", label: "of replans taken when they came with a reason", how: "A/B test over 3 weeks, 1,800 replans; 31% without the reason" },
         { value: "0 of 12", label: "panel riders muted it after the quiet-push change", how: "Down from 5 of 12 with the alert-for-everything version" },
         { value: "38 min", label: "saved per rider per week", how: "Self-reported median from a survey of 212 riders; treat it as a feeling, not a fact" },
