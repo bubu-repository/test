@@ -7,14 +7,15 @@
  * a rounded window behind the home hero, and the sea in an ocean card at the bottom of every page
  * (sky strip, horizon, island). Panels are frosted glass with a fine edge; real objects
  * (packs of cards, a PSP, a laptop, an MP3 player, an ID card) sit on top. Colour has a hierarchy:
- * large surfaces stay calm and pale; the small things that guide the eye are vivid. Watermelon pink
- * #FF3F86 is the brand (the primary key, highlighted words), with summer blue, leaf green and sun
- * yellow beside it.
- * Type is Bricolage Grotesque, with JetBrains Mono for printed labels.
+ * large surfaces stay calm and pale; the small things that guide the eye are vivid. Raspberry
+ * #D8588F is the brand (the primary key, highlighted words), with summer blue, leaf green and honey
+ * yellow beside it. Every accent sits below 0.17 chroma (OKLCH) so the page is colourful without
+ * glare: colour guides the eye, it never shouts.
+ * Type is Mona Sans, with JetBrains Mono for printed labels.
  *
  * Contrast rules (checked on /styleguide):
  * - Text sits on glass or on the white page; on the vivid sky only white display labels.
- * - White text sits on --accent-strong (5.0:1), never on --accent (2.9:1).
+ * - White text sits on --accent-strong (5.3:1), never on --accent (3.7:1).
  * - Text on a bright fill (yellow, green, aqua, sky, pale pink) uses --on-fill.
  * - Pink as small text: --accent-ink. Highlighted headline words: --accent-display (display size only).
  */
@@ -35,12 +36,12 @@
   --line: rgba(29, 42, 77, .12); /* hairlines inside panels */
   --rim: rgba(255, 255, 255, .92); /* the bright inner edge of a glass panel */
   --edge: rgba(29, 42, 77, .08);   /* the fine outer edge that keeps glass visible on white */
-  --accent: #FF3F86;      /* WATERMELON PINK, the brand: marks, LEDs, glows */
-  --accent-strong: #D81B60; /* pink behind white text (5.0:1) */
-  --accent-ink: #C2185B;  /* pink as small text (5.1:1 on the page, 4.6:1 on the LCD) */
-  --accent-display: #E6246A; /* highlighted headline words (3.4:1 and up, display size) */
-  --accent-soft: #FFE0EC; /* pale pink fills */
-  --accent-soft-2: #FFC7DC;
+  --accent: #D8588F;      /* RASPBERRY, the brand: marks, LEDs, glows */
+  --accent-strong: #BA3A71; /* raspberry behind white text (5.3:1) */
+  --accent-ink: #AB366C;  /* raspberry as small text (5.5:1 on the page, 4.7:1 on the LCD) */
+  --accent-display: #C74880; /* highlighted headline words (4.1:1, display size) */
+  --accent-soft: #FFE2EC; /* pale rose fills */
+  --accent-soft-2: #FFC8DC;
 
   /* Materials: frosted glass lit from above, shadows a little blue */
   --sheen: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 52%);
@@ -58,7 +59,7 @@
   --screen-well: rgba(255, 255, 255, .5);
   --metal-from: #FFFFFF;
   --metal-to: #C3D3E6;
-  --led: #22C55E;          /* green: on, live, open to work */
+  --led: #4FB772;          /* leaf green: on, live, open to work */
 
   /* Floating chrome (dock, popovers, dialogs) */
   --glass: rgba(255, 255, 255, .64);
@@ -69,20 +70,20 @@
   --glass-blur: 22px;
 
   /* The sky and the sea (the hero window, the ocean card): a summer blue */
-  --stage-from: #1A94FF;
+  --stage-from: #4697E4;
   --stage-to: #E7F3FD;
-  --sky-top: #1590FF;
-  --sky-mid: #3FB0FF;
-  --sky-low: #9FDBFF;
+  --sky-top: #3F91E2;
+  --sky-mid: #66AFE7;
+  --sky-low: #AFDBF7;
   --sky-image: url("/sky/day.webp");
 
-  --grid-line: rgba(255, 255, 255, .16);
-  --sea-from: #2FC0F7;    /* horizon, summer blue */
-  --sea-mid: #0E97E8;
-  --sea-to: #0567C4;      /* deep */
+  --grid-line: rgba(255, 255, 255, .09);
+  --sea-from: #5ABBE6;    /* horizon, summer blue */
+  --sea-mid: #3B93D5;
+  --sea-to: #2369B7;      /* deep */
   --foam: rgba(255, 255, 255, .9);
   --dot: rgba(29, 42, 77, .08);
-  --glow: rgba(255, 63, 134, .3);
+  --glow: rgba(216, 88, 143, .26);
   --check-a: #F7F8FA;     /* checkerboard pair (reveal card) */
   --check-b: #E8EBF0;
 }
@@ -102,12 +103,12 @@
   --line: rgba(160, 182, 235, .16);
   --rim: rgba(200, 215, 255, .2);
   --edge: rgba(0, 0, 0, .25);
-  --accent: #FF3F86;
-  --accent-strong: #D81B60;
-  --accent-ink: #FF8AB5;  /* pink as small text (7.8:1) */
-  --accent-display: #FF8AB5;
-  --accent-soft: #FFC7DC;
-  --accent-soft-2: #FF9CC0;
+  --accent: #E2669A;
+  --accent-strong: #BA3A71;
+  --accent-ink: #FB9CC0;  /* raspberry as small text (9.0:1) */
+  --accent-display: #FB9CC0;
+  --accent-soft: #FFC8DC;
+  --accent-soft-2: #F59DC0;
 
   --sheen: linear-gradient(180deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, 0) 52%);
   --bevel: inset 0 1px 0 rgba(255, 255, 255, .12), inset 0 0 0 1px rgba(255, 255, 255, .04);
@@ -119,12 +120,12 @@
   --screen: #121C3A;
   --screen-ink: #E8EEF9;
   --screen-muted: #9DAACB;
-  --screen-accent: #FF8AB5;
+  --screen-accent: #FB9CC0;
   --screen-line: rgba(255, 255, 255, .14);
   --screen-well: rgba(255, 255, 255, .05);
   --metal-from: #5C6A8A;
   --metal-to: #232C48;
-  --led: #3DDC84;
+  --led: #5FCE8C;
 
   --glass: rgba(26, 36, 72, .6);
   --glass-strong: rgba(22, 30, 62, .88);
@@ -145,7 +146,7 @@
   --sea-to: #0A1C48;
   --foam: rgba(200, 215, 255, .5);
   --dot: rgba(233, 238, 245, .07);
-  --glow: rgba(255, 138, 181, .35);
+  --glow: rgba(251, 156, 192, .3);
   --check-a: #182142;
   --check-b: #1E2850;
 }
@@ -156,22 +157,22 @@
  * keys, highlights) so they guide the eye. The page and big surfaces stay calm.
  */
 :root {
-  --red: #FF4D6D;         /* errors only */
-  --green: #22C55E;       /* leaf green; navy text on it 6.2:1 */
-  --lime: #3DDC84;        /* fresh green (the lime slot); navy text on it 7.9:1 */
-  --cobalt: #3B66E0;      /* blue (white text 5.0:1) */
-  --sun: #FFD23F;         /* sun yellow (the sun slot); navy text on it 9.8:1 */
-  --butter: #FFD23F;
-  --highlighter: #FFE36E; /* the marker under highlighted words */
-  --pink: #FF7AAC;
-  --mint: #14C8A8;
-  --cyan: #22C3E6;
-  --violet: #8B5CF6;      /* fills and icons only */
-  --orange: #1EA7FF;      /* summer blue (the old orange slot) */
-  --sky: #3FB0FF;
+  --red: #E05864;         /* errors only */
+  --green: #4FB772;       /* leaf green; navy text on it 5.6:1 */
+  --lime: #5FCE8C;        /* fresh green (the lime slot); navy text on it 7.2:1 */
+  --cobalt: #406BCE;      /* blue (white text 5.0:1) */
+  --sun: #F4CC64;         /* honey yellow (the sun slot); navy text on it 9.2:1 */
+  --butter: #F4CC64;
+  --highlighter: #FDE89A; /* the marker under highlighted words */
+  --pink: #EB8DAE;
+  --mint: #4CBEA5;
+  --cyan: #58BAD6;
+  --violet: #8968D4;      /* fills and icons only */
+  --orange: #499FE3;      /* summer blue (the old orange slot) */
+  --sky: #5CACEA;
   --charcoal: #1E2A48;
   --lcd: #121C3A;
-  --ok: #22C55E;
+  --ok: #4FB772;
 
   --on-fill: #1D2A4D;     /* text on every pastel fill */
   --on-accent: #FFFFFF;   /* text on --accent-strong */
@@ -179,28 +180,28 @@
   --on-ink: #FFFFFF;
 
   /* Jelly shading (kept for the small sprites; Moci itself is now clear water) */
-  --jelly-light: #FFA9D4;
-  --jelly-deep: #E0539F;
-  --jelly-core: #C23A86;
+  --jelly-light: #F7B4D0;
+  --jelly-deep: #D4649C;
+  --jelly-core: #B3457E;
   --jelly-ink: #2A0C20;
 
   /* Terminal: always a night console */
   --term-bg: #0E1630;
   --term-ink: #E8EEF9;
   --term-muted: #9DAACB;
-  --term-accent: #FF8AB5;
+  --term-accent: #FB9CC0;
   --term-link: #9CCFFF;
-  --term-ok: #3DDC84;
-  --term-warn: #FFD23F;
+  --term-ok: #5FCE8C;
+  --term-warn: #F4CC64;
 }
 
 /* ---------- Shape, depth, space, motion, type ---------- */
 :root {
   /* Shape: soft continuous corners, full pills */
   --radius-xs: 8px;
-  --radius-sm: 14px;
-  --radius-card: 28px;
-  --radius-lg: 36px;
+  --radius-sm: 12px;
+  --radius-card: 22px;
+  --radius-lg: 28px;
   --radius-pill: 999px;
 
   /* Depth: things sit on the desk (see --lift*, --bevel and --recess per theme) */
@@ -209,7 +210,7 @@
 
   /* A whisper of grain, for paper only (polaroids, the poster, sticky notes) */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --shadow-glow: 0 8px 24px rgba(216, 27, 96, .22);
+  --shadow-glow: 0 8px 24px rgba(186, 58, 113, .2);
   --gloss: inset 0 1px 0 rgba(255, 255, 255, .5);
   --hard: 0 4px 12px rgba(17, 17, 17, .12); /* sticker lift */
 
@@ -229,15 +230,15 @@
   /* Motion */
   --ease-out: cubic-bezier(.22, 1, .36, 1);
   --ease-in-out: cubic-bezier(.65, 0, .35, 1);
-  --ease-jelly: cubic-bezier(.34, 1.56, .64, 1);
+  --ease-jelly: cubic-bezier(.3, 1.22, .5, 1); /* a soft spring, no bounce */
   --dur-micro: 160ms;
   --dur-short: 300ms;
   --dur-macro: 700ms;
   --dur-reduced: 150ms;
 
-  /* Type: Bricolage Grotesque for everything (optical sizes 12–96 do the display/text split) */
-  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  /* Type: Mona Sans for everything (weight 200–900, width 75–125 do the display/text split) */
+  --font-display: "Mona Sans Variable", "Mona Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Mona Sans Variable", "Mona Sans", ui-sans-serif, system-ui, sans-serif;
   --font-pixel: "Pixelify Sans Variable", "Pixelify Sans", ui-monospace, monospace;
   --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
 
@@ -255,7 +256,7 @@
   --text-hero: clamp(52px, 7.6vw, 104px);
 
   --leading-display: .98;
-  --tracking-display: -0.035em;
+  --tracking-display: -0.03em;
   --leading-body: 1.5;
   --tracking-label: 0.06em;
 }
