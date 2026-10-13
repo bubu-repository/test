@@ -15,10 +15,10 @@ type Tier = {
 const TIERS: Tier[] = [
   { name: "Silver", coin: ["#EEF1F6", "#A3ABBB"], core: ["#C3C9D5", "#848C9E"] },
   { name: "Jade", coin: ["#8AF2C0", "#17A56C"], core: ["#46DE8E", "#0E8F55"] },
-  { name: "Gold", coin: ["#FFE680", "#F5A300"], core: ["#FFBE55", "#F07A00"], ribbon: ["#FFEBB0", "#F5C24A"] },
+  { name: "Gold", coin: ["#FBE39A", "#F5A300"], core: ["#FFBE55", "#F07A00"], ribbon: ["#FFEBB0", "#F5C24A"] },
   { name: "Sapphire", coin: ["#84CCFF", "#1460E8"], core: ["#4A93FF", "#0D3FC2"], ribbon: ["#C6EAFF", "#84CCFF"], glow: "#2C7DFF" },
-  { name: "Amethyst", coin: ["#CDB0FF", "#7032E8"], core: ["#A577FF", "#5420C8"], ribbon: ["#E6D8FF", "#B794FF"], glow: "#9D6CFF", sparkles: true },
-  { name: "Prism", coin: ["#FFC27A", "#FF3F86"], core: ["#FF8A3D", "#C2185B"], ribbon: ["#FF9AD9", "#9D6CFF"], glow: "#FF3F86", sparkles: true },
+  { name: "Amethyst", coin: ["#CFC3EE", "#6448B8"], core: ["#A08BE0", "#4E38A8"], ribbon: ["#E6E0F5", "#B5A4E6"], glow: "#8968D4", sparkles: true },
+  { name: "Prism", coin: ["#F2C890", "#D8588F"], core: ["#E89A5A", "#AB366C"], ribbon: ["#F2B4D6", "#8968D4"], glow: "#D8588F", sparkles: true },
 ];
 
 /** Which tier a collection of `count` out of `total` stickers has reached. */

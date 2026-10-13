@@ -69,22 +69,22 @@ export function Sea({ children }: { children: ReactNode }) {
         <path d="M66 66 C 63 50 60 38 67 24" stroke="#9A6B3F" strokeWidth="3.6" fill="none" strokeLinecap="round" />
         <path d="M104 66 C 106 54 109 44 101 32" stroke="#9A6B3F" strokeWidth="3.2" fill="none" strokeLinecap="round" />
         <g className="sea__palm" style={{ transformOrigin: "67px 24px" }}>
-          <path d="M67 24 C 56 16 44 18 36 26 C 47 22 57 22 67 24 Z" fill="#22C55E" />
-          <path d="M67 24 C 72 12 84 8 94 12 C 84 14 75 18 67 24 Z" fill="#16A34A" />
-          <path d="M67 24 C 60 12 62 4 70 0 C 68 9 68 16 67 24 Z" fill="#3DDC84" />
-          <path d="M67 24 C 78 22 88 28 92 36 C 84 30 76 27 67 24 Z" fill="#22C55E" />
-          <path d="M67 24 C 58 26 52 32 50 40 C 56 33 61 28 67 24 Z" fill="#16A34A" />
+          <path d="M67 24 C 56 16 44 18 36 26 C 47 22 57 22 67 24 Z" fill="#4FB772" />
+          <path d="M67 24 C 72 12 84 8 94 12 C 84 14 75 18 67 24 Z" fill="#3A965C" />
+          <path d="M67 24 C 60 12 62 4 70 0 C 68 9 68 16 67 24 Z" fill="#5FCE8C" />
+          <path d="M67 24 C 78 22 88 28 92 36 C 84 30 76 27 67 24 Z" fill="#4FB772" />
+          <path d="M67 24 C 58 26 52 32 50 40 C 56 33 61 28 67 24 Z" fill="#3A965C" />
           <circle cx="66" cy="27" r="2.2" fill="#7A4E2A" />
           <circle cx="70" cy="26" r="2" fill="#7A4E2A" />
         </g>
         <g className="sea__palm sea__palm--2" style={{ transformOrigin: "101px 32px" }}>
-          <path d="M101 32 C 92 26 82 28 76 34 C 85 31 93 31 101 32 Z" fill="#16A34A" />
-          <path d="M101 32 C 106 22 116 20 124 24 C 116 26 108 28 101 32 Z" fill="#22C55E" />
-          <path d="M101 32 C 96 22 98 15 104 12 C 102 20 102 26 101 32 Z" fill="#3DDC84" />
-          <path d="M101 32 C 110 31 117 36 120 42 C 114 37 108 34 101 32 Z" fill="#16A34A" />
+          <path d="M101 32 C 92 26 82 28 76 34 C 85 31 93 31 101 32 Z" fill="#3A965C" />
+          <path d="M101 32 C 106 22 116 20 124 24 C 116 26 108 28 101 32 Z" fill="#4FB772" />
+          <path d="M101 32 C 96 22 98 15 104 12 C 102 20 102 26 101 32 Z" fill="#5FCE8C" />
+          <path d="M101 32 C 110 31 117 36 120 42 C 114 37 108 34 101 32 Z" fill="#3A965C" />
         </g>
         <path d="M134 66 L 134 50" stroke="#ffffff" strokeWidth="1.6" />
-        <path d="M122 51 Q 134 40 146 51 Z" fill="#FF3F86" />
+        <path d="M122 51 Q 134 40 146 51 Z" fill="#D8588F" />
         <path d="M128 51 Q 134 42 140 51 Z" fill="#ffffff" />
       </svg>
       <div className="sea__surface" aria-hidden="true">
@@ -111,7 +111,7 @@ export function Sea({ children }: { children: ReactNode }) {
       >
         <svg viewBox="0 0 72 48" aria-hidden="true">
           <path d="M36 4v20" stroke="#1D2A4D" strokeOpacity=".5" strokeWidth="1.5" />
-          <path d="M37 5l11 4-11 4z" fill="#FF3F86" />
+          <path d="M37 5l11 4-11 4z" fill="#D8588F" />
           <path d="M14 24 L34 8 L34 24 Z" fill="#FFE3F0" />
           <path d="M38 10 L56 24 L38 24 Z" fill="#E4F0FF" />
           <path d="M4 25 H68 L56 40 H16 Z" fill="#FFFFFF" />

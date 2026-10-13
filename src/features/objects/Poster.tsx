@@ -9,7 +9,7 @@ import { toast } from "@/lib/ui";
 import { useWeather } from "../widgets/weather";
 
 /**
- * The name as a 24:QW poster: condensed Bricolage caps in magenta with a white die-cut edge and a
+ * The name as a 24:QW poster: condensed Mona Sans caps in raspberry with a white die-cut edge and a
  * hard ink shadow. Letters near the cursor stretch wider along the font's width axis (75 → 100).
  * Decorative: the real heading is on the device screen.
  */
@@ -114,7 +114,7 @@ export function Poster() {
   const sky = weather?.ok ? `${Math.round(weather.temperature ?? 0)}°C sky` : "Live sky";
 
   return (
-    <div className="poster w-[272px] select-none" data-xr="Poster · the 24:QW era, printed: Bricolage wdth axis follows the cursor">
+    <div className="poster w-[272px] select-none" data-xr="Poster · the 24:QW era, printed: the Mona Sans wdth axis follows the cursor">
       <span className="tape" aria-hidden="true" />
       <div className="poster__sky px-3.5 pt-3.5 pb-4">
         <ul className="flex flex-wrap gap-1 font-mono text-[9px] font-semibold tracking-[0.08em] uppercase" aria-label="At a glance">

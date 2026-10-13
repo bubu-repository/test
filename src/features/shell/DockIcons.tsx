@@ -11,8 +11,8 @@ import { useId, type ReactNode } from "react";
 /** Tile backgrounds. White tiles carry most icons; a few get a vivid gradient. */
 export const TILE = {
   white: "linear-gradient(180deg, #FFFFFF 0%, #EEF1F6 100%)",
-  purple: "linear-gradient(155deg, #C7ADFF 0%, #9D6CFF 46%, #7442F0 100%)",
-  blue: "linear-gradient(160deg, #84D4FF 0%, #2C9DFF 50%, #1670EE 100%)",
+  purple: "linear-gradient(155deg, #CBBCEE 0%, #8968D4 46%, #6E52C4 100%)",
+  blue: "linear-gradient(160deg, #9CD0F3 0%, #499FE3 50%, #2F6BC4 100%)",
   lime: "linear-gradient(210deg, #A8F25A 0%, #7EE05C 38%, #CDF3D2 80%, #DCEBFF 100%)",
   navy: "linear-gradient(180deg, #3D4E88 0%, #18234F 100%)",
 };
@@ -83,42 +83,27 @@ export function SparkleArt() {
   );
 }
 
-/** About: a smiley face sticker with a blue verified badge stuck on its corner. */
-export function SmileyArt() {
+/** About: her ID card, portrait, with a navy band, a photo well and two printed lines. */
+export function IdCardArt() {
   const id = useId();
-  const scallop = (cx: number, cy: number, r: number, bump: number) =>
-    Array.from({ length: 9 }, (_, i) => {
-      const a = (i / 9) * Math.PI * 2;
-      return <circle key={i} cx={cx + Math.cos(a) * r} cy={cy + Math.sin(a) * r} r={bump} />;
-    });
   return (
     <Art>
       <defs>
-        <radialGradient id={`${id}y`} cx=".4" cy=".35" r=".75">
-          <stop offset="0" stopColor="#FFE680" />
-          <stop offset=".7" stopColor="#FFD23F" />
-          <stop offset="1" stopColor="#F5B800" />
-        </radialGradient>
-        <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#4DB0FF" />
-          <stop offset="1" stopColor="#1673F0" />
+        <linearGradient id={`${id}b`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#3A4A78" />
+          <stop offset="1" stopColor="#1D2A4D" />
         </linearGradient>
       </defs>
-      <ellipse cx="22" cy="36" rx="11" ry="2.4" fill="rgba(20,24,40,.12)" />
-      <circle cx="21" cy="21.5" r="12.6" fill="#FFFFFF" style={{ filter: "drop-shadow(0 1.5px 2px rgba(20,24,40,.18))" }} />
-      <circle cx="21" cy="21.5" r="10.4" fill={`url(#${id}y)`} />
-      <ellipse cx="17.6" cy="19.6" rx="1.3" ry="1.9" fill="#2B2B33" />
-      <ellipse cx="24.4" cy="19.6" rx="1.3" ry="1.9" fill="#2B2B33" />
-      <path d="M16 24.2c2.8 3.4 7.2 3.4 10 0" stroke="#2B2B33" strokeWidth="1.7" fill="none" strokeLinecap="round" />
-      <g fill="#FFFFFF" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(20,24,40,.2))" }}>
-        <circle cx="33" cy="32" r="7.4" />
-        {scallop(33, 32, 6.3, 2.7)}
-      </g>
-      <g fill={`url(#${id}b)`}>
-        <circle cx="33" cy="32" r="5.6" />
-        {scallop(33, 32, 5, 1.75)}
-      </g>
-      <path d="M30.2 32.2l2 2 3.9-4.2" stroke="#FFFFFF" strokeWidth="1.9" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <ellipse cx="24" cy="41.5" rx="10" ry="2.2" fill="rgba(20,24,40,.12)" />
+      <path d="M21 6h6v4h-6Z" fill="#C3CAD8" />
+      <rect x="13" y="9" width="22" height="30" rx="4" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(20,24,40,.15))" }} />
+      <path d="M13 13a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4v4H13Z" fill={`url(#${id}b)`} />
+      <circle cx="18.5" cy="13" r="1.6" fill="#D8588F" />
+      <rect x="17" y="21" width="8" height="8" rx="2" fill="#E6ECF5" />
+      <circle cx="21" cy="24" r="1.8" fill="#9AA5BA" />
+      <path d="M18.2 29c.6-1.8 1.6-2.6 2.8-2.6s2.2.8 2.8 2.6Z" fill="#9AA5BA" />
+      <path d="M28 23h4M28 27h3" stroke="#9AA5BA" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M17 34h14" stroke="#C3CAD8" strokeWidth="1.8" strokeLinecap="round" />
     </Art>
   );
 }
@@ -234,8 +219,8 @@ export function MoonArt() {
         </linearGradient>
       </defs>
       <path d="M33.5 30.8A13 13 0 0 1 19.2 11.6a13 13 0 1 0 14.3 19.2Z" fill={`url(#${id}m)`} style={{ filter: "drop-shadow(0 1.5px 2px rgba(0,0,0,.35))" }} />
-      <circle cx="17" cy="27" r="1.8" fill="#E4BD55" opacity=".7" />
-      <circle cx="22.5" cy="32.5" r="1.2" fill="#E4BD55" opacity=".7" />
+      <circle cx="17" cy="27" r="1.8" fill="#D1AC55" opacity=".7" />
+      <circle cx="22.5" cy="32.5" r="1.2" fill="#D1AC55" opacity=".7" />
       <path d="M34 11l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7Z" fill="#FFFFFF" />
       <path d="M38.5 20l.4 1.1 1.1.4-1.1.4-.4 1.1-.4-1.1-1.1-.4 1.1-.4Z" fill="#FFFFFF" opacity=".75" />
     </Art>
@@ -262,11 +247,11 @@ export function SpeakerArt({ on }: { on: boolean }) {
       <path d="M12 21h3" stroke="rgba(255,255,255,.3)" strokeWidth="1.3" strokeLinecap="round" />
       {on ? (
         <>
-          <path d="M28.5 19a7 7 0 0 1 0 10" stroke="#2C9DFF" strokeWidth="3" fill="none" strokeLinecap="round" />
-          <path d="M33 15a12.5 12.5 0 0 1 0 18" stroke="#2C9DFF" strokeWidth="3" fill="none" strokeLinecap="round" opacity=".7" />
+          <path d="M28.5 19a7 7 0 0 1 0 10" stroke="#499FE3" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M33 15a12.5 12.5 0 0 1 0 18" stroke="#499FE3" strokeWidth="3" fill="none" strokeLinecap="round" opacity=".7" />
         </>
       ) : (
-        <path d="m29 19.5 9 9m0-9-9 9" stroke="#FF3F86" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="m29 19.5 9 9m0-9-9 9" stroke="#D8588F" strokeWidth="3.2" strokeLinecap="round" />
       )}
     </Art>
   );
@@ -289,8 +274,8 @@ export function CvArt() {
     <Art>
       <ellipse cx="24" cy="41.5" rx="11" ry="2.2" fill="rgba(20,24,40,.12)" />
       <path d="M13 8h16l7 7v23a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2Z" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(20,24,40,.15))" }} />
-      <path d="M29 8v5a2 2 0 0 0 2 2h5Z" fill="#FF3F86" />
-      <circle cx="18" cy="18" r="3.4" fill="#FFB8D2" />
+      <path d="M29 8v5a2 2 0 0 0 2 2h5Z" fill="#D8588F" />
+      <circle cx="18" cy="18" r="3.4" fill="#F7C6D9" />
       <path d="M24 16h7M24 20h5" stroke="#9AA5BA" strokeWidth="2" strokeLinecap="round" />
       <path d="M15 26h17M15 30h17M15 34h11" stroke="#C3CAD8" strokeWidth="2" strokeLinecap="round" />
     </Art>
@@ -302,7 +287,7 @@ export function CalendarArt() {
   return (
     <Art>
       <rect x="9" y="9" width="30" height="30" rx="7" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" />
-      <path d="M9 16a7 7 0 0 1 7-7h16a7 7 0 0 1 7 7v2H9Z" fill="#FF3F86" />
+      <path d="M9 16a7 7 0 0 1 7-7h16a7 7 0 0 1 7 7v2H9Z" fill="#D8588F" />
       <text x="24" y="34" textAnchor="middle" fontSize="13" fontWeight="700" fill="#1D2A4D" style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}>
         40s
       </text>

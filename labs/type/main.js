@@ -766,7 +766,7 @@ function buildCss() {
     `/* Loud Type: "${safe}", frozen on type.adelia.cc */`,
     `/* <p class="loud-type">${markup.replace(/\*\//g, "* /")}</p> */`,
     ".loud-type {",
-    '  font-family: "Bricolage Grotesque", sans-serif;',
+    '  font-family: "Mona Sans", sans-serif;',
     "}",
     ".loud-type > span {",
     "  display: inline-block;",
@@ -1024,7 +1024,7 @@ if (document.fonts) {
     meter.draw(normalised(), state.labels, 0);
   };
   document.fonts
-    .load('800 100px "Bricolage Grotesque Variable"', "Aa")
+    .load('800 100px "Mona Sans Variable"', "Aa")
     .then(refit)
     .catch(() => {});
   document.fonts.addEventListener?.("loadingdone", refit);

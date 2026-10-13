@@ -20,7 +20,7 @@ const labsDir = join(root, "labs");
 const only = process.argv.slice(2);
 
 const fonts = {
-  "bricolage.woff2": "node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2",
+  "mona-sans.woff2": "node_modules/@fontsource-variable/mona-sans/files/mona-sans-latin-wdth-normal.woff2",
   "jetbrains-mono.woff2": "node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
   "silkscreen.woff2": "node_modules/@fontsource/silkscreen/files/silkscreen-latin-400-normal.woff2",
 };

@@ -3,11 +3,13 @@
 import { createStore, useStore } from "./store";
 
 /** Overlays that take over the screen. Only one at a time. */
-export type Overlay = "palette" | "terminal" | "brief" | "stickers" | "shortcuts";
+/** "glance" is the lab's live-preview window: it is rendered by the lab page itself and listed here so single-key shortcuts stay quiet while it is open. */
+export type Overlay = "palette" | "terminal" | "brief" | "stickers" | "shortcuts" | "glance";
 
 /** Who's visiting: reorders the home widgets and changes what's emphasised. */
 export type Lens = "recruiter" | "engineer" | "designer" | "curious";
 
+/** `icon` is accepted for older callers but no longer drawn: the toast shows a dot in its tone instead. */
 export type Toast = { id: number; title: string; body?: string; tone?: "magenta" | "lime" | "sun" | "sky" | "violet" | "mint"; icon?: string };
 
 type UIState = {

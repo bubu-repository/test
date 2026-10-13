@@ -79,6 +79,12 @@ export const ArrowLeftIcon = (p: IconProps) => (
   </Icon>
 );
 
+export const ExpandIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M15 4h5v5M9 20H4v-5M20 4l-6 6M4 20l6-6" />
+  </Icon>
+);
+
 export const DownloadIcon = (p: IconProps) => (
   <Icon {...p}>
     <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />

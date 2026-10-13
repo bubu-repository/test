@@ -2,18 +2,18 @@ import localFont from "next/font/local";
 
 /*
  * Four families, self-hosted from Fontsource (latin subset; the site is English).
- * Bricolage Grotesque carries everything: its optical-size axis (12–96) gives tight display
- * headlines and open, readable text from one file. Only Bricolage is preloaded.
+ * Mona Sans carries everything: one variable file with weight (200–900) and width (75–125) axes
+ * gives sturdy, quiet display headlines and open, readable text. Only Mona Sans is preloaded.
  */
 
 export const fontSans = localFont({
-  src: "../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-standard-normal.woff2",
+  src: "../../node_modules/@fontsource-variable/mona-sans/files/mona-sans-latin-wdth-normal.woff2",
   variable: "--font-sans-face",
-  weight: "200 800",
+  weight: "200 900",
   style: "normal",
   display: "swap",
   preload: true,
-  declarations: [{ prop: "font-stretch", value: "75% 100%" }],
+  declarations: [{ prop: "font-stretch", value: "75% 125%" }],
   fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 

@@ -13,7 +13,7 @@ import { applySound, applyTheme, getSound, getTheme, subscribePreferences } from
 import { sfx } from "@/lib/sound";
 import { unlock } from "@/lib/stickers";
 import { useLive } from "../live/live-store";
-import { BoxArt, BubbleArt, CalendarArt, CloudArt, CvArt, MociArt, MoonArt, MoreArt, PlaneArt, SearchArt, SmileyArt, SparkleArt, SpeakerArt, TILE } from "./DockIcons";
+import { BoxArt, BubbleArt, CalendarArt, CloudArt, CvArt, IdCardArt, MociArt, MoonArt, MoreArt, PlaneArt, SearchArt, SparkleArt, SpeakerArt, TILE } from "./DockIcons";
 
 type ItemProps = {
   label: string;
@@ -31,7 +31,7 @@ type ItemProps = {
 } & ({ href: string; onClick?: never; pressed?: never } | { href?: never; onClick: () => void; pressed?: boolean });
 
 function DockItem({ label, caption, bg, fg, ink, active, className, iconClassName, children, tour, cursor, ...rest }: ItemProps) {
-  const style = { "--app-bg": bg, "--app-fg": fg ?? "#fff", "--app-ink": ink ?? "#1FB24A" } as CSSProperties;
+  const style = { "--app-bg": bg, "--app-fg": fg ?? "#fff", "--app-ink": ink ?? "#3FA866" } as CSSProperties;
   const inner = (
     <>
       <span className={cn("app-icon app-icon--art", bg === TILE.white && "app-icon--white", iconClassName)} style={style}>
@@ -187,7 +187,7 @@ export function SiteNav() {
           <BoxArt />
         </DockItem>
         <DockItem href="/about" label="About" bg={TILE.white} active={isActive(pathname, "/about")} tour="nav-about">
-          <SmileyArt />
+          <IdCardArt />
         </DockItem>
         <DockItem href="/lab" label="Lab" bg={TILE.purple} active={isActive(pathname, "/lab")} tour="nav-lab">
           <SparkleArt />
@@ -205,7 +205,7 @@ export function SiteNav() {
       </nav>
 
       <Dialog open={menu} onClose={() => setMenu(false)} label="More" placement="top" className="pointer-events-auto">
-        <div className="glass-strong rounded-[32px] p-4 shadow-lg">
+        <div className="glass-strong rounded-[24px] p-4 shadow-lg">
           <div className="flex items-center justify-between pb-3 pl-2">
             <span className="text-18 font-bold tracking-tight">More</span>
             <button type="button" onClick={() => setMenu(false)} className="pill" data-variant="ghost" data-shape="icon" data-size="sm" aria-label="Close">

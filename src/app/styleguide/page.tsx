@@ -74,7 +74,7 @@ export default function StyleguidePage() {
         </div>
       </header>
 
-      <Section index="01" title="Colour" lead="White paper and navy ink, with the summer sky and sea in windows. Watermelon pink is the one colour you always feel; summer blue, palm green and sunshine yellow are the accents.">
+      <Section index="01" title="Colour" lead="White paper and navy ink, with the summer sky and sea in windows. Raspberry is the one colour you always feel; summer blue, leaf green and honey yellow are the accents, all kept below 0.17 chroma so nothing glares.">
         <div className="grid gap-5 md:grid-cols-2">
           {(["light", "dark"] as const).map((theme) => (
             <div key={theme} data-theme={theme} className="widget bg-surface p-5 text-ink">
@@ -127,7 +127,7 @@ export default function StyleguidePage() {
         </div>
       </Section>
 
-      <Section index="03" title="Type" lead="Bricolage Grotesque for everything: its optical-size axis gives tight display cuts and open text cuts. JetBrains Mono for code; Pixelify Sans only for the odd easter egg.">
+      <Section index="03" title="Type" lead="Mona Sans for everything: its weight and width axes give sturdy display cuts and open text cuts. JetBrains Mono for code; Pixelify Sans only for the odd easter egg.">
         <div className="grid gap-4">
           <p className="type-hero">Adelia Tiara</p>
           <p className="type-display">Display, 700</p>

@@ -10,8 +10,8 @@ type DialogProps = {
   label?: string;
   labelledBy?: string;
   className?: string;
-  /** Where the panel sits: centred card, top (palette), or bottom drawer (terminal). */
-  placement?: "center" | "top" | "bottom";
+  /** Where the panel sits: centred card, top (palette), bottom drawer (terminal), or glance (a window nearly as big as the viewport). */
+  placement?: "center" | "top" | "bottom" | "glance";
   children: ReactNode;
 };
 

@@ -203,8 +203,8 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
                     <defs>
                       <linearGradient id="idc-mono" x1="0" y1="0" x2="1" y2="1">
                         <stop offset="0" stopColor="#FF8AB5" />
-                        <stop offset=".55" stopColor="#FF3F86" />
-                        <stop offset="1" stopColor="#9D6CFF" />
+                        <stop offset=".55" stopColor="#D8588F" />
+                        <stop offset="1" stopColor="#8968D4" />
                       </linearGradient>
                     </defs>
                     <rect width="60" height="80" fill="url(#idc-mono)" />

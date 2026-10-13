@@ -54,7 +54,7 @@ function VisitTracker() {
           () =>
             toast(
               {
-                title: "Welcome back!",
+                title: "Welcome back",
                 body: `${days > 1 ? `It's been ${days} days.` : "Good to see you again."}${where ? ` Last time you were reading ${where[0].toUpperCase()}${where.slice(1)}.` : ""}`,
                 tone: "sky",
                 icon: "👋",

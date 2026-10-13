@@ -8,7 +8,7 @@ import { identity, socials } from "@/content/profile";
 /** The contact card on /about, like a phone contact: monogram, name, live clock, actions. */
 export function ProfileCard() {
   return (
-    <aside aria-label="Contact card" className="widget rounded-[36px] p-6 text-center md:p-8" data-xr="ProfileCard · live clock">
+    <aside aria-label="Contact card" className="widget rounded-[28px] p-6 text-center md:p-8" data-xr="ProfileCard · live clock">
       {/* CONTOH — ganti dengan data asli: swap the monogram for a photo */}
       <span aria-hidden="true" className="mx-auto grid size-28 place-items-center rounded-full bg-ink text-48 font-bold tracking-[-0.04em] text-bg">
         AT

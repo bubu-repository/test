@@ -2,9 +2,9 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-const bold = readFile(join(process.cwd(), "node_modules/@fontsource/bricolage-grotesque/files/bricolage-grotesque-latin-700-normal.woff"));
+const bold = readFile(join(process.cwd(), "node_modules/@fontsource/mona-sans/files/mona-sans-latin-700-normal.woff"));
 
-/** The dock's home icon: a white squircle with "a." and the magenta dot. */
+/** The dock's home icon: a white squircle with "a." and the raspberry dot. */
 export async function renderAppIcon(size: number) {
   return new ImageResponse(
     (
@@ -17,16 +17,16 @@ export async function renderAppIcon(size: number) {
           justifyContent: "center",
           background: "#FFFFFF",
           borderRadius: size * 0.23,
-          fontFamily: "Bricolage",
+          fontFamily: "Mona Sans",
           fontWeight: 700,
           fontSize: size * 0.56,
           letterSpacing: -size * 0.04,
           color: "#111111",
         }}
       >
-        a<span style={{ color: "#FF3F86" }}>.</span>
+        a<span style={{ color: "#D8588F" }}>.</span>
       </div>
     ),
-    { width: size, height: size, fonts: [{ name: "Bricolage", data: await bold, weight: 700, style: "normal" }] },
+    { width: size, height: size, fonts: [{ name: "Mona Sans", data: await bold, weight: 700, style: "normal" }] },
   );
 }

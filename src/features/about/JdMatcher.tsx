@@ -28,7 +28,7 @@ function Ring({ score }: { score: number }) {
       />
       <defs>
         <linearGradient id="jd-iris" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#FF3F86" />
+          <stop offset="0%" stopColor="#D8588F" />
           <stop offset="55%" stopColor="#B86BFF" />
           <stop offset="100%" stopColor="#39C6E6" />
         </linearGradient>
@@ -175,7 +175,7 @@ export function JdMatcher() {
             )}
           </div>
         ) : (
-          <div className="well grid h-full min-h-[280px] place-items-center rounded-[28px] p-8 text-center text-muted">
+          <div className="well grid h-full min-h-[280px] place-items-center rounded-[22px] p-8 text-center text-muted">
             <p className="max-w-[34ch]">Paste a job description and I&apos;ll show what matches, with the project that proves it, and where the gaps are.</p>
           </div>
         )}

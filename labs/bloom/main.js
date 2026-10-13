@@ -595,7 +595,7 @@ function clearGarden() {
 async function snapshot() {
   if (!engine) return;
   try {
-    if (document.fonts && document.fonts.load) await document.fonts.load('600 16px "Bricolage Grotesque Variable"');
+    if (document.fonts && document.fonts.load) await document.fonts.load('600 16px "Mona Sans Variable"');
   } catch (err) {
     /* the label falls back to the system sans */
   }
@@ -628,7 +628,7 @@ function drawWatermark(ctx, w, h, s) {
   // A quiet chip in the corner, like the ones on the stage: paper fill, hairline, a magenta dot.
   const text = "BLOOM.ADELIA.CC";
   const size = Math.round(11 * s);
-  ctx.font = `600 ${size}px "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif`;
+  ctx.font = `600 ${size}px "Mona Sans Variable", "Mona Sans", ui-sans-serif, system-ui, sans-serif`;
   if ("letterSpacing" in ctx) ctx.letterSpacing = `${(size * 0.12).toFixed(2)}px`;
   const tw = ctx.measureText(text).width;
   const padX = 12 * s;

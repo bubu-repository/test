@@ -43,7 +43,7 @@ export function CopyEmail({ className, variant = "magenta", size, label = "Copy 
         }}
       >
         {state === "copied" ? <CheckIcon width={18} height={18} /> : <CopyIcon width={18} height={18} />}
-        {state === "copied" ? "Copied!" : state === "failed" ? "Copy failed, use the link" : label}
+        {state === "copied" ? "Copied" : state === "failed" ? "Copy failed, use the link" : label}
       </button>
       <span role="status" aria-live="polite" className="sr-only">
         {state === "copied" ? `Email address copied: ${identity.email}` : state === "failed" ? "Couldn't copy. Use the email link instead." : ""}

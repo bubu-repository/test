@@ -51,7 +51,7 @@ export function ProjectIcon({ project, size = 76, className }: { project: Projec
     <span
       aria-hidden="true"
       className={cn("app-icon", className)}
-      style={{ "--app-bg": TONE_GRADIENT[project.tone], "--size": `${size}px`, "--glyph-ink": project.tone === "violet" ? "#6A34E0" : project.tone === "cobalt" ? "#2860F0" : "#D81B60", borderRadius: "23%" } as CSSProperties}
+      style={{ "--app-bg": TONE_GRADIENT[project.tone], "--size": `${size}px`, "--glyph-ink": project.tone === "violet" ? "#5C44B8" : project.tone === "cobalt" ? "#2F5FC2" : "#BA3A71", borderRadius: "23%" } as CSSProperties}
     >
       {glyph ? (
         <svg viewBox="0 0 24 24" focusable="false">

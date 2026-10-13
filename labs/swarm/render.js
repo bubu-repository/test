@@ -46,7 +46,7 @@ function roundRect(g, x, y, w, h, r) {
   g.closePath();
 }
 
-const FALLBACK_FONT = '"Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif';
+const FALLBACK_FONT = '"Mona Sans Variable", "Mona Sans", ui-sans-serif, system-ui, sans-serif';
 
 export class Renderer {
   constructor(canvas, swarm, lab) {

@@ -37,7 +37,7 @@ export default function LabPage() {
         <h2 id="subdomains-title" className="type-title mt-3">
           Experiments on their own subdomains
         </h2>
-        <p className="mt-4 max-w-[52ch] text-muted">Standalone pages, no framework, each deployed on its own. Load a preview here or open the real thing.</p>
+        <p className="mt-4 max-w-[52ch] text-muted">Standalone pages, no framework, each deployed on its own. Preview one in a window over this page, or open the real thing.</p>
         <div className="mt-12">
           <SubdomainGrid />
         </div>

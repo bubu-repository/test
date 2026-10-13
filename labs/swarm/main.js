@@ -473,8 +473,8 @@ new ResizeObserver(measure).observe(stage);
 // Canvas text uses the body face; redraw once it is in.
 if (document.fonts && document.fonts.load) {
   Promise.all([
-    document.fonts.load('600 12px "Bricolage Grotesque Variable"'),
-    document.fonts.load('700 12px "Bricolage Grotesque Variable"'),
+    document.fonts.load('600 12px "Mona Sans Variable"'),
+    document.fonts.load('700 12px "Mona Sans Variable"'),
   ])
     .catch(() => {})
     .then(() => {

@@ -38,7 +38,7 @@ export function StickerBook() {
     placeSticker(pathname, randomPlacement(id));
     sfx.pop();
     close();
-    toast({ title: "Stuck!", body: "Drag it anywhere. Focus it and use arrow keys to move, Delete to peel it off.", tone: "sun", icon: "📌" });
+    toast({ title: "Stuck on", body: "Drag it anywhere. Focus it and use arrow keys to move, Delete to peel it off.", tone: "sun", icon: "📌" });
   };
 
   return (

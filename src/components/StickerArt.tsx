@@ -8,15 +8,15 @@ import type { ReactNode } from "react";
 
 const NAVY = "#1D2A4D";
 const GRAPHITE = "#2B2D34";
-const PINK = "#FF3F86";
-const PINK_DEEP = "#C2185B";
-const BLUE = "#2C9DFF";
+const PINK = "#D8588F";
+const PINK_DEEP = "#AB366C";
+const BLUE = "#499FE3";
 const BLUE_DEEP = "#1260C9";
-const YELLOW = "#FFD23F";
+const YELLOW = "#F4CC64";
 const YELLOW_DEEP = "#D99A00";
-const GREEN = "#22C55E";
-const GREEN_DEEP = "#15803D";
-const PURPLE = "#9D6CFF";
+const GREEN = "#4FB772";
+const GREEN_DEEP = "#3A965C";
+const PURPLE = "#8968D4";
 const PURPLE_DEEP = "#5B2DD1";
 
 const spark = (x: number, y: number, r: number, fill = "#FFFFFF") => (
@@ -61,8 +61,8 @@ export const STICKER_ART: Record<string, ReactNode> = {
   night: (
     <g>
       <path d="M66 68A28 28 0 0 1 38 22a28 28 0 1 0 28 46Z" fill={YELLOW} stroke={YELLOW_DEEP} strokeWidth="3.5" strokeLinejoin="round" />
-      <circle cx="34" cy="56" r="4" fill="#F5B800" />
-      <circle cx="44" cy="68" r="2.6" fill="#F5B800" />
+      <circle cx="34" cy="56" r="4" fill="#DDB04A" />
+      <circle cx="44" cy="68" r="2.6" fill="#DDB04A" />
       <path d="M28 36a20 20 0 0 1 8-10" stroke="#FFF3B0" strokeWidth="3" strokeLinecap="round" fill="none" />
       {spark(70, 30, 11, PINK)}
     </g>
@@ -111,7 +111,7 @@ export const STICKER_ART: Record<string, ReactNode> = {
       <circle cx="27" cy="30" r="2.6" fill={PINK} />
       <circle cx="35" cy="30" r="2.6" fill={YELLOW} />
       <circle cx="43" cy="30" r="2.6" fill={GREEN} />
-      <path d="M29 47l9 7-9 7" stroke="#3DDC84" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M29 47l9 7-9 7" stroke="#5FCE8C" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       <path d="M44 63h16" stroke="#FFFFFF" strokeWidth="4.5" strokeLinecap="round" />
     </g>
   ),
