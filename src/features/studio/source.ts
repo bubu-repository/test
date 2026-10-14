@@ -69,7 +69,7 @@ export function renderLettering({ text, font, ink, wobble, seed, size = 300 }: {
   const artH = rows.length * lineHeight + size * 0.25;
   const pad = Math.min(artW, artH) * PAD + size * 0.08;
   const out = canvas(artW + pad * 2, artH + pad * 2);
-  const ctx = out.getContext("2d")!;
+  const ctx = out.getContext("2d", { willReadFrequently: true })!;
   ctx.font = cssFont(font, size);
   ctx.textBaseline = "middle";
   ctx.textAlign = "left";
@@ -89,7 +89,7 @@ export function renderLettering({ text, font, ink, wobble, seed, size = 300 }: {
 
 /** Crops a canvas to its drawn pixels, then puts `pad` of empty room back around them. */
 export function trim(src: HTMLCanvasElement, pad: number): HTMLCanvasElement {
-  const ctx = src.getContext("2d")!;
+  const ctx = src.getContext("2d", { willReadFrequently: true })!;
   const { width: w, height: h } = src;
   const data = ctx.getImageData(0, 0, w, h).data;
   let x0 = w,
@@ -109,7 +109,34 @@ export function trim(src: HTMLCanvasElement, pad: number): HTMLCanvasElement {
   const bh = y1 - y0 + 1;
   const p = Math.round(Math.max(pad, Math.min(bw, bh) * PAD));
   const out = canvas(bw + p * 2, bh + p * 2);
-  out.getContext("2d")!.drawImage(src, x0, y0, bw, bh, p, p, bw, bh);
+  out.getContext("2d", { willReadFrequently: true })!.drawImage(src, x0, y0, bw, bh, p, p, bw, bh);
+  return out;
+}
+
+/** Crops a finished piece to what's drawn (shadows included), keeping a small margin, so layouts can show it big. */
+export function tight(src: HTMLCanvasElement, margin = 0.04): HTMLCanvasElement {
+  const { width: w, height: h } = src;
+  const data = src.getContext("2d", { willReadFrequently: true })!.getImageData(0, 0, w, h).data;
+  let x0 = w,
+    y0 = h,
+    x1 = -1,
+    y1 = -1;
+  for (let y = 0; y < h; y += 2)
+    for (let x = 0; x < w; x += 2)
+      if (data[(y * w + x) * 4 + 3] > 6) {
+        if (x < x0) x0 = x;
+        if (x > x1) x1 = x;
+        if (y < y0) y0 = y;
+        if (y > y1) y1 = y;
+      }
+  if (x1 < 0) return src;
+  const m = Math.round(Math.min(x1 - x0, y1 - y0) * margin) + 2;
+  x0 = Math.max(0, x0 - m);
+  y0 = Math.max(0, y0 - m);
+  x1 = Math.min(w - 1, x1 + m);
+  y1 = Math.min(h - 1, y1 + m);
+  const out = canvas(x1 - x0 + 1, y1 - y0 + 1);
+  out.getContext("2d")!.drawImage(src, x0, y0, out.width, out.height, 0, 0, out.width, out.height);
   return out;
 }
 
@@ -132,7 +159,7 @@ const clamp = (v: number) => (v < 0 ? 0 : v > 255 ? 255 : v);
 /** A camera filter, on the CPU: a colour matrix, a tone curve, then glow, vignette and grain. */
 export function applyFilter(src: HTMLCanvasElement, id: FilterId, seed = 1): HTMLCanvasElement {
   const out = canvas(src.width, src.height);
-  const ctx = out.getContext("2d")!;
+  const ctx = out.getContext("2d", { willReadFrequently: true })!;
   ctx.drawImage(src, 0, 0);
   if (id === "natural") return out;
   const { width: w, height: h } = out;
@@ -220,7 +247,7 @@ export function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w
 export function renderPhoto(photo: HTMLCanvasElement, radius = 0.07): HTMLCanvasElement {
   const pad = Math.round(Math.min(photo.width, photo.height) * PAD);
   const out = canvas(photo.width + pad * 2, photo.height + pad * 2);
-  const ctx = out.getContext("2d")!;
+  const ctx = out.getContext("2d", { willReadFrequently: true })!;
   roundRect(ctx, pad, pad, photo.width, photo.height, Math.min(photo.width, photo.height) * radius);
   ctx.save();
   ctx.clip();

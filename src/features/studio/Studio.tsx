@@ -9,7 +9,7 @@ import { FONTS, domFont, familyOf, fontById, loadFont } from "./fonts";
 import { boomerang, encodeGif } from "./gif";
 import { BACKDROPS, LAYOUTS, compose, photoAspect, takes, type Art, type BackdropId, type LayoutId } from "./layouts";
 import { MATERIALS, renderMaterial, type MaterialId } from "./materials";
-import { FILTERS, applyFilter, canvas, cover, loadImage, renderLettering, renderPhoto, type FilterId } from "./source";
+import { FILTERS, applyFilter, canvas, cover, loadImage, renderLettering, renderPhoto, tight, type FilterId } from "./source";
 
 /*
  * The Studio: words or a photo, made out of a material, laid out, decorated and saved. Everything
@@ -84,6 +84,8 @@ async function buildArts(c: Config, { phase = 0, frame, boil = 0 }: { phase?: nu
   const n = takes(c.layout);
   const font = fontById(c.font);
   await loadFont(font, c.text);
+  // ASCII types with the page's mono face, which isn't preloaded: wait for it, or the first render falls back.
+  if (c.material === "ascii") await document.fonts.load(`16px ${getComputedStyle(document.body).getPropertyValue("--font-mono") || "monospace"}`).catch(() => {});
   const arts: Art[] = [];
   for (let i = 0; i < n; i++) {
     let src: HTMLCanvasElement;
@@ -101,7 +103,8 @@ async function buildArts(c: Config, { phase = 0, frame, boil = 0 }: { phase?: nu
     }
     const kind = c.mode === "words" ? "text" : "photo";
     const out = c.material === "none" ? plain(src) : renderMaterial(c.material, { source: src, kind, color: c.color, light: LIGHT, phase, seed: c.seed + i });
-    arts.push({ canvas: out, fill: false });
+    // The sticker layout needs the room around the piece for its die-cut edge; the others show it big.
+    arts.push({ canvas: c.layout === "sticker" ? out : tight(out), fill: false });
     if (n > 1) await yieldFrame();
   }
   return arts;
@@ -159,7 +162,7 @@ export function Studio() {
     shots: [],
     filter: "natural",
     material: "jelly",
-    color: "#1FB0F0",
+    color: "#FF5FA8",
     layout: "card",
     backdrop: "sky",
     caption: "",

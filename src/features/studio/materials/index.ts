@@ -2,22 +2,18 @@ import type { MaterialId, MaterialInfo, MaterialInput } from "./types";
 import { felt } from "./felt";
 import { crossStitch } from "./crossStitch";
 import { embroidery } from "./embroidery";
+import { rhinestone } from "./rhinestone";
+import { glitter } from "./glitter";
+import { jelly } from "./jelly";
+import { chrome } from "./chrome";
+import { foil } from "./foil";
+import { tornPaper } from "./tornPaper";
+import { holo } from "./holo";
+import { emboss } from "./emboss";
+import { ascii } from "./ascii";
+import { acrylicBlock, acrylicKeychain, acrylicStandee } from "./acrylic";
 
 export type { MaterialId, MaterialInfo, MaterialInput } from "./types";
-
-/** Placeholder until the real materials land: the art with a soft shadow. */
-function plain(input: MaterialInput): HTMLCanvasElement {
-  const { source } = input;
-  const out = document.createElement("canvas");
-  out.width = source.width;
-  out.height = source.height;
-  const ctx = out.getContext("2d")!;
-  ctx.shadowColor = "rgba(8,40,80,.25)";
-  ctx.shadowBlur = source.height * 0.03;
-  ctx.shadowOffsetY = source.height * 0.015;
-  ctx.drawImage(source, 0, 0);
-  return out;
-}
 
 export const MATERIALS: MaterialInfo[] = [
   { id: "felt", name: "Felt", note: "Cut felt with a running stitch", colorable: true, animated: false, defaultColor: "#FF7FB6" },
@@ -37,9 +33,29 @@ export const MATERIALS: MaterialInfo[] = [
   { id: "acrylic-keychain", name: "Acrylic keychain", note: "A charm on a ball chain", colorable: true, animated: true, defaultColor: "#FFFFFF" },
 ];
 
-const RENDERERS: Partial<Record<MaterialId, (input: MaterialInput) => HTMLCanvasElement>> = { felt, "cross-stitch": crossStitch, embroidery };
+/** Every material's renderer: a pure function of the input, drawn on the CPU. */
+const RENDERERS: Record<MaterialId, (input: MaterialInput) => HTMLCanvasElement> = {
+  felt,
+  "cross-stitch": crossStitch,
+  embroidery,
+  rhinestone,
+  glitter,
+  jelly,
+  chrome,
+  foil,
+  "torn-paper": tornPaper,
+  holo,
+  emboss,
+  ascii,
+  "acrylic-standee": acrylicStandee,
+  "acrylic-block": acrylicBlock,
+  "acrylic-keychain": acrylicKeychain,
+};
 
+/**
+ * Renders the art in a material: a new canvas the size of `input.source`, transparent around the
+ * object (which brings its own soft shadow). Deterministic for the same input, seed and phase.
+ */
 export function renderMaterial(id: MaterialId, input: MaterialInput): HTMLCanvasElement {
-  const r = RENDERERS[id];
-  return r ? r(input) : plain(input);
+  return RENDERERS[id](input);
 }

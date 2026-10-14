@@ -22,7 +22,6 @@ import {
   output,
   readArt,
   rng,
-  sample,
   shade,
   signedDistance,
   softShadows,
@@ -184,11 +183,11 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
   const sd = upsample(sd2, gw, gh, w, h, f);
 
   // Thread width and the twill backing cut round the art.
-  const tw = Math.max(1.6, u * (photo ? 0.008 : 0.011));
+  const tw = Math.max(1.6, u * (photo ? 0.01 : 0.011));
   const D = Math.min(u * 0.05, art.pad * 0.4);
   const fe2 = new Float32Array(gw * gh);
   for (let i = 0; i < fe2.length; i++) fe2[i] = sd2[i] * f - D;
-  fillHoles(fe2, gw, gh, ((u * 0.3) / f) ** 2, true, -D * 0.5);
+  if (!photo) fillHoles(fe2, gw, gh, ((u * 0.3) / f) ** 2, true, -D * 0.5);
   const feS = gauss(fe2, gw, gh, (u * 0.012) / f);
   const fabricDist = upsample(feS, gw, gh, w, h);
 
@@ -211,69 +210,143 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
       }
     }
   } else {
-    // Posterise: k-means over the photo at half resolution.
+    // Posterise: k-means over the softened photo at quarter resolution, cleaned into regions big
+    // enough to stitch, then brought up to the half-res grid.
+    const q = 2;
+    const qw = Math.ceil(gw / q);
+    const qh = Math.ceil(gh / q);
+    // Block-average the colours straight from the pixels.
+    const fq = f * q;
+    const nq = qw * qh;
+    const sr = new Float32Array(nq);
+    const sg = new Float32Array(nq);
+    const sb = new Float32Array(nq);
+    const aq = new Float32Array(nq);
+    const cnt = new Float32Array(nq);
+    const colQ = new Int32Array(w);
+    for (let x = 0; x < w; x++) colQ[x] = (x / fq) | 0;
+    const P = art.rgba;
+    for (let y = 0; y < h; y++) {
+      const row = ((y / fq) | 0) * qw;
+      let k = y * w * 4;
+      for (let x = 0; x < w; x++, k += 4) {
+        const j = row + colQ[x];
+        sr[j] += P[k];
+        sg[j] += P[k + 1];
+        sb[j] += P[k + 2];
+        aq[j] += P[k + 3];
+        cnt[j]++;
+      }
+    }
+    for (let j = 0; j < nq; j++) {
+      const c = cnt[j] || 1;
+      sr[j] /= c;
+      sg[j] /= c;
+      sb[j] /= c;
+      aq[j] /= c * 255;
+    }
+    const chan = [gauss(sr, qw, qh, 1.2), gauss(sg, qw, qh, 1.2), gauss(sb, qw, qh, 1.2)];
     const cols: number[] = [];
     const idx: number[] = [];
+    for (let i = 0; i < qw * qh; i++) {
+      if (aq[i] < 0.5) continue;
+      cols.push(chan[0][i], chan[1][i], chan[2][i]);
+      idx.push(i);
+    }
+    const km = kmeans(Float32Array.from(cols), 6, 8, 2500);
+    regionCols = [];
+    for (let k = 0; k < km.k; k++) regionCols.push([km.cent[k * 3], km.cent[k * 3 + 1], km.cent[k * 3 + 2]]);
+    let lq = new Uint8Array(qw * qh).fill(255);
+    idx.forEach((i, k) => (lq[i] = km.idx[k]));
+    const votes = new Int32Array(16);
+    const mode = (src: Uint8Array, ww: number, hh: number, r: number) => {
+      const out = src.slice();
+      for (let y = r; y < hh - r; y++) {
+        for (let x = r; x < ww - r; x++) {
+          const i = y * ww + x;
+          if (src[i] === 255) continue;
+          votes.fill(0);
+          for (let dy = -r; dy <= r; dy++) {
+            for (let dx = -r; dx <= r; dx++) {
+              const v = src[i + dy * ww + dx];
+              if (v !== 255) votes[v]++;
+            }
+          }
+          let best = src[i];
+          for (let k = 0; k < km.k; k++) if (votes[k] > votes[best]) best = k;
+          out[i] = best;
+        }
+      }
+      return out;
+    };
+    lq = mode(mode(lq, qw, qh, 1), qw, qh, 1);
+    // Merge islands too small to stitch into their surroundings.
+    const comp = new Int32Array(qw * qh).fill(-1);
+    const stack = new Int32Array(qw * qh);
+    const minArea = Math.max(6, ((u * 0.07) / (f * q)) ** 2);
+    for (let s0 = 0; s0 < qw * qh; s0++) {
+      if (comp[s0] >= 0 || lq[s0] === 255) continue;
+      const v = lq[s0];
+      const members: number[] = [];
+      let sp = 0;
+      stack[sp++] = s0;
+      comp[s0] = s0;
+      votes.fill(0);
+      while (sp) {
+        const i = stack[--sp];
+        members.push(i);
+        const x = i % qw;
+        for (let q = 0; q < 4; q++) {
+          const j = q === 0 ? (x > 0 ? i - 1 : -1) : q === 1 ? (x < qw - 1 ? i + 1 : -1) : q === 2 ? i - qw : i + qw;
+          if (j < 0 || j >= qw * qh) continue;
+          const lv = lq[j];
+          if (lv === v) {
+            if (comp[j] < 0) {
+              comp[j] = s0;
+              stack[sp++] = j;
+            }
+          } else if (lv !== 255) votes[lv]++;
+        }
+      }
+      if (members.length < minArea) {
+        let best = -1;
+        for (let k = 0; k < km.k; k++) if (votes[k] > 0 && (best < 0 || votes[k] > votes[best])) best = k;
+        if (best >= 0) for (const i of members) lq[i] = best;
+      }
+    }
+    let lab = new Uint8Array(gw * gh).fill(255);
     for (let y = 0; y < gh; y++) {
       for (let x = 0; x < gw; x++) {
         const i = y * gw + x;
         if (a2.data[i] < 0.5) continue;
-        const sx = Math.min(w - 1, x * f + 1);
-        const sy = Math.min(h - 1, y * f + 1);
-        const k = (sy * w + sx) * 4;
-        cols.push(art.rgba[k], art.rgba[k + 1], art.rgba[k + 2]);
-        idx.push(i);
+        const v = lq[Math.min(qh - 1, (y / q) | 0) * qw + Math.min(qw - 1, (x / q) | 0)];
+        lab[i] = v === 255 ? 0 : v;
       }
     }
-    const km = kmeans(Float32Array.from(cols), 6, 8);
-    regionCols = [];
-    for (let k = 0; k < km.k; k++) regionCols.push([km.cent[k * 3], km.cent[k * 3 + 1], km.cent[k * 3 + 2]]);
-    let lab = new Uint8Array(gw * gh).fill(255);
-    idx.forEach((i, k) => (lab[i] = km.idx[k]));
-    // Mode filter: clean speckles so regions are stitchable.
-    for (let pass = 0; pass < 3; pass++) {
-      const next = lab.slice();
-      const votes = new Int32Array(16);
-      for (let y = 2; y < gh - 2; y++) {
-        for (let x = 2; x < gw - 2; x++) {
-          const i = y * gw + x;
-          if (lab[i] === 255) continue;
-          votes.fill(0);
-          for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
-            const v = lab[i + dy * gw + dx];
-            if (v !== 255) votes[v]++;
-          }
-          let best = lab[i];
-          for (let k = 0; k < km.k; k++) if (votes[k] > votes[best]) best = k;
-          next[i] = best;
-        }
-      }
-      lab = next;
-    }
+    lab = mode(lab, gw, gh, 1);
     labels = lab;
-    // Distance to region boundaries, for each region's own padding.
-    const bnd = new Float32Array(gw * gh);
-    for (let y = 1; y < gh - 1; y++) {
-      for (let x = 1; x < gw - 1; x++) {
-        const i = y * gw + x;
-        const v = lab[i];
-        bnd[i] = v !== 255 && lab[i + 1] === v && lab[i - 1] === v && lab[i + gw] === v && lab[i - gw] === v ? 1 : 0;
+    // Distance to region boundaries (on the quarter grid the regions came from), for each
+    // region's own padding; brought up to the half grid in half-grid units.
+    const bnd = new Float32Array(qw * qh);
+    for (let y = 1; y < qh - 1; y++) {
+      for (let x = 1; x < qw - 1; x++) {
+        const i = y * qw + x;
+        const v = lq[i];
+        bnd[i] = v !== 255 && lq[i + 1] === v && lq[i - 1] === v && lq[i + qw] === v && lq[i - qw] === v ? 1 : 0;
       }
     }
-    edge2 = signedDistance(bnd, gw, gh);
+    edge2 = upsample(signedDistance(bnd, qw, qh), qw, qh, gw, gh, q);
+    // One stitch direction per region, mostly across the picture like long satin floats.
     for (let i = 0; i < gw * gh; i++) {
       const v = lab[i];
       if (v === 255) continue;
-      const th = hash2(v, 7, input.seed) * Math.PI;
+      const th = (hash2(v, 7, input.seed) - 0.5) * 1.6 + (v % 2 ? Math.PI / 2 : 0);
       j1[i] = Math.cos(th * 2);
       j2[i] = Math.sin(th * 2);
     }
   }
-  const sig = photo ? 1 : (u * 0.035) / f;
-  const J1 = upsample(gauss(j1, gw, gh, sig), gw, gh, w, h);
-  const J2 = upsample(gauss(j2, gw, gh, sig), gw, gh, w, h);
+  const sig = photo ? 0.6 : (u * 0.035) / f;
   const lab = labels;
-  const regEdge = edge2 ? upsample(edge2, gw, gh, w, h, f) : null;
 
   // Satin border for photos: a column round the outline, stitched across it.
   const border = photo ? u * 0.045 : 0;
@@ -373,25 +446,40 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
     }
   }
 
-  // Height: satin rolls over padding, a little ridge just inside the edge.
-  const pil = upsample(gauss(a2.data, gw, gh, (u * (photo ? 0.02 : 0.03)) / f), gw, gh, w, h);
+  // Height: satin rolls over padding, a little ridge just inside the edge. Built on the half grid;
+  // its normals are interpolated up (smooth, no stair-steps).
+  const pil2 = gauss(a2.data, gw, gh, (u * (photo ? 0.02 : 0.03)) / f);
   const Hs = u * (photo ? 0.02 : 0.03);
-  const hgt = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
-    if (sd[i] > 2) continue;
-    let hh = Hs * Math.sqrt(clamp01((pil[i] - 0.45) * 1.9));
-    const e = (sd[i] + tw * 0.9) / (tw * 0.9);
+  const ridgeW = Math.max(tw * 0.9, f * 0.9);
+  const h2 = new Float32Array(gw * gh);
+  for (let i = 0; i < h2.length; i++) {
+    const d = sd2[i] * f;
+    if (d > 3) continue;
+    let hh = Hs * Math.sqrt(clamp01((pil2[i] - 0.45) * 1.9));
+    const e = (d + ridgeW) / ridgeW;
     hh += u * 0.006 * Math.exp(-e * e);
-    if (regEdge) {
-      // Each colour region is padded on its own.
-      hh += u * 0.012 * Math.sqrt(clamp01(-regEdge[i] / (u * 0.03)));
-    }
+    if (edge2) hh += u * 0.006 * Math.sqrt(clamp01((-edge2[i] * f) / (u * 0.025)));
     if (border) {
-      const q = (sd[i] + border) / border;
+      const q = (d + border) / border;
       if (q > 0) hh += u * 0.022 * Math.sqrt(Math.max(0, 1 - (q * 2 - 1) ** 2));
     }
-    hgt[i] = hh;
+    h2[i] = hh;
   }
+  const hs2 = gauss(h2, gw, gh, 0.6);
+  const nx2 = new Float32Array(gw * gh);
+  const ny2 = new Float32Array(gw * gh);
+  for (let y = 1; y < gh - 1; y++) {
+    for (let x = 1; x < gw - 1; x++) {
+      const i = y * gw + x;
+      const dx = (hs2[i + 1] - hs2[i - 1]) / (2 * f);
+      const dy = (hs2[i + gw] - hs2[i - gw]) / (2 * f);
+      const l = 1 / Math.sqrt(dx * dx + dy * dy + 1);
+      nx2[i] = -dx * l;
+      ny2[i] = -dy * l;
+    }
+  }
+  const NX = upsample(nx2, gw, gh, w, h);
+  const NY = upsample(ny2, gw, gh, w, h);
 
   const fabricLight = luma(color) < 0.72;
   const fabric: RGB = fabricLight ? [242, 238, 228] : [36, 54, 88];
@@ -410,39 +498,31 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
       const i = y * w + x;
       const fd = fabricDist[i];
       if (fd > 1) continue;
-      // --- Backing twill ---
+      // --- Backing twill (only where the satin doesn't hide it) ---
       const fa = clamp01(0.5 - fd);
       fabricMask[i] = fa;
-      const tw1 = (x + y * 0.55) / twill;
-      const tri = Math.abs(tw1 - Math.floor(tw1) - 0.5) * 2;
-      let k = 0.93 + tri * 0.07 + grain[i] * 0.03;
-      // Hot-cut edge: sealed, a touch darker, with a soft bevel.
-      const rim = clamp01(1 + fd / 2.2);
-      k *= 1 - rim * 0.18;
-      pxF[i * 4] = fabric[0] * k;
-      pxF[i * 4 + 1] = fabric[1] * k;
-      pxF[i * 4 + 2] = fabric[2] * k;
-      pxF[i * 4 + 3] = fa * 255;
+      if (sd[i] >= -1.5) {
+        const tw1 = (x + y * 0.55) / twill;
+        const tri = Math.abs(tw1 - Math.floor(tw1) - 0.5) * 2;
+        let k = 0.93 + tri * 0.07 + grain[i] * 0.03;
+        // Hot-cut edge: sealed, a touch darker, with a soft bevel.
+        const rim = clamp01(1 + fd / 2.2);
+        k *= 1 - rim * 0.18;
+        pxF[i * 4] = fabric[0] * k;
+        pxF[i * 4 + 1] = fabric[1] * k;
+        pxF[i * 4 + 2] = fabric[2] * k;
+        pxF[i * 4 + 3] = fa * 255;
+      }
 
       // --- Satin ---
       const d = sd[i];
       if (d > 1) continue;
       const sa = clamp01(0.5 - d);
       satinMask[i] = sa;
-      // Stitch direction from the doubled-angle field.
-      let c2 = J1[i];
-      let s2 = J2[i];
-      const jl = Math.sqrt(c2 * c2 + s2 * s2);
-      if (jl > 1e-9) {
-        c2 /= jl;
-        s2 /= jl;
-      } else {
-        c2 = 1;
-        s2 = 0;
-      }
-      let dx = Math.sqrt(Math.max(0, (1 + c2) * 0.5));
-      let dy = Math.sqrt(Math.max(0, (1 - c2) * 0.5));
-      if (s2 < 0) dy = -dy;
+      // Stitch direction from the grid.
+      const gc = cellOf(x, y);
+      let dx = dxG[gc];
+      let dy = dyG[gc];
       let col: RGB = color;
       let edgeDist = d;
       if (border && d > -border) {
@@ -457,24 +537,20 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
       } else if (lab) {
         const v = lab[Math.min(gh - 1, (y / f) | 0) * gw + Math.min(gw - 1, (x / f) | 0)];
         if (v !== 255) col = regionCols[v];
-        if (regEdge) edgeDist = Math.max(d, regEdge[i]);
       }
       // The thread texture: 1 on a thread's crest, 0 in the grooves between threads.
-      const th = tex[i] > 0.05 ? tex[i] : 0.3;
+      const th = tex[i] > 0.05 ? tex[i] : photo ? 0.55 : 0.3;
       // Thread tangent rolls over the padding: tilt by the height slope along it.
-      const hdx = (hgt[x + 1 < w ? i + 1 : i] - hgt[x > 0 ? i - 1 : i]) * 0.5;
-      const hdy = (hgt[y + 1 < h ? i + w : i] - hgt[y > 0 ? i - w : i]) * 0.5;
-      const nzz = 1 / Math.sqrt(hdx * hdx + hdy * hdy + 1);
-      const nxx = -hdx * nzz;
-      const nyy = -hdy * nzz;
+      const nxx = NX[i];
+      const nyy = NY[i];
+      const nzz = Math.sqrt(Math.max(0.0001, 1 - nxx * nxx - nyy * nyy));
       const tz = -(nxx * dx + nyy * dy) / (nzz || 1);
       const tl = 1 / Math.sqrt(1 + tz * tz);
       const Tx = dx * tl;
       const Ty = dy * tl;
       const Tz = tz * tl;
       const TH = Tx * hx + Ty * hy + Tz * hz;
-      const sinTH = Math.sqrt(Math.max(0, 1 - TH * TH));
-      let sp = sinTH * sinTH;
+      let sp = 1 - TH * TH;
       sp *= sp;
       sp *= sp;
       sp *= sp;

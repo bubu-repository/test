@@ -21,12 +21,6 @@ export const SHADOW: RGB = [8, 40, 80];
 
 export const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
 export const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-export const mix = (a: number, b: number, t: number) => a + (b - a) * t;
-
-export function smoothstep(e0: number, e1: number, x: number): number {
-  const t = clamp01((x - e0) / (e1 - e0));
-  return t * t * (3 - 2 * t);
-}
 
 /* ------------------------------------------------------------- randomness */
 
@@ -49,35 +43,6 @@ export function hash2(x: number, y: number, seed: number): number {
   h = Math.imul(h, 0x85ebca6b);
   h ^= h >>> 13;
   return (h >>> 0) / 4294967296;
-}
-
-/** Smooth value noise in [-1, 1]. */
-export function valueNoise(x: number, y: number, seed: number): number {
-  const xi = Math.floor(x);
-  const yi = Math.floor(y);
-  let tx = x - xi;
-  let ty = y - yi;
-  tx = tx * tx * (3 - 2 * tx);
-  ty = ty * ty * (3 - 2 * ty);
-  const a = hash2(xi, yi, seed);
-  const b = hash2(xi + 1, yi, seed);
-  const c = hash2(xi, yi + 1, seed);
-  const d = hash2(xi + 1, yi + 1, seed);
-  return (a + (b - a) * tx + (c - a) * ty + (a - b - c + d) * tx * ty) * 2 - 1;
-}
-
-export function fbm(x: number, y: number, seed: number, octaves = 4): number {
-  let sum = 0;
-  let amp = 0.5;
-  let norm = 0;
-  for (let o = 0; o < octaves; o++) {
-    sum += valueNoise(x, y, seed + o * 101) * amp;
-    norm += amp;
-    amp *= 0.5;
-    x *= 2.03;
-    y *= 2.03;
-  }
-  return sum / norm;
 }
 
 /**
@@ -189,15 +154,6 @@ export function toCanvas(rgba: Uint8ClampedArray, w: number, h: number): HTMLCan
   img.data.set(rgba);
   ctx.putImageData(img, 0, 0);
   return c;
-}
-
-/** Draws a small canvas stretched over the whole of `ctx` (smoothly), e.g. a quarter-res shadow. */
-export function drawStretched(ctx: CanvasRenderingContext2D, layer: HTMLCanvasElement, dx = 0, dy = 0) {
-  ctx.save();
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(layer, dx, dy, ctx.canvas.width, ctx.canvas.height);
-  ctx.restore();
 }
 
 /* -------------------------------------------------------------------- art */
@@ -571,22 +527,6 @@ export function signedDistance(alpha: Float32Array, w: number, h: number): Float
 }
 
 /**
- * The art's signed distance at full resolution, computed on a grid `f` times smaller (cheap) and
- * upsampled, in full-resolution pixels.
- */
-export function artDistance(art: Art, f = 2): Float32Array {
-  if (f <= 1) return signedDistance(art.alpha, art.w, art.h);
-  const d = downsample(art.alpha, art.w, art.h, f);
-  const s = signedDistance(d.data, d.w, d.h);
-  return upsample(s, d.w, d.h, art.w, art.h, f);
-}
-
-/** Distance field of a field threshold, e.g. a blurred mask at 0.5. */
-export function maskDistance(mask: Float32Array, w: number, h: number): Float32Array {
-  return signedDistance(mask, w, h);
-}
-
-/**
  * Fills holes (regions below `level` that don't reach the border) smaller than `maxArea` cells, by
  * setting them to `fill`. Works on any field where "inside" is `>= level`; for a signed distance
  * pass the negated field or use `inside: "below"`.
@@ -633,9 +573,6 @@ export function fillHoles(f: Float32Array, w: number, h: number, maxArea: number
     if (!touches && count <= maxArea) for (const i of members) f[i] = fill;
   }
 }
-
-/** Coverage (0..1) of a signed distance, anti-aliased over about a pixel. */
-export const cover = (d: number) => (d <= -0.5 ? 1 : d >= 0.5 ? 0 : 0.5 - d);
 
 /* -------------------------------------------------------------- contours */
 
@@ -816,16 +753,6 @@ export function resamplePath(p: Path, spacing: number): Float32Array {
     out[k * 4 + 3] = ty;
   }
   return out;
-}
-
-/**
- * Iso-line paths of a full-resolution distance field, traced on a coarser grid and smoothed, in
- * canvas coordinates.
- */
-export function isoPaths(dist: Float32Array, w: number, h: number, level: number, f = 2, smooth = 2): Path[] {
-  const g = f > 1 ? downsample(dist, w, h, f) : { data: dist, w, h };
-  const ps = contours(g.data, g.w, g.h, level, 6);
-  return ps.map((p) => scalePath(smoothPath(p, smooth), f));
 }
 
 /**
@@ -1074,12 +1001,27 @@ export function hslToRgb(hh: number, s: number, l: number): RGB {
   return [f(hh + 1 / 3) * 255, f(hh) * 255, f(hh - 1 / 3) * 255];
 }
 
-export function mixRGB(a: RGB, b: RGB, t: number): RGB {
-  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+function hueChan(p: number, q: number, t: number): number {
+  if (t < 0) t += 1;
+  else if (t > 1) t -= 1;
+  if (t < 1 / 6) return p + (q - p) * 6 * t;
+  if (t < 0.5) return q;
+  if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+  return p;
 }
 
-export function scaleRGB(a: RGB, k: number): RGB {
-  return [a[0] * k, a[1] * k, a[2] * k];
+/** HSL to RGB (0..255) written into `out`, for hot loops: no allocation. */
+export function hslInto(hh: number, s: number, l: number, out: Float32Array) {
+  hh -= Math.floor(hh);
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  out[0] = hueChan(p, q, hh + 1 / 3) * 255;
+  out[1] = hueChan(p, q, hh) * 255;
+  out[2] = hueChan(p, q, hh - 1 / 3) * 255;
+}
+
+export function mixRGB(a: RGB, b: RGB, t: number): RGB {
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 }
 
 /** A colour as a CSS rgba() string. */
@@ -1094,82 +1036,89 @@ export function shade(c: RGB, dl: number, ds = 0): RGB {
 }
 
 /**
- * K-means palette of a set of colours (flat [r,g,b,...]), deterministic: seeds spread through the
- * luminance order. Returns the centres and each colour's index.
+ * K-means palette of a set of colours (flat [r,g,b,...]), deterministic: centres start at evenly
+ * spaced luminance quantiles, are fitted on an even subsample, then every colour is assigned to its
+ * nearest centre. Returns the centres and each colour's index.
  */
-export function kmeans(cols: Float32Array, k: number, iterations = 8) {
+export function kmeans(cols: Float32Array, k: number, iterations = 8, maxFit = 4000) {
   const n = cols.length / 3;
   k = Math.max(1, Math.min(k, n));
-  const order = Array.from({ length: n }, (_, i) => i).sort(
-    (a, b) => cols[a * 3] * 0.3 + cols[a * 3 + 1] * 0.59 + cols[a * 3 + 2] * 0.11 - (cols[b * 3] * 0.3 + cols[b * 3 + 1] * 0.59 + cols[b * 3 + 2] * 0.11),
-  );
-  const cent = new Float32Array(k * 3);
-  for (let j = 0; j < k; j++) {
-    const i = order[Math.min(n - 1, Math.floor(((j + 0.5) / k) * n))];
-    cent[j * 3] = cols[i * 3];
-    cent[j * 3 + 1] = cols[i * 3 + 1];
-    cent[j * 3 + 2] = cols[i * 3 + 2];
+  // Seeds: mean colour of the luminance bin at each quantile.
+  const lum = new Uint8Array(n);
+  const hist = new Int32Array(256);
+  for (let i = 0; i < n; i++) {
+    const l = Math.min(255, Math.max(0, Math.round(cols[i * 3] * 0.3 + cols[i * 3 + 1] * 0.59 + cols[i * 3 + 2] * 0.11)));
+    lum[i] = l;
+    hist[l]++;
   }
-  const idx = new Int32Array(n);
+  const binOf = new Int32Array(k);
+  let acc = 0;
+  let j = 0;
+  for (let b = 0; b < 256 && j < k; b++) {
+    acc += hist[b];
+    while (j < k && acc >= ((j + 0.5) / k) * n) binOf[j++] = b;
+  }
+  for (; j < k; j++) binOf[j] = 255;
+  const cent = new Float32Array(k * 3);
   const sum = new Float64Array(k * 3);
   const cnt = new Int32Array(k);
+  for (let i = 0; i < n; i++) {
+    for (let q = 0; q < k; q++) {
+      if (lum[i] !== binOf[q]) continue;
+      sum[q * 3] += cols[i * 3];
+      sum[q * 3 + 1] += cols[i * 3 + 1];
+      sum[q * 3 + 2] += cols[i * 3 + 2];
+      cnt[q]++;
+    }
+  }
+  for (let q = 0; q < k; q++) {
+    const c = cnt[q] || 1;
+    cent[q * 3] = sum[q * 3] / c;
+    cent[q * 3 + 1] = sum[q * 3 + 1] / c;
+    cent[q * 3 + 2] = sum[q * 3 + 2] / c;
+  }
+  const nearest = (i: number) => {
+    let best = 0;
+    let bd = Infinity;
+    const r = cols[i * 3];
+    const g = cols[i * 3 + 1];
+    const b = cols[i * 3 + 2];
+    for (let q = 0; q < k; q++) {
+      const dr = r - cent[q * 3];
+      const dg = g - cent[q * 3 + 1];
+      const db = b - cent[q * 3 + 2];
+      const dd = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11;
+      if (dd < bd) {
+        bd = dd;
+        best = q;
+      }
+    }
+    return best;
+  };
+  const stride = Math.max(1, Math.floor(n / maxFit));
   for (let it = 0; it < iterations; it++) {
     sum.fill(0);
     cnt.fill(0);
-    for (let i = 0; i < n; i++) {
-      let best = 0;
-      let bd = Infinity;
-      for (let j = 0; j < k; j++) {
-        const dr = cols[i * 3] - cent[j * 3];
-        const dg = cols[i * 3 + 1] - cent[j * 3 + 1];
-        const db = cols[i * 3 + 2] - cent[j * 3 + 2];
-        const dd = dr * dr * 0.3 + dg * dg * 0.59 + db * db * 0.11;
-        if (dd < bd) {
-          bd = dd;
-          best = j;
-        }
-      }
-      idx[i] = best;
-      sum[best * 3] += cols[i * 3];
-      sum[best * 3 + 1] += cols[i * 3 + 1];
-      sum[best * 3 + 2] += cols[i * 3 + 2];
-      cnt[best]++;
+    for (let i = 0; i < n; i += stride) {
+      const q = nearest(i);
+      sum[q * 3] += cols[i * 3];
+      sum[q * 3 + 1] += cols[i * 3 + 1];
+      sum[q * 3 + 2] += cols[i * 3 + 2];
+      cnt[q]++;
     }
-    for (let j = 0; j < k; j++) {
-      if (!cnt[j]) continue;
-      cent[j * 3] = sum[j * 3] / cnt[j];
-      cent[j * 3 + 1] = sum[j * 3 + 1] / cnt[j];
-      cent[j * 3 + 2] = sum[j * 3 + 2] / cnt[j];
+    for (let q = 0; q < k; q++) {
+      if (!cnt[q]) continue;
+      cent[q * 3] = sum[q * 3] / cnt[q];
+      cent[q * 3 + 1] = sum[q * 3 + 1] / cnt[q];
+      cent[q * 3 + 2] = sum[q * 3 + 2] / cnt[q];
     }
   }
+  const idx = new Int32Array(n);
+  for (let i = 0; i < n; i++) idx[i] = nearest(i);
   return { cent, idx, k };
 }
 
 /* --------------------------------------------------------------- drawing */
-
-export function tracePath(ctx: CanvasRenderingContext2D, p: Path) {
-  const a = p.pts;
-  const n = a.length / 2;
-  if (n < 2) return;
-  ctx.moveTo(a[0], a[1]);
-  for (let i = 1; i < n; i++) ctx.lineTo(a[i * 2], a[i * 2 + 1]);
-  if (p.closed) ctx.closePath();
-}
-
-/** Composites `layer` onto a fresh canvas through `mask` coverage (destination-in). */
-export function maskCanvas(layer: HTMLCanvasElement, mask: Float32Array, w: number, h: number): HTMLCanvasElement {
-  const px = new Uint8ClampedArray(w * h * 4);
-  for (let i = 0; i < mask.length; i++) {
-    px[i * 4 + 3] = mask[i] * 255;
-  }
-  const m = toCanvas(px, w, h);
-  const out = makeCanvas(w, h);
-  const ctx = ctxOf(out);
-  ctx.drawImage(layer, 0, 0);
-  ctx.globalCompositeOperation = "destination-in";
-  ctx.drawImage(m, 0, 0);
-  return out;
-}
 
 /**
  * The output: a blank canvas the size of the source, with a context whose origin is the art's crop,
@@ -1180,13 +1129,4 @@ export function output(art: Art) {
   const ctx = ctxOf(c);
   ctx.translate(art.ox, art.oy);
   return { canvas: c, ctx };
-}
-
-/** Straight-alpha RGBA writer helper. */
-export function put(px: Uint8ClampedArray, i: number, r: number, g: number, b: number, a: number) {
-  const j = i * 4;
-  px[j] = r;
-  px[j + 1] = g;
-  px[j + 2] = b;
-  px[j + 3] = a * 255;
 }
