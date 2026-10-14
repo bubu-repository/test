@@ -204,7 +204,7 @@
   }
 
   .desk__item--laptop {
-    left: 67cqi;
+    left: 66cqi;
     bottom: 4cqi;
     width: 30cqi;
   }
@@ -702,10 +702,10 @@
  */
 .dlaptop__mat {
   position: absolute;
-  left: -8%;
-  right: -8%;
+  left: -3%;
+  right: -3%;
   bottom: -2cqi;
-  height: 106cqi;
+  height: 67cqi;
   border-radius: 4cqi;
   background:
     linear-gradient(90deg, color-mix(in srgb, var(--pink-soft) 64%, transparent) 50%, transparent 0) 50% 100% / 24px 24px,
@@ -715,8 +715,15 @@
   outline-offset: -3.2cqi;
   box-shadow: 0 2px 1px rgba(8, 40, 80, 0.16);
   transform-origin: 50% 100%;
-  transform: perspective(540cqi) rotateX(75deg);
+  transform: perspective(324cqi) rotateX(66deg);
   pointer-events: none;
+}
+
+@media (width >= 64rem) {
+  .dlaptop__mat {
+    left: -6%;
+    right: -6%;
+  }
 }
 
 /* The laptop's shadow on the mat: a tight line along its front edge and a soft pool down and to the left. */
@@ -724,11 +731,11 @@
   position: absolute;
   left: 0.5%;
   right: 0.5%;
-  bottom: -0.3cqi;
-  height: 1cqi;
+  bottom: -0.35cqi;
+  height: 1.1cqi;
   border-radius: 50%;
-  background: rgba(8, 40, 80, 0.36);
-  box-shadow: -0.4cqi 1.6cqi 3cqi 1cqi rgba(8, 40, 80, 0.16);
+  background: rgba(8, 40, 80, 0.42);
+  box-shadow: -0.4cqi 1.6cqi 3cqi 1cqi rgba(8, 40, 80, 0.18);
   filter: blur(1.5px);
   pointer-events: none;
 }

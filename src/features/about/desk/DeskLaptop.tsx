@@ -31,9 +31,9 @@ const APPS: App[] = [
 
 /** The stickers on her closed lid: where each sits (in % of the lid), its size (in % of the laptop) and its tilt. */
 const LID_STICKERS = [
-  { id: "hello", x: "31%", y: "36%", s: "10.5cqi", r: "-12deg" },
-  { id: "studio", x: "64%", y: "30%", s: "9cqi", r: "9deg" },
-  { id: "wave", x: "40%", y: "74%", s: "8cqi", r: "18deg" },
+  { id: "hello", x: "31%", y: "34%", s: "12.5cqi", r: "-12deg" },
+  { id: "studio", x: "64%", y: "30%", s: "11cqi", r: "9deg" },
+  { id: "wave", x: "40%", y: "72%", s: "10cqi", r: "16deg" },
 ];
 
 /**

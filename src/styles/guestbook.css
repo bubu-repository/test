@@ -321,6 +321,7 @@
   }
 }
 
+/* Kelp is sea glass, too clear to cast much; and no filter to redraw while it sways. */
 .gb-kelp {
   filter: none;
 }
@@ -362,6 +363,15 @@
   margin-top: 28px;
 }
 
+/* Under the form the water is already deep: the hint gets a little light of its own to be read on. */
+@media (width < 64rem) {
+  .gb-more > p {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+}
+
 /* ---------- A note, read ---------- */
 .gb-note {
   position: absolute;
@@ -380,6 +390,12 @@
   .gb-note {
     animation: pop-in var(--dur-short) var(--ease-out) both;
   }
+}
+
+/* On white glass a clear creature needs its glow to show where it is. */
+.gb-note__creature,
+.gb-list__creature {
+  filter: drop-shadow(0 4px 8px var(--glow));
 }
 
 .gb-note__creature {
