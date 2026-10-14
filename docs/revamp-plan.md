@@ -62,9 +62,9 @@ The pink of reference image 5 is retired.
   the agent, Terminal); an aquarium that links to the guestbook; a DAC that plays her songs
   through the YouTube IFrame API (full songs, no login; the player shows on a small monitor,
   at least 200 x 200 px as YouTube requires); the ID card hanging on the monitor (the drag bug
-  fixed); original desk objects in the spirit of her references (a round white creature desk
-  clock, a chibi figure of her character, a plush, a ball-chain plush keychain). Licensed
-  characters (Chiikawa and the others) are not drawn. The acrylic standee and keychain come
+  fixed); original desk objects in the spirit of her references, all from the sea: a round
+  white seal-pup desk clock, a whale plush, a jellyfish keychain on a ball chain (the chibi
+  figure waits for her character). Licensed characters (Chiikawa and the others) are not drawn. The acrylic standee and keychain come
   later, when she sends them. The readable story, path and practical details stay below the
   desk.
 - **Guestbook:** a big aquarium. Visitors pick a sea creature (fish, jellyfish, octopus, turtle,
@@ -93,11 +93,12 @@ The pink of reference image 5 is retired.
 1. Palette, fonts, light only, the new hero, the contact section, the loading screen, the help
    button and tutorial, the About ID-card fix. (Done; the 3D character is parked. Re-themed to sky
    and sea in Aero blues.)
-2. The About desk.
+2. The About desk. (Done. The DAC plays through YouTube; Kenshi Yonezu's "Umi no Yuurei" holds the
+   place until her songs arrive. The synth MP3 player is gone; the CD shelf of games stays.)
 3. The guestbook aquarium.
 4. The Lab: Studio, booster pack, cleanup of the old experiments.
 
 ## Waiting on Adelia
 
 - Photos of her acrylic standee and keychain.
-- The YouTube links for the songs on the DAC.
+- The YouTube links for the songs on the DAC (placeholder: "Umi no Yuurei", `src/content/playlist.ts`).

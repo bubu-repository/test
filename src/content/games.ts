@@ -11,8 +11,6 @@ export type Game = {
   platform: string;
   year: number;
   hours: string;
-  /** The track on the MP3 player that matches its mood (see features/about/music/tracks.ts). */
-  mood: string;
   glyph: string;
   /** Cover art: a soft gradient in the game's colours. */
   art: string;
@@ -30,7 +28,6 @@ export const games: Game[] = [
     platform: "3DS",
     year: 2014,
     hours: "300+ h",
-    mood: "turnips",
     glyph: "🌾",
     art: "linear-gradient(160deg, #fff6c9 0%, #ffe08a 38%, #bfe8b0 70%, #9fd8ff 100%)",
     label: ["#ffe58f", "#9fe0b0"],
@@ -44,7 +41,6 @@ export const games: Game[] = [
     platform: "PS2",
     year: 2002,
     hours: "120 h",
-    mood: "keyblade",
     glyph: "🗝️",
     art: "linear-gradient(160deg, #e8e3ff 0%, #b9adff 40%, #8fb8ff 75%, #ffd3ea 100%)",
     label: ["#c7c0ff", "#9ccfff"],
@@ -58,7 +54,6 @@ export const games: Game[] = [
     platform: "PC",
     year: 2016,
     hours: "210 h",
-    mood: "turnips",
     glyph: "🍃",
     art: "linear-gradient(160deg, #e2f7e3 0%, #a9e3b8 40%, #8fd3ff 80%, #fff1b8 100%)",
     label: ["#a9e3b8", "#fff1b8"],
@@ -72,7 +67,6 @@ export const games: Game[] = [
     platform: "Switch",
     year: 2020,
     hours: "400+ h",
-    mood: "bekasi",
     glyph: "🏝️",
     art: "linear-gradient(160deg, #d9f6ff 0%, #9fe3ef 40%, #ffe9a8 78%, #ffd3e8 100%)",
     label: ["#9fe3ef", "#ffe9a8"],
@@ -86,7 +80,6 @@ export const games: Game[] = [
     platform: "PS4",
     year: 2016,
     hours: "110 h",
-    mood: "deploy",
     glyph: "🎭",
     art: "linear-gradient(160deg, #ffe0ec 0%, #ff9cc9 42%, #c7c0ff 78%, #1d2a4d 100%)",
     label: ["#ff9cc9", "#1d2a4d"],

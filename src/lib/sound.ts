@@ -29,12 +29,6 @@ function audio(): AudioContext | null {
   return ctx;
 }
 
-/** The shared audio graph (context + master volume), or null while sound is off. For the music player. */
-export function audioGraph(): { ctx: AudioContext; master: GainNode } | null {
-  const ac = audio();
-  return ac && master ? { ctx: ac, master } : null;
-}
-
 type ToneOptions = {
   type?: OscillatorType;
   from: number;

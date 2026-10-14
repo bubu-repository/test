@@ -3,24 +3,18 @@
 import { useState, type CSSProperties } from "react";
 import { games } from "@/content/games";
 import { sfx } from "@/lib/sound";
-import { useStore } from "@/lib/store";
-import { player, playMood, toggle } from "./player-store";
-import { tracks } from "./tracks";
 
 /**
  * The games that shaped her, as CDs in jewel cases on a glass shelf. Pick one: the case lifts, the
- * disc slides out of the top and spins (faster while its mood is playing), and the card underneath
- * says what the game taught her about design. "Play its mood" puts a matching song on the player.
+ * disc slides out of the top and spins, and the card underneath says what the game taught her
+ * about design.
  */
 export function CdShelf() {
   const [sel, setSel] = useState(games[0].slug);
-  const playingGame = useStore(player, (s) => (s.playing ? s.game : null));
   const game = games.find((g) => g.slug === sel) ?? games[0];
-  const mood = tracks.find((t) => t.id === game.mood);
-  const isPlaying = playingGame === game.slug;
 
   return (
-    <div className="cdshelf" data-xr="CdShelf · CSS jewel cases, a spinning disc and the music engine">
+    <div className="cdshelf" data-xr="CdShelf · CSS jewel cases and a spinning disc">
       <ul className="cdshelf__row" aria-label="Games on the shelf">
         {games.map((g, i) => (
           <li key={g.slug} style={{ "--i": i } as CSSProperties}>
@@ -28,7 +22,7 @@ export function CdShelf() {
               type="button"
               className="cdcase"
               aria-pressed={sel === g.slug}
-              data-spin={playingGame === g.slug ? "fast" : sel === g.slug ? "slow" : undefined}
+              data-spin={sel === g.slug ? "slow" : undefined}
               aria-label={`${g.title} (${g.platform}, ${g.year})`}
               data-cursor="Pull out"
               data-sfx="off"
@@ -75,18 +69,6 @@ export function CdShelf() {
         <p className="mt-4 text-14 text-muted">
           <span className="font-semibold">Favourite moment:</span> {game.moment}
         </p>
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            className="pill"
-            data-variant="magenta"
-            data-sfx="off"
-            onClick={() => (isPlaying ? toggle() : mood && playMood(mood.id, game.slug))}
-          >
-            {isPlaying ? "❚❚ Pause its mood" : "▶ Play its mood"}
-          </button>
-          {mood && <span className="text-14 text-muted">“{mood.title}” on the player</span>}
-        </div>
       </article>
     </div>
   );

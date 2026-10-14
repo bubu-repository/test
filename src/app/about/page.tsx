@@ -3,9 +3,9 @@ import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
 import { PageHeader } from "@/components/PageHeader";
 import { bio, experience, identity, practical, skills, socials } from "@/content/profile";
-import { IdBadge } from "@/features/hero/IdBadge";
+import { Desk } from "@/features/about/desk/Desk";
 import { ProfileCard } from "@/features/about/ProfileCard";
-import { OffTheClock } from "@/features/about/music/OffTheClock";
+import { OffTheClock } from "@/features/about/games/OffTheClock";
 
 export const metadata: Metadata = pageMeta({
   title: "About",
@@ -34,12 +34,10 @@ export default function AboutPage() {
           </>
         }
         lead={bio.short}
-      >
-        {/* Her ID card on a lanyard: under the intro on small screens, hanging from the top edge on wide ones. Drag it, flip it. */}
-        <div className="mt-10 flex justify-center xl:pointer-events-none xl:absolute xl:top-0 xl:right-[var(--gutter)] xl:mt-0 xl:block">
-          <IdBadge strap={64} className="xl:pointer-events-auto xl:origin-top xl:scale-90" />
-        </div>
-      </PageHeader>
+      />
+
+      {/* Her desk: the monitor and the DAC (her songs), the ID card, the laptop, the aquarium (the guestbook). */}
+      <Desk />
 
       <div className="container-page section-y grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-20">
         <div className="min-w-0">

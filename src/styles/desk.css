@@ -1,0 +1,1064 @@
+/*
+ * ---------- About: her desk ----------
+ * One scene on wide screens (positions in the desk's own cqi), a column on phones. Every object is
+ * its own size container, so its insides scale with it in either layout.
+ */
+
+.desk-wrap {
+  padding-inline: clamp(8px, 1.1vw, 16px);
+}
+
+.desk {
+  --desk-radius: clamp(28px, 3vw, 44px);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: end;
+  gap: 16px;
+  padding: 14px 14px 22px;
+  border-radius: var(--desk-radius);
+  background:
+    radial-gradient(70% 40% at 50% 0%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #e3f0fa 0%, #eef5fb 34%, #ffffff 34.1%, #eef4fa 80%, #dfe9f3 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 60, 110, 0.08),
+    var(--lift);
+}
+
+.desk__room {
+  position: relative;
+  isolation: isolate;
+  grid-column: 1 / -1;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border: 8px solid #ffffff;
+  border-radius: calc(var(--desk-radius) - 8px);
+  background: linear-gradient(180deg, var(--sky-top), var(--sky-mid) 50%, var(--horizon) 60%, var(--sea-from) 60.5%, var(--sea-to));
+  box-shadow:
+    0 0 0 1px rgba(10, 60, 110, 0.1),
+    inset 0 2px 10px rgba(2, 30, 80, 0.25);
+}
+
+.desk__view {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
+}
+
+.desk__view[data-ready] {
+  opacity: 1;
+}
+
+.desk__mullion {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 8px;
+  translate: -50% 0;
+  background: linear-gradient(90deg, #e7eef5, #ffffff 40%, #dfe7ef);
+  box-shadow: 0 0 12px rgba(2, 30, 80, 0.2);
+}
+
+.desk__sill,
+.desk__top {
+  display: none;
+}
+
+.desk__item {
+  position: relative;
+  min-width: 0;
+}
+
+.desk__item--monitor,
+.desk__item--dac,
+.desk__item--laptop {
+  grid-column: 1 / -1;
+}
+
+.desk__item--tank {
+  grid-column: span 5;
+  order: 5;
+}
+
+.desk__item--clock {
+  grid-column: span 3;
+  order: 6;
+}
+
+.desk__item--whale {
+  grid-column: span 4;
+  order: 7;
+}
+
+.desk__jelly {
+  display: none;
+}
+
+.desk__badge {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.desk__caption {
+  margin-top: 14px;
+  text-align: center;
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+/* ---------- Wide screens: one scene ---------- */
+@media (width >= 64rem) {
+  .desk {
+    display: block;
+    container-type: inline-size;
+    aspect-ratio: 16 / 8.6;
+    padding: 0;
+    background:
+      radial-gradient(60% 30% at 50% 0%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 70%),
+      linear-gradient(180deg, #e3f0fa, #f1f7fc 60%);
+  }
+
+  /* The window on the wall behind the desk, with a sill. */
+  .desk__room {
+    position: absolute;
+    top: 3cqi;
+    left: 6cqi;
+    right: 6cqi;
+    height: 27cqi;
+    aspect-ratio: auto;
+    border-width: 1.1cqi;
+    border-radius: 2.6cqi;
+  }
+
+  .desk__mullion {
+    width: 1cqi;
+  }
+
+  .desk__sill {
+    position: absolute;
+    display: block;
+    top: 29.4cqi;
+    left: 4.6cqi;
+    right: 4.6cqi;
+    height: 1.4cqi;
+    border-radius: 0.6cqi;
+    background: linear-gradient(180deg, #ffffff, #dbe5ee);
+    box-shadow: 0 0.6cqi 1.2cqi rgba(8, 40, 80, 0.12);
+  }
+
+  /* The desk top: glossy white, a little narrower at the back, with a front edge. */
+  .desk__top {
+    position: absolute;
+    display: block;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 23.4cqi;
+    border-radius: 0 0 var(--desk-radius) var(--desk-radius);
+    clip-path: polygon(3% 0, 97% 0, 100% 100%, 0 100%);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 30%),
+      linear-gradient(180deg, #f7fafd 0%, #e9f0f7 78%, #d2dde9 78.4%, #c4d2e0 100%);
+  }
+
+  .desk__item {
+    position: absolute;
+  }
+
+  .desk__item--tank {
+    left: 4cqi;
+    bottom: 8.5cqi;
+    width: 18cqi;
+  }
+
+  .desk__item--whale {
+    left: 15cqi;
+    bottom: 2.4cqi;
+    width: 13cqi;
+  }
+
+  .desk__item--monitor {
+    left: 25.5cqi;
+    bottom: 11cqi;
+    width: 34cqi;
+  }
+
+  .desk__item--clock {
+    left: 62.5cqi;
+    bottom: 13cqi;
+    width: 8.5cqi;
+  }
+
+  .desk__item--dac {
+    left: 41cqi;
+    bottom: 1.8cqi;
+    width: 22cqi;
+  }
+
+  .desk__item--laptop {
+    left: 67cqi;
+    bottom: 2.6cqi;
+    width: 30cqi;
+  }
+
+  /* The jellyfish keychain hangs off the monitor's left corner. */
+  .desk__jelly {
+    position: absolute;
+    display: block;
+    top: 2%;
+    left: -5.5%;
+    width: 9%;
+    transform-origin: 50% 0;
+  }
+
+  /* The ID card hangs off the monitor's right corner, half over the edge. */
+  .desk__badge {
+    position: absolute;
+    top: 2%;
+    right: -120px;
+    display: block;
+    width: 240px;
+    margin: 0;
+    scale: 0.5;
+    transform-origin: 50% 0;
+  }
+
+  .desk__caption {
+    margin-top: 16px;
+  }
+}
+
+@media (width >= 80rem) {
+  .desk__badge {
+    scale: 0.56;
+  }
+}
+
+/* ---------- The monitor ---------- */
+.monitor {
+  container-type: inline-size;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* An aluminium frame round a black glass bezel. */
+.monitor__bezel {
+  width: 100%;
+  padding: 1cqi;
+  border-radius: 3.4cqi;
+  background: linear-gradient(180deg, #eef3f8, #c5d0db);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 3cqi 6cqi -3cqi rgba(8, 40, 80, 0.45);
+}
+
+.monitor__screen {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  min-height: 212px; /* YouTube's player needs at least 200 × 200 */
+  border: 1.6cqi solid #0b111c;
+  border-radius: 2.6cqi;
+  background: #0b111c;
+}
+
+.monitor__player {
+  position: absolute;
+  inset: 0;
+}
+
+.monitor__player iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Before anything plays: what's on the DAC, over an Aero wallpaper of sky and sea. */
+.monitor__idle {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 4px;
+  padding: 16px;
+  text-align: center;
+  color: #ffffff;
+  background:
+    radial-gradient(60% 40% at 80% 12%, rgba(255, 250, 220, 0.55), rgba(255, 250, 220, 0) 70%),
+    linear-gradient(180deg, #0a58be 0%, #1570d6 48%, #5cb8f2 58%, #3cc8f0 58.4%, #0e8fd8 76%, #073b86 100%);
+}
+
+.monitor__label {
+  font: 600 11px/1.3 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.monitor__song {
+  max-width: 30ch;
+  font-size: clamp(16px, 4.6cqi, 24px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-shadow: 0 1px 12px rgba(2, 30, 90, 0.4);
+}
+
+.monitor__original {
+  font-size: var(--text-14);
+  font-weight: 600;
+  text-shadow: 0 1px 10px rgba(2, 30, 90, 0.4);
+}
+
+.monitor__artist {
+  margin-bottom: 10px;
+  font-size: var(--text-14);
+  text-shadow: 0 1px 10px rgba(2, 30, 90, 0.4);
+}
+
+.monitor__note {
+  max-width: 34ch;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(3, 32, 86, 0.55);
+  font-size: var(--text-14);
+}
+
+.monitor__note a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.monitor__neck {
+  width: 14%;
+  height: 7cqi;
+  background: linear-gradient(90deg, #b8c5d2, #f4f8fb 45%, #aebccb);
+  clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+}
+
+.monitor__foot {
+  width: 36%;
+  height: 2.4cqi;
+  border-radius: 1.4cqi 1.4cqi 0.8cqi 0.8cqi;
+  background: linear-gradient(180deg, #f8fbfd, #b7c4d1);
+  box-shadow: 0 1.6cqi 2.4cqi -1.2cqi rgba(8, 40, 80, 0.4);
+}
+
+/* ---------- The DAC ---------- */
+.dac {
+  container-type: inline-size;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 12px 14px 12px 12px;
+  border-radius: 14px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.22) 0 1px, rgba(255, 255, 255, 0) 1px 3px),
+    linear-gradient(180deg, #f6f9fc, #d3dde7);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -2px 0 rgba(8, 40, 80, 0.12),
+    0 0 0 1px rgba(10, 60, 110, 0.12),
+    0 14px 26px -14px rgba(8, 40, 80, 0.5);
+}
+
+.dac__display {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  padding: 8px 10px 7px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #0a1b33, #061224);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.6),
+    0 1px 0 #ffffff;
+  color: #d6f1ff;
+  font-family: var(--font-mono);
+}
+
+.dac__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.dac__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #a8cfe6;
+}
+
+.dac__meta > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dac__status {
+  flex: none;
+  color: #7fd7ff;
+}
+
+.dac__time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #a8cfe6;
+}
+
+.dac__bar {
+  flex: 1;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(166, 228, 255, 0.2);
+}
+
+.dac__bar > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #7fd7ff;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+  transition: transform 500ms linear;
+}
+
+.dac__vu {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+  margin-top: 5px;
+}
+
+.dac__vu > i {
+  flex: 1;
+  height: 100%;
+  border-radius: 1px;
+  background: linear-gradient(0deg, #3dbe4a 0 55%, #ffe27a 55% 80%, #ff8f7a 80%);
+  opacity: 0.25;
+  transform: scaleY(0.2);
+  transform-origin: bottom;
+}
+
+.dac[data-playing] .dac__vu > i {
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dac[data-playing] .dac__vu > i {
+    animation: vu calc(420ms + var(--i) * 37ms) var(--ease-in-out) infinite alternate;
+    animation-delay: calc(var(--i) * -91ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dac[data-playing] .dac__vu > i {
+    transform: scaleY(0.6);
+  }
+}
+
+@keyframes vu {
+  0% {
+    transform: scaleY(0.15);
+  }
+
+  60% {
+    transform: scaleY(0.75);
+  }
+
+  100% {
+    transform: scaleY(0.4);
+  }
+}
+
+.dac__keys {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  gap: 8px;
+}
+
+.dac__key {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff, #dde5ed);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 0 0 1px rgba(10, 60, 110, 0.16),
+    0 2px 0 rgba(10, 60, 110, 0.18);
+  color: #2a3d55;
+  transition:
+    transform 90ms var(--ease-out),
+    box-shadow 90ms var(--ease-out);
+}
+
+.dac__key--play {
+  width: 52px;
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 50%), linear-gradient(180deg, #1c7fe6, #0a5fcc);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 0 0 1px #08479c,
+    0 2px 0 #08479c;
+}
+
+.dac__key:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(10, 60, 110, 0.16);
+}
+
+.dac__key:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* The volume knob: a knurled aluminium cap over a real range input (arrow keys work). */
+.dac__knob {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: clamp(56px, 22cqi, 76px);
+  aspect-ratio: 1;
+}
+
+.dac__knob input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.dac__cap {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 50%, #f6f9fc 0 52%, transparent 53%),
+    repeating-conic-gradient(#dfe7ef 0 4deg, #b9c6d3 4deg 8deg);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 0 0 1px rgba(10, 60, 110, 0.18),
+    0 4px 8px rgba(8, 40, 80, 0.3);
+  rotate: calc(-135deg + var(--v, 70) * 2.7deg);
+  transition: rotate 120ms var(--ease-out);
+}
+
+.dac__cap::after {
+  content: "";
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  width: 4px;
+  height: 14%;
+  translate: -50% 0;
+  border-radius: 2px;
+  background: #1a8fe8;
+}
+
+.dac__knob:has(input:focus-visible) .dac__cap {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.dac__led {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #9aa9b8;
+}
+
+.dac[data-playing] .dac__led {
+  background: #3dbe4a;
+  box-shadow: 0 0 8px #3dbe4a;
+}
+
+/* ---------- The laptop ---------- */
+.dlaptop {
+  container-type: inline-size;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0;
+  transition: padding-top 520ms var(--ease-jelly);
+}
+
+/* Room for the lid only while it is up, so a closed laptop is just its slab. */
+.dlaptop[data-open] {
+  padding-top: calc(84% * 10.6 / 16);
+}
+
+/* The lid stands on its hinge when open, and folds down onto the keyboard when closed. */
+.dlaptop__lid {
+  position: absolute;
+  left: 8%;
+  bottom: 10.6cqi;
+  width: 84%;
+  aspect-ratio: 16 / 10.6;
+  padding: 2.6cqi;
+  border-radius: 3cqi 3cqi 0.8cqi 0.8cqi;
+  background: #0b111c;
+  box-shadow:
+    0 0 0 0.6cqi #cfd9e3,
+    0 3cqi 6cqi -3cqi rgba(8, 40, 80, 0.45);
+  transform-origin: 50% 100%;
+  transform: perspective(160cqi) rotateX(-90deg);
+  transition: transform 520ms var(--ease-jelly);
+}
+
+.dlaptop[data-open] .dlaptop__lid {
+  transform: perspective(160cqi) rotateX(6deg);
+}
+
+.dlaptop__screen {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.6cqi;
+  background:
+    radial-gradient(50% 40% at 80% 14%, rgba(255, 250, 220, 0.6), rgba(255, 250, 220, 0) 70%),
+    linear-gradient(180deg, #0a58be 0%, #1570d6 46%, #5cb8f2 60%, #3cc8f0 60.4%, #0e8fd8 80%, #0a56b0 100%);
+  color: #ffffff;
+}
+
+.dlaptop__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 0 8px 0 2px;
+  background: rgba(3, 32, 86, 0.4);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.dlaptop__close {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+}
+
+.dlaptop__close > span {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.dlaptop__apps {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: center;
+  gap: 4px;
+  padding: 4px 6px 6px;
+}
+
+.dlaptop__app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  min-height: 44px;
+  padding: 3px 2px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+
+.dlaptop__app .app-icon {
+  --size: clamp(28px, 12cqi, 44px);
+}
+
+.dlaptop__app:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dlaptop__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(3, 32, 86, 0.5);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dlaptop[data-open] .dlaptop__apps > li {
+    animation: rise-in 420ms var(--ease-out) both;
+    animation-delay: calc(240ms + var(--i) * 40ms);
+  }
+}
+
+/* The closed lid seen from above: brushed aluminium with her mark. */
+.dlaptop__shell {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.86cqi;
+  display: grid;
+  place-items: center;
+  height: 8.4cqi;
+  clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%),
+    linear-gradient(180deg, #e7edf3, #c6d1dc);
+  color: #9fb0c2;
+  font-size: 4cqi;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  transition: opacity 160ms var(--ease-out);
+}
+
+.dlaptop[data-open] .dlaptop__shell {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The keyboard deck, from above and in front. */
+.dlaptop__base {
+  width: 100%;
+  height: 11cqi;
+  margin-top: -0.4cqi;
+  clip-path: polygon(8% 0, 92% 0, 100% 74%, 100% 100%, 0 100%, 0 74%);
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 74%, #aab8c6 74%, #c7d2dd 100%),
+    repeating-linear-gradient(90deg, rgba(40, 60, 90, 0.08) 0 4%, rgba(40, 60, 90, 0) 4% 5%) 50% 18% / 70% 44% no-repeat,
+    linear-gradient(180deg, #d9e2ea, #f2f6f9 60%, #e3eaf1 74%);
+}
+
+.dlaptop__open {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+}
+
+.dlaptop__hint {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--sheen), rgba(255, 255, 255, 0.86);
+  box-shadow: var(--bevel), var(--lift-sm);
+  font-size: var(--text-14);
+  font-weight: 650;
+  color: var(--ink);
+  transition: transform var(--dur-micro) var(--ease-out);
+}
+
+.dlaptop__open:hover .dlaptop__hint {
+  transform: translateY(-2px);
+}
+
+/* ---------- The aquarium ---------- */
+.tank {
+  container-type: inline-size;
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3.3;
+  border-radius: 6cqi;
+  text-decoration: none;
+  transition: transform 260ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .tank:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.tank__glass {
+  position: absolute;
+  inset: 5cqi 1cqi 0;
+  overflow: hidden;
+  border: 1.2cqi solid rgba(255, 255, 255, 0.9);
+  border-radius: 4cqi;
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 80, 160, 0.2),
+    0 4cqi 8cqi -4cqi rgba(8, 40, 80, 0.5);
+}
+
+.tank__glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0.5) 0 8%, rgba(255, 255, 255, 0) 9% 70%, rgba(255, 255, 255, 0.25) 71% 74%, rgba(255, 255, 255, 0) 75%);
+  pointer-events: none;
+}
+
+.tank__water {
+  position: absolute;
+  inset: 12% 0 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #8fe8f8, #2bb5e6 55%, #0e7cc0);
+}
+
+.tank__water::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3cqi;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.tank__sand {
+  position: absolute;
+  inset: auto 0 0;
+  height: 13%;
+  background:
+    radial-gradient(circle at 20% 40%, #e7d3ad 0 1.4cqi, transparent 1.6cqi) 0 0 / 9cqi 9cqi,
+    linear-gradient(180deg, #f6e9cd, #e3cf9f);
+}
+
+.tank__weed {
+  position: absolute;
+  left: 6%;
+  bottom: 8%;
+  width: 26%;
+  height: 72%;
+  transform-origin: 50% 100%;
+}
+
+.tank__fish {
+  position: absolute;
+  top: var(--y);
+  left: 0;
+  width: var(--size);
+  translate: 4cqi 0;
+}
+
+.tank__fish > span {
+  display: block;
+}
+
+.tank__bubble {
+  position: absolute;
+  left: var(--x);
+  bottom: 12%;
+  width: 2.6cqi;
+  height: 2.6cqi;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.8) 0 25%, rgba(255, 255, 255, 0.1) 30%);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tank__fish {
+    animation: swim var(--dur) linear var(--delay) infinite;
+  }
+
+  .tank__fish > span {
+    animation: swim-turn var(--dur) linear var(--delay) infinite;
+  }
+
+  .tank__weed {
+    animation: sway 4.5s var(--ease-in-out) infinite alternate;
+  }
+
+  .tank__bubble {
+    animation: tank-bubble 4.2s ease-in var(--d) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tank__fish:nth-child(3) {
+    translate: 52cqi 0;
+  }
+
+  .tank__bubble {
+    opacity: 0.8;
+    bottom: 50%;
+  }
+}
+
+@keyframes swim {
+  0% {
+    translate: 4cqi 0;
+  }
+
+  46% {
+    translate: calc(96cqi - 100%) -2cqi;
+  }
+
+  50% {
+    translate: calc(96cqi - 100%) 0;
+  }
+
+  96% {
+    translate: 4cqi 2cqi;
+  }
+
+  100% {
+    translate: 4cqi 0;
+  }
+}
+
+@keyframes swim-turn {
+  0%,
+  47% {
+    scale: 1 1;
+  }
+
+  50%,
+  97% {
+    scale: -1 1;
+  }
+
+  100% {
+    scale: 1 1;
+  }
+}
+
+@keyframes sway {
+  from {
+    rotate: -4deg;
+  }
+
+  to {
+    rotate: 4deg;
+  }
+}
+
+@keyframes tank-bubble {
+  0% {
+    opacity: 0;
+    translate: 0 0;
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    translate: 2cqi -60cqi;
+  }
+}
+
+.tank__lid {
+  position: absolute;
+  top: 2.5cqi;
+  left: 0;
+  right: 0;
+  height: 6cqi;
+  border-radius: 2.4cqi;
+  background: linear-gradient(180deg, #f7fafc, #c9d4de);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(8, 40, 80, 0.2);
+}
+
+.tank__tag {
+  position: absolute;
+  right: 5cqi;
+  bottom: 6cqi;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--sheen), rgba(255, 255, 255, 0.88);
+  box-shadow: var(--bevel), var(--lift-sm);
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.tank__tag::after {
+  content: " ›";
+}
+
+/* ---------- The seal clock, the whale and the jellyfish ---------- */
+.seal,
+.whale,
+.jelly {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .desk__item--clock:hover .seal {
+    animation: wiggle 600ms var(--ease-in-out);
+  }
+
+  .desk__item--whale:hover .whale {
+    scale: 1.06 0.94;
+    transform-origin: 50% 100%;
+    transition: scale 220ms var(--ease-jelly);
+  }
+
+  .desk__jelly {
+    animation: keychain 3.6s var(--ease-in-out) infinite alternate;
+  }
+}
+
+.whale {
+  transition: scale 260ms var(--ease-jelly);
+}
+
+@keyframes wiggle {
+  25% {
+    rotate: -6deg;
+  }
+
+  75% {
+    rotate: 6deg;
+  }
+}
+
+@keyframes keychain {
+  from {
+    rotate: -7deg;
+  }
+
+  to {
+    rotate: 7deg;
+  }
+}

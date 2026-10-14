@@ -33,7 +33,7 @@ export const siteMap = [
     path: "/about",
     title: "About",
     description:
-      "About Adelia: her ID card on a lanyard, the short story and path, an MP3 player of the songs she codes to (original synth loops; you can drop your own song on it), a CD shelf of the games that taught her about design (Story of Seasons, Kingdom Hearts, Stardew Valley, Animal Crossing, Persona 5) with what each one taught her, the practical details for hiring teams (level, location, notice, languages, references) and the CV.",
+      "About Adelia: her desk under a window onto the sea, with a DAC that plays the songs she codes to in full through a YouTube player on the monitor (Kenshi Yonezu's \"Umi no Yuurei\" for now), her ID card hanging off the monitor, a laptop that opens to a small desktop (work, CV, Moci, terminal, guestbook), an aquarium that leads to the guestbook and a seal-pup desk clock on Bekasi time. Below the desk: the short story and path, the practical details for hiring teams (level, location, notice, languages, references), the CV, her toolbox, and a CD shelf of the games that taught her about design (Story of Seasons, Kingdom Hearts, Stardew Valley, Animal Crossing, Persona 5) with what each one taught her.",
   },
   { path: "/guestbook", title: "Guestbook", description: "A live scrapbook wall of notes from visitors." },
 ] as const;
