@@ -20,7 +20,9 @@ Everything the six hiring-review rounds produced stays, word for word unless a f
 
 Changed in October 2026, after the first pass read as pale and templated: Adelia kept the Apple
 design and asked for a sea theme with the sky kept in, coloured mainly in the blues of Frutiger Aero.
-The pink of reference image 5 is retired.
+The saturated pink of reference image 5 is retired as a theme; after the first expert review (see
+`docs/design-review.md`) a softer pink came back as one token family (`--pink #FF7EB6`, `--pink-soft`,
+`--pink-ink`), placed only on things you can touch or collect: stickers, creatures, blush, the sticker bead.
 
 - **Palette:** Frutiger Aero blues. Deep azure sky (`#0A58BE` to `#1570D6`) lightening to a pale
   horizon, aqua water (`#3CC8F0`) going down to deep sea blue (`#0A56B0`, `#073B86`), white clouds and
