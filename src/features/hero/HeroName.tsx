@@ -5,7 +5,7 @@ import { identity } from "@/content/profile";
 
 /**
  * The name, set big and quiet. Letters rise in once; after that, the ones nearest the cursor
- * blush magenta and lift a hair, like light catching glass. Screen readers get the plain name.
+ * catch the light (pale aqua) and lift a hair, like sun on water. Screen readers get the plain name.
  */
 export function HeroName() {
   const ref = useRef<HTMLSpanElement>(null);
@@ -40,7 +40,7 @@ export function HeroName() {
 
   let i = 0;
   return (
-    <h1 className="hero-name" data-tour="name" data-xr="HeroName · letters blush magenta near the cursor">
+    <h1 className="hero-name" data-tour="name" data-xr="HeroName · letters catch the light near the cursor">
       <span className="sr-only">{identity.name}</span>
       <span ref={ref} aria-hidden="true">
         {identity.name.split(" ").map((word, w) => (

@@ -4,11 +4,11 @@ import { cn } from "@/lib/cn";
 
 /** Icon backgrounds per tone: soft top-to-bottom gradients, like iOS app icons. */
 export const TONE_GRADIENT: Record<Tone, string> = {
-  magenta: "radial-gradient(120% 120% at 30% 10%, #EB8DAE 0%, #D8588F 50%, #AB366C 100%)",
+  magenta: "radial-gradient(120% 120% at 30% 10%, #9FD8FB 0%, #1A8FE8 50%, #0A58BE 100%)",
   cobalt: "linear-gradient(180deg, #8DBDF0, #406BCE)",
   sun: "linear-gradient(180deg, #FBE39A, #E8B84A)",
   lime: "linear-gradient(180deg, #7AD39E, #3A965C)",
-  violet: "linear-gradient(180deg, #C6B6EC, #8968D4)",
+  violet: "linear-gradient(180deg, #C9D6FA, #6F8FE6)",
   mint: "linear-gradient(180deg, #A5DEEA, #3EA7C2)",
   sky: "linear-gradient(180deg, #B7DCF6, #499FE3)",
   ink: "linear-gradient(180deg, #3A4A78, #1D2A4D)",

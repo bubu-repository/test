@@ -19,18 +19,20 @@ const contrastPairs = [
   { fg: "--ink", bg: "--glass-tone", use: "Text on glass", min: 4.5 },
   { fg: "--muted", bg: "--bg", use: "Secondary text on the page", min: 4.5 },
   { fg: "--muted", bg: "--glass-tone", use: "Secondary text on glass", min: 4.5 },
-  { fg: "--accent-ink", bg: "--bg", use: "Pink as text", min: 4.5 },
-  { fg: "--accent-ink", bg: "--glass-tone", use: "Pink text on glass", min: 4.5 },
+  { fg: "--accent-ink", bg: "--bg", use: "Blue as text", min: 4.5 },
+  { fg: "--accent-ink", bg: "--glass-tone", use: "Blue text on glass", min: 4.5 },
   { fg: "--accent-display", bg: "--bg", use: "Highlighted headline words (display size)", min: 3 },
-  { fg: "--on-fill", bg: "--accent-soft", use: "Label on a pale pink fill", min: 4.5 },
-  { fg: "--on-accent", bg: "--accent-strong", use: "White on the pink key", min: 4.5 },
-  { fg: "--on-cobalt", bg: "--cobalt", use: "White on deep sky", min: 4.5 },
-  { fg: "--on-fill", bg: "--butter", use: "Label on butter", min: 4.5 },
-  { fg: "--on-fill", bg: "--green", use: "Label on leaf green", min: 4.5 },
+  { fg: "--on-fill", bg: "--accent-soft", use: "Label on a pale sky fill", min: 4.5 },
+  { fg: "--on-accent", bg: "--accent-strong", use: "White on the blue key", min: 4.5 },
+  { fg: "--on-cobalt", bg: "--cobalt", use: "White on deep azure", min: 4.5 },
+  { fg: "--on-cobalt", bg: "--sky-mid", use: "White on the hero sky, at its lightest behind words", min: 4.5 },
+  { fg: "--on-cobalt", bg: "--sea-to", use: "White in the deep sea (footer)", min: 4.5 },
+  { fg: "--on-fill", bg: "--butter", use: "Label on pale sun", min: 4.5 },
+  { fg: "--on-fill", bg: "--green", use: "Label on Aero grass", min: 4.5 },
   { fg: "--on-fill", bg: "--lime", use: "Label on fresh green", min: 4.5 },
   { fg: "--on-fill", bg: "--sky", use: "Label on sky blue", min: 4.5 },
-  { fg: "--on-fill", bg: "--accent-soft-2", use: "Label on mid pink", min: 4.5 },
-  { fg: "--on-fill", bg: "--violet", use: "Label on lavender", min: 4.5 },
+  { fg: "--on-fill", bg: "--accent-soft-2", use: "Label on mid sky", min: 4.5 },
+  { fg: "--on-fill", bg: "--violet", use: "Label on periwinkle", min: 4.5 },
   { fg: "--screen-ink", bg: "--screen", use: "LCD segments", min: 4.5 },
   { fg: "--screen-muted", bg: "--screen", use: "Dim LCD segments", min: 4.5 },
 ];
@@ -77,7 +79,7 @@ export default function StyleguidePage() {
         </div>
       </header>
 
-      <Section index="01" title="Colour" lead="Pink-white paper and plum ink, after reference image 5. Line pink #F0489C and sky #90D8FC mark lines and small panels; big surfaces stay pale. Light only.">
+      <Section index="01" title="Colour" lead="Sky and sea in the blues of Frutiger Aero: a clear sky-white page and deep navy ink, Aero blue #1A8FE8 for marks and keys, and the colour itself in the live sky over the hero and the deep sea under the footer. Light only.">
         <div className="grid gap-5">
           {(["light"] as const).map((theme) => (
             <div key={theme} className="widget bg-surface p-5 text-ink">

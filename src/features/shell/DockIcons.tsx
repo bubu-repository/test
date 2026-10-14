@@ -8,13 +8,13 @@ import { useId, type ReactNode } from "react";
  * the tile. Gradient ids come from useId so two copies of an icon never share one.
  */
 
-/** Tile backgrounds. White tiles carry most icons; a few get a vivid gradient. */
+/** Tile backgrounds, glossy Frutiger Aero: white tiles carry most icons; a few get azure, aqua or grass. */
 export const TILE = {
-  white: "linear-gradient(180deg, #FFFFFF 0%, #FBF1F6 100%)",
-  pink: "linear-gradient(155deg, #FCC8DF 0%, #F078B4 52%, #E0318C 100%)",
-  sky: "linear-gradient(160deg, #D8F0FC 0%, #90D8FC 52%, #5CB8EC 100%)",
-  butter: "linear-gradient(180deg, #FFFBE6 0%, #FCF0C0 100%)",
-  lavender: "linear-gradient(160deg, #EDE5FD 0%, #B9A3F0 100%)",
+  white: "linear-gradient(180deg, #FFFFFF 0%, #EEF5FB 100%)",
+  azure: "linear-gradient(160deg, #8FD3FA 0%, #2B95F0 50%, #0A5FCC 100%)",
+  aqua: "linear-gradient(160deg, #D6F6FF 0%, #7FE3F7 45%, #1FB0E0 100%)",
+  grass: "linear-gradient(160deg, #E4FBD0 0%, #9BE15D 55%, #3DBE4A 100%)",
+  periwinkle: "linear-gradient(160deg, #E8EEFD 0%, #9DB7F5 100%)",
 };
 
 function Art({ children }: { children: ReactNode }) {
@@ -62,7 +62,7 @@ export function SparkleArt() {
       <defs>
         <linearGradient id={`${id}s`} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#FFFFFF" />
-          <stop offset="1" stopColor="#FFE3F0" />
+          <stop offset="1" stopColor="#DDF0FD" />
         </linearGradient>
         <linearGradient id={`${id}tr`} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#FFFFFF" stopOpacity=".55" />
@@ -98,7 +98,7 @@ export function IdCardArt() {
       <path d="M21 6h6v4h-6Z" fill="#C3CAD8" />
       <rect x="13" y="9" width="22" height="30" rx="4" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(20,24,40,.15))" }} />
       <path d="M13 13a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4v4H13Z" fill={`url(#${id}b)`} />
-      <circle cx="18.5" cy="13" r="1.6" fill="#D8588F" />
+      <circle cx="18.5" cy="13" r="1.6" fill="#1A8FE8" />
       <rect x="17" y="21" width="8" height="8" rx="2" fill="#E6ECF5" />
       <circle cx="21" cy="24" r="1.8" fill="#9AA5BA" />
       <path d="M18.2 29c.6-1.8 1.6-2.6 2.8-2.6s2.2.8 2.8 2.6Z" fill="#9AA5BA" />
@@ -112,10 +112,10 @@ export function IdCardArt() {
 export function FishArt() {
   return (
     <Art>
-      <path d="M33 24l8-6.5v13Z" fill="#F078B4" />
+      <path d="M33 24l8-6.5v13Z" fill="#FF8F7A" />
       <ellipse cx="22" cy="24" rx="12.5" ry="10" fill="#FFFFFF" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(30,90,150,.25))" }} />
-      <path d="M17 15.5c3 2.6 3 14.4 0 17" stroke="#FCA8CC" strokeWidth="2.2" fill="none" strokeLinecap="round" />
-      <circle cx="14.6" cy="22" r="2.1" fill="#2A2346" />
+      <path d="M17 15.5c3 2.6 3 14.4 0 17" stroke="#FFB4A6" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <circle cx="14.6" cy="22" r="2.1" fill="#0B1F33" />
       <circle cx="15.2" cy="21.4" r=".7" fill="#FFFFFF" />
       <circle cx="35" cy="11.5" r="2.6" fill="none" stroke="#FFFFFF" strokeWidth="1.4" />
       <circle cx="39.5" cy="7" r="1.5" fill="none" stroke="#FFFFFF" strokeWidth="1.2" />
@@ -144,8 +144,8 @@ export function MociArt() {
     <Art>
       <defs>
         <linearGradient id="moci-mark" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#FCA8CC" />
-          <stop offset="1" stopColor="#90D8FC" />
+          <stop offset="0" stopColor="#7FE3F7" />
+          <stop offset="1" stopColor="#0A68D0" />
         </linearGradient>
       </defs>
       <circle cx="24" cy="24" r="15" fill="url(#moci-mark)" />
@@ -189,7 +189,7 @@ export function SpeakerArt({ on }: { on: boolean }) {
           <path d="M33 15a12.5 12.5 0 0 1 0 18" stroke="#499FE3" strokeWidth="3" fill="none" strokeLinecap="round" opacity=".7" />
         </>
       ) : (
-        <path d="m29 19.5 9 9m0-9-9 9" stroke="#D8588F" strokeWidth="3.2" strokeLinecap="round" />
+        <path d="m29 19.5 9 9m0-9-9 9" stroke="#1A8FE8" strokeWidth="3.2" strokeLinecap="round" />
       )}
     </Art>
   );
@@ -206,26 +206,26 @@ export function MoreArt() {
   );
 }
 
-/** CV: a white page with a pink folded corner, a portrait and lines. */
+/** CV: a white page with a blue folded corner, a portrait and lines. */
 export function CvArt() {
   return (
     <Art>
       <ellipse cx="24" cy="41.5" rx="11" ry="2.2" fill="rgba(20,24,40,.12)" />
       <path d="M13 8h16l7 7v23a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2Z" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(20,24,40,.15))" }} />
-      <path d="M29 8v5a2 2 0 0 0 2 2h5Z" fill="#D8588F" />
-      <circle cx="18" cy="18" r="3.4" fill="#F7C6D9" />
+      <path d="M29 8v5a2 2 0 0 0 2 2h5Z" fill="#1A8FE8" />
+      <circle cx="18" cy="18" r="3.4" fill="#BFE4FA" />
       <path d="M24 16h7M24 20h5" stroke="#9AA5BA" strokeWidth="2" strokeLinecap="round" />
       <path d="M15 26h17M15 30h17M15 34h11" stroke="#C3CAD8" strokeWidth="2" strokeLinecap="round" />
     </Art>
   );
 }
 
-/** The brief: a desk calendar with a pink band (for the More menu). */
+/** The brief: a desk calendar with a blue band (for the More menu). */
 export function CalendarArt() {
   return (
     <Art>
       <rect x="9" y="9" width="30" height="30" rx="7" fill="#FFFFFF" stroke="#D5DBE6" strokeWidth="1.2" />
-      <path d="M9 16a7 7 0 0 1 7-7h16a7 7 0 0 1 7 7v2H9Z" fill="#D8588F" />
+      <path d="M9 16a7 7 0 0 1 7-7h16a7 7 0 0 1 7 7v2H9Z" fill="#1A8FE8" />
       <text x="24" y="34" textAnchor="middle" fontSize="13" fontWeight="700" fill="#1D2A4D" style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}>
         40s
       </text>
@@ -237,9 +237,9 @@ export function CalendarArt() {
 export function HelpArt() {
   return (
     <Art>
-      <circle cx="24" cy="24" r="13" fill="#FFFFFF" stroke="#F0489C" strokeWidth="2.4" />
-      <path d="M19.6 20.4c.4-2.6 2.3-4 4.6-4 2.6 0 4.5 1.6 4.5 3.9 0 1.9-1.2 2.9-2.6 3.8-1.2.8-1.9 1.4-1.9 2.9" stroke="#2A2346" strokeWidth="2.6" fill="none" strokeLinecap="round" />
-      <circle cx="24.2" cy="31.6" r="1.7" fill="#2A2346" />
+      <circle cx="24" cy="24" r="13" fill="#FFFFFF" stroke="#1A8FE8" strokeWidth="2.4" />
+      <path d="M19.6 20.4c.4-2.6 2.3-4 4.6-4 2.6 0 4.5 1.6 4.5 3.9 0 1.9-1.2 2.9-2.6 3.8-1.2.8-1.9 1.4-1.9 2.9" stroke="#0B1F33" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+      <circle cx="24.2" cy="31.6" r="1.7" fill="#0B1F33" />
     </Art>
   );
 }

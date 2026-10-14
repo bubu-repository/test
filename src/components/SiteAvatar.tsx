@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn";
 
 /**
- * A calm round mark in the site's pink and sky: the agent's face, the guided walk's guide, the
+ * A calm round mark, a glossy Aero bubble of sky and sea: the agent's face, the guided walk's guide, the
  * loading screen. A small white sparkle in the middle; nothing that pretends to be a person.
  */
 export function SiteAvatar({ size = 40, thinking = false, className }: { size?: number; thinking?: boolean; className?: string }) {

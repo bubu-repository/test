@@ -222,9 +222,9 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
                   <svg viewBox="0 0 60 80" aria-hidden="true">
                     <defs>
                       <linearGradient id="idc-mono" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0" stopColor="#FF8AB5" />
-                        <stop offset=".55" stopColor="#D8588F" />
-                        <stop offset="1" stopColor="#8968D4" />
+                        <stop offset="0" stopColor="#7FE3F7" />
+                        <stop offset=".55" stopColor="#1A8FE8" />
+                        <stop offset="1" stopColor="#0A58BE" />
                       </linearGradient>
                     </defs>
                     <rect width="60" height="80" fill="url(#idc-mono)" />

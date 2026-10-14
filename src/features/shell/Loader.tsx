@@ -45,7 +45,7 @@ export function Loader() {
           <span />
         </span>
         <span className="sr-only">Loading</span>
-        <button type="button" className="loader__skip font-round" onClick={() => finishLoader()}>
+        <button type="button" className="loader__skip" onClick={() => finishLoader()}>
           Skip
         </button>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRef } from "react";
 import { ArrowRightIcon, CopyIcon, DownloadIcon } from "@/components/icons";
 import { identity } from "@/content/profile";
 import { projects } from "@/content/projects";
@@ -8,6 +9,7 @@ import { dispatch } from "@/lib/actions";
 import { useNow, useVisitorZone } from "@/lib/hooks";
 import { formatTime, zoneCity } from "@/lib/time";
 import { describeWeather, useWeather } from "../widgets/weather";
+import { SeaSky } from "../world/SeaSky";
 import { HeroName } from "./HeroName";
 import { ResampleSentence } from "./ResampleSentence";
 
@@ -22,7 +24,9 @@ function Status() {
     <p className="hero-status">
       <span className="led" aria-hidden="true" />
       <span>Open to work</span>
-      <span aria-hidden="true">·</span>
+      <span className="hero-status__sep" aria-hidden="true">
+        ·
+      </span>
       <span>
         <span className="tabular-nums">{date ? formatTime(identity.timeZone, date) : "--:--"}</span> in {identity.city}
         {date && zone && zone !== identity.timeZone && (
@@ -46,60 +50,74 @@ function Status() {
 }
 
 /**
- * The hero: her name in a window of pink paper and sky, one sentence, the way into the work, and
- * the two things recruiters ask for. The four products sit right under the buttons with one
- * number each, so the work is on the first screen on every device.
+ * The hero: a live window of sky and sea (Frutiger Aero blues). Her name, the role and the way in
+ * sit in the sky; the four products float just under the waterline with one number each, so the
+ * work is on the first screen on every device. The waterline is wherever the products start.
  */
 export function Hero() {
+  const seaRef = useRef<HTMLDivElement>(null);
+  const skyRef = useRef<HTMLDivElement>(null);
   return (
-    <section id="hero" aria-labelledby="hero-name" className="hero" data-xr="Hero · the character, the name and the way in">
-      <div className="hero__window" aria-hidden="true">
-        <span className="hero__dots" />
-        <span className="hero__spark" style={{ ["--x" as string]: "8%", ["--y" as string]: "18%", ["--s" as string]: "18px" }} />
-        <span className="hero__spark" style={{ ["--x" as string]: "46%", ["--y" as string]: "9%", ["--s" as string]: "12px" }} />
-        <span className="hero__spark" style={{ ["--x" as string]: "92%", ["--y" as string]: "70%", ["--s" as string]: "16px" }} />
-        <span className="hero__spark" style={{ ["--x" as string]: "60%", ["--y" as string]: "86%", ["--s" as string]: "10px" }} />
-      </div>
+    <section id="hero" aria-labelledby="hero-name" className="hero" data-xr="Hero · live sky and sea, the name and the way in">
+      <div className="hero__window on-water">
+        <SeaSky className="hero__canvas" horizonRef={seaRef} textRef={skyRef} />
 
-      <div className="container-page">
-        <div className="hero__copy">
-          <Status />
-          <div id="hero-name" className="mt-5">
-            <HeroName />
-          </div>
-          <p className="hero__role">
-            {identity.role} <span className="text-accent-ink">· {identity.cohort}</span>
-          </p>
-          <p className="hero__place">{identity.location} · remote or Jakarta</p>
-          <div className="mx-auto mt-6 max-w-[40ch]">
-            <ResampleSentence controls={false} />
-          </div>
+        <div className="container-page">
+          <div className="hero__copy">
+            <div ref={skyRef} className="hero__words">
+              <Status />
+              <div id="hero-name" className="mt-6">
+                <HeroName />
+              </div>
+              <p className="hero__role">
+                {identity.role} <span className="hero__cohort">· {identity.cohort}</span>
+              </p>
+              <p className="hero__place">{identity.location} · remote or Jakarta</p>
+              <div className="hero__line">
+                <ResampleSentence controls={false} />
+              </div>
 
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/work" className="pill game-button" data-variant="magenta" data-size="lg" data-tour="go">
-              Open the work
-              <ArrowRightIcon width={20} height={20} />
-            </Link>
-            <button type="button" className="pill game-button" data-size="lg" onClick={() => void dispatch({ type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" })}>
-              <DownloadIcon width={18} height={18} /> CV
-            </button>
-            <button type="button" className="pill game-button" data-size="lg" data-variant="ghost" onClick={() => void dispatch({ type: "copyEmail" })}>
-              <CopyIcon width={18} height={18} /> Email
-            </button>
-          </div>
-
-          <ul className="hero-work mx-auto mt-10" aria-label="The work, with one number each">
-            {projects.map((p) => (
-              <li key={p.slug}>
-                <Link href={`/work/${p.slug}`} className="hero-work__item">
-                  <span className="font-semibold text-ink">{p.name}</span>
-                  <span className="text-12 text-muted">
-                    {p.stats[0].label} <b className="font-semibold text-ink tabular-nums">{p.stats[0].value}</b>
-                  </span>
+              <div className="hero__keys">
+                <Link href="/work" className="pill" data-variant="light" data-size="lg" data-tour="go">
+                  Open the work
+                  <ArrowRightIcon width={20} height={20} />
                 </Link>
-              </li>
-            ))}
-          </ul>
+                <button
+                  type="button"
+                  className="pill"
+                  data-size="lg"
+                  onClick={() =>
+                    void dispatch({
+                      type: "download",
+                      href: "/cv.pdf",
+                      filename: "Adelia-Tiara-CV.pdf",
+                    })
+                  }
+                >
+                  <DownloadIcon width={18} height={18} /> CV
+                </button>
+                <button type="button" className="pill" data-size="lg" onClick={() => void dispatch({ type: "copyEmail" })}>
+                  <CopyIcon width={18} height={18} /> Email
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ref={seaRef} className="hero__sea">
+          <div className="container-page">
+            <ul className="hero-work" aria-label="The work, with one number each">
+              {projects.map((p) => (
+                <li key={p.slug}>
+                  <Link href={`/work/${p.slug}`} className="hero-work__item">
+                    <span className="hero-work__name">{p.name}</span>
+                    <span className="hero-work__value tabular-nums">{p.stats[0].value}</span>
+                    <span className="hero-work__label">{p.stats[0].label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

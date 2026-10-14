@@ -171,11 +171,11 @@ export function Tour() {
         </p>
         <div className="mt-4 flex items-center justify-end gap-2">
           {index > 0 && (
-            <button type="button" className="pill game-button" data-size="sm" data-variant="ghost" onClick={() => go(-1)}>
+            <button type="button" className="pill" data-size="sm" data-variant="ghost" onClick={() => go(-1)}>
               Back
             </button>
           )}
-          <button type="button" className="pill game-button" data-size="sm" data-variant="magenta" onClick={() => go(1)}>
+          <button type="button" className="pill" data-size="sm" data-variant="magenta" onClick={() => go(1)}>
             {last ? "Done" : "Next"}
           </button>
         </div>

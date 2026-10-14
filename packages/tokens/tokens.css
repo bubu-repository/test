@@ -3,18 +3,18 @@
  * The single source of truth for adelia.cc and every *.adelia.cc experiment.
  * Nothing else in the ecosystem declares a color, radius, shadow, easing or type size.
  *
- * World: pink paper and sky blue, after reference image 5 (docs/revamp-plan.md). The page is a
- * pale pink-white; panels are frosted glass with a fine plum edge; the saturated line pink
- * #F0489C and sky #90D8FC are for lines, marks and small panels, never for big fills. Butter
- * yellow and sparkle yellow are small accents. The site is light only.
- * Type is Mona Sans, with a rounded face for game-UI parts and JetBrains Mono for printed labels.
+ * World: sky and sea, in the blues of Frutiger Aero (docs/revamp-plan.md). The page is clear
+ * sky-white with Apple-style frosted glass; the colour lives in the hero, a live window of deep
+ * azure sky over aqua water, and in the footer, which sits in the deep sea. Clouds, sunlight,
+ * caustics and bubbles are the motifs. The site is light only; the water is a scene, not a theme.
+ * Type is Mona Sans, with JetBrains Mono for printed labels.
  *
  * Contrast rules (checked on /styleguide):
- * - Body text is --ink (14:1 on the page); secondary text is --muted (6.3:1).
- * - White text sits on --accent-strong (4.8:1), never on --accent (3.3:1).
- * - Text on a pastel fill (sky, butter, pink, mint, lavender) uses --on-fill.
- * - Pink as small text: --accent-ink (5.4:1). Highlighted headline words: --accent-display
- *   (4.0:1, display size only).
+ * - Body text is --ink (15:1 on the page); secondary text is --muted (6.1:1).
+ * - White text sits on --accent-strong (5.4:1), never on --accent (3.3:1).
+ * - Blue as small text: --accent-ink (6.4:1). Highlighted headline words: --accent-display.
+ * - On the water and the sky (.on-water), text is white on dark glass or on sky no lighter than
+ *   --sky-mid (4.9:1); the sky is lighter than that only in the thin band above the horizon.
  */
 
 /* ---------- Color ---------- */
@@ -22,108 +22,113 @@
 [data-theme="light"] {
   color-scheme: light;
 
-  --bg: #FFF7FA;          /* pink-white paper: the page */
-  --sky-tone: #E3F4FD;    /* the palest sky, for contrast checks */
-  --glass-tone: #FFFAFC;  /* what a glass panel averages to, for contrast checks */
+  --bg: #F4F9FD;          /* clear sky-white: the page */
+  --sky-tone: #E3F2FC;    /* the palest sky, for contrast checks */
+  --glass-tone: #F8FBFE;  /* what a glass panel averages to, for contrast checks */
   --surface: rgba(255, 255, 255, .72);  /* frosted glass: panels, keys, cards */
   --surface-solid: #FFFFFF; /* where a panel must be opaque (menus over moving content) */
-  --surface-2: rgba(252, 228, 240, .55); /* recessed wells, inputs, quiet fills: pale pink */
-  --ink: #2A2346;         /* plum-navy (14.0:1 on the page) */
-  --muted: #6A5577;       /* dusty plum (6.3:1 on the page, 5.5:1 on pale pink) */
-  --line: rgba(42, 35, 70, .12); /* hairlines inside panels */
+  --surface-2: rgba(214, 234, 248, .55); /* recessed wells, inputs, quiet fills: pale sky */
+  --ink: #0B1F33;         /* deep sea navy (15.6:1 on the page) */
+  --muted: #4A6175;       /* slate blue (6.1:1 on the page) */
+  --line: rgba(11, 31, 51, .1); /* hairlines inside panels */
   --rim: rgba(255, 255, 255, .95); /* the bright inner edge of a glass panel */
-  --edge: rgba(120, 40, 90, .09);  /* the fine outer edge that keeps glass visible on paper */
-  --accent: #F0489C;      /* LINE PINK, the brand: outlines, marks, LEDs, glows */
-  --accent-strong: #D02A85; /* pink behind white text (4.8:1) */
-  --accent-ink: #C2187A;  /* pink as small text (5.4:1 on the page, 5.0:1 on the LCD) */
-  --accent-display: #E0318C; /* highlighted headline words (4.0:1, display size) */
-  --accent-soft: #FCE4F0; /* pale pink fills */
-  --accent-soft-2: #FCA8CC; /* mid pink: pattern dots, ribbons */
+  --edge: rgba(10, 60, 110, .09);  /* the fine outer edge that keeps glass visible on the page */
+  --accent: #1A8FE8;      /* AERO BLUE, the brand: marks, LEDs, outlines, glows */
+  --accent-strong: #0A68D0; /* blue behind white text (5.4:1) */
+  --accent-ink: #0059B8;  /* blue as small text (6.4:1 on the page) */
+  --accent-display: #0A6CD6; /* highlighted headline words (4.8:1) */
+  --accent-soft: #DDEFFC; /* pale sky fills */
+  --accent-soft-2: #9BD3F7; /* mid sky: pattern dots, ribbons */
 
-  /* Materials: frosted glass lit from above, shadows a little plum */
+  /* Materials: frosted glass lit from above, shadows a little navy */
   --sheen: linear-gradient(180deg, rgba(255, 255, 255, .75), rgba(255, 255, 255, 0) 52%);
   --bevel: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 0 0 1px rgba(255, 255, 255, .3);
-  --lift-sm: 0 1px 2px rgba(90, 40, 90, .07), 0 3px 8px rgba(90, 40, 90, .06);
-  --lift: 0 1px 2px rgba(90, 40, 90, .05), 0 8px 20px rgba(90, 40, 90, .07), 0 24px 48px rgba(90, 40, 90, .07);
-  --lift-lg: 0 2px 4px rgba(90, 40, 90, .05), 0 16px 36px rgba(90, 40, 90, .1), 0 48px 96px rgba(90, 40, 90, .12);
-  --recess: inset 0 2px 5px rgba(90, 40, 90, .08), inset 0 0 0 1px rgba(90, 40, 90, .08), 0 1px 0 rgba(255, 255, 255, .8);
-  --key-edge: 0 2px 0 rgba(90, 40, 90, .1);
-  --screen: #E3F4FD;      /* LCD: pale sky glass */
-  --screen-ink: #2A2346;  /* segments (13:1) */
-  --screen-muted: #5E4E72; /* dim segments (6.6:1) */
-  --screen-accent: #C2187A; /* pink on the screen (5.0:1) */
-  --screen-line: rgba(60, 130, 190, .2);
+  --lift-sm: 0 1px 2px rgba(8, 40, 80, .07), 0 3px 8px rgba(8, 40, 80, .06);
+  --lift: 0 1px 2px rgba(8, 40, 80, .05), 0 8px 20px rgba(8, 40, 80, .07), 0 24px 48px rgba(8, 40, 80, .07);
+  --lift-lg: 0 2px 4px rgba(8, 40, 80, .05), 0 16px 36px rgba(8, 40, 80, .1), 0 48px 96px rgba(8, 40, 80, .12);
+  --recess: inset 0 2px 5px rgba(8, 40, 80, .08), inset 0 0 0 1px rgba(8, 40, 80, .08), 0 1px 0 rgba(255, 255, 255, .8);
+  --key-edge: 0 2px 0 rgba(8, 40, 80, .1);
+  --screen: #E3F2FC;      /* LCD: pale sky glass */
+  --screen-ink: #0B1F33;  /* segments (14:1) */
+  --screen-muted: #3F5A72; /* dim segments (6.6:1) */
+  --screen-accent: #0059B8; /* blue on the screen (5.6:1) */
+  --screen-line: rgba(30, 110, 190, .2);
   --screen-well: rgba(255, 255, 255, .5);
   --metal-from: #FFFFFF;
-  --metal-to: #E6D9E8;
-  --led: #4FB772;          /* green: on, live, open to work */
+  --metal-to: #D9E5EF;
+  --led: #3DBE4A;          /* Aero grass green: on, live, open to work */
 
   /* Floating chrome (dock, popovers, dialogs) */
   --glass: rgba(255, 255, 255, .66);
-  --glass-strong: rgba(255, 255, 255, .88);
+  --glass-strong: rgba(255, 255, 255, .86);
   --glass-edge: rgba(255, 255, 255, 1);
   --glass-line: rgba(255, 255, 255, .88);
-  --glass-shadow: 0 0 0 1px rgba(120, 40, 90, .07), 0 1px 2px rgba(90, 40, 90, .06), 0 10px 26px rgba(90, 40, 90, .09), 0 28px 56px rgba(90, 40, 90, .08);
+  --glass-shadow: 0 0 0 1px rgba(10, 60, 110, .07), 0 1px 2px rgba(8, 40, 80, .06), 0 10px 26px rgba(8, 40, 80, .1), 0 28px 56px rgba(8, 40, 80, .09);
   --glass-blur: 22px;
 
-  /* The window behind the hero: pale pink paper to pale sky */
-  --stage-from: #FCE4F0;
-  --stage-to: #D8F0FC;
-  --sky-top: #90D8FC;
-  --sky-mid: #B8E6FD;
-  --sky-low: #E3F4FD;
+  /* The sky (Frutiger Aero azure): white text stays readable down to --sky-mid */
+  --stage-from: #DDEFFC;
+  --stage-to: #BFE4FA;
+  --sky-top: #0A58BE;
+  --sky-mid: #1570D6;
+  --sky-low: #4FB0F2;
+  --horizon: #CFF2FF;
   --sky-image: none;
 
-  --grid-line: rgba(240, 72, 156, .08);
-  --sea-from: #90D8FC;    /* water, when there is water */
-  --sea-mid: #5CB8EC;
-  --sea-to: #3B8FD0;
+  --grid-line: rgba(26, 143, 232, .08);
+  /* The sea, from the bright water under the surface to the deep end */
+  --sea-surface: #7FE3F7;
+  --sea-from: #3CC8F0;
+  --sea-mid: #0E8FD8;
+  --sea-to: #0A56B0;
+  --sea-deep: #073B86;
+  --sea-abyss: #052B66;
   --foam: rgba(255, 255, 255, .9);
-  --dot: rgba(240, 72, 156, .16); /* polka dots and dot grids */
-  --glow: rgba(240, 72, 156, .25);
-  --check-a: #FFFFFF;     /* gingham pair */
-  --check-b: #FCE4F0;
+  --dot: rgba(26, 143, 232, .16); /* dot grids */
+  --glow: rgba(26, 143, 232, .25);
+  --check-a: #FFFFFF;     /* checker pair */
+  --check-b: #E3F2FC;
 }
 
 /*
  * ---------- Accent colours ----------
- * From image 5 and the lettering references: line pink, sky, butter, sparkle yellow, lavender and
- * mint, used small (icons, dots, bars, keys, highlights). The page and big surfaces stay calm.
+ * Frutiger Aero: azure and aqua first, then grass green, sunlight and a little coral, used small
+ * (icons, dots, bars, keys, highlights). The page and big surfaces stay calm.
  */
 :root {
   --red: #E05864;         /* errors only */
-  --green: #4FB772;       /* leaf green; ink on it 5.9:1 */
-  --lime: #8FDDA8;        /* fresh green (the lime slot) */
-  --cobalt: #1E6FA8;      /* deep sky (white text 5.4:1) */
-  --sun: #FCE878;         /* sparkle yellow */
-  --butter: #FCF0C0;      /* butter: pale fills, the marker */
-  --highlighter: #FCF0C0;
-  --pink: #FCA8CC;        /* mid pink */
-  --mint: #6FD3BE;        /* mint stars */
-  --cyan: #5CC8F5;
-  --violet: #B9A3F0;      /* lavender (fills and icons only) */
-  --orange: #5CC8F5;      /* sky (the old orange slot) */
-  --sky: #90D8FC;         /* sky blue from image 5 */
-  --charcoal: #2A2346;
-  --lcd: #121C3A;
-  --ok: #4FB772;
+  --green: #3DBE4A;       /* Aero grass; ink on it 6.9:1 */
+  --lime: #9BE15D;        /* fresh leaf (the lime slot) */
+  --cobalt: #0A58BE;      /* deep azure (white text 6.6:1) */
+  --sun: #FFE27A;         /* sunlight */
+  --butter: #FFF4C8;      /* pale sun: the marker */
+  --highlighter: #D8EEFD;
+  --pink: #FF8F7A;        /* coral (the pink slot) */
+  --mint: #5ED6C9;        /* sea glass */
+  --cyan: #3CC8F0;        /* aqua */
+  --violet: #9DB7F5;      /* periwinkle (fills and icons only) */
+  --orange: #3CC8F0;      /* aqua (the old orange slot) */
+  --sky: #8FD3FA;         /* daytime sky blue */
+  --charcoal: #0B1F33;
+  --lcd: #0A1B33;
+  --ok: #3DBE4A;
 
-  --on-fill: #2A2346;     /* text on every pastel fill */
+  --on-fill: #0B1F33;     /* text on every pale fill */
   --on-accent: #FFFFFF;   /* text on --accent-strong */
   --on-cobalt: #FFFFFF;   /* text on blue and charcoal */
   --on-ink: #FFFFFF;
 
   /* Jelly shading (kept for the small sprites; Moci itself is now clear water) */
-  --jelly-light: #FCC8DF;
-  --jelly-deep: #F078B4;
-  --jelly-core: #D02A85;
-  --jelly-ink: #2A0C20;
+  --jelly-light: #BFE8FF;
+  --jelly-deep: #5CB8F5;
+  --jelly-core: #0A68D0;
+  --jelly-ink: #061A33;
 
   /* Terminal: always a night console */
   --term-bg: #0E1630;
   --term-ink: #E8EEF9;
   --term-muted: #9DAACB;
-  --term-accent: #FB9CC0;
+  --term-accent: #7FD7FF;
   --term-link: #9CCFFF;
   --term-ok: #5FCE8C;
   --term-warn: #F4CC64;
@@ -144,7 +149,7 @@
 
   /* A whisper of grain, for paper only (polaroids, the poster, sticky notes) */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --shadow-glow: 0 8px 24px rgba(208, 42, 133, .2);
+  --shadow-glow: 0 8px 24px rgba(10, 104, 208, .22);
   --gloss: inset 0 1px 0 rgba(255, 255, 255, .5);
   --hard: 0 4px 12px rgba(17, 17, 17, .12); /* sticker lift */
 

@@ -17,19 +17,28 @@ Everything the six hiring-review rounds produced stays, word for word unless a f
 
 ## Look
 
-- **Palette:** the exact hues of reference image 5, used calmly. Large surfaces are pale
-  (`#FCE4F0` pale pink, `#FCF0F0` cream pink, `#FCF0C0` butter, pale sky); the saturated pink
-  `#F0489C` and sky blue `#90D8FC` are for lines, accents and small panels. Text is a deep
-  plum-navy, and pink text uses a darker step that passes 4.5:1.
-- **Light only.** Dark mode and its toggle are removed.
-- **Style:** Apple-like modern type and layout, glass and gentle skeuomorphism, the feel of
-  Tomodachi Life's UI (soft rounded panels, big friendly buttons). Image 5's motifs (thin pink
-  outlines, polka dots, stars, gingham, sparkles) only as small texture. No glossy stickers,
-  smileys or toy effects.
-- **Type:** Mona Sans for headings and text; a rounded face (Nunito) only for game-UI parts:
-  buttons, labels, speech bubbles.
+Changed in October 2026, after the first pass read as pale and templated: Adelia kept the Apple
+design and asked for a sea theme with the sky kept in, coloured mainly in the blues of Frutiger Aero.
+The pink of reference image 5 is retired.
+
+- **Palette:** Frutiger Aero blues. Deep azure sky (`#0A58BE` to `#1570D6`) lightening to a pale
+  horizon, aqua water (`#3CC8F0`) going down to deep sea blue (`#0A56B0`, `#073B86`), white clouds and
+  sunlight, Aero grass green for "on" and "open". Aero blue `#1A8FE8` is the brand; text is a deep sea
+  navy. Every pair is checked on `/styleguide`.
+- **Where the colour lives:** two live scenes from one WebGL shader (`SeaSky`): the hero, a window of
+  sky over sea, and the footer, the same water further down. The page between them is clear
+  sky-white with Apple-style frosted glass, so the case studies stay calm and readable.
+- **Interactive, quietly:** the sun and a soft underwater light follow the pointer, a press in the water
+  lets out a ring of light and bubbles, a few bubbles rise on their own, and the water darkens a little
+  as the hero scrolls away. Reduced motion gets one still frame; no WebGL keeps a CSS gradient.
+- **Light only.** Dark mode and its toggle are removed. The water is a scene, not a theme.
+- **Style:** Apple-like type and layout, frosted glass for the dock, keys and cards (dark glass with
+  white text on the water, white glass with dark text on the page). Moci's mark is a glossy Aero
+  bubble. No polka dots, stickers or toy effects.
+- **Type:** Mona Sans for headings, text and keys; JetBrains Mono for printed labels. Nunito stays only
+  for the playful corners (the Lab tools, the aquarium).
 - The Lab tools and the guestbook have their own themes (a real photo booth, a craft table, an
-  aquarium). The Lab index page itself is neutral white.
+  aquarium). The Lab index page itself is the plain page.
 
 ## Character
 
@@ -37,14 +46,15 @@ Everything the six hiring-review rounds produced stays, word for word unless a f
   10), was built and reviewed, and Adelia asked to skip 3D for now because it didn't match the
   reference closely enough. The site uses no character until a version she approves exists.
 - Until then, Moci (the agent, which keeps its name, guardrails and honesty) and the guided walk
-  use a calm round mark in pink and sky. The hero is typographic.
+  use a glossy Aero bubble as their mark. The hero is the name over a live sky and sea.
 
 ## Pages
 
-- **Hero:** the name in a pink and sky window, one line, Open the work, CV, email, and the four
-  products with one number each. The floating phones and the AT-26 device are removed.
-- **Contact:** stays, redesigned. The "Let's build something people actually use" headline and
-  the poster are removed.
+- **Hero:** a live window of sky over sea. The name, one line, Open the work, CV and email in the sky;
+  the four products with one number each just under the waterline. The floating phones and the
+  AT-26 device are removed.
+- **Contact:** stays, redesigned as a glass card in the deep sea at the bottom of the page. The "Let's
+  build something people actually use" headline and the poster are removed.
 - **Loading screen:** once per session, at most about one second, real progress (fonts, 3D),
   skippable, skipped for deep links to a case study and for reduced motion.
 - **Tutorial:** only on demand, behind a help button, for visitors who aren't sure what to do.
@@ -81,7 +91,8 @@ Everything the six hiring-review rounds produced stays, word for word unless a f
 ## Phases (each pushed for review)
 
 1. Palette, fonts, light only, the new hero, the contact section, the loading screen, the help
-   button and tutorial, the About ID-card fix. (Done; the 3D character is parked.)
+   button and tutorial, the About ID-card fix. (Done; the 3D character is parked. Re-themed to sky
+   and sea in Aero blues.)
 2. The About desk.
 3. The guestbook aquarium.
 4. The Lab: Studio, booster pack, cleanup of the old experiments.

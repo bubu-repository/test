@@ -161,7 +161,7 @@ export function SiteNav() {
   return (
     <header ref={headerRef} className="site-header pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-2 pt-3 md:pt-4">
       <nav ref={dockRef} aria-label="Primary" data-tour="dock" data-xr="Dock · app icons with magnification" className="dock glass-strong pointer-events-auto">
-        <DockItem href="/" label="Home" bg={TILE.white} fg="#2A2346" active={pathname === "/"} cursor="Home">
+        <DockItem href="/" label="Home" bg={TILE.white} fg="#0B1F33" active={pathname === "/"} cursor="Home">
           <span className="text-[calc(22px*var(--m,1))] leading-none font-bold tracking-[-0.06em]">
             a<span className="text-accent">.</span>
           </span>
@@ -173,14 +173,14 @@ export function SiteNav() {
         <DockItem href="/about" label="About" bg={TILE.white} active={isActive(pathname, "/about")} tour="nav-about">
           <IdCardArt />
         </DockItem>
-        <DockItem href="/lab" label="Lab" bg={TILE.pink} active={isActive(pathname, "/lab")} tour="nav-lab">
+        <DockItem href="/lab" label="Lab" bg={TILE.azure} active={isActive(pathname, "/lab")} tour="nav-lab">
           <SparkleArt />
         </DockItem>
         <span className="dock-sep" aria-hidden="true" />
         <DockItem label="Download the CV" caption="CV" bg={TILE.white} onClick={() => dispatch({ type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" })} cursor="CV">
           <CvArt />
         </DockItem>
-        <DockItem label="Copy email" caption="Email" bg={TILE.sky} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
+        <DockItem label="Copy email" caption="Email" bg={TILE.aqua} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
           <PlaneArt />
         </DockItem>
         <DockItem label="More: guestbook, brief, Moci, search, how it works, sound" caption="More" bg={TILE.white} pressed={menu} onClick={() => setMenu(true)}>
@@ -198,14 +198,14 @@ export function SiteNav() {
           </div>
           <ul className="grid grid-cols-4 gap-x-2 gap-y-4 text-center text-12 font-medium">
             {[
-              { label: "Guestbook", bg: TILE.sky, art: <FishArt />, href: "/guestbook" },
+              { label: "Guestbook", bg: TILE.aqua, art: <FishArt />, href: "/guestbook" },
               { label: "40s brief", bg: TILE.white, art: <CalendarArt />, run: () => dispatch({ type: "open", panel: "brief" }) },
               { label: "Ask Moci", bg: TILE.white, art: <MociArt />, run: () => dispatch({ type: "open", panel: "agent" }) },
-              { label: "Copy email", bg: TILE.sky, art: <PlaneArt />, run: () => dispatch({ type: "copyEmail" }) },
+              { label: "Copy email", bg: TILE.aqua, art: <PlaneArt />, run: () => dispatch({ type: "copyEmail" }) },
               { label: "Search", bg: TILE.white, art: <SearchArt />, run: () => dispatch({ type: "open", panel: "palette" }) },
-              { label: "How it works", bg: TILE.butter, art: <HelpArt />, run: () => dispatch({ type: "tour" }) },
+              { label: "How it works", bg: TILE.grass, art: <HelpArt />, run: () => dispatch({ type: "tour" }) },
               { label: sound ? "Sound off" : "Sound on", bg: TILE.white, art: <SpeakerArt on={sound} />, run: () => applySound(!sound, { persist: true }) },
-              { label: "The lab", bg: TILE.pink, art: <SparkleArt />, href: "/lab" },
+              { label: "The lab", bg: TILE.azure, art: <SparkleArt />, href: "/lab" },
             ].map((a) => {
               const icon = (
                 <span className={cn("app-icon app-icon--art mx-auto", a.bg === TILE.white && "app-icon--white")} style={{ "--app-bg": a.bg, "--size": "52px" } as CSSProperties}>

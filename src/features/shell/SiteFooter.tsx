@@ -10,6 +10,7 @@ import { dispatch } from "@/lib/actions";
 import { useNow, useVisitorZone } from "@/lib/hooks";
 import { probableStatus, zoneCity } from "@/lib/time";
 import { useLive } from "../live/live-store";
+import { SeaSky } from "../world/SeaSky";
 
 function Status() {
   const now = useNow();
@@ -63,9 +64,11 @@ export function SiteFooter() {
   if (path.startsWith("/work/") || path === "/colophon") return <CompactFooter />;
 
   return (
-    <footer id="contact" className="mt-auto scroll-mt-20" data-xr="SiteFooter · contact card and the index">
+    <footer id="contact" className="deep-sea on-water mt-auto scroll-mt-20" data-xr="SiteFooter · the deep end: contact card and the index">
+      {/* The deep end: the same water as the hero, further down. Press it for bubbles. */}
+      <SeaSky className="deep-sea__canvas" horizon={-0.6} />
       {/* Contact: the email is the headline. Copy, CV and the brief right under it. */}
-      <div className="container-page pt-24 pb-16 md:pt-32">
+      <div className="container-page pt-16 pb-14 md:pt-24">
         <div className="contact-card">
           <div className="min-w-0">
             <p className="type-eyebrow">Contact</p>
@@ -76,8 +79,8 @@ export function SiteFooter() {
               {identity.email}
             </a>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <CopyEmail size="lg" tour />
-              <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill game-button" data-size="lg">
+              <CopyEmail size="lg" tour variant="light" />
+              <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill" data-size="lg">
                 <DownloadIcon width={18} height={18} /> Download CV
               </a>
               <button type="button" className="link-arrow js-only ml-1 text-16" onClick={() => dispatch({ type: "open", panel: "brief" })}>

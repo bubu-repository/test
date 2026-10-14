@@ -269,7 +269,7 @@
   color: var(--muted);
   background: var(--sheen), var(--surface);
   border: 1px solid var(--edge);
-  box-shadow: var(--bevel), 0 2px 8px rgba(29, 42, 77, 0.06);
+  box-shadow: var(--bevel), 0 2px 8px rgba(8, 40, 80, 0.06);
 
   &::before {
     content: "";
@@ -495,12 +495,15 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* The primary key: the one vivid thing in view. Watermelon pink glass, white label (4.6:1 and up). */
+  /*
+   * The primary key: the one vivid thing in view. Aero blue glass with a gloss on its top half and
+   * a white label (5.5:1 on the label's band). The variant keeps its old name in the markup.
+   */
   .pill[data-variant="magenta"] {
-    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 50%), linear-gradient(180deg, #d4578e, #b23468 70%);
+    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0) 51%), linear-gradient(180deg, #1c7fe6, #0a5fcc 75%);
     --pill-fg: #ffffff;
-    --pill-edge: rgba(255, 255, 255, 0.55);
-    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 rgba(90, 20, 50, 0.2), 0 2px 0 #8e2755, 0 10px 22px rgba(186, 58, 113, 0.3);
+    --pill-edge: rgba(255, 255, 255, 0.5);
+    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(4, 40, 100, 0.25), 0 2px 0 #08479c, 0 10px 22px rgba(10, 96, 204, 0.32);
   }
 
   .pill[data-variant="magenta"] {
@@ -524,6 +527,14 @@
       transform: translateX(130%);
       transition: transform 760ms var(--ease-out);
     }
+  }
+
+  /* The light key: white with an azure label, for the one main action over the sky or the sea. */
+  .pill[data-variant="light"] {
+    --pill-bg: linear-gradient(180deg, #ffffff, #edf6fd);
+    --pill-fg: #0a58be;
+    --pill-edge: rgba(255, 255, 255, 0.95);
+    --pill-shadow: inset 0 -1px 0 rgba(8, 60, 140, 0.12), 0 2px 0 rgba(2, 30, 80, 0.22), 0 10px 24px rgba(2, 30, 80, 0.24);
   }
 
   .pill[data-variant="ink"] {
@@ -621,6 +632,11 @@
       --pill-shadow: var(--bevel), var(--key-edge), 0 0 0 3px color-mix(in srgb, var(--sky) 35%, transparent), var(--lift-sm);
     }
 
+    .pill[data-variant="light"]:hover {
+      --pill-edge: #ffffff;
+      --pill-shadow: inset 0 -1px 0 rgba(8, 60, 140, 0.12), 0 2px 0 rgba(2, 30, 80, 0.22), 0 0 0 4px rgba(166, 228, 255, 0.45), 0 14px 30px rgba(2, 30, 80, 0.3);
+    }
+
     .pill[data-variant="ghost"]:hover {
       --pill-bg: color-mix(in srgb, var(--ink) 6%, transparent);
       --pill-shadow: none;
@@ -628,7 +644,7 @@
 
     .pill[data-variant="magenta"]:hover {
       --pill-edge: rgba(255, 255, 255, 0.7);
-      --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 2px 0 #8e2755, 0 14px 28px rgba(186, 58, 113, 0.38);
+      --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 2px 0 #08479c, 0 14px 28px rgba(10, 96, 204, 0.4);
     }
   }
 
@@ -640,7 +656,7 @@
   }
 
   .pill[data-variant="magenta"]:active:not(:disabled) {
-    --pill-shadow: inset 0 2px 5px rgba(70, 15, 40, 0.4);
+    --pill-shadow: inset 0 2px 5px rgba(3, 30, 80, 0.45);
   }
 
   .pill:disabled,
@@ -692,7 +708,7 @@
     line-height: 1;
     white-space: nowrap;
     border: 1px solid var(--edge);
-    box-shadow: var(--bevel), 0 1px 3px rgba(29, 42, 77, 0.06);
+    box-shadow: var(--bevel), 0 1px 3px rgba(8, 40, 80, 0.06);
   }
 
   .chip[data-tone] {
@@ -1364,8 +1380,8 @@
   display: grid;
   place-items: center;
   background:
-    radial-gradient(50% 45% at 50% 48%, #ffffff, transparent 75%),
-    linear-gradient(160deg, var(--stage-from), #fdeef6 50%, var(--stage-to));
+    radial-gradient(60% 50% at 50% 40%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #bfe4fa, #eaf6fe 55%, #ffffff);
   transition: opacity 240ms var(--ease-out);
 }
 
@@ -1400,7 +1416,7 @@ html:not([data-loader="run"]) .loader {
   height: 6px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(240, 72, 156, 0.14);
+  background: rgba(26, 143, 232, 0.16);
 }
 
 .loader__bar > span {
@@ -1408,7 +1424,7 @@ html:not([data-loader="run"]) .loader {
   width: 100%;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-soft-2), var(--accent));
+  background: linear-gradient(90deg, #3cc8f0, var(--accent-strong));
   transform: scaleX(0.08);
   transform-origin: left;
   animation: loader-fill 900ms var(--ease-out) forwards;
@@ -1490,13 +1506,16 @@ html:not([data-loader="run"]) .loader {
   place-items: center;
   flex: none;
   border-radius: 999px;
+  /* A glossy Aero bubble: aqua at the rim, light caught on top, a glow from below. */
   background:
-    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), transparent 55%),
-    linear-gradient(140deg, var(--accent-soft-2), var(--sky));
+    radial-gradient(70% 45% at 50% 18%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 70%),
+    radial-gradient(80% 60% at 50% 100%, rgba(166, 240, 255, 0.9), rgba(166, 240, 255, 0) 70%),
+    radial-gradient(circle at 50% 45%, #3cc8f0, #1a8fe8 55%, #0a58be);
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 255, 0.85),
-    0 0 0 1px var(--edge),
-    var(--lift-sm);
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.55),
+    inset 0 -3px 8px rgba(4, 60, 140, 0.35),
+    0 0 0 1px rgba(10, 80, 160, 0.18),
+    0 4px 12px rgba(10, 90, 190, 0.3);
 }
 
 /* ---------- Floating actions: the agent and the help key ---------- */
@@ -1550,15 +1569,9 @@ html:not([data-loader="run"]) .loader {
   transform: translateY(1px) scale(0.97);
 }
 
-/* Game-UI buttons and labels use the rounded face. */
-.game-button,
+/* The rounded face, kept for the playful corners (the lab tools, the aquarium). */
 .font-round {
   font-family: var(--font-round);
-}
-
-.game-button {
-  font-weight: 800;
-  letter-spacing: 0.005em;
 }
 
 /* ---------- The dock (primary navigation) ---------- */
@@ -2327,92 +2340,163 @@ html:not([data-loader="run"]) .loader {
   }
 }
 
-/* ---------- Hero: the character in a window of pink paper and sky ---------- */
-.hero {
-  position: relative;
-  isolation: isolate;
-  padding: clamp(104px, 12vw, 132px) 0 clamp(40px, 6vw, 72px);
+/* ---------- On the water: the sky and sea scenes (hero, footer) ---------- */
+/*
+ * Inside a scene, text is white and glass is dark: a navy tint under the blur keeps white labels
+ * at 4.5:1 and up wherever the water or the sky shows through.
+ */
+.on-water {
+  --ink: #ffffff;
+  --muted: #ffffff;
+  --line: rgba(255, 255, 255, 0.18);
+  --accent: #a6e4ff;
+  --accent-ink: #d6f1ff;
+  --accent-display: #d6f1ff;
+  --surface: rgba(3, 32, 86, 0.26);
+  --surface-2: rgba(3, 32, 86, 0.3);
+  --edge: rgba(255, 255, 255, 0.26);
+  --rim: rgba(255, 255, 255, 0.4);
+  --sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 52%);
+  --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.42), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --key-edge: 0 2px 0 rgba(2, 20, 60, 0.22);
+  --lift-sm: 0 1px 2px rgba(2, 20, 60, 0.14), 0 6px 16px rgba(2, 20, 60, 0.16);
+  color: var(--ink);
 }
 
-/* The window: pale pink paper fading to pale sky, a polka-dot field and a few sparkles. */
-.hero__window {
-  position: absolute;
-  inset: clamp(8px, 1.1vw, 16px);
-  z-index: -1;
-  overflow: hidden;
-  border-radius: clamp(28px, 3vw, 44px);
-  background:
-    radial-gradient(55% 50% at 50% 48%, rgba(255, 255, 255, 0.9), transparent 72%),
-    linear-gradient(160deg, var(--stage-from) 0%, #fdeef6 45%, var(--stage-to) 100%);
-  box-shadow:
-    inset 0 0 0 1.5px rgba(240, 72, 156, 0.18),
-    inset 0 0 0 8px rgba(255, 255, 255, 0.5);
+.on-water .pill:not([data-variant="light"]):not([data-variant="magenta"]),
+.on-water .type-eyebrow {
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
 }
 
-.hero__dots {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, var(--dot) 2.2px, transparent 2.6px);
-  background-size: 34px 34px;
-  -webkit-mask: radial-gradient(60% 60% at 50% 50%, transparent 55%, #000 100%);
-  mask: radial-gradient(60% 60% at 50% 50%, transparent 55%, #000 100%);
-}
-
-.hero__spark {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  width: var(--s);
-  height: var(--s);
-  background: var(--sun);
-  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
-  opacity: 0.85;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .hero__spark {
-    animation: glint 6s var(--ease-in-out) infinite;
-    animation-delay: calc(var(--s) * -0.3);
+@media (prefers-reduced-transparency: reduce) {
+  .on-water {
+    --surface: rgba(6, 46, 110, 0.92);
   }
 }
 
-.hero__copy {
+/* ---------- Hero: a live window of sky over sea ---------- */
+.hero {
+  position: relative;
+  padding: clamp(8px, 1.1vw, 16px);
+}
+
+/* The window. The gradient underneath is what shows without WebGL, or before the first frame. */
+.hero__window {
+  position: relative;
+  isolation: isolate;
   display: flex;
-  min-height: min(720px, calc(100svh - 190px));
+  min-height: calc(100svh - 2 * clamp(8px, 1.1vw, 16px));
   flex-direction: column;
+  overflow: hidden;
+  border-radius: clamp(28px, 3vw, 44px);
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-low) 64%, var(--horizon) 67.5%, var(--sea-surface) 67.6%, var(--sea-from) 71%, var(--sea-mid) 84%, var(--sea-to) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    var(--lift);
+}
+
+.hero__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
+}
+
+.hero__canvas[data-ready] {
+  opacity: 1;
+}
+
+.hero__copy {
+  padding-top: clamp(100px, 11vw, 140px);
+  padding-bottom: clamp(48px, 7vw, 96px);
+}
+
+/* Just the words: the scene keeps clouds out of this box and the sky deep behind it. */
+.hero__words {
+  width: fit-content;
+  max-width: min(100%, 62rem);
+}
+
+.hero__keys {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+/* Phones: the main key across the top, CV and Email side by side under it. */
+@media (width < 30rem) {
+  .hero__keys {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 26px;
+  }
+
+  .hero__keys > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  .hero__keys .pill[data-size="lg"] {
+    min-height: 50px;
+    font-size: var(--text-16);
+  }
 }
 
 .hero-status {
   display: inline-flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
-  gap: 6px 8px;
+  gap: 4px 8px;
   padding: 7px 14px 7px 12px;
-  border-radius: 999px;
-  background: var(--sheen), var(--glass-strong);
-  border: 1px solid var(--glass-line);
+  border-radius: 20px;
+  background: var(--sheen), var(--surface);
+  -webkit-backdrop-filter: blur(14px) saturate(1.6);
+  backdrop-filter: blur(14px) saturate(1.6);
+  border: 1px solid var(--edge);
   box-shadow: var(--bevel), var(--lift-sm);
-  font-family: var(--font-round);
   font-size: var(--text-14);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink);
 }
 
+/* Phones: "Open to work" on its own line (the dot becomes a line break), the clocks under it. */
+@media (width < 30rem) {
+  .hero-status__sep {
+    flex-basis: 100%;
+    height: 0;
+    overflow: hidden;
+  }
+}
+
 .hero .hero-name {
-  font-size: clamp(60px, 10vw, 140px);
-  line-height: 0.9;
+  font-size: clamp(56px, 9.2vw, 136px);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  text-shadow: 0 2px 30px rgba(2, 30, 90, 0.25);
+}
+
+/* Near the cursor the letters catch the light: white to pale aqua. */
+.hero .hero-name__letter {
+  color: color-mix(in oklab, #ffffff, #bfeaff calc(var(--k) * 100%));
 }
 
 .hero__role {
-  margin-top: 16px;
+  margin-top: 18px;
   font-size: clamp(20px, 2.1vw, 28px);
   font-weight: 650;
   letter-spacing: -0.02em;
   line-height: 1.2;
+}
+
+.hero__cohort {
+  font-weight: 450;
 }
 
 .hero__place {
@@ -2420,465 +2504,138 @@ html:not([data-loader="run"]) .loader {
   font: 600 12px/1.4 var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
 }
 
-/* The four products, one number each, under the buttons. */
+.hero__line {
+  max-width: 44ch;
+  margin-top: 22px;
+}
+
+/* The sea: the four products float just under the surface; the water fills the rest of the screen. */
+.hero__sea {
+  flex: 1;
+  padding: clamp(28px, 4vw, 48px) 0 clamp(28px, 4vw, 48px);
+}
+
 .hero-work {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  max-width: 640px;
+  gap: 10px;
 }
 
-@media (width >= 40rem) {
+@media (width >= 48rem) {
   .hero-work {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
   }
 }
 
+/* Frosted white glass, so the water shows through but the words stay dark and sharp. */
 .hero-work__item {
+  --ink: #0b1f33;
+  --muted: #3f5a72;
   display: flex;
-  min-height: 44px;
   height: 100%;
+  min-height: 44px;
   flex-direction: column;
   gap: 2px;
-  padding: 10px 14px;
-  border: 1px solid var(--glass-line);
-  border-radius: 18px;
-  background: var(--sheen), var(--glass-strong);
-  box-shadow: var(--bevel), var(--lift-sm);
-  font-size: var(--text-14);
-  line-height: 1.25;
+  padding: 14px 16px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.7));
+  -webkit-backdrop-filter: blur(18px) saturate(1.7);
+  backdrop-filter: blur(18px) saturate(1.7);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 12px 30px rgba(2, 40, 110, 0.2);
+  color: var(--ink);
   text-decoration: none;
   transition:
-    transform var(--dur-micro) var(--ease-out),
-    box-shadow var(--dur-micro) var(--ease-out);
+    transform 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    background-color 220ms var(--ease-out);
+}
+
+.hero-work__name {
+  font-size: var(--text-14);
+  font-weight: 650;
+}
+
+.hero-work__value {
+  margin-top: 6px;
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 720;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hero-work__label {
+  font-size: var(--text-12);
+  line-height: 1.3;
+  color: var(--muted);
 }
 
 @media (hover: hover) {
   .hero-work__item:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--bevel), 0 0 0 2px var(--accent-soft-2), var(--lift);
+    transform: translateY(-3px);
+    box-shadow:
+      inset 0 1px 0 #ffffff,
+      0 0 0 4px rgba(166, 228, 255, 0.35),
+      0 18px 40px rgba(2, 40, 110, 0.26);
   }
 }
 
-/* ---------- The PSP (Context Window) ---------- */
-.psp {
+.hero-work__item:active {
+  transform: translateY(1px);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .hero-work__item {
+    background: #ffffff;
+  }
+}
+
+/* ---------- Footer: the deep end ---------- */
+/* The footer is a second window, deeper down: the contact card is glass over the water. */
+.deep-sea {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(110px, 150px) minmax(0, 1fr) minmax(110px, 150px);
-  grid-template-areas:
-    "brand brand brand"
-    "left screen right"
-    "bottom bottom bottom";
-  align-items: center;
-  gap: 8px 22px;
-  padding: 16px 30px 14px;
-  border-radius: 120px;
-  background: linear-gradient(180deg, #ffffff, #f3f6fa);
-  color: var(--ink);
-  box-shadow:
-    inset 0 2px 0 #ffffff,
-    inset 0 -6px 14px rgba(15, 23, 42, 0.06),
-    0 0 0 1px rgba(15, 23, 42, 0.08),
-    var(--lift-lg);
-}
-
-.psp__brand {
-  grid-area: brand;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font: 700 15px/1 var(--font-display);
-  letter-spacing: -0.02em;
-  color: var(--muted);
-}
-
-.psp__brand .led {
-  width: 6px;
-  height: 6px;
-}
-
-.psp__left,
-.psp__right {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 22px;
-}
-
-.psp__left {
-  grid-area: left;
-}
-
-.psp__right {
-  grid-area: right;
-}
-
-.psp__grille {
-  width: 46px;
-  height: 12px;
-}
-
-/* The screen: dark glass. Its variables re-theme the board drawn inside it. */
-.psp__screen {
-  grid-area: screen;
-  --surface: #0d1320;
-  --surface-2: #121a2a;
-  --ink: #e8eef7;
-  --muted: #8b97a8;
-  --line: rgba(232, 238, 247, 0.1);
-  padding: 8px 10px 10px;
-  border-radius: 12px;
-  color: var(--ink);
-}
-
-.psp__hud {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 14px;
-  padding: 0 2px 7px;
-  font: 500 10px/1 var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.psp__hud b {
-  color: var(--ink);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.psp__ctx {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  font-variant-numeric: tabular-nums;
-}
-
-.psp__bar {
-  display: block;
-  width: 64px;
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  isolation: isolate;
   overflow: hidden;
+  margin: clamp(72px, 9vw, 128px) clamp(8px, 1.1vw, 16px) clamp(8px, 1.1vw, 16px);
+  border-radius: clamp(28px, 3vw, 44px);
+  background: linear-gradient(180deg, #0b64bb, var(--sea-to) 35%, var(--sea-deep) 70%, var(--sea-abyss));
+  --muted: #cfe3f2; /* 6:1 and up on the deep water */
 }
 
-.psp__bar > span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  transition: width 200ms var(--ease-out);
-}
-
-.psp__bottom {
-  grid-area: bottom;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-}
-
-.psp__logo {
-  font: 800 13px/1 var(--font-display);
-  font-stretch: 75%;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.psp__small {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font: 600 8px/1 var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: var(--surface-2);
-  box-shadow: var(--recess);
-}
-
-/* D-pad: four moulded arrows around a hub. */
-.psp-dpad {
-  display: grid;
-  grid-template-columns: repeat(3, 34px);
-  grid-template-rows: repeat(3, 34px);
-  grid-template-areas:
-    ". up ."
-    "left hub right"
-    ". down .";
-  padding: 6px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  box-shadow: var(--recess);
-}
-
-.psp-dpad > button {
-  position: relative;
-  border: 0;
-  background: var(--sheen), var(--surface);
-  box-shadow:
-    var(--bevel),
-    0 2px 0 color-mix(in srgb, var(--line) 80%, #000 12%),
-    var(--lift-sm);
-  cursor: pointer;
-  transition: transform 70ms var(--ease-out);
-}
-
-.psp-dpad > button:active {
-  transform: translateY(2px);
-  box-shadow: var(--recess);
-}
-
-.psp-dpad > button::after {
-  content: "";
+.deep-sea__canvas {
   position: absolute;
   inset: 0;
-  margin: auto;
-  width: 10px;
-  height: 8px;
-  background: var(--muted);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-}
-
-.psp-dpad__up {
-  grid-area: up;
-  border-radius: 9px 9px 3px 3px;
-}
-
-.psp-dpad__down {
-  grid-area: down;
-  border-radius: 3px 3px 9px 9px;
-}
-
-.psp-dpad__down::after {
-  rotate: 180deg;
-}
-
-.psp-dpad__left {
-  grid-area: left;
-  border-radius: 9px 3px 3px 9px;
-}
-
-.psp-dpad__left::after {
-  rotate: -90deg;
-}
-
-.psp-dpad__right {
-  grid-area: right;
-  border-radius: 3px 9px 9px 3px;
-}
-
-.psp-dpad__right::after {
-  rotate: 90deg;
-}
-
-.psp-dpad__hub {
-  grid-area: hub;
-  background: var(--surface);
-}
-
-/* Face buttons: △ ○ ✕ □ in cool colours (and the magenta circle). */
-.psp-face {
-  display: grid;
-  grid-template-columns: repeat(3, 36px);
-  grid-template-rows: repeat(3, 36px);
-  grid-template-areas:
-    ". tri ."
-    "sq . circle"
-    ". cross .";
-}
-
-.psp-face__btn {
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 999px;
-  font: 700 15px/1 var(--font-body);
-  color: var(--face, var(--muted));
-  background: var(--sheen), var(--surface);
-  box-shadow:
-    var(--bevel),
-    0 2px 0 color-mix(in srgb, var(--line) 80%, #000 12%),
-    var(--lift-sm);
-  cursor: pointer;
-  transition: transform 70ms var(--ease-out);
-}
-
-.psp-face__btn:active {
-  transform: translateY(2px);
-  box-shadow: var(--recess);
-}
-
-.psp-face__tri {
-  grid-area: tri;
-  --face: #0fa392;
-}
-
-.psp-face__sq {
-  grid-area: sq;
-  --face: #7c6cf0;
-}
-
-.psp-face__circle {
-  grid-area: circle;
-  --face: var(--accent);
-}
-
-.psp-face__cross {
-  grid-area: cross;
-  --face: #3060e6;
-}
-
-@media (max-width: 639px) {
-  .psp {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "brand brand"
-      "screen screen"
-      "left right"
-      "bottom bottom";
-    gap: 14px 12px;
-    padding: 16px 14px 14px;
-    border-radius: 34px;
-  }
-
-  .psp__grille {
-    display: none;
-  }
-}
-
-/* The ground line under the PSP, where 8-bit Moci walks. */
-.psp-ground {
-  position: relative;
-  height: 44px;
-  border-bottom: 2px dashed var(--line);
-}
-
-.psp-ground .pixel-track {
-  left: 0;
-  right: 0;
-  bottom: 2px;
-}
-
-/* ---------- The laptop (terminal) ---------- */
-.laptop {
+  z-index: -1;
   width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out);
 }
 
-.laptop__lid {
-  position: relative;
-  padding: 18px 16px 20px;
-  border-radius: 20px 20px 8px 8px;
-  background: #0b0f17;
-  box-shadow:
-    0 0 0 1.5px #c3cbd6,
-    0 0 0 3px #e4e9ef,
-    0 0 0 3.5px #aab3bf,
-    var(--lift-lg);
+.deep-sea__canvas[data-ready] {
+  opacity: 1;
 }
 
-.laptop__camera {
-  position: absolute;
-  top: 7px;
-  left: 50%;
-  width: 6px;
-  height: 6px;
-  translate: -50% 0;
-  border-radius: 999px;
-  background: #1c2433;
-  box-shadow: inset 0 0 0 1.5px #2b3446;
-}
-
-.laptop__screen {
-  overflow: hidden;
-  border-radius: 6px;
-  background: var(--term-bg);
-}
-
-.laptop__base {
-  position: relative;
-  height: 16px;
-  margin: 0 -2%;
-  border-radius: 2px 2px 16px 16px / 2px 2px 12px 12px;
-  background: linear-gradient(180deg, #f1f4f8, #c4cbd6 55%, #a3acb9);
-  box-shadow:
-    inset 0 1px 0 #ffffff,
-    0 12px 24px rgba(15, 23, 42, 0.16);
-}
-
-@media (min-width: 768px) {
-  .laptop__base {
-    margin: 0 -6%;
-  }
-}
-
-.laptop__notch {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 15%;
-  height: 6px;
-  translate: -50% 0;
-  border-radius: 0 0 8px 8px;
-  background: linear-gradient(180deg, #b7bfcb, #dde2e9);
-}
-
-/* A sticky note stuck to the corner of the laptop screen. */
-.laptop-note {
-  position: absolute;
-  z-index: 2;
-  top: -26px;
-  right: -18px;
-  width: 196px;
-  rotate: 5deg;
-}
-
-@media (max-width: 767px) {
-  .laptop-note {
-    position: relative;
-    top: auto;
-    right: auto;
-    margin: 28px auto 0;
-    rotate: -2deg;
-  }
-}
-
-/* ---------- Footer: the contact card and the index ---------- */
 .contact-card {
   position: relative;
   display: grid;
   align-items: end;
   gap: 24px;
-  overflow: hidden;
   padding: clamp(28px, 4vw, 56px);
   border-radius: var(--radius-lg);
-  background:
-    radial-gradient(70% 90% at 100% 100%, #d8f0fc, transparent 70%),
-    radial-gradient(60% 80% at 0% 0%, #fdeef6, transparent 70%),
-    var(--surface-solid);
-  border: 1px solid var(--glass-line);
+  background: var(--sheen), rgba(3, 30, 80, 0.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow:
     var(--bevel),
-    inset 0 0 0 1.5px rgba(240, 72, 156, 0.14),
-    var(--lift);
-}
-
-.contact-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, var(--dot) 2.2px, transparent 2.6px);
-  background-size: 34px 34px;
-  -webkit-mask: linear-gradient(110deg, transparent 40%, #000 100%);
-  mask: linear-gradient(110deg, transparent 40%, #000 100%);
-  pointer-events: none;
+    0 24px 60px rgba(1, 15, 45, 0.35);
 }
 
 @media (width >= 48rem) {
@@ -2887,34 +2644,30 @@ html:not([data-loader="run"]) .loader {
   }
 }
 
-.contact-card > * {
-  position: relative;
-}
-
 .contact-card__email {
   display: inline-block;
   margin-top: 10px;
   font-size: clamp(28px, 4.6vw, 60px);
-  font-weight: 750;
-  letter-spacing: -0.035em;
+  font-weight: 700;
+  letter-spacing: -0.04em;
   line-height: 1.05;
   color: var(--ink);
   text-decoration: none;
   overflow-wrap: anywhere;
-  background-image: linear-gradient(var(--accent-soft-2), var(--accent-soft-2));
-  background-size: 100% 0.12em;
-  background-position: 0 92%;
+  background-image: linear-gradient(rgba(166, 228, 255, 0.5), rgba(166, 228, 255, 0.5));
+  background-size: 100% 0.1em;
+  background-position: 0 94%;
   background-repeat: no-repeat;
+  transition: background-size var(--dur-short) var(--ease-out);
 }
 
 .contact-card__email:hover {
-  color: var(--accent-ink);
+  background-size: 100% 0.2em;
 }
 
 .site-index {
   padding: 40px 0 calc(40px + 72px);
   border-top: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--bg), #fdeef6);
   font-size: var(--text-14);
   color: var(--muted);
 }
@@ -3001,7 +2754,7 @@ html:not([data-loader="run"]) .loader {
   margin: 0 auto;
   background:
     repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0 2px, transparent 2px 6px),
-    linear-gradient(90deg, #ba3a71, #d8588f 30%, #406bce 31% 69%, #d8588f 70%, #ba3a71);
+    linear-gradient(90deg, #0a58be, #1a8fe8 30%, #3cc8f0 31% 69%, #1a8fe8 70%, #0a58be);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
   -webkit-mask: linear-gradient(180deg, transparent, #000 28px);
   mask: linear-gradient(180deg, transparent, #000 28px);
@@ -3150,7 +2903,7 @@ html:not([data-loader="run"]) .loader {
   position: absolute;
   inset: auto 0 0;
   height: 1cqi;
-  background: linear-gradient(90deg, #d8588f, #eb8dae 60%, #d8588f);
+  background: linear-gradient(90deg, #1a8fe8, #7fd7ff 60%, #1a8fe8);
 }
 
 .idc__brand {
@@ -3173,7 +2926,7 @@ html:not([data-loader="run"]) .loader {
 }
 
 .idc__logo b {
-  color: #d8588f;
+  color: #0a68d0;
 }
 
 .idc__pass {
@@ -3349,7 +3102,7 @@ html:not([data-loader="run"]) .loader {
   text-transform: uppercase;
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.95);
-  background: linear-gradient(90deg, #ba3a71, #d8588f);
+  background: linear-gradient(90deg, #0a58be, #1a8fe8);
 }
 
 /* Back */
@@ -3613,7 +3366,7 @@ html:not([data-loader="run"]) .loader {
 
 .palette-key[data-on="true"] {
   color: #ffffff;
-  background: linear-gradient(180deg, #d4578e, #b23468 70%);
+  background: linear-gradient(180deg, #2b95f0, #0a62cc 70%);
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.35),
@@ -3681,7 +3434,7 @@ html:not([data-loader="run"]) .loader {
 }
 
 .demo-option--on {
-  background: linear-gradient(180deg, #d4578e, #b23468 70%);
+  background: linear-gradient(180deg, #2b95f0, #0a62cc 70%);
   color: #ffffff;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
@@ -4609,7 +4362,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: #ffffff;
-  background: rgba(29, 42, 77, 0.88);
+  background: rgba(8, 40, 80, 0.88);
 }
 
 .pack__brand b {
@@ -4769,7 +4522,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   --glass-line: rgba(255, 255, 255, 0.08);
   --glass-edge: rgba(255, 255, 255, 0.12);
   --glass-strong: rgba(255, 255, 255, 0.1);
-  --accent-ink: #FF6A9C;
+  --accent-ink: #7FD7FF;
   background: rgba(28, 28, 30, 0.88) !important;
   color: var(--ink);
 }
@@ -4924,22 +4677,58 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   }
 }
 
-/* ---------- Motion on every page: fade up into view (WorldHost sets data-rv) ---------- */
+/*
+ * ---------- Motion on every page: fade up into view, driven by the scroll ----------
+ * Headings, panels and prints fade up as they arrive; only the outermost one moves, so a panel
+ * brings its heading along. Pure CSS (a view timeline): nothing touches the DOM before React
+ * hydrates it, and a browser without view timelines simply shows everything. Never animated in:
+ * the hero, the packs (they have their own entrance), dialogs.
+ */
 @media (prefers-reduced-motion: no-preference) {
-  [data-rv] {
-    transition:
-      opacity 820ms var(--ease-out),
-      translate 820ms var(--ease-out),
-      scale 820ms var(--ease-out);
-    transition-delay: calc(var(--rv-i, 0) * 90ms);
-  }
+  @supports (animation-timeline: view()) {
+    main :is(h2, .type-eyebrow, .type-lead, .widget, .polaroid, .spec-plate, [data-rv-item]):not(:is(#hero, .packs, dialog, [data-no-reveal], .widget, .polaroid, .spec-plate, [data-rv-item]) *),
+    footer :is(h2, .type-eyebrow) {
+      animation: rv-up var(--ease-out) both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
 
-  [data-rv=""] {
+    /* Section headings also wipe up into view, not just fade. */
+    main h2:not(:is(#hero, .packs, dialog, [data-no-reveal], .widget, .polaroid, .spec-plate, [data-rv-item]) *) {
+      animation-name: rv-up, rv-wipe;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0 38%, #000 62%);
+      mask-image: linear-gradient(180deg, transparent 0 38%, #000 62%);
+      -webkit-mask-size: 100% 300%;
+      mask-size: 100% 300%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: 0 100%;
+      mask-position: 0 100%;
+    }
+  }
+}
+
+@keyframes rv-up {
+  from {
     opacity: 0;
     translate: 0 32px;
     scale: 0.985;
   }
+}
 
+@keyframes rv-wipe {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+
+  to {
+    -webkit-mask-position: 0 100%;
+    mask-position: 0 100%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
   /* Page openings rise in, eyebrow first. */
   .page-head > * {
     animation: rise-in 760ms var(--ease-out) both;
@@ -5314,10 +5103,10 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 .moci-sticker {
   background: radial-gradient(60% 50% at 50% 30%, #ffffff, #f1f6fb);
   box-shadow:
-    inset 0 0 0 1px rgba(29, 42, 77, 0.06),
-    inset 0 -4px 8px rgba(29, 42, 77, 0.05),
-    0 2px 3px rgba(29, 42, 77, 0.08),
-    0 12px 26px rgba(29, 42, 77, 0.16);
+    inset 0 0 0 1px rgba(8, 40, 80, 0.06),
+    inset 0 -4px 8px rgba(8, 40, 80, 0.05),
+    0 2px 3px rgba(8, 40, 80, 0.08),
+    0 12px 26px rgba(8, 40, 80, 0.16);
 }
 
 /* ---------- The MP3 player (About) ---------- */
@@ -5459,7 +5248,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   flex: 1;
   height: 100%;
   border-radius: 2px;
-  background: linear-gradient(180deg, #d8588f, #8968d4 55%, #406bce);
+  background: linear-gradient(180deg, #3cc8f0, #1a8fe8 55%, #0a58be);
   transform: scaleY(0.06);
   transform-origin: bottom;
   transition: transform 90ms linear;
@@ -5486,7 +5275,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #406bce, #8968d4 55%, #d8588f);
+  background: linear-gradient(90deg, #0a58be, #1a8fe8 55%, #3cc8f0);
   transition: width 240ms linear;
 }
 
@@ -5774,7 +5563,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   font: 600 8.5px/1 var(--font-mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(29, 42, 77, 0.7);
+  color: rgba(8, 40, 80, 0.7);
 }
 
 .cdcase__hinge {
@@ -5863,33 +5652,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
 /* ---------- Polish: motion and micro-interactions ---------- */
 @media (prefers-reduced-motion: no-preference) {
-  /*
-   * Section headings wipe up into view, not just fade. A mask, not clip-path: a clipped heading
-   * would have no visible area, and the IntersectionObserver would never see it arrive.
-   */
-  h2[data-rv] {
-    -webkit-mask-image: linear-gradient(180deg, transparent 0 38%, #000 62%);
-    mask-image: linear-gradient(180deg, transparent 0 38%, #000 62%);
-    -webkit-mask-size: 100% 300%;
-    mask-size: 100% 300%;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: 0 100%;
-    mask-position: 0 100%;
-    transition:
-      opacity 820ms var(--ease-out),
-      translate 820ms var(--ease-out),
-      scale 820ms var(--ease-out),
-      -webkit-mask-position 1100ms var(--ease-out),
-      mask-position 1100ms var(--ease-out);
-    transition-delay: calc(var(--rv-i, 0) * 90ms);
-  }
-
-  h2[data-rv=""] {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
-  }
-
   /* Cards in a list lift a little under the pointer. */
   main li.widget {
     transition:
@@ -6009,7 +5771,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
 /* Progress and skill bars: the same pastel ribbon as the player's progress rail. */
 .bar-fill {
-  background: linear-gradient(90deg, #406bce, #8968d4 55%, #d8588f);
+  background: linear-gradient(90deg, #0a58be, #1a8fe8 55%, #3cc8f0);
 }
 
 /* ---------- Take a break: the pocket console in the live board ---------- */
@@ -6033,9 +5795,9 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   background: linear-gradient(180deg, #ffffff, #eef2f7);
   box-shadow:
     inset 0 1px 0 #ffffff,
-    inset 0 -4px 10px rgba(29, 42, 77, 0.06),
-    0 0 0 1px rgba(29, 42, 77, 0.08),
-    0 10px 22px rgba(29, 42, 77, 0.12);
+    inset 0 -4px 10px rgba(8, 40, 80, 0.06),
+    0 0 0 1px rgba(8, 40, 80, 0.08),
+    0 10px 22px rgba(8, 40, 80, 0.12);
   text-decoration: none;
   transition:
     transform 420ms var(--ease-jelly),
@@ -6047,8 +5809,8 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     transform: translateY(-3px) rotate(-1deg);
     box-shadow:
       inset 0 1px 0 #ffffff,
-      0 0 0 1px rgba(29, 42, 77, 0.1),
-      0 16px 30px rgba(29, 42, 77, 0.16);
+      0 0 0 1px rgba(8, 40, 80, 0.1),
+      0 16px 30px rgba(8, 40, 80, 0.16);
   }
 }
 
@@ -6206,13 +5968,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 }
 
 /* The scroll cue sits on the pale bottom of the sky window: navy, quiet. */
-.hero-stage .scroll-cue {
-  color: color-mix(in srgb, var(--ink) 72%, transparent);
-}
 
-.hero-stage .scroll-cue__line {
-  background: linear-gradient(color-mix(in srgb, var(--ink) 10%, transparent), color-mix(in srgb, var(--ink) 60%, transparent));
-}
 
 /* ---------- The island on the ocean card's horizon ---------- */
 .sea__island {
@@ -6264,8 +6020,8 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 .app-icon--white {
   box-shadow:
     inset 0 1px 0 #ffffff,
-    inset 0 0 0 1px rgba(29, 42, 77, 0.07),
-    inset 0 -3px 6px rgba(29, 42, 77, 0.05),
+    inset 0 0 0 1px rgba(8, 40, 80, 0.07),
+    inset 0 -3px 6px rgba(8, 40, 80, 0.05),
     0 1px 2px rgba(16, 18, 40, 0.1),
     0 4px 10px rgba(16, 18, 40, 0.08);
 }
@@ -6289,7 +6045,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   display: grid;
   place-items: center;
   padding-top: 1px;
-  background: linear-gradient(180deg, #de6f9d, #ba3a71);
+  background: linear-gradient(180deg, #f2646a, #d63b41);
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -6315,8 +6071,8 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ffffff, var(--metal-to) 70%);
   box-shadow:
-    inset 0 -2px 3px rgba(29, 42, 77, 0.2),
-    0 3px 6px rgba(29, 42, 77, 0.18);
+    inset 0 -2px 3px rgba(8, 40, 80, 0.2),
+    0 3px 6px rgba(8, 40, 80, 0.18);
 }
 
 @media (min-width: 1400px) {
