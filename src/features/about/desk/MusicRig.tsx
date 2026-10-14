@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
 import { playlist } from "@/content/playlist";
-import { formatTime, next, play, previous, setScreen, setVolume, toggle, useDac, youtubeOnly, type DacStatus } from "./dac-store";
+import { sfx } from "@/lib/sound";
+import { dac, formatTime, next, play, previous, setScreen, setVolume, toggle, useDac, youtubeOnly, type DacStatus } from "./dac-store";
 
 const STATUS: Record<DacStatus, string> = {
   idle: "Ready",
@@ -94,10 +95,18 @@ export function Monitor({ children }: { children?: ReactNode }) {
   );
 }
 
+/** The knob's rest position, and where a double-click puts it back. */
+const DEFAULT_VOLUME = 70;
+
 /**
  * The DAC: a small aluminium box with a display, three keys, a volume knob and a level meter. It
  * plays the playlist in full through the YouTube player on the monitor. (The level meter is a
  * flourish: the player is in another origin, so its real output can't be read.)
+ *
+ * The knob turns relative to where you press it: drag right or up to turn it up, left or down to
+ * turn it down, in steps of 5, with a tick per step; double-click puts it back to 70. Keyboards and
+ * screen readers use the range input underneath. Whichever way it turns, the display shows the
+ * volume for a moment.
  */
 export function Dac() {
   const status = useDac((s) => s.status);
@@ -109,6 +118,40 @@ export function Dac() {
   const song = playlist[index];
   const playing = status === "playing";
   const single = playlist.length < 2;
+  const drag = useRef<{ id: number; v: number; x: number; y: number } | null>(null);
+  // Counts volume changes; while it's set, the display shows the volume instead of the status.
+  const [turned, setTurned] = useState(0);
+
+  useEffect(() => {
+    if (!turned) return;
+    const timer = window.setTimeout(() => setTurned(0), 900);
+    return () => window.clearTimeout(timer);
+  }, [turned]);
+
+  const turn = (v: number) => {
+    if (v === dac.get().volume) return;
+    setVolume(v);
+    sfx.tick();
+    setTurned((n) => n + 1);
+  };
+
+  const grab = (e: PointerEvent<HTMLLabelElement>) => {
+    if (e.button !== 0 || drag.current) return;
+    e.preventDefault();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    drag.current = { id: e.pointerId, v: dac.get().volume, x: e.clientX, y: e.clientY };
+  };
+
+  const twist = (e: PointerEvent<HTMLLabelElement>) => {
+    const s = drag.current;
+    if (!s || s.id !== e.pointerId) return;
+    const raw = s.v + (e.clientX - s.x - (e.clientY - s.y)) * 0.5;
+    turn(Math.round(Math.max(0, Math.min(100, raw)) / 5) * 5);
+  };
+
+  const release = (e: PointerEvent<HTMLLabelElement>) => {
+    if (drag.current?.id === e.pointerId) drag.current = null;
+  };
 
   return (
     <div className="dac" role="group" aria-label="DAC: the songs on her desk" data-playing={playing || undefined}>
@@ -118,7 +161,7 @@ export function Dac() {
         </p>
         <p className="dac__meta">
           <span>{song.artist}</span>
-          <span className="dac__status">{status === "error" && youtubeOnly(errorCode) ? "YouTube only" : STATUS[status]}</span>
+          <span className="dac__status tabular-nums">{turned ? `VOL ${volume}` : status === "error" && youtubeOnly(errorCode) ? "YouTube only" : STATUS[status]}</span>
         </p>
         <p className="dac__time" aria-hidden="true">
           <span className="tabular-nums">{formatTime(time)}</span>
@@ -146,9 +189,19 @@ export function Dac() {
         </button>
       </div>
 
-      <label className="dac__knob" style={{ "--v": volume } as CSSProperties}>
+      <label
+        className="dac__knob"
+        data-cursor="Turn"
+        style={{ "--v": volume } as CSSProperties}
+        onPointerDown={grab}
+        onPointerMove={twist}
+        onPointerUp={release}
+        onPointerCancel={release}
+        onLostPointerCapture={release}
+        onDoubleClick={() => turn(DEFAULT_VOLUME)}
+      >
         <span className="sr-only">Volume</span>
-        <input type="range" min={0} max={100} step={5} value={volume} onChange={(e) => setVolume(Number(e.target.value))} />
+        <input type="range" min={0} max={100} step={5} value={volume} onChange={(e) => turn(Number(e.target.value))} />
         <span className="dac__cap" aria-hidden="true" />
       </label>
       <span className="dac__led" aria-hidden="true" />

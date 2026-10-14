@@ -1,8 +1,9 @@
 /*
- * Holographic die-cut sticker: the art in rainbow holographic foil (a diagonal spectrum with a
- * fine diffraction pattern, both shifting with `light` and `phase`) inside a thick white die-cut
- * vinyl border, under a glossy laminate, with one corner peeling up to show the sticker's back and
- * the shadow beneath it. A photo keeps its colours with a holo shimmer over it.
+ * Holographic die-cut sticker: the art in cracked-ice holo foil (a mid-grey silver mirror broken
+ * into facets, with fine diffraction lines and a rainbow only in the band facing the light, which
+ * sweeps across with `light` and `phase`) inside a thick white die-cut vinyl border, under a glossy
+ * laminate, with one corner peeling up to show the sticker's back and the shadow beneath it. A
+ * photo is printed on the foil in clear inks, so it keeps its colours and the foil shines through.
  */
 
 import {
@@ -70,9 +71,9 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
   const F = u * (photo ? 0.16 : 0.2);
   const foldS = (x: number, y: number) => (x - px0) * nx + (y - py0) * ny + F;
 
-  // Holo textures: a wavy spectrum and a fine mosaic of diffraction gratings.
+  // Holo textures: a gentle warp for the rainbow band, sparkle, and the cracked-ice shards.
   const wav = noiseField(w, h, u * 0.35, input.seed + 1, 2);
-  const cell = Math.max(5, u * 0.045);
+  const cell = Math.max(6, u * (photo ? 0.036 : 0.06));
   const sparkle = noiseField(w, h, 1.3, input.seed + 2, 1);
   // Shard centres on a jittered grid (one cell of margin all round).
   const sw = Math.ceil(w / cell) + 3;
@@ -89,12 +90,14 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
     }
   }
   const lshift = (input.light.x - 0.5) * 0.9 + (input.light.y - 0.5) * 0.5;
+  // Each shard's grating faces its own way, so it catches the light at its own moment in the loop.
   const lightAng = Math.atan2(L[1], L[0]) + TAU * phase;
-  const hueSway = 0.08 * Math.sin(TAU * phase);
   const hc = new Float32Array(3);
   const tgw = (w + 1) >> 1;
   const tgh = (h + 1) >> 1;
   const tiltG = new Float32Array(tgw * tgh);
+  // The cracks between shards: thin lines where the two nearest shard centres are equally far.
+  const crackG = new Float32Array(tgw * tgh);
   for (let gy = 0; gy < tgh; gy++) {
     const y = gy * 2 + 1;
     const cj = Math.floor(y / cell) + 1;
@@ -102,6 +105,7 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
       const x = gx * 2 + 1;
       const ci = Math.floor(x / cell) + 1;
       let d1 = 1e9;
+      let d2 = 1e9;
       let shard = 0;
       for (let jj = cj - 1; jj <= cj + 1; jj++) {
         for (let ii = ci - 1; ii <= ci + 1; ii++) {
@@ -110,15 +114,20 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
           const sy = shY[k] - y;
           const dd = sx * sx + sy * sy;
           if (dd < d1) {
+            d2 = d1;
             d1 = dd;
             shard = shV[k];
-          }
+          } else if (dd < d2) d2 = dd;
         }
       }
-      tiltG[gy * tgw + gx] = Math.cos(shard * TAU - lightAng);
+      const k = gy * tgw + gx;
+      tiltG[k] = Math.cos(shard * TAU - lightAng);
+      const e = (Math.sqrt(d2) - Math.sqrt(d1)) * 0.5;
+      crackG[k] = e < 1.4 ? 1 - e / 1.4 : 0;
     }
   }
   const tiltF = upsample(tiltG, tgw, tgh, tgw * 2, tgh * 2);
+  const crackF = upsample(crackG, tgw, tgh, tgw * 2, tgh * 2);
   const tiltW = tgw * 2;
 
   const px = new Uint8ClampedArray(n * 4);
@@ -175,30 +184,39 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
         // Holographic foil.
         const aa = photo ? art.alpha[i] : clamp01(0.5 - da);
         const diag = ((x - art.x0) * 0.8 + (y - art.y0) * 0.6) / diagLen;
-        // Cracked-ice shards (Voronoi, looked up on the half grid): each tilts the spectrum a little.
+        // Cracked-ice shards (Voronoi, looked up on the half grid): -1..1, how squarely each one's
+        // grating faces the light.
         const tilt = tiltF[y * tiltW + x];
-        // The band of rainbow sweeps across once per loop; the hues only sway a little (a GIF
-        // shouldn't strobe through the whole spectrum).
-        const hue = diag * 1.25 + wav[i] * 0.04 + lshift + hueSway + tilt * 0.03;
-        const band = 0.5 + 0.5 * Math.cos(TAU * (diag * 1.3 - lshift * 1.3 - phase + tilt * 0.04));
-        // Fine diffraction lines.
-        const fine = Math.sin(((x * 0.866 + y * 0.5) * TAU) / 2.3 + hue * TAU) * 0.5 + 0.5;
-        // A silver mirror: the rainbow only lives in the band facing the light; the cracked-ice
-        // facets show as steps in lightness.
-        const b2 = band * band;
-        const flash = b2 * b2 * b2;
-        const light = 0.4 + band * 0.26 + flash * 0.22 + fine * 0.06 + tilt * 0.1 + clamp01(sparkle[i] * 3 - 2.2) * 0.35;
-        hslInto(hue, 0.3 + 0.55 * band, Math.min(0.95, light), hc);
-        const nb = 1 - band;
-        const silver = 0.72 * nb * nb;
-        let hr = hc[0] + (146 - hc[0]) * silver;
-        let hg = hc[1] + (154 - hc[1]) * silver;
-        let hb = hc[2] + (168 - hc[2]) * silver;
+        const crack = crackF[y * tiltW + x];
+        // Where this point sits across the rainbow band (0 at its centre): the band faces the light,
+        // sweeps across once per loop and bends a little with the foil.
+        const s = diag * 1.15 - lshift * 1.3 - phase + wav[i] * 0.06 + tilt * 0.035;
+        const fr = s - Math.round(s);
+        const band = Math.exp(-fr * fr * 42);
+        // Fine diffraction lines, stronger in the band.
+        const fine = Math.sin(((x * 0.866 + y * 0.5) * TAU) / 2.6 + fr * 40) * (0.025 + 0.035 * band);
+        // A silver mirror, softly warped; each facet a step lighter or darker, a few catching the
+        // light outright, and bright hairline cracks between them.
+        let glint = tilt > 0 ? tilt * tilt : 0;
+        glint *= glint * glint;
+        const spark = clamp01(sparkle[i] * 3 - 2.2);
+        const m = 0.9 + wav[i] * 0.1 + tilt * 0.12 + glint * 0.3 + crack * 0.2 + fine + spark * 0.6;
+        // The rainbow lives only in the band: the spectrum runs across it, each facet shifted a little.
+        hslInto(0.62 - fr * 2.3 + tilt * 0.06, 0.9, 0.58 + tilt * 0.08 + band * 0.12, hc);
+        const rb = band * 0.88;
+        let hr = 150 * m + (hc[0] * (m + 0.15) - 150 * m) * rb;
+        let hg = 158 * m + (hc[1] * (m + 0.15) - 158 * m) * rb;
+        let hb = 174 * m + (hc[2] * (m + 0.15) - 174 * m) * rb;
         if (photo) {
-          const k = 0.32;
-          hr = art.rgba[j] * (1 - k) + hr * k;
-          hg = art.rgba[j + 1] * (1 - k) + hg * k;
-          hb = art.rgba[j + 2] * (1 - k) + hb * k;
+          // A photo printed on the foil in clear inks: its own colours, lit up or dimmed by how far
+          // the foil strays from its mid silver, and more so in the photo's light parts.
+          const pr = art.rgba[j];
+          const pg = art.rgba[j + 1];
+          const pb = art.rgba[j + 2];
+          const k = (0.16 + 0.26 * ((pr * 0.3 + pg * 0.59 + pb * 0.11) / 255)) / 140;
+          hr = pr * (1 + (hr - 140) * k);
+          hg = pg * (1 + (hg - 148) * k);
+          hb = pb * (1 + (hb - 162) * k);
         } else {
           // A printed keyline so the letters stay crisp against the white.
           const kl = clamp01(1 - (-da) / 1.6) * 0.3;

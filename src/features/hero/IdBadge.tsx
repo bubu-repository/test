@@ -59,33 +59,88 @@ const FIELDS = [
   { k: "Class", v: "2026" },
 ];
 
+/** A press has to travel this far (px) before it counts as a drag or a scroll. */
+const SLOP = 8;
+/** How stiff the lanyard is, and how much of its swing it keeps per 60 Hz frame. */
+const STIFF = 0.06;
+const DAMP = 0.86;
+/** The fastest a flick can throw the card (px per 60 Hz frame). */
+const MAX_FLING = 32;
+
+/** Soft limit: the further you pull past `reach`, the less the card follows (it never stops dead). */
+function band(v: number, reach: number): number {
+  return reach * Math.tanh(v / reach);
+}
+
+/** The pull that `band` turns into `v`, so a drag picks the card up where it is. */
+function unband(v: number, reach: number): number {
+  const r = Math.max(-0.995, Math.min(0.995, v / reach));
+  return reach * Math.atanh(r);
+}
+
+type Sample = { t: number; x: number; y: number };
+
 /**
  * The ID badge: a real CR80 card on a magenta lanyard. Front: a guilloche band with the slot
  * punched through, a photo, name and role, printed fields, a barcode, a holographic seal that
  * shifts as the card swings, and the open-to-work status. Back: a magnetic stripe, a QR code,
  * a return address and a signature panel. Drag it and it swings back on its lanyard; click,
- * Enter or Space flips it over.
+ * Enter or Space flips it over. On a phone a vertical swipe over it still scrolls the page; only a
+ * sideways pull picks it up.
  */
 export function IdBadge({ className, strap = 0 }: { className?: string; strap?: number }) {
   const [flipped, setFlipped] = useState(false);
   const ref = useRef<HTMLButtonElement>(null);
   const strapRef = useRef<HTMLDivElement>(null);
-  const motion = useRef({ x: 0, y: 0, vx: 0, vy: 0, angle: 0, va: 0, dragging: false, sx: 0, sy: 0, moved: false, raf: 0 });
+  const motion = useRef({
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    angle: 0,
+    va: 0,
+    /** The last frame's time, 0 while the loop is asleep. */
+    t: 0,
+    /** A press that hasn't yet shown whether it's a drag or a scroll. */
+    pending: false,
+    dragging: false,
+    pointer: -1,
+    /** Where the press began, the pull it began from, and how much the card is scaled on screen. */
+    px: 0,
+    py: 0,
+    ox: 0,
+    oy: 0,
+    scale: 1,
+    samples: [] as Sample[],
+    moved: false,
+    raf: 0,
+  });
 
   useEffect(() => {
     const el = ref.current!;
     const m = motion.current;
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const step = () => {
+    // How far the card can be pulled from its hook: it swings, it doesn't come off the lanyard.
+    const reachX = 90;
+    const reachUp = 24;
+    const reachDown = 56;
+    const bandY = (v: number) => (v < 0 ? band(v, reachUp) : band(v, reachDown));
+    const unbandY = (v: number) => (v < 0 ? unband(v, reachUp) : unband(v, reachDown));
+
+    const step = (now: number) => {
+      // Scaled to the real frame time, so the swing is the same at 60, 90 or 120 Hz (and a slow frame doesn't explode it).
+      const k = m.t ? Math.min(now - m.t, 34) / 16.667 : 1;
+      m.t = now;
       if (!m.dragging) {
         // Spring back to the hook, swinging like a badge on a lanyard.
-        m.vx = (m.vx - m.x * 0.06) * 0.86;
-        m.vy = (m.vy - m.y * 0.06) * 0.86;
-        m.x += m.vx;
-        m.y += m.vy;
+        const keep = Math.pow(DAMP, k);
+        m.vx = (m.vx - m.x * STIFF * k) * keep;
+        m.vy = (m.vy - m.y * STIFF * k) * keep;
+        m.x += m.vx * k;
+        m.y += m.vy * k;
       }
-      m.va = (m.va + (-m.vx * 0.9 - m.angle) * 0.08) * 0.9;
-      m.angle += m.va;
+      m.va = (m.va + (-m.vx * 0.9 - m.angle) * 0.08 * k) * Math.pow(0.9, k);
+      m.angle += m.va * k;
       el.style.translate = `${m.x.toFixed(1)}px ${m.y.toFixed(1)}px`;
       el.style.rotate = `${m.angle.toFixed(2)}deg`;
       // The lanyard stays attached: it turns and stretches from its hook to the card.
@@ -98,30 +153,67 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       el.style.setProperty("--sway", m.angle.toFixed(2));
       const moving = m.dragging || Math.abs(m.x) + Math.abs(m.y) + Math.abs(m.vx) + Math.abs(m.va) + Math.abs(m.angle) > 0.05;
       m.raf = moving ? requestAnimationFrame(step) : 0;
+      if (!moving) m.t = 0;
     };
     const kick = () => {
       if (!m.raf && !calm) m.raf = requestAnimationFrame(step);
     };
-    const onDown = (e: PointerEvent) => {
-      if (calm) return;
+
+    /** Velocity (px per 60 Hz frame) over the last 60 ms of pointer samples; 0 if the pointer has been still for 50 ms. */
+    const velocity = (now: number) => {
+      const recent = m.samples.filter((s) => now - s.t <= 60);
+      const newest = recent[recent.length - 1];
+      if (!newest || now - newest.t > 50 || recent.length < 2) return { vx: 0, vy: 0 };
+      const oldest = recent[0];
+      const dt = Math.max(newest.t - oldest.t, 1);
+      const clamp = (v: number) => Math.max(-MAX_FLING, Math.min(MAX_FLING, v));
+      return { vx: clamp(((newest.x - oldest.x) / dt) * 16.667), vy: clamp(((newest.y - oldest.y) / dt) * 16.667) };
+    };
+
+    const begin = () => {
+      m.pending = false;
       m.dragging = true;
-      m.moved = false;
-      m.sx = e.clientX - m.x;
-      m.sy = e.clientY - m.y;
-      el.setPointerCapture(e.pointerId);
+      el.setPointerCapture(m.pointer);
+      el.dataset.dragging = "";
+      // On the desk the card is shown at half size: divide by that, so it stays under the finger.
+      const holder = el.parentElement;
+      m.scale = holder && holder.offsetWidth ? holder.getBoundingClientRect().width / holder.offsetWidth || 1 : 1;
       kick();
     };
-    // How far the card can be pulled from its hook: it swings, it doesn't come off the lanyard.
-    const reachX = 90;
-    const reachUp = -24;
-    const reachDown = 56;
+    const onDown = (e: PointerEvent) => {
+      if (calm || !e.isPrimary || e.button !== 0 || m.pending || m.dragging) return;
+      m.pointer = e.pointerId;
+      m.moved = false;
+      m.px = e.clientX;
+      m.py = e.clientY;
+      m.ox = unband(m.x, reachX);
+      m.oy = unbandY(m.y);
+      m.samples = [{ t: e.timeStamp, x: m.x, y: m.y }];
+      m.pending = true;
+      // A mouse or pen can start dragging at once; a finger has to show it means sideways first,
+      // so a vertical swipe over the card still scrolls the page (touch-action: pan-y).
+      if (e.pointerType !== "touch") begin();
+    };
     const onMove = (e: PointerEvent) => {
+      if (e.pointerId !== m.pointer) return;
+      const dx = e.clientX - m.px;
+      const dy = e.clientY - m.py;
+      if (m.pending) {
+        if (Math.abs(dy) > SLOP && Math.abs(dy) >= Math.abs(dx)) {
+          m.pending = false; // a scroll: the page has it
+          return;
+        }
+        if (Math.abs(dx) <= SLOP) return;
+        begin();
+      }
       if (!m.dragging) return;
-      const nx = Math.max(-reachX, Math.min(reachX, e.clientX - m.sx));
-      const ny = Math.max(reachUp, Math.min(reachDown, e.clientY - m.sy));
-      m.vx = nx - m.x;
-      m.vy = ny - m.y;
-      if (Math.hypot(nx, ny) > 6) m.moved = true;
+      const nx = band(m.ox + dx / m.scale, reachX);
+      const ny = bandY(m.oy + dy / m.scale);
+      m.samples.push({ t: e.timeStamp, x: nx, y: ny });
+      if (m.samples.length > 12) m.samples.shift();
+      // While held, the card swings from how fast it is being carried.
+      m.vx = velocity(e.timeStamp).vx;
+      if (Math.hypot(dx, dy) > 6) m.moved = true;
       m.x = nx;
       m.y = ny;
     };
@@ -132,10 +224,20 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       el.style.setProperty("--hy", ((e.clientY - r.top) / r.height).toFixed(3));
     };
     const onUp = () => {
+      m.pending = false;
       if (!m.dragging) return;
       m.dragging = false;
+      delete el.dataset.dragging;
+      // Let go with the speed it was moving at just now, not the last event's jitter.
+      const v = velocity(performance.now());
+      m.vx = v.vx;
+      m.vy = v.vy;
       if (m.moved) sfx.pop();
       kick();
+    };
+    // Once a finger is dragging the card, the page must not scroll under it.
+    const onTouchMove = (e: TouchEvent) => {
+      if (m.dragging && e.cancelable) e.preventDefault();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
@@ -146,18 +248,22 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
     };
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointermove", onHover);
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
-    // A drag that ends any other way (gesture, leaving the window, a lost capture) still lets go,
-    // so the card always swings back to its hook.
+    // A drag that ends any other way (a scroll taking over, leaving the window, a lost capture)
+    // still lets go, so the card always swings back to its hook.
     window.addEventListener("pointercancel", onUp);
     el.addEventListener("lostpointercapture", onUp);
     window.addEventListener("blur", onUp);
     el.addEventListener("keydown", onKey);
     return () => {
       cancelAnimationFrame(m.raf);
+      m.raf = 0;
+      m.t = 0;
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onHover);
+      el.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
@@ -181,7 +287,7 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
             ? `ID card, back: QR code to ${identity.domain} and ${identity.email}. Press to flip to the front.`
             : `ID card: ${identity.name}, ${identity.role}, ${identity.city}. Open to work. Press to flip for a QR code. Left and right arrows swing it.`
         }
-        className="badge touch-none select-none"
+        className="badge touch-pan-y select-none"
         onClick={() => {
           if (motion.current.moved) {
             motion.current.moved = false;

@@ -14,8 +14,11 @@ import {
   gridPaths,
   hexRGB,
   lightDir,
+  mixRGB,
   noiseField,
   output,
+  PINK,
+  PINK_SOFT,
   readArt,
   resamplePath,
   rng,
@@ -30,7 +33,8 @@ import {
 import type { MaterialInput } from "./types";
 
 const CORE: RGB = [251, 250, 246];
-const TAPE: RGB = [255, 170, 205];
+/** Washi tape: halfway between the site's pink and its soft tint. */
+const TAPE: RGB = mixRGB(PINK, PINK_SOFT, 0.5);
 
 export function tornPaper(input: MaterialInput): HTMLCanvasElement {
   const art = readArt(input, (u, pad) => Math.min(pad * 0.95, u * 0.2 + 12));

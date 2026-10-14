@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { COLOR_LABEL, NAME_MAX, NOTE_COLORS, NOTE_MAX, SPECIES, SPECIES_LABEL, type Note, type NoteColor, type Species } from "@/content/guestbook";
 import { sfx } from "@/lib/sound";
 import { readJSON, writeJSON } from "@/lib/storage";
@@ -79,31 +79,188 @@ function SeaCreature({ note, open, fresh, mine, justNow, onOpen }: { note: Note;
   );
 }
 
-/** The seabed: soft sand dunes, pink and lilac coral, and weed that sways. */
+/** A soft coral branch: a round base of `r1` and a round tip of `r2`, joined along their tangents. */
+function twig([x1, y1, r1, x2, y2, r2]: number[]): string {
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  const p = Math.acos((r1 - r2) / Math.hypot(x2 - x1, y2 - y1));
+  const at = (x: number, y: number, r: number, t: number) => `${(x + r * Math.cos(t)).toFixed(1)} ${(y + r * Math.sin(t)).toFixed(1)}`;
+  const fat = p > Math.PI / 2 ? 1 : 0;
+  return `M${at(x1, y1, r1, a + p)}L${at(x2, y2, r2, a + p)}A${r2} ${r2} 0 ${fat} 0 ${at(x2, y2, r2, a - p)}L${at(x1, y1, r1, a - p)}A${r1} ${r1} 0 ${1 - fat} 0 ${at(x1, y1, r1, a + p)}Z`;
+}
+
+// Each coral's branches, as [x1, y1, r1, x2, y2, r2]: wide at the base, rounded at the tips.
+const PINK_CORAL = [
+  [58, 114, 12, 55, 92, 10],
+  [55, 94, 10, 41, 75, 8.5],
+  [41, 77, 8.5, 34, 54, 7],
+  [34, 56, 7, 38, 31, 6],
+  [39, 73, 7, 22, 63, 6],
+  [22, 65, 6, 15, 45, 5.5],
+  [56, 94, 9.5, 74, 79, 8],
+  [74, 81, 8, 87, 59, 7],
+  [87, 61, 7, 91, 36, 6],
+  [86, 64, 6, 104, 52, 5.5],
+  [58, 90, 8, 62, 68, 7],
+  [62, 70, 7, 59, 48, 6],
+].map(twig);
+const LILAC_CORAL = [
+  [42, 114, 12, 38, 62, 10],
+  [62, 114, 13, 66, 36, 11],
+  [84, 114, 11, 90, 70, 9],
+].map(twig);
+
+/**
+ * A coral in the jelly hand: a translucent gradient body with its white rim drawn once under the
+ * whole shape (so the branches join without seams), and the surface's light on its tips.
+ */
+function Coral({ fill, branches, tips, children }: { fill: string; branches: string[]; tips: [number, number][]; children?: ReactNode }) {
+  return (
+    <>
+      <g opacity=".78">
+        <g fill="#FFFFFF" stroke="#FFFFFF" strokeWidth="3" strokeLinejoin="round">
+          {branches.map((d) => (
+            <path key={d} d={d} />
+          ))}
+        </g>
+        <g fill={`url(#${fill})`}>
+          {branches.map((d) => (
+            <path key={d} d={d} />
+          ))}
+        </g>
+        {children}
+      </g>
+      {tips.map(([x, y]) => (
+        <g key={`${x} ${y}`} fill="#FFFFFF">
+          <ellipse cx={x} cy={y + 1} rx="4" ry="2.2" opacity=".55" />
+          <circle cx={x + 2.4} cy={y - 0.6} r="1.4" />
+        </g>
+      ))}
+    </>
+  );
+}
+
+/** Three ribbons of sea-glass kelp; each sways on its own. */
+function Kelp() {
+  return (
+    <g fill="url(#gb-kelp)" stroke="#FFFFFF" strokeOpacity=".7" strokeWidth="1" opacity=".55">
+      <path className="gb-kelp__blade" d="M14 160c-6-26 8-42 2-66s-10-46 4-74c3-4 8-3 8 2-1 24 2 46 6 70s0 42-8 68Z" />
+      <path className="gb-kelp__blade" d="M30 160c-4-20 10-30 6-50s-8-34 4-52c3-3 7-2 7 2 0 20 2 34 4 50s-6 32-13 50Z" />
+      <path className="gb-kelp__blade" d="M42 160c-2-14 8-22 6-36s-4-22 4-32c3-2 6-1 6 2-1 12 0 22-1 32s-5 22-9 34Z" />
+    </g>
+  );
+}
+
+/** A peach scallop shell, ridged, with the light on its lip. */
+function Shell() {
+  return (
+    <>
+      <g opacity=".85">
+        <path d="M24 37C11 37 3 27 5 16 8 7 15 3 24 3s16 4 19 13c2 11-6 21-19 21Z" fill="url(#gb-shell)" stroke="#FFFFFF" strokeWidth="1.5" paintOrder="stroke" />
+        <path d="M24 35V6M24 35 14 8M24 35 34 8M24 35 7 16M24 35 41 16" stroke="#FFFFFF" strokeOpacity=".7" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+      </g>
+      <ellipse cx="24" cy="8.5" rx="8" ry="2.4" fill="#FFFFFF" opacity=".6" />
+      <circle cx="30" cy="8" r="1.3" fill="#FFFFFF" />
+    </>
+  );
+}
+
+/** A pearl resting on the sand. */
+function Pearl({ x, r }: { x: number; r: number }) {
+  return (
+    <>
+      <circle cx={x} cy={19 - r} r={r} fill="url(#gb-pearl)" stroke="#FFFFFF" strokeWidth="1" />
+      <circle cx={x - r * 0.3} cy={19 - r * 1.45} r={r * 0.22} fill="#FFFFFF" />
+    </>
+  );
+}
+
+// The sandbar's crest, in a 1200×100 box stretched to the seabed.
+const CREST = "M0 12C160 2 300 16 470 10S800 0 960 8s180 6 240 2";
+const SAND = `${CREST}v90H0Z`;
+
+/**
+ * The seabed: one sandbar of light that dissolves into the deep water below it, and a reef in the
+ * creatures' own jelly hand: pink and lilac coral, sea-glass kelp that sways, a shell and pearls.
+ * It sits under the water's bottom edge and the list row, so the row rests on the sand.
+ */
 function Seabed() {
   return (
     <div className="gb-seabed" aria-hidden="true">
-      <svg viewBox="0 0 1200 140" preserveAspectRatio="none" className="gb-seabed__sand">
+      <svg viewBox="0 0 1200 100" preserveAspectRatio="none" className="gb-seabed__sand">
+        {/* The reef's paints, shared by the little drawings below. */}
         <defs>
           <linearGradient id="gb-sand" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#FFF4DA" stopOpacity=".95" />
-            <stop offset="1" stopColor="#EBD3A2" />
+            <stop offset="0" stopColor="#FFF4DA" stopOpacity=".66" />
+            <stop offset=".45" stopColor="#E9F7EA" stopOpacity=".4" />
+            <stop offset="1" stopColor="#9FE3F2" stopOpacity="0" />
           </linearGradient>
+          <linearGradient id="gb-coral-pink" x1="0" y1="20" x2="0" y2="118" gradientUnits="userSpaceOnUse">
+            <stop offset="0" style={{ stopColor: "var(--pink-soft)" }} />
+            <stop offset="1" style={{ stopColor: "var(--pink)" }} />
+          </linearGradient>
+          <linearGradient id="gb-coral-lilac" x1="0" y1="20" x2="0" y2="118" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#F1ECFF" />
+            <stop offset="1" stopColor="#C9B8FF" />
+          </linearGradient>
+          <linearGradient id="gb-kelp" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#93ECDC" />
+            <stop offset="1" stopColor="#22CDB0" />
+          </linearGradient>
+          <linearGradient id="gb-shell" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#FFF1EA" />
+            <stop offset="1" stopColor="#FFB08A" />
+          </linearGradient>
+          <clipPath id="gb-sand-clip">
+            <path d={SAND} />
+          </clipPath>
+          <radialGradient id="gb-pearl" cx="40%" cy="35%" r="70%">
+            <stop offset="0" stopColor="#FFFFFF" />
+            <stop offset=".6" stopColor="#EEF3FF" />
+            <stop offset="1" stopColor="#BFD0F2" />
+          </radialGradient>
         </defs>
-        <path d="M0 70C150 40 260 92 420 74s250-46 400-26 260 40 380 20v72H0Z" fill="url(#gb-sand)" opacity=".75" />
-        <path d="M0 96c180-30 320 12 500 0s300-34 460-10 180 18 240 10v54H0Z" fill="url(#gb-sand)" />
+        <path d={SAND} fill="url(#gb-sand)" />
+        {/* Its crest catches the light: a soft glow just inside it, and a thin white rim. */}
+        <g clipPath="url(#gb-sand-clip)" fill="none" stroke="#FFFFFF">
+          <path d={CREST} strokeOpacity=".28" strokeWidth="18" vectorEffect="non-scaling-stroke" />
+          <path d={CREST} strokeOpacity=".75" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+        </g>
       </svg>
-      <svg viewBox="0 0 120 120" className="gb-coral" style={{ left: "6%" }}>
-        <path d="M60 118V70M60 86 36 60M36 60V36M36 60 18 46M60 78l26-28M86 50V28M86 50l16-12" stroke="#FF8FC3" strokeWidth="11" strokeLinecap="round" fill="none" opacity=".85" />
+
+      <svg viewBox="0 0 120 120" className="gb-reef" style={{ left: "2%", ["--w" as string]: "88px" }}>
+        <Coral fill="gb-coral-pink" branches={PINK_CORAL} tips={[[38, 29], [15, 43], [91, 34], [59, 46], [104, 50]]} />
       </svg>
-      <svg viewBox="0 0 120 120" className="gb-coral gb-coral--sway" style={{ left: "24%", width: "72px" }}>
-        <path d="M30 118c-10-30 14-40 0-70M60 118c10-34-12-44 4-84M90 118c-8-24 10-32-2-56" stroke="#3DBE4A" strokeWidth="8" strokeLinecap="round" fill="none" opacity=".8" />
+      <svg viewBox="0 0 60 160" className="gb-reef gb-kelp" style={{ left: "20%", ["--w" as string]: "44px" }}>
+        <Kelp />
       </svg>
-      <svg viewBox="0 0 120 120" className="gb-coral" style={{ left: "64%", width: "96px" }}>
-        <path d="M60 118V64M60 80 40 56M40 56V40M60 72l22-24M82 48V30" stroke="#B49CFF" strokeWidth="10" strokeLinecap="round" fill="none" opacity=".85" />
+      <svg viewBox="0 0 48 40" className="gb-reef gb-reef--wide" style={{ left: "27%", ["--w" as string]: "40px" }}>
+        <Shell />
       </svg>
-      <svg viewBox="0 0 120 120" className="gb-coral gb-coral--sway" style={{ left: "86%", width: "64px" }}>
-        <path d="M40 118c-10-30 12-40-2-74M74 118c8-28-10-40 6-70" stroke="#2FA14A" strokeWidth="8" strokeLinecap="round" fill="none" opacity=".75" />
+      <svg viewBox="0 0 40 20" className="gb-reef gb-reef--wide" style={{ left: "31%", ["--w" as string]: "34px" }}>
+        <Pearl x={12} r={7} />
+        <Pearl x={27} r={5} />
+      </svg>
+      <svg viewBox="0 0 120 120" className="gb-reef" style={{ left: "40%", ["--w" as string]: "84px" }}>
+        <Coral fill="gb-coral-lilac" branches={LILAC_CORAL} tips={[[38, 54], [66, 27], [90, 62]]}>
+          {/* The mouths of the tubes, a shade deeper. */}
+          <g fill="#A58BF5" opacity=".45">
+            <ellipse cx="38" cy="58" rx="6" ry="2.6" />
+            <ellipse cx="66" cy="32" rx="6.6" ry="2.8" />
+            <ellipse cx="90" cy="66" rx="5.2" ry="2.4" />
+          </g>
+        </Coral>
+      </svg>
+      <svg viewBox="0 0 60 160" className="gb-reef gb-kelp" style={{ left: "58%", ["--w" as string]: "40px" }}>
+        <Kelp />
+      </svg>
+      <svg viewBox="0 0 48 40" className="gb-reef" style={{ left: "70%", ["--w" as string]: "36px" }}>
+        <Shell />
+      </svg>
+      <svg viewBox="0 0 120 120" className="gb-reef gb-reef--wide" style={{ left: "78%", ["--w" as string]: "64px" }}>
+        <Coral fill="gb-coral-pink" branches={PINK_CORAL} tips={[[38, 29], [15, 43], [91, 34], [59, 46], [104, 50]]} />
+      </svg>
+      <svg viewBox="0 0 60 160" className="gb-reef gb-kelp" style={{ left: "90%", ["--w" as string]: "42px" }}>
+        <Kelp />
       </svg>
     </div>
   );
@@ -363,13 +520,13 @@ export function GuestbookSea() {
         The sea of visitors
       </h2>
       <div className="gb-sea">
+        <Seabed />
         {/* The water the creatures swim in; on wide screens the form floats over its right side. */}
         <div ref={seaRef} className="gb-water" data-waterline="3">
           {notes === null && <p className="gb-sea__status">Looking into the water…</p>}
           {swimming.map((n) => (
             <SeaCreature key={n.id} note={n} open={open?.note.id === n.id} fresh={n.id === freshId} mine={mine.includes(n.id)} justNow={n.id === justNow} onOpen={onOpen} />
           ))}
-          <Seabed />
           {open && <NoteCard note={open.note} pos={open} onClose={close} />}
         </div>
         <div className="gb-sea__form">
@@ -377,7 +534,8 @@ export function GuestbookSea() {
         </div>
       </div>
 
-      <div className="container-page mt-10 flex flex-wrap items-center gap-3">
+      {/* On the sandbar, under the creatures. */}
+      <div className="gb-more container-page flex flex-wrap items-center gap-3">
         <button type="button" className="pill" aria-expanded={list} aria-controls="gb-list" onClick={() => setList((v) => !v)}>
           {list ? "Hide the list" : `Read them all as a list (${notes?.length ?? 0})`}
         </button>

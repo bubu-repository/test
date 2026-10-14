@@ -17,6 +17,10 @@ export type Path = { pts: Float32Array; closed: boolean };
 /** The navy that every shadow is tinted with, never pure black. */
 export const SHADOW: RGB = [8, 40, 80];
 
+/** The site's pink and its soft tint (tokens.css --pink and --pink-soft). */
+export const PINK: RGB = [255, 126, 182];
+export const PINK_SOFT: RGB = [255, 214, 232];
+
 /* ------------------------------------------------------------------ maths */
 
 export const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
@@ -963,7 +967,7 @@ export function hexRGB(hex: string): RGB {
   let s = hex.trim().replace("#", "");
   if (s.length === 3) s = s[0] + s[0] + s[1] + s[1] + s[2] + s[2];
   const n = parseInt(s.slice(0, 6), 16);
-  if (!Number.isFinite(n)) return [255, 127, 182];
+  if (!Number.isFinite(n)) return [...PINK];
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 

@@ -1,8 +1,8 @@
 /*
  * Metal emboss: a brushed-metal plate (horizontal grain, an anisotropic streak of light across it)
  * with bevelled edges and four screws, the art pressed up out of it with crisp lit and shaded
- * bevels. `phase` sweeps the light across the plate and back. A photo becomes a low relief of its
- * own light and dark, pressed into the plate.
+ * bevels. `phase` sweeps the light across the plate and back. A photo becomes a soft low relief of
+ * its own light and dark, pressed into the plate, its light parts polished and its dark ones satin.
  */
 
 import {
@@ -88,14 +88,21 @@ export function emboss(input: MaterialInput): HTMLCanvasElement {
       for (; b < 256 && acc + hist[b] < count * 0.95; b++) acc += hist[b];
       hi = Math.max(lo + 0.08, b / 255);
     }
+    // The tones, squared (so the light parts rise), as broad domes with a little of the detail on
+    // top: clouds become soft pillows, not cracked noise. The photo's edge stays crisp.
+    const tone = new Float32Array(gw * gh);
     for (let i = 0; i < lum.length; i++) {
       const t = clamp01((-sd2[i] * f) / ab);
+      const e = t * t * (3 - 2 * t);
       const l = clamp01((lum[i] - lo) / (hi - lo));
-      h2[i] = (Ha * 0.25 + l * l * Ha * 1.4) * (t * t * (3 - 2 * t));
+      h2[i] = Ha * 0.25 * e;
+      tone[i] = l * l * Ha * 0.8 * e;
     }
+    const domes = gauss(tone, gw, gh, (u * 0.014) / f);
+    const detail = gauss(tone, gw, gh, (u * 0.006) / f);
+    for (let i = 0; i < h2.length; i++) h2[i] += domes[i] * 0.85 + detail[i] * 0.15;
   }
-  // Photos: blur the relief into soft domes (clouds as pillows, not noise).
-  const hs2 = gauss(h2, gw, gh, photo ? Math.max(2, (u * 0.022) / f) : 0.7);
+  const hs2 = gauss(h2, gw, gh, 0.7);
   const nx2 = new Float32Array(gw * gh);
   const ny2 = new Float32Array(gw * gh);
   for (let y = 1; y < gh - 1; y++) {
@@ -237,6 +244,8 @@ export function emboss(input: MaterialInput): HTMLCanvasElement {
       const g = streak[i] * 0.07 + streak2[i] * 0.04;
       // The pressed-up face is a touch more polished than the plate.
       const raised = photo ? 0 : clamp01(AH[i] / Ha);
+      // A photo is also etched: its dark parts are pressed down and satin, the light ones polished.
+      const etch = photo ? 1 - art.alpha[i] * (1 - clamp01((AH[i] / Ha - 0.25) * 1.4)) : 1;
       // Key light: flat metal sits at a mid value; bevels facing it brighten, the far ones darken.
       const kh = Math.max(0, nx * khx + ny * khy + nz * khz);
       let ks = kh * kh;
@@ -245,7 +254,8 @@ export function emboss(input: MaterialInput): HTMLCanvasElement {
       ks *= ks;
       ks *= ks; // ^32
       const tilted = 1 - nz;
-      let v = 0.72 + 1.1 * (ndl - lz) + aniso * (0.3 + g * 2) + spec * 0.22 + ks * tilted * 2.2 + g * (1 - raised * 0.4) + raised * 0.03;
+      let v = 0.72 + 1.1 * (ndl - lz) + aniso * (0.3 + g * 2) * (0.45 + 0.55 * etch) + spec * 0.22 + ks * tilted * 2.2 + g * (1 - raised * 0.4) + raised * 0.03;
+      if (photo) v *= 0.8 + 0.3 * etch;
       if (screw === 1) v = 0.42 + 0.5 * clamp01(ndl) + spec * 0.8;
       if (slot) v *= 0.35;
       // The relief's shadow on the plate.
@@ -254,7 +264,7 @@ export function emboss(input: MaterialInput): HTMLCanvasElement {
         const sy = y - sdy;
         if (sx >= 0 && sy >= 0 && sx < w && sy < h) {
           const occ = SH[sy * w + sx] - AH[i] / Ha;
-          if (occ > 0) v *= 1 - occ * 0.42;
+          if (occ > 0) v *= 1 - occ * (photo ? 0.25 : 0.42);
         }
       }
       const j = i * 4;

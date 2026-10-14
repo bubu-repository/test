@@ -301,8 +301,10 @@ function clearShadow(ctx: CanvasRenderingContext2D, mask: Float32Array, pieceD: 
     core[i] = din > T ? m : 0;
   }
   drawShadow(ctx, band, w, h, { blur, dx, dy, opacity: 0.2 });
-  drawShadow(ctx, mask, w, h, { blur: blur * 1.4, dx, dy, opacity: 0.05 });
-  drawShadow(ctx, core, w, h, { blur, dx, dy, opacity: 0.35, color: [255, 255, 255] });
+  drawShadow(ctx, mask, w, h, { blur: blur * 1.4, dx, dy, opacity: 0.04 });
+  // The caustic is sharper than the shadow (the piece focuses the light it lets through), and
+  // brighter than the page it lands on.
+  drawShadow(ctx, core, w, h, { blur: blur * 0.6, dx, dy, opacity: 0.5, color: [255, 255, 255] });
 }
 
 /* ------------------------------------------------------------------ standee */

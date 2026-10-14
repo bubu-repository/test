@@ -18,13 +18,14 @@ export type Note = {
 export const NOTE_COLORS: NoteColor[] = ["magenta", "sky", "mint", "violet", "sun", "lime"];
 export const SPECIES: Species[] = ["fish", "jellyfish", "octopus", "turtle", "seahorse", "pufferfish", "crab", "whale"];
 
+/** What each colour is called. The keys are stored in saved notes, so only the words change. */
 export const COLOR_LABEL: Record<NoteColor, string> = {
   magenta: "Pink",
   sky: "Aqua",
   mint: "Sea glass",
   violet: "Lilac",
-  sun: "Butter",
-  lime: "Leaf",
+  sun: "Peach",
+  lime: "Pearl",
 };
 
 export const SPECIES_LABEL: Record<Species, string> = {

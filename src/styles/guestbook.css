@@ -6,10 +6,30 @@
  */
 
 /* Words right on the water are navy: slate would sink into the blue. Glass brings its own back. */
-.gb-sea {
+.gb-sea,
+.gb-more {
   --muted: #0f2a44;
   --accent-ink: #052a60;
+}
+
+.gb-sea {
+  --sea-scale: 1;
+  --reef-scale: 0.85;
+  --water-h: clamp(460px, 72vh, 640px);
+  /* The sandbar rises this far into the water, and dissolves this far below it (under the list row). */
+  --bed-rise: 112px;
+  --bed-fall: 40px;
   position: relative;
+}
+
+@media (width >= 64rem) {
+  .gb-sea {
+    --sea-scale: 1.3;
+    --reef-scale: 1.45;
+    --water-h: clamp(740px, 88vh, 920px);
+    --bed-rise: 150px;
+    --bed-fall: 112px;
+  }
 }
 
 .gb-sea :is(.widget, .glass, .glass-strong) {
@@ -18,18 +38,10 @@
 }
 
 .gb-water {
-  --sea-scale: 1;
   container-type: inline-size;
   position: relative;
-  height: clamp(460px, 72vh, 640px);
+  height: var(--water-h);
   overflow: hidden;
-}
-
-@media (width >= 64rem) {
-  .gb-water {
-    --sea-scale: 1.3;
-    height: clamp(740px, 88vh, 920px);
-  }
 }
 
 .gb-sea__status {
@@ -271,14 +283,18 @@
   }
 }
 
-/* ---------- The seabed ---------- */
+/* ---------- The seabed ----------
+ * One sandbar of light under the water's bottom edge: bright where it crests, then gone into the
+ * deep water, so there's no floor floating mid-ocean. It sits behind the water (creatures and crabs
+ * pass over it) and runs on under the list row, which rests on it.
+ */
 .gb-seabed {
   position: absolute;
+  top: calc(var(--water-h) - var(--bed-rise));
   right: 0;
-  bottom: 0;
   left: 0;
-  z-index: 0;
-  height: 140px;
+  height: calc(var(--bed-rise) + var(--bed-fall));
+  overflow: clip visible;
   pointer-events: none;
 }
 
@@ -289,18 +305,61 @@
   height: 100%;
 }
 
-.gb-coral {
+/* Planted a little above the water's bottom edge, where the crabs walk. */
+.gb-reef {
   position: absolute;
-  bottom: 24px;
-  width: 84px;
+  bottom: calc(var(--bed-fall) + 14px * var(--reef-scale));
+  width: calc(var(--w) * var(--reef-scale));
   height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 5px 6px rgba(8, 50, 110, 0.16));
+}
+
+@media (width < 40rem) {
+  .gb-reef--wide {
+    display: none;
+  }
+}
+
+.gb-kelp {
+  filter: none;
+}
+
+.gb-kelp__blade {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .gb-coral--sway {
-    transform-origin: 50% 100%;
-    animation: sway 5s var(--ease-in-out) infinite alternate;
+  .gb-kelp__blade {
+    animation: gb-kelp 4.6s var(--ease-in-out) infinite alternate;
   }
+
+  .gb-kelp__blade:nth-child(2) {
+    animation-duration: 5.4s;
+    animation-delay: -2s;
+  }
+
+  .gb-kelp__blade:nth-child(3) {
+    animation-duration: 3.9s;
+    animation-delay: -1s;
+  }
+}
+
+@keyframes gb-kelp {
+  from {
+    rotate: -5deg;
+  }
+
+  to {
+    rotate: 5deg;
+  }
+}
+
+/* The list row, on the sand under the water. Above the seabed, which would otherwise wash over it. */
+.gb-more {
+  position: relative;
+  margin-top: 28px;
 }
 
 /* ---------- A note, read ---------- */
@@ -425,26 +484,25 @@
   gap: 6px;
 }
 
+/* Each option is a little window of water, so a clear (or pearl) creature still shows on it. */
 .gb-option {
   display: grid;
   place-items: center;
   height: 52px;
   border: 1.5px solid transparent;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(178, 230, 250, 0.55));
   cursor: pointer;
-  transition:
-    background-color var(--dur-micro) var(--ease-out),
-    border-color var(--dur-micro) var(--ease-out);
+  transition: border-color var(--dur-micro) var(--ease-out);
 }
 
 .gb-option:hover {
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff, rgba(178, 230, 250, 0.7));
 }
 
 .gb-option:has(input:checked) {
   border-color: #1a8fe8;
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff, #cdeefc);
   box-shadow: 0 0 0 3px rgba(26, 143, 232, 0.2);
 }
 
@@ -477,7 +535,7 @@
   width: 30px;
   height: 30px;
   border-radius: 999px;
-  background: radial-gradient(circle at 35% 30%, #ffffff 0 16%, var(--mid) 46%, var(--core) 100%);
+  background: radial-gradient(circle at 35% 30%, #ffffff 0 14%, var(--mid) 42%, var(--core) 92%);
   box-shadow:
     inset 0 -2px 4px rgba(0, 0, 0, 0.12),
     0 0 0 2px #ffffff,

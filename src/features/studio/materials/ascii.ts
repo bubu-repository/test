@@ -16,6 +16,7 @@ import {
   makeCanvas,
   noiseField,
   output,
+  PINK,
   readArt,
   rgbToHsl,
   hslToRgb,
@@ -142,7 +143,7 @@ export function ascii(input: MaterialInput): HTMLCanvasElement {
   // Title-bar dots on the terminal.
   if (terminal) {
     const dots: RGB[] = [
-      [255, 120, 160],
+      PINK,
       [255, 210, 110],
       [120, 220, 170],
     ];

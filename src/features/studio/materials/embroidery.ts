@@ -602,7 +602,8 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
   ctx.drawImage(toCanvas(pxS, w, h), 0, 0);
 
   // Split-stitch outline in a darker shade (for photos, between border and picture).
-  const outline = shade(photo ? color : color, -0.24, 0.05);
+  // Darker and a little less saturated (so the site's pink gets its own pink-ink outline).
+  const outline = shade(color, -0.27, -0.33);
   const level = photo ? -border - tw * 0.2 : -tw * 0.55;
   const paths = gridPaths(sd2, gw, gh, level / f, f, 2);
   const chain = runningStitch(paths, tw * 2.6, -tw * 0.9, 0);

@@ -16,11 +16,11 @@ import { acrylicBlock, acrylicKeychain, acrylicStandee } from "./acrylic";
 export type { MaterialId, MaterialInfo, MaterialInput } from "./types";
 
 export const MATERIALS: MaterialInfo[] = [
-  { id: "felt", name: "Felt", note: "Cut felt with a running stitch", colorable: true, animated: false, defaultColor: "#FF7FB6" },
+  { id: "felt", name: "Felt", note: "Cut felt with a running stitch", colorable: true, animated: false, defaultColor: "#FF7EB6" },
   { id: "cross-stitch", name: "Cross-stitch", note: "Little Xs, with a merrowed edge", colorable: true, animated: false, defaultColor: "#1A8FE8" },
-  { id: "embroidery", name: "Embroidery", note: "Satin stitch in shiny thread", colorable: true, animated: false, defaultColor: "#FF5FA8" },
+  { id: "embroidery", name: "Embroidery", note: "Satin stitch in shiny thread", colorable: true, animated: false, defaultColor: "#FF7EB6" },
   { id: "rhinestone", name: "Rhinestones", note: "Set with gems that catch the light", colorable: true, animated: true, defaultColor: "#93DCFB" },
-  { id: "glitter", name: "Glitter glue", note: "Raised glue, full of glitter", colorable: true, animated: true, defaultColor: "#FF5FA8" },
+  { id: "glitter", name: "Glitter glue", note: "Raised glue, full of glitter", colorable: true, animated: true, defaultColor: "#FF7EB6" },
   { id: "jelly", name: "Clear jelly", note: "Squishy and see-through", colorable: true, animated: true, defaultColor: "#1FB0F0" },
   { id: "chrome", name: "Chrome", note: "Liquid metal, Y2K", colorable: false, animated: true, defaultColor: "#C9D6E3" },
   { id: "foil", name: "Crumpled foil", note: "Foil, crumpled and smoothed out", colorable: true, animated: true, defaultColor: "#D8C27A" },

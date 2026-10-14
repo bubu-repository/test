@@ -44,7 +44,7 @@ export function rhinestone(input: MaterialInput): HTMLCanvasElement {
   const sdAt = (x: number, y: number) => sample(sd2, gw, gh, x / f - 0.5, y / f - 0.5) * f;
 
   // --- Placement ---
-  const R = photo ? clamp(u * 0.064, 4, 60) : clamp(u * 0.056, 4, 44);
+  const R = photo ? clamp(u * 0.045, 4, 44) : clamp(u * 0.056, 4, 44);
   const gems: Gems = { x: [], y: [], r: [] };
   const cell = R * 2;
   const cw = Math.ceil(w / cell) + 1;
@@ -136,8 +136,10 @@ export function rhinestone(input: MaterialInput): HTMLCanvasElement {
     }
     const c: RGB = n ? [rr / n, gg / n, bb / n] : base;
     const hsl = rgbToHsl(c);
-    // Richer where there is colour; near-whites stay clear crystal.
-    const sat = hsl[1] * clamp01((hsl[1] - 0.12) * 4) * 1.2;
+    // Richer where there is colour; whites and greys stay clear crystal. (Judged by chroma: HSL
+    // calls a pale cloud-white fully saturated, which would set it with blue stones.)
+    const chroma = (Math.max(c[0], c[1], c[2]) - Math.min(c[0], c[1], c[2])) / 255;
+    const sat = hsl[1] * clamp01((chroma - 0.08) * 5) * 1.15;
     cols.push(hslToRgb(hsl[0], clamp01(sat), clamp(hsl[2], 0.12, 0.9)));
   }
 

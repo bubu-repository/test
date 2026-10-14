@@ -1,48 +1,69 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { useId, type CSSProperties } from "react";
+import type { NoteColor, Species } from "@/content/guestbook";
+import { Creature } from "@/features/guestbook/Creature";
 
-/** A small fish in one colour, drawn facing right. */
-function Fish({ body, fin }: { body: string; fin: string }) {
+/**
+ * Three of the guestbook's own creatures live in the tank: a fish crossing back and forth, a
+ * jellyfish bobbing in place and a pufferfish pottering along the bottom. `x`/`y` are where each
+ * one rests when motion is reduced.
+ */
+const SWIMMERS: { species: Species; color: NoteColor; seed: number; swim: string; x: string; y: string; dur: string; delay: string }[] = [
+  { species: "jellyfish", color: "sky", seed: 1, swim: "bob", x: "64%", y: "6%", dur: "3.8s", delay: "-1.2s" },
+  { species: "fish", color: "magenta", seed: 0, swim: "swim", x: "8%", y: "30%", dur: "15s", delay: "-4s" },
+  { species: "pufferfish", color: "lime", seed: 2, swim: "potter", x: "18%", y: "54%", dur: "19s", delay: "-6s" },
+];
+
+/** Kelp in sea glass: a few blades rooted in the sand. */
+function Kelp({ className, blades }: { className: string; blades: { d: string; w: number }[] }) {
+  const id = useId().replace(/:/g, "");
   return (
-    <svg viewBox="0 0 40 24" aria-hidden="true" focusable="false">
-      <path d="M30 12 39 4v16Z" fill={fin} />
-      <ellipse cx="17" cy="12" rx="15" ry="9.5" fill={body} />
-      <path d="M13 3.5c3 2.5 3 14.5 0 17" stroke="rgba(255,255,255,.55)" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-      <circle cx="8" cy="10" r="2.1" fill="#0B1F33" />
-      <circle cx="8.6" cy="9.4" r=".7" fill="#FFFFFF" />
-      <ellipse cx="20" cy="6.5" rx="6" ry="2" fill="rgba(255,255,255,.35)" />
+    <svg className={`tank__kelp ${className}`} viewBox="0 0 60 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={`${id}k`} x1="0" y1="0" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#93ECDC" />
+          <stop offset="1" stopColor="#5ED6C9" />
+        </linearGradient>
+      </defs>
+      {blades.map((b) => (
+        <path key={b.d} d={b.d} stroke={`url(#${id}k)`} strokeWidth={b.w} fill="none" strokeLinecap="round" />
+      ))}
     </svg>
   );
 }
 
-const FISH = [
-  { body: "#FF8F7A", fin: "#FF6F5E", y: "26%", dur: "13s", delay: "-2s", size: "22%" },
-  { body: "#FFD45E", fin: "#F5B82E", y: "50%", dur: "17s", delay: "-9s", size: "17%" },
-  { body: "#5CC8F5", fin: "#1A8FE8", y: "66%", dur: "11s", delay: "-5s", size: "15%" },
-];
-
 /**
- * The aquarium on her desk: a glass tank with three fish, weed and rising bubbles. It is the door to
- * the guestbook, where every visitor leaves a sea creature with a note.
+ * The aquarium on her desk: a glass tank with three little sea creatures, kelp and rising bubbles.
+ * It is the door to the guestbook, where every visitor leaves a sea creature with a note.
  */
 export function Aquarium() {
   return (
     <Link href="/guestbook" className="tank" aria-label="The aquarium: open the guestbook and leave a sea creature with a note">
       <span className="tank__glass" aria-hidden="true">
         <span className="tank__water">
-          <svg className="tank__weed" viewBox="0 0 60 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <path d="M14 80C8 62 20 50 12 34S16 10 12 0" stroke="#3DBE4A" strokeWidth="5" fill="none" strokeLinecap="round" />
-            <path d="M30 80C36 64 26 52 33 40s-2-20 3-28" stroke="#2FA14A" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-            <path d="M46 80c-5-12 4-20-1-32" stroke="#5ED68A" strokeWidth="4" fill="none" strokeLinecap="round" />
-          </svg>
-          {FISH.map((f, i) => (
-            <span key={i} className="tank__fish" style={{ "--y": f.y, "--dur": f.dur, "--delay": f.delay, "--size": f.size } as CSSProperties}>
+          <Kelp
+            className="tank__kelp--back"
+            blades={[
+              { d: "M14 80C8 62 20 50 12 34S16 10 12 2", w: 5 },
+              { d: "M30 80C36 64 26 52 33 40s-2-20 3-28", w: 4.5 },
+              { d: "M46 80c-5-12 4-20-1-32", w: 4 },
+            ]}
+          />
+          <Kelp
+            className="tank__kelp--front"
+            blades={[
+              { d: "M20 80c6-14-6-24 2-40s-4-22 0-34", w: 6 },
+              { d: "M40 80c-4-12 6-20 0-34", w: 5 },
+            ]}
+          />
+          {SWIMMERS.map((s) => (
+            <span key={s.species} className={`tank__swimmer tank__swimmer--${s.swim}`} style={{ "--x": s.x, "--y": s.y, "--dur": s.dur, "--delay": s.delay } as CSSProperties}>
               <span>
-                <Fish body={f.body} fin={f.fin} />
+                <Creature species={s.species} color={s.color} seed={s.seed} className="tank__creature" />
               </span>
             </span>
           ))}
-          {[18, 64, 82].map((x, i) => (
+          {[22, 58, 86].map((x, i) => (
             <span key={x} className="tank__bubble" style={{ "--x": `${x}%`, "--d": `${i * -1.3}s` } as CSSProperties} />
           ))}
           <span className="tank__sand" />

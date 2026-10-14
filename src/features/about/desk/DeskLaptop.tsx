@@ -7,6 +7,7 @@ import { dispatch } from "@/lib/actions";
 import { useNow } from "@/lib/hooks";
 import { formatTime } from "@/lib/time";
 import { sfx } from "@/lib/sound";
+import { Sticker } from "@/components/Sticker";
 import { BoxArt, CvArt, FishArt, MociArt, TILE } from "../../shell/DockIcons";
 
 function TerminalArt() {
@@ -28,9 +29,17 @@ const APPS: App[] = [
   { label: "Guestbook", bg: TILE.aqua, art: <FishArt />, href: "/guestbook" },
 ];
 
+/** The stickers on her closed lid: where each sits (in % of the lid), its size (in % of the laptop) and its tilt. */
+const LID_STICKERS = [
+  { id: "hello", x: "31%", y: "36%", s: "10.5cqi", r: "-12deg" },
+  { id: "studio", x: "64%", y: "30%", s: "9cqi", r: "9deg" },
+  { id: "wave", x: "40%", y: "74%", s: "8cqi", r: "18deg" },
+];
+
 /**
- * Her laptop, closed on the desk. Open it and the lid lifts to a small desktop: the work, the CV,
- * Moci, the terminal and the guestbook, each one press away. Esc (or the close key) shuts the lid.
+ * Her laptop, closed on a gingham desk mat, with stickers on the lid and a post-it that says
+ * "open me". Open it and the lid lifts to a small desktop: the work, the CV, Moci, the terminal and
+ * the guestbook, each one press away. Esc (or the close key) shuts the lid.
  */
 export function DeskLaptop() {
   const [open, setOpen] = useState(false);
@@ -53,6 +62,8 @@ export function DeskLaptop() {
 
   return (
     <div className="dlaptop" data-open={open || undefined}>
+      <span className="dlaptop__mat" aria-hidden="true" />
+      <span className="dlaptop__shade" aria-hidden="true" />
       <div className="dlaptop__lid">
         <div
           ref={desktopRef}
@@ -103,7 +114,17 @@ export function DeskLaptop() {
       </div>
       <span className="dlaptop__base" aria-hidden="true" />
       <span className="dlaptop__shell" aria-hidden="true">
-        <span>a.</span>
+        <span className="dlaptop__mark">a.</span>
+        {LID_STICKERS.map((st) => (
+          <span key={st.id} className="dlaptop__sticker" style={{ "--x": st.x, "--y": st.y, "--s": st.s, "--r": st.r } as CSSProperties}>
+            <Sticker id={st.id} size={48} />
+          </span>
+        ))}
+      </span>
+      <span className="dlaptop__note" aria-hidden="true">
+        open
+        <br />
+        me
       </span>
       {!open && (
         <button
