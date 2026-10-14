@@ -384,7 +384,7 @@ export function Studio() {
       });
       set({ shots, mode: "photo" });
     } catch (e) {
-      toast({ title: "Couldn't open that photo", body: e instanceof Error ? e.message : "Try another file.", tone: "magenta" });
+      toast({ title: "Couldn't open that photo", body: e instanceof Error ? e.message : "Try another file.", tone: "accent" });
     }
   };
 
@@ -503,7 +503,7 @@ export function Studio() {
 
   const failed = (what: string) => {
     sfx.bump();
-    toast({ title: `Couldn't save the ${what}`, body: what === "GIF" ? "This device ran short of memory for it. Try the PNG, or a smaller layout." : "Try again in a moment.", tone: "magenta" });
+    toast({ title: `Couldn't save the ${what}`, body: what === "GIF" ? "This device ran short of memory for it. Try the PNG, or a smaller layout." : "Try again in a moment.", tone: "accent" });
   };
 
   const savePng = async () => {
@@ -614,7 +614,7 @@ export function Studio() {
               <p className="text-18 font-semibold">Take a photo, or choose up to four.</p>
               <p className="mt-1 text-14 text-muted">They stay on this device.</p>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
-                <button type="button" className="pill" data-variant="magenta" onClick={startCamera}>
+                <button type="button" className="pill" data-variant="primary" onClick={startCamera}>
                   Take a photo
                 </button>
                 <button type="button" className="pill" onClick={() => fileInput.current?.click()}>
@@ -777,7 +777,7 @@ export function Studio() {
                     <div className="flex flex-wrap gap-2">
                       {camera === "on" ? (
                         <>
-                          <button type="button" className="pill" data-variant="magenta" onClick={() => void takeShots()} disabled={count > 0}>
+                          <button type="button" className="pill" data-variant="primary" onClick={() => void takeShots()} disabled={count > 0}>
                             {takes(cfg.layout) > 1 ? "Take four" : "Take it"}
                           </button>
                           <button type="button" className="pill" onClick={stopCamera}>
@@ -786,7 +786,7 @@ export function Studio() {
                         </>
                       ) : (
                         <>
-                          <button type="button" className="pill" data-variant="magenta" onClick={() => void startCamera()}>
+                          <button type="button" className="pill" data-variant="primary" onClick={() => void startCamera()}>
                             {cfg.shots.length ? "Retake" : "Take a photo"}
                           </button>
                           <button type="button" className="pill" onClick={() => fileInput.current?.click()}>
@@ -1000,7 +1000,7 @@ export function Studio() {
 
           {step === "save" && (
             <div className="grid gap-3">
-              <button type="button" className="pill" data-variant="magenta" onClick={() => void savePng()} disabled={!canSave || !!busy}>
+              <button type="button" className="pill" data-variant="primary" onClick={() => void savePng()} disabled={!canSave || !!busy}>
                 Save as PNG{cfg.layout === "sticker" ? " (transparent)" : ""}
               </button>
               <button type="button" className="pill" onClick={() => void saveGif()} disabled={!canSave || !!busy}>
@@ -1030,7 +1030,7 @@ export function Studio() {
             Back
           </button>
           {stepIndex < STEPS.length - 1 && (
-            <button type="button" className="pill" data-variant="magenta" data-size="sm" onClick={() => goStep(STEPS[stepIndex + 1].id)}>
+            <button type="button" className="pill" data-variant="primary" data-size="sm" onClick={() => goStep(STEPS[stepIndex + 1].id)}>
               Next: {STEPS[stepIndex + 1].name}
             </button>
           )}

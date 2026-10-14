@@ -142,7 +142,7 @@ export function Brief() {
         </div>
 
         <footer className="flex flex-wrap items-center gap-2 border-t border-line px-5 py-4 md:px-7">
-          <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill" data-variant="magenta">
+          <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill" data-variant="primary">
             <DownloadIcon width={18} height={18} /> Download CV
           </a>
           <button type="button" className="pill" onClick={() => void dispatch({ type: "copyEmail" })}>

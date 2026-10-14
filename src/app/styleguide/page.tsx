@@ -58,7 +58,7 @@ function Ratio({ theme, fg, bg, min }: { theme: Theme; fg: string; bg: string; m
   return (
     <td className="py-3 pr-4 whitespace-nowrap">
       <span className="type-code mr-2">{ratio.toFixed(2)}:1</span>
-      <span className="chip" data-tone={ratio >= min ? "lime" : "magenta"}>
+      <span className="chip" data-tone={ratio >= min ? "lime" : "accent"}>
         {ratio >= min ? "Pass" : "Fail"}
       </span>
     </td>
@@ -143,7 +143,7 @@ export default function StyleguidePage() {
 
       <Section index="04" title="Components">
         <div className="flex flex-wrap items-center gap-3">
-          <button type="button" className="pill" data-variant="magenta">
+          <button type="button" className="pill" data-variant="primary">
             Primary
           </button>
           <button type="button" className="pill">
@@ -166,7 +166,7 @@ export default function StyleguidePage() {
           </button>
         </div>
         <div className="mt-6 flex flex-wrap gap-2">
-          {["magenta", "lime", "sun", "sky", "violet", "mint", "ink"].map((tone) => (
+          {["accent", "lime", "sun", "sky", "violet", "mint", "ink"].map((tone) => (
             <span key={tone} className="chip" data-tone={tone}>
               {tone}
             </span>

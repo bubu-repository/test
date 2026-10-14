@@ -204,7 +204,7 @@ export function WidgetBoard() {
               </label>
             ))}
           </div>
-          <button type="button" className="pill js-only" data-size="sm" data-variant={jiggle ? "magenta" : "ghost"} aria-pressed={jiggle} onClick={() => ui.set({ jiggle: !jiggle })}>
+          <button type="button" className="pill js-only" data-size="sm" data-variant={jiggle ? "primary" : "ghost"} aria-pressed={jiggle} onClick={() => ui.set({ jiggle: !jiggle })}>
             <GridIcon width={16} height={16} /> {jiggle ? "Done" : "Edit"}
           </button>
           {!lens && order.join() !== DEFAULT_ORDER.join() && (
@@ -247,7 +247,7 @@ export function WidgetBoard() {
                   <button
                     type="button"
                     className="pill cursor-grab touch-none active:cursor-grabbing"
-                    data-variant="magenta"
+                    data-variant="primary"
                     data-size="sm"
                     data-cursor="Drag"
                     aria-label={`Drag ${label}`}

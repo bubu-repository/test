@@ -78,7 +78,7 @@ export function JdMatcher() {
           className="mt-3 w-full flex-1 resize-y rounded-[14px] border border-line bg-surface-2 p-4 text-16 leading-relaxed outline-none placeholder:text-muted focus:border-accent"
         />
         <div className="mt-4 flex flex-wrap items-center gap-3">
-          <button type="submit" className="pill" data-variant="magenta" disabled={!text.trim()}>
+          <button type="submit" className="pill" data-variant="primary" disabled={!text.trim()}>
             Match it
           </button>
           <button

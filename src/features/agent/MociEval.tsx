@@ -40,7 +40,7 @@ export function MociEval() {
   return (
     <div>
       <div className="flex flex-wrap items-center gap-4">
-        <button type="button" className="pill" data-variant="magenta" onClick={run}>
+        <button type="button" className="pill" data-variant="primary" onClick={run}>
           {rows ? "Run it again" : `Run ${MOCI_CASES.length} checks in your browser`}
         </button>
         <p className="text-16" role="status" aria-live="polite">

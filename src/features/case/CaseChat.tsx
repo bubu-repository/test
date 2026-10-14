@@ -160,7 +160,7 @@ function buildBeats(project: Project, next: Project): Beat[] {
           <p className="text-18 leading-snug font-semibold tracking-[-0.01em]">{project.reflection}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {project.links.live && (
-              <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="pill" data-size="sm" data-variant="magenta">
+              <a href={project.links.live} target="_blank" rel="noopener noreferrer" className="pill" data-size="sm" data-variant="primary">
                 Visit the live site ↗<span className="sr-only"> (opens in a new tab)</span>
               </a>
             )}
@@ -397,7 +397,7 @@ export function CaseChat({
           <button
             type="button"
             className="pill"
-            data-variant="magenta"
+            data-variant="primary"
             data-tour="case-next"
             disabled={typing}
             onClick={() => {

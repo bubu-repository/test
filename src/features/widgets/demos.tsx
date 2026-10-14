@@ -59,7 +59,7 @@ export function FindTimeWidget() {
       run: async () => {
         try {
           await navigator.clipboard.writeText(availability);
-          toast({ title: "Availability copied", body: "Paste it into your scheduling thread.", tone: "magenta" });
+          toast({ title: "Availability copied", body: "Paste it into your scheduling thread.", tone: "accent" });
         } catch {
           setResult(availability);
         }

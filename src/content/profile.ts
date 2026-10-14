@@ -56,7 +56,7 @@ export const principles = [
   { title: "Test with real data", body: "Real tenders, real voice notes, real slang ('goceng', not 'IDR 5,000'). A Figma frame can't misread a voice note, so I prototype in code." },
 ];
 
-export type SkillGroup = { name: string; tone: "magenta" | "cobalt" | "lime" | "sun" | "violet"; items: string[] };
+export type SkillGroup = { name: string; tone: "accent" | "cobalt" | "lime" | "sun" | "violet"; items: string[] };
 
 /* CONTOH — ganti dengan data asli */
 export const skills: SkillGroup[] = [
@@ -80,7 +80,7 @@ export const skills: SkillGroup[] = [
   },
   {
     name: "Product design",
-    tone: "magenta",
+    tone: "accent",
     items: ["Field research and interviews", "Interaction design", "UX writing", "Usability testing", "Design systems", "Accessibility (WCAG 2.2)", "Figma"],
   },
   {

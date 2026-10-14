@@ -49,7 +49,7 @@ const STEPS: TraceStep[] = [
 
 /** Project tone → the glass tint used on its headline metric (colour stays an accent). */
 const TONE_TINT: Record<string, string> = {
-  magenta: "tone-accent",
+  accent: "tone-accent",
   cobalt: "tone-sky",
   violet: "tone-violet",
   sun: "tone-sun",

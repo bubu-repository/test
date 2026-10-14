@@ -5,7 +5,7 @@ import { dispatch } from "@/lib/actions";
 
 export function AskAboutProject({ name }: { name: string }) {
   return (
-    <button type="button" className="pill js-only" data-variant="magenta" onClick={() => dispatch({ type: "ask", question: `What was the hardest part of ${name}?` })}>
+    <button type="button" className="pill js-only" data-variant="primary" onClick={() => dispatch({ type: "ask", question: `What was the hardest part of ${name}?` })}>
       <ChatIcon width={18} height={18} /> Ask Moci about {name}
     </button>
   );

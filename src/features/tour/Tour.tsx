@@ -189,7 +189,7 @@ export function Tour() {
               Back
             </button>
           )}
-          <button type="button" className="pill" data-size="sm" data-variant="magenta" onClick={() => go(1)}>
+          <button type="button" className="pill" data-size="sm" data-variant="primary" onClick={() => go(1)}>
             {last ? "Done" : "Next"}
           </button>
         </div>

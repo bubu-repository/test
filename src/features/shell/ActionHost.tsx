@@ -95,7 +95,7 @@ export function ActionHost() {
           askAgent(action.question);
           return;
         case "toast":
-          toast({ title: action.message, tone: "magenta", icon: "💡" });
+          toast({ title: action.message, tone: "accent", icon: "💡" });
           return;
         case "wave":
           wave();

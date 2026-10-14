@@ -18,7 +18,7 @@ export type Toast = {
   id: number;
   title: string;
   body?: string;
-  tone?: "magenta" | "lime" | "sun" | "sky" | "violet" | "mint";
+  tone?: "accent" | "lime" | "sun" | "sky" | "violet" | "mint";
   icon?: string;
   sticker?: string;
   holo?: boolean;

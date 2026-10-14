@@ -11,7 +11,7 @@ import { CheckIcon, CopyIcon } from "./icons";
  * One-click email copy with feedback: the label flips to "Copied", a toast confirms it, and a
  * polite live region announces it. Without JS the mailto link next to it still works.
  */
-export function CopyEmail({ className, variant = "magenta", size, label = "Copy email", tour = false }: { className?: string; variant?: string; size?: "sm" | "lg"; label?: string; tour?: boolean }) {
+export function CopyEmail({ className, variant = "primary", size, label = "Copy email", tour = false }: { className?: string; variant?: string; size?: "sm" | "lg"; label?: string; tour?: boolean }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
 
   useEffect(() => {

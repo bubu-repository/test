@@ -8,7 +8,7 @@ import { dismissToast, holdToast, releaseToast, useUI } from "@/lib/ui";
 
 /** One quiet dot in the toast's tone; a sticker toast shows the sticker itself, peeling in. */
 const TONE: Record<string, string> = {
-  magenta: "bg-accent text-accent",
+  accent: "bg-accent text-accent",
   lime: "bg-green text-green",
   sun: "bg-sun text-sun",
   sky: "bg-sky text-sky",
@@ -33,7 +33,7 @@ export function Toasts() {
           onBlur={() => releaseToast(t.id)}
         >
           <span aria-hidden="true" className="grid size-12 shrink-0 place-items-center">
-            {t.sticker ? <Sticker id={t.sticker} size={48} className="toast__sticker" /> : <span className={cn("size-3 rounded-full shadow-[0_0_0_4px_color-mix(in_srgb,currentColor_14%,transparent)]", TONE[t.tone ?? "magenta"])} />}
+            {t.sticker ? <Sticker id={t.sticker} size={48} className="toast__sticker" /> : <span className={cn("size-3 rounded-full shadow-[0_0_0_4px_color-mix(in_srgb,currentColor_14%,transparent)]", TONE[t.tone ?? "accent"])} />}
           </span>
           <div className="min-w-0 flex-1 pt-0.5">
             <p className="leading-snug font-semibold">{t.title}</p>

@@ -14,7 +14,7 @@ export const metadata: Metadata = pageMeta({
 });
 
 const DOT: Record<string, string> = {
-  magenta: "bg-accent",
+  accent: "bg-accent",
   cobalt: "bg-cobalt",
   lime: "bg-lime",
   sun: "bg-sun",
@@ -105,7 +105,7 @@ export default function AboutPage() {
           ))}
         </dl>
         <p className="mt-6 flex flex-wrap items-center gap-3">
-          <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill" data-variant="magenta">
+          <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill" data-variant="primary">
             Download the CV (PDF)
           </a>
           <a href={`mailto:${identity.email}`} className="pill">

@@ -49,7 +49,7 @@ export function AskWidget() {
           Your question for Moci
         </label>
         <input id="ask-widget" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Is she open to work?" className="min-w-0 flex-1 bg-transparent py-2 outline-none placeholder:text-muted" />
-        <button type="submit" className="pill" data-variant="magenta" data-shape="icon" data-size="sm" aria-label="Ask">
+        <button type="submit" className="pill" data-variant="primary" data-shape="icon" data-size="sm" aria-label="Ask">
           <SendIcon width={16} height={16} />
         </button>
       </form>

@@ -20,7 +20,7 @@ function arc(r: number, startH: number, endH: number) {
 }
 
 /**
- * A 24-hour ring in the visitor's local time: Adelia's working day (magenta, outer),
+ * A 24-hour ring in the visitor's local time: Adelia's working day (blue, outer),
  * the visitor's 9–18 (cobalt, inner) and where they overlap (lime).
  */
 export function OverlapRing() {

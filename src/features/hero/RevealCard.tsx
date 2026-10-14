@@ -30,7 +30,7 @@ export function RevealCard({ className }: { className?: string }) {
           <p className="mt-3 text-16 leading-snug">{bio.availability}</p>
           <p className="mt-1 text-14 text-muted">Replies within a day · {identity.timeZoneLabel}</p>
           <div className="mt-auto flex flex-wrap gap-2 pt-4">
-            <button type="button" className="pill" data-size="sm" data-variant="magenta" onClick={() => dispatch({ type: "open", panel: "brief" })}>
+            <button type="button" className="pill" data-size="sm" data-variant="primary" onClick={() => dispatch({ type: "open", panel: "brief" })}>
               Read the 40s brief
             </button>
             <button

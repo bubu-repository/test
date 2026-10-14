@@ -280,7 +280,7 @@ export function DailyPack() {
       <div className="daily__actions">
         {!s.opened ? (
           <>
-            <button type="button" className="pill" data-variant="magenta" onClick={open} data-sfx="off">
+            <button type="button" className="pill" data-variant="primary" onClick={open} data-sfx="off">
               Tear it open
             </button>
             <p className="text-14 text-muted">Or drag across the strip at the top of the pack.</p>

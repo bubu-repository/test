@@ -81,7 +81,7 @@ function unband(v: number, reach: number): number {
 type Sample = { t: number; x: number; y: number };
 
 /**
- * The ID badge: a real CR80 card on a magenta lanyard. Front: a guilloche band with the slot
+ * The ID badge: a real CR80 card on a blue lanyard. Front: a guilloche band with the slot
  * punched through, a photo, name and role, printed fields, a barcode, a holographic seal that
  * shifts as the card swings, and the open-to-work status. Back: a magnetic stripe, a QR code,
  * a return address and a signature panel. Drag it and it swings back on its lanyard; click,

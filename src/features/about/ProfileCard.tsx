@@ -21,7 +21,7 @@ export function ProfileCard() {
         <span className="live-dot" aria-hidden="true" /> {identity.location} · <LiveClock zone={identity.timeZone} className="font-semibold tabular-nums" /> WIB
       </p>
       <div className="mt-6 grid gap-2">
-        <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill w-full" data-variant="magenta">
+        <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill w-full" data-variant="primary">
           <DownloadIcon width={18} height={18} /> Download CV (PDF)
         </a>
         <CopyEmail className="w-full" variant="ink" />

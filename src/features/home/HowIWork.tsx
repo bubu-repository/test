@@ -14,7 +14,7 @@ export function HowIWork() {
           </h2>
           <p className="mt-6 max-w-[48ch] text-18 leading-relaxed text-muted">{bio.team}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/about" className="pill" data-variant="magenta">
+            <Link href="/about" className="pill" data-variant="primary">
               More about me
             </Link>
             <a href="/cv.pdf" download="Adelia-Tiara-CV.pdf" className="pill">

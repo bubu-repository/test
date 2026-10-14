@@ -185,7 +185,7 @@ export function CommandPalette() {
               <button
                 type="button"
                 className="pill"
-                data-variant="magenta"
+                data-variant="primary"
                 data-size="sm"
                 onClick={() => {
                   close();

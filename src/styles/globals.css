@@ -522,7 +522,7 @@
 @layer components {
   /*
    * A key: moulded plastic with a top sheen and a bottom edge, that presses in when you click it.
-   * Primary = magenta (white text on --accent-strong). Colour variants show their colour as a
+   * Primary = Aero blue (white text on --accent-strong). Colour variants show their colour as a
    * small LED dot.
    */
   .pill {
@@ -560,19 +560,19 @@
    * The primary key: the one vivid thing in view. Aero blue glass with a gloss on its top half and
    * a white label (5.5:1 on the label's band). The variant keeps its old name in the markup.
    */
-  .pill[data-variant="magenta"] {
+  .pill[data-variant="primary"] {
     --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 42%), linear-gradient(180deg, #0a64d0, #0855b8);
     --pill-fg: #ffffff;
     --pill-edge: rgba(255, 255, 255, 0.5);
     --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(4, 40, 100, 0.25), 0 2px 0 #08479c, 0 10px 22px rgba(10, 96, 204, 0.32);
   }
 
-  .pill[data-variant="magenta"] {
+  .pill[data-variant="primary"] {
     isolation: isolate;
     overflow: hidden;
   }
 
-  .pill[data-variant="magenta"]::after {
+  .pill[data-variant="primary"]::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -584,7 +584,7 @@
   }
 
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .pill[data-variant="magenta"]:hover::after {
+    .pill[data-variant="primary"]:hover::after {
       transform: translateX(130%);
       transition: transform 760ms var(--ease-out);
     }
@@ -703,7 +703,7 @@
       --pill-shadow: none;
     }
 
-    .pill[data-variant="magenta"]:hover {
+    .pill[data-variant="primary"]:hover {
       --pill-edge: rgba(255, 255, 255, 0.7);
       --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 2px 0 #08479c, 0 14px 28px rgba(10, 96, 204, 0.4);
     }
@@ -716,7 +716,7 @@
     --pill-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.14), 0 0 0 transparent;
   }
 
-  .pill[data-variant="magenta"]:active:not(:disabled) {
+  .pill[data-variant="primary"]:active:not(:disabled) {
     --pill-shadow: inset 0 2px 5px rgba(3, 30, 80, 0.45);
   }
 
@@ -788,7 +788,7 @@
     box-shadow: 0 0 5px color-mix(in srgb, var(--tone) 70%, transparent);
   }
 
-  .chip[data-tone="magenta"] {
+  .chip[data-tone="accent"] {
     --tone: var(--accent);
   }
 
@@ -880,7 +880,7 @@
     }
   }
 
-  /* Underlined link with a magenta marker that grows on hover. */
+  /* Underlined link with a blue marker that grows on hover. */
   .link {
     text-decoration: underline;
     text-decoration-thickness: 1.5px;
@@ -1949,7 +1949,7 @@ body:has(:is(.studio__panel, .gb-form, .dac) :focus-within) .float-actions {
     transform: translateX(22px);
   }
 
-  /* A machined knob with a magenta pointer. */
+  /* A machined knob with a blue pointer. */
   .knob {
     position: relative;
     display: grid;
@@ -2423,7 +2423,7 @@ html:not(:has(.world[data-ready])) .shore {
   color: var(--ink);
 }
 
-.on-water .pill:not([data-variant="light"]):not([data-variant="magenta"]) {
+.on-water .pill:not([data-variant="light"]):not([data-variant="primary"]) {
   -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
 }
@@ -3080,7 +3080,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   color: #6a778a;
 }
 
-/* Guilloche band: two families of fine rings over a cool blue, with a magenta hairline. */
+/* Guilloche band: two families of fine rings over a cool blue, with a pink hairline. */
 .idc__band {
   position: relative;
   display: flex;

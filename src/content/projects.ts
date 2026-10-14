@@ -8,7 +8,7 @@
  * layout, the agent and the CV can be built and reviewed now. Replace field by field.
  */
 
-export type Tone = "magenta" | "cobalt" | "lime" | "sun" | "violet" | "mint" | "sky" | "ink" | "pink" | "red";
+export type Tone = "accent" | "cobalt" | "lime" | "sun" | "violet" | "mint" | "sky" | "ink" | "pink" | "red";
 
 export type ArchNode = {
   id: string;
@@ -163,7 +163,7 @@ export const projects: Project[] = [
     name: "Tenderlens",
     year: "2026",
     kind: "AI brief for public tenders",
-    tone: "magenta",
+    tone: "accent",
     rarity: "Holo rare",
     tagline: "Turns a 214-page government tender into one page a small contractor can decide on, with every claim cited.",
     prompt: "We spend three hours reading every tender package. Can something tell us in five minutes whether we should even bid?",

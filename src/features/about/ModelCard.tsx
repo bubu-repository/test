@@ -22,7 +22,7 @@ export function ModelCard() {
     <div className="widget rounded-[28px] p-6 md:p-10">
       <div className="flex flex-wrap items-center gap-3 border-b border-line pb-6">
         <span className="font-mono text-20 font-semibold">adelia-tiara</span>
-        <span className="chip" data-tone="magenta">
+        <span className="chip" data-tone="accent">
           {modelCard.version}
         </span>
         <span className="chip">Bekasi · {identity.timeZoneLabel}</span>

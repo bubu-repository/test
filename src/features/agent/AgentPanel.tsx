@@ -181,7 +181,7 @@ export function AgentPanel() {
             autoComplete="off"
             className="min-w-0 flex-1 bg-transparent py-2 text-16 outline-none placeholder:text-muted"
           />
-          <button type="submit" disabled={busy || !draft.trim()} className="pill" data-variant="magenta" data-shape="icon" data-size="sm" aria-label="Send">
+          <button type="submit" disabled={busy || !draft.trim()} className="pill" data-variant="primary" data-shape="icon" data-size="sm" aria-label="Send">
             <SendIcon width={18} height={18} />
           </button>
         </form>
