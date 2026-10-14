@@ -188,7 +188,9 @@ export function Studio() {
   const [words, setWords] = useState("");
   const piece = useRef<HTMLDivElement>(null);
   const ink = useRef<HTMLCanvasElement>(null);
-  const drag = useRef<{ id: string; dx: number; dy: number } | null>(null);
+  /** The sticker in your hand: moved by writing its style directly, committed to state when you let go. */
+  const drag = useRef<{ id: string; dx: number; dy: number; el: HTMLElement; x: number; y: number } | null>(null);
+  const [fresh, setFresh] = useState<string | null>(null);
   const drawing = useRef<Stroke | null>(null);
   const serial = useRef(0);
 
@@ -226,6 +228,13 @@ export function Studio() {
           const ctx = d.getContext("2d")!;
           ctx.clearRect(0, 0, d.width, d.height);
           ctx.drawImage(out, 0, 0);
+          // A little stamp, so a remake reads as a new print rather than a flicker.
+          const box = d.parentElement;
+          if (box) {
+            delete box.dataset.stamped;
+            void box.offsetWidth;
+            box.dataset.stamped = "";
+          }
         }
         setReady(true);
       } finally {
@@ -385,6 +394,7 @@ export function Studio() {
     const n = decor.length;
     setDecor((d) => [...d, { kind: "sticker", id, art, x: 0.5 + ((n % 3) - 1) * 0.12, y: 0.5 + ((Math.floor(n / 3) % 3) - 1) * 0.1, size: 0.2, rot: ((n * 37) % 30) - 15 }]);
     setSelected(id);
+    setFresh(id);
     setTool("move");
     sfx.pop();
   };
@@ -412,15 +422,32 @@ export function Studio() {
   const onItemDown = (e: ReactPointerEvent<HTMLElement>, d: Decor) => {
     if (tool !== "move") return;
     e.stopPropagation();
-    e.currentTarget.setPointerCapture(e.pointerId);
+    const el = e.currentTarget;
+    el.setPointerCapture(e.pointerId);
+    el.dataset.dragging = "";
     const [x, y] = local(e);
-    drag.current = { id: d.id, dx: x - d.x, dy: y - d.y };
+    drag.current = { id: d.id, dx: x - d.x, dy: y - d.y, el, x: d.x, y: d.y };
     setSelected(d.id);
   };
   const onItemMove = (e: ReactPointerEvent<HTMLElement>) => {
-    if (!drag.current) return;
+    const g = drag.current;
+    if (!g) return;
     const [x, y] = local(e);
-    patch(drag.current.id, { x: Math.min(1, Math.max(0, x - drag.current.dx)), y: Math.min(1, Math.max(0, y - drag.current.dy)) });
+    g.x = Math.min(1, Math.max(0, x - g.dx));
+    g.y = Math.min(1, Math.max(0, y - g.dy));
+    g.el.style.left = `${g.x * 100}%`;
+    g.el.style.top = `${g.y * 100}%`;
+  };
+  const onItemDrop = () => {
+    const g = drag.current;
+    if (!g) return;
+    drag.current = null;
+    delete g.el.dataset.dragging;
+    // Put down on top of the others (and drawn last in the saved image), where it was let go.
+    setDecor((all) => {
+      const it = all.find((v) => v.id === g.id);
+      return it ? [...all.filter((v) => v.id !== g.id), { ...it, x: g.x, y: g.y } as Decor] : all;
+    });
   };
   const onItemKey = (e: ReactKeyboardEvent<HTMLElement>, d: Decor) => {
     const step = e.shiftKey ? 0.05 : 0.01;
@@ -474,6 +501,11 @@ export function Studio() {
     toast({ title: `${what} saved`, body: isNew ? "It's in your downloads (nothing was uploaded), and the Maker sticker is yours." : "It's in your downloads. Nothing was uploaded.", tone: "sky", sticker: isNew ? "studio" : undefined });
   };
 
+  const failed = (what: string) => {
+    sfx.bump();
+    toast({ title: `Couldn't save the ${what}`, body: what === "GIF" ? "This device ran short of memory for it. Try the PNG, or a smaller layout." : "Try again in a moment.", tone: "magenta" });
+  };
+
   const savePng = async () => {
     if (!base.current) return;
     setBusy("Saving…");
@@ -481,6 +513,8 @@ export function Studio() {
       const out = await finished(base.current);
       download(await toBlob(out), `adelia-studio-${cfg.layout}.png`);
       saved("PNG");
+    } catch {
+      failed("PNG");
     } finally {
       setBusy(null);
     }
@@ -506,6 +540,8 @@ export function Studio() {
       const blob = encodeGif(hasBurst ? boomerang(frames) : frames, hasBurst ? 80 : 110);
       download(blob, `adelia-studio-${cfg.layout}.gif`);
       saved(hasBurst ? "Boomerang" : "GIF");
+    } catch {
+      failed("GIF");
     } finally {
       setBusy(null);
     }
@@ -609,9 +645,12 @@ export function Studio() {
                   data-tool={tool}
                   aria-label={d.kind === "sticker" ? `${DECOR.find((s) => s.id === d.art)?.name ?? "Sticker"} sticker: drag, or use the arrow keys, + and −, [ and ]` : `Words “${d.text}”: drag, or use the arrow keys`}
                   style={{ left: `${d.x * 100}%`, top: `${d.y * 100}%`, width: d.kind === "sticker" ? `${d.size * 100}%` : undefined, rotate: `${d.rot}deg`, ["--fs" as string]: d.kind === "text" ? `${d.size * 100}cqi` : undefined } as CSSProperties}
+                  data-new={d.id === fresh || undefined}
                   onPointerDown={(e) => onItemDown(e, d)}
                   onPointerMove={onItemMove}
-                  onPointerUp={() => (drag.current = null)}
+                  onPointerUp={onItemDrop}
+                  onPointerCancel={onItemDrop}
+                  onLostPointerCapture={onItemDrop}
                   onFocus={() => setSelected(d.id)}
                   onKeyDown={(e) => onItemKey(e, d)}
                 >
