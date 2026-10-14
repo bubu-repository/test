@@ -25,7 +25,7 @@ export default function LabPage() {
         lead="A studio that turns your words or a photo into felt, jelly, chrome or a holo sticker, one booster pack a day, and two tools for hiring teams. All of it runs in your browser."
       />
 
-      <section id="studio" aria-labelledby="studio-title" className="container-page scroll-mt-24 pt-4 pb-[clamp(96px,13vw,176px)]">
+      <section id="studio" aria-labelledby="studio-title" className="container-page scroll-mt-24 pt-4 pb-(--section)">
         <p className="type-eyebrow" data-tour="lab-tools">
           Studio
         </p>
@@ -39,7 +39,7 @@ export default function LabPage() {
         <Studio />
       </section>
 
-      <section id="pack" aria-labelledby="pack-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
+      <section id="pack" aria-labelledby="pack-title" className="container-page scroll-mt-24 pb-(--section)">
         <p className="type-eyebrow">Once a day</p>
         <h2 id="pack-title" className="type-title mt-2">
           Today&apos;s pack
@@ -52,7 +52,7 @@ export default function LabPage() {
 
       <WidgetBoard />
 
-      <section id="match" aria-labelledby="match-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
+      <section id="match" aria-labelledby="match-title" className="container-page scroll-mt-24 pb-(--section)">
         <p className="type-eyebrow">For hiring teams</p>
         <h2 id="match-title" className="type-title mt-2">
           Does she fit your role?
@@ -61,7 +61,7 @@ export default function LabPage() {
         <JdMatcher />
       </section>
 
-      <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
+      <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-(--section-end)">
         <p className="type-eyebrow">If I were a model</p>
         <h2 id="model-title" className="type-title mt-2">
           Model card

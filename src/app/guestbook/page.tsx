@@ -23,7 +23,7 @@ export default function GuestbookPage() {
         }
         lead="Pick a sea creature and a colour, give it a line for me and whoever visits next, and let it go. It swims here with everyone else's. Tap any creature to read what it carries."
       />
-      <div className="pb-[clamp(72px,9vw,128px)]">
+      <div className="pb-(--section-end)">
         <GuestbookSea />
       </div>
     </PageTransition>

@@ -23,7 +23,7 @@ export async function copyEmail(): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(identity.email);
     sfx.success();
-    toast({ title: "Email copied", body: identity.email, tone: "lime", icon: "✉️" });
+    toast({ title: "Email copied", body: identity.email, tone: "lime", icon: "✉️" }, 2400);
     return true;
   } catch {
     toast({ title: "Couldn't copy", body: `Write to ${identity.email}`, tone: "sun", icon: "✉️" });
@@ -78,7 +78,7 @@ export function ActionHost() {
           document.body.append(a);
           a.click();
           a.remove();
-          toast({ title: "Downloading", body: action.filename ?? action.href, tone: "sky", icon: "📄" });
+          toast({ title: "Downloading", body: action.filename ?? action.href, tone: "sky", icon: "📄" }, 2400);
           return;
         }
         case "lens":

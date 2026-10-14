@@ -15,6 +15,7 @@ import { Tour } from "../tour/Tour";
 import { WorldHost } from "../world/WorldHost";
 import { ActionHost } from "./ActionHost";
 import { CheatWhale } from "./CheatWhale";
+import { CursorHint } from "./CursorHint";
 import { FloatingActions } from "./FloatingActions";
 import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { Toasts } from "./Toasts";
@@ -152,6 +153,7 @@ export function SiteChrome() {
       {on("shortcuts") && <ShortcutSheet />}
       {agentOpen && <AgentPanel />}
       <CheatWhale />
+      <CursorHint />
       <Toasts />
       <FloatingActions />
       <Tour />

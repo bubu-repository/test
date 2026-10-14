@@ -48,7 +48,7 @@ export function Reveal({ as: Tag = "div", itemAs: Item = "div", className, itemC
           observer.unobserve(item);
         });
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+      { rootMargin: "0px 0px 15% 0px", threshold: 0 },
     );
 
     for (const item of items) observer.observe(item);

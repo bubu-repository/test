@@ -25,8 +25,6 @@ export function CopyEmail({ className, variant = "magenta", size, label = "Copy 
       <button
         type="button"
         data-tour={tour ? "email" : undefined}
-        data-cursor="Copy"
-        data-magnetic="0.2"
         className={cn("pill js-only", className)}
         data-variant={state === "copied" ? "lime" : variant}
         data-size={size}

@@ -48,12 +48,12 @@ export default function WorkPage() {
         </ul>
       </PageHeader>
 
-      <section aria-label="Case studies" className="container-page pt-12 pb-[clamp(96px,13vw,176px)] md:pt-16">
+      <section aria-label="Case studies" className="container-page pt-12 pb-(--section) md:pt-16">
         {/* CONTOH — ganti dengan data asli */}
         <WorkCards projects={projects} headingLevel={2} />
       </section>
 
-      <section aria-labelledby="also-title" className="container-page pb-[clamp(96px,13vw,176px)]">
+      <section aria-labelledby="also-title" className="container-page pb-(--section)">
         <h2 id="also-title" className="type-title">
           Also on this site
         </h2>

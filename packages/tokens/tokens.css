@@ -147,6 +147,11 @@
   --radius-lg: 32px;
   --radius-pill: 999px;
 
+  /* Rhythm: between top-level sections, inside a section, and before the footer */
+  --section: clamp(88px, 10vw, 144px);
+  --subsection: clamp(56px, 6vw, 80px);
+  --section-end: clamp(72px, 8vw, 112px);
+
   /* Depth: things sit on the desk (see --lift*, --bevel and --recess per theme) */
   --shadow-sm: var(--lift-sm);
   --shadow-lg: var(--lift-lg);

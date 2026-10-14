@@ -3,7 +3,7 @@ import { CdShelf } from "./CdShelf";
 /** About: off the clock. The games that shaped her, on a CD shelf. (Her songs are on the DAC on her desk.) */
 export function OffTheClock() {
   return (
-    <section id="off-the-clock" aria-labelledby="otc-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
+    <section id="off-the-clock" aria-labelledby="otc-title" className="container-page scroll-mt-24 pb-(--section)">
       <p className="type-eyebrow">Off the clock</p>
       <h2 id="otc-title" className="type-title mt-2">
         The games that taught me design

@@ -29,7 +29,7 @@ export function Keychain() {
       <ul className="keychain__tags">
         {TAGS.map((t, i) => (
           <li key={t.href} style={{ ["--i" as string]: i, ["--tag" as string]: t.tint }}>
-            <Link href={t.href} className="keychain__tag" draggable={false} data-cursor="Go" onMouseEnter={() => sfx.tick()}>
+            <Link href={t.href} className="keychain__tag" draggable={false} onMouseEnter={() => sfx.tick()}>
               <span className="keychain__hole" aria-hidden="true" />
               <span className="keychain__label">{t.label}</span>
             </Link>

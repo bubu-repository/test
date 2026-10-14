@@ -18,7 +18,7 @@ export function Polaroid({ project, tilt = 0, className }: { project: Project; t
         className={cn("polaroid polaroid--lift relative block w-full select-none", className)}
         style={{ ["--tilt" as string]: `${tilt}deg` }}
         draggable={false}
-        data-cursor="Open"
+       
         data-tour={`polaroid-${project.slug}`}
       >
         <span className="tape" aria-hidden="true" />

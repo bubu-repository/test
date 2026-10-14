@@ -20,11 +20,11 @@ import { WidgetTitle } from "./widgets";
 function Corner({ href, label, onClick }: { href?: string; label: string; onClick?: () => void }) {
   const cls = "demo-corner";
   return href ? (
-    <Link href={href} className={cls} aria-label={label} data-cursor="Open">
+    <Link href={href} className={cls} aria-label={label}>
       <ArrowUpRightIcon width={16} height={16} />
     </Link>
   ) : (
-    <button type="button" className={cls} aria-label={label} onClick={onClick} data-cursor="Open">
+    <button type="button" className={cls} aria-label={label} onClick={onClick}>
       <ArrowUpRightIcon width={16} height={16} />
     </button>
   );

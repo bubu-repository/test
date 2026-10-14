@@ -173,7 +173,7 @@ export function WidgetBoard() {
   };
 
   return (
-    <section id="widgets" aria-labelledby="widgets-title" className="container-page pb-[clamp(96px,13vw,176px)]">
+    <section id="widgets" aria-labelledby="widgets-title" className="container-page pb-(--section)">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
         <div className="max-w-[40rem]">
           <p className="type-eyebrow">Right now</p>

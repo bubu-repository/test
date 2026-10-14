@@ -15,7 +15,7 @@ export function WorkCards({ projects, headingLevel = 3 }: { projects: Project[];
     <ul className="work-cards">
       {projects.map((p, i) => (
         <li key={p.slug} className={i === 0 ? "work-card work-card--wide" : i === 1 ? "work-card work-card--wide work-card--flip" : "work-card"}>
-          <Link href={`/work/${p.slug}`} className="work-card__link" data-cursor="Read" data-tour={i === 0 ? "work-card" : undefined}>
+          <Link href={`/work/${p.slug}`} className="work-card__link" data-tour={i === 0 ? "work-card" : undefined}>
             <div className={`work-card__stage case-stage--${p.slug}`} aria-hidden="true">
               <Screen id={KEY_SCREEN[p.slug]} className="work-card__phone" />
             </div>

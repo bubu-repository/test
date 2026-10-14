@@ -173,7 +173,7 @@ export default function ColophonPage() {
         lead="This site is a product too. Here's its AI agent, how it's kept honest, an eval you can run right now, and the rest of the stack."
       />
 
-      <section aria-labelledby="moci-title" className="container-page pt-12 pb-[clamp(72px,9vw,128px)] md:pt-16">
+      <section aria-labelledby="moci-title" className="container-page pt-12 pb-(--section-end) md:pt-16">
         <p className="type-eyebrow">The agent</p>
         <h2 id="moci-title" className="type-title mt-2">
           Moci, two brains
@@ -206,7 +206,7 @@ export default function ColophonPage() {
         </p>
       </section>
 
-      <section id="guards" aria-labelledby="guards-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
+      <section id="guards" aria-labelledby="guards-title" className="container-page scroll-mt-24 pb-(--section-end)">
         <p className="type-eyebrow">Guardrails</p>
         <h2 id="guards-title" className="type-title mt-2">
           Checked when this page was built
@@ -218,7 +218,7 @@ export default function ColophonPage() {
         <GuardTable checks={guards} />
       </section>
 
-      <section id="eval" aria-labelledby="eval-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
+      <section id="eval" aria-labelledby="eval-title" className="container-page scroll-mt-24 pb-(--section-end)">
         <p className="type-eyebrow">Evals</p>
         <h2 id="eval-title" className="type-title mt-2">
           Moci&apos;s eval, in your browser
@@ -251,7 +251,7 @@ export default function ColophonPage() {
       </section>
 
       {perf.measuredOn && (
-        <section id="speed" aria-labelledby="speed-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
+        <section id="speed" aria-labelledby="speed-title" className="container-page scroll-mt-24 pb-(--section-end)">
           <p className="type-eyebrow">On a cheap phone</p>
           <h2 id="speed-title" className="type-title mt-2">
             What this site costs to load
@@ -287,7 +287,7 @@ export default function ColophonPage() {
         </section>
       )}
 
-      <section aria-labelledby="stack-title" className="container-page pb-[clamp(96px,13vw,176px)]">
+      <section aria-labelledby="stack-title" className="container-page pb-(--section)">
         <p className="type-eyebrow">The rest</p>
         <h2 id="stack-title" className="type-title mt-2">
           The stack

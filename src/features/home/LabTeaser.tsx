@@ -4,7 +4,7 @@ import { MOCI_CASES } from "@/features/agent/evals";
 /** Home: the site is a product too. A door to how it's built (Moci and its eval), and to the lab. */
 export function LabTeaser() {
   return (
-    <section aria-labelledby="lab-teaser-title" className="container-page pb-[clamp(72px,9vw,128px)]">
+    <section aria-labelledby="lab-teaser-title" className="container-page pb-(--section-end)">
       <div className="widget flex flex-col items-start gap-5 p-7 md:flex-row md:items-center md:justify-between md:p-9">
         <div>
           <p className="type-eyebrow">This site</p>

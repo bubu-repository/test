@@ -78,7 +78,7 @@ export function HoloCard({
       data-finish={rarity.finish}
       style={{ "--i": rarity.rank, "--frame": colour.frame, "--tone-ink": colour.ink } as CSSProperties}
       data-tour={morph ? `card-${project.slug}` : undefined}
-      data-cursor="Read"
+     
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       onPointerEnter={() => sfx.tick()}

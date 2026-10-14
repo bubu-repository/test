@@ -17,7 +17,6 @@ export function SoundToggle({ className }: { className?: string }) {
       type="button"
       aria-label="Sound effects"
       aria-pressed={on}
-      data-cursor={on ? "Mute" : "Sound"}
       onClick={() => {
         applySound(!on, { persist: true });
         if (!on) sfx.success();

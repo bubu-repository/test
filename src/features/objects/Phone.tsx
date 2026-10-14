@@ -59,7 +59,7 @@ export function Phone() {
               sfx.whoosh();
               void dispatch({ type: "tour" });
             }}
-            data-cursor="Enter"
+           
           >
             Tap to enter · 40s tour
           </button>
