@@ -381,7 +381,7 @@ const DROP_ICON = "M50 25c-2.6 4.2-6 7.2-6 10.8a6 6 0 0 0 12 0c0-3.6-3.4-6.6-6-1
 const HEART_ICON = "M50 41.5c-5-3.4-7.6-6-7.6-9.2 0-2.3 1.7-4 3.8-4 1.6 0 2.9.9 3.8 2.2.9-1.3 2.2-2.2 3.8-2.2 2.1 0 3.8 1.7 3.8 4 0 3.2-2.6 5.8-7.6 9.2Z";
 const CARDS: { r: number; paint: Paint; icon: string; ink: Paint }[] = [
   { r: -17, paint: { stops: [[0, SKY_2], [0.5, AZURE], [1, BLUE]] }, icon: DROP_ICON, ink: { stops: [[0, AQUA], [1, BLUE]] } },
-  { r: 0, paint: { stops: [[0, SKY], [0.5, AQUA], [1, "#3FC6E8"]] }, icon: roundPoly(starPts(50, 35, 3.4, five(7.6)), [0.22, 0.12]), ink: SUNNY },
+  { r: 0, paint: { stops: [[0, SKY], [0.55, AQUA], [1, AZURE]] }, icon: roundPoly(starPts(50, 35, 3.4, five(7.6)), [0.22, 0.12]), ink: SUNNY },
   { r: 17, paint: PINKY, icon: HEART_ICON, ink: PINKY },
 ];
 
