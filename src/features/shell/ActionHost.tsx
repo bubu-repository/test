@@ -101,6 +101,9 @@ export function ActionHost() {
           wave();
           sfx.pop();
           return;
+        case "konami":
+          window.dispatchEvent(new Event("site:konami"));
+          return;
         case "highlight": {
           const el = findVisible(action.target);
           if (!el) return;

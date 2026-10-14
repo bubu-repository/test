@@ -7,7 +7,7 @@ import { Dialog } from "@/components/Dialog";
 import { dispatch } from "@/lib/actions";
 import { cn } from "@/lib/cn";
 import { sfx } from "@/lib/sound";
-import { bump } from "@/lib/stickers";
+import { bump, STICKERS, stickerStore } from "@/lib/stickers";
 import { ui, useUI } from "@/lib/ui";
 import { complete, routeToCwd, run, type Line } from "./shell";
 
@@ -86,10 +86,17 @@ export function TerminalScreen({ titleId: givenId, onClose, autoFocus = false, h
     const nextHistory = [...history, value];
     setHistory(nextHistory);
     const result = run(value, cwd, nextHistory);
-    bump("terminal", 5, "shell");
+    // The sticker is announced in the terminal's own voice, not with a toast behind it.
+    const had = stickerStore.get().unlocked.includes("shell");
+    bump("terminal", 5, "shell", { silent: true });
+    const earned = !had && stickerStore.get().unlocked.includes("shell");
+    const lines = earned
+      ? [...result.lines, { kind: "out" as const, text: `★ sticker unlocked: shell native (${stickerStore.get().unlocked.length}/${STICKERS.length}) · type \`stickers\``, tone: "accent" as const }]
+      : result.lines;
     sfx.pop();
+    if (earned) sfx.sparkle();
     if (result.clear) setEntries([]);
-    else setEntries((e) => [...e, { id: entryId++, prompt, input: value, lines: result.lines }]);
+    else setEntries((e) => [...e, { id: entryId++, prompt, input: value, lines }]);
     if (result.cwd) setCwd(result.cwd);
     if (result.close) close();
     for (const action of result.actions ?? []) void dispatch(action);

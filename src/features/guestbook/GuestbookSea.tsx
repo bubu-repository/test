@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import { COLOR_LABEL, NAME_MAX, NOTE_COLORS, NOTE_MAX, SPECIES, SPECIES_LABEL, type Note, type NoteColor, type Species } from "@/content/guestbook";
 import { sfx } from "@/lib/sound";
+import { readJSON, writeJSON } from "@/lib/storage";
 import { unlock } from "@/lib/stickers";
 import { toast } from "@/lib/ui";
 import { useLive } from "../live/live-store";
@@ -10,6 +11,8 @@ import { Creature, JELLY, SPECIES_SCALE } from "./Creature";
 
 /** How many creatures swim at once (the newest); the list shows them all. */
 const IN_THE_SEA = 40;
+const MINE_KEY = "adelia:my-notes";
+const calm = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function hash(text: string): number {
   let h = 2166136261;
@@ -45,7 +48,7 @@ function motion(note: Note): CSSProperties {
   };
 }
 
-function SeaCreature({ note, open, fresh, onOpen }: { note: Note; open: boolean; fresh: boolean; onOpen: (note: Note, el: HTMLButtonElement) => void }) {
+function SeaCreature({ note, open, fresh, mine, justNow, onOpen }: { note: Note; open: boolean; fresh: boolean; mine: boolean; justNow: boolean; onOpen: (note: Note, el: HTMLButtonElement) => void }) {
   const h = hash(note.id);
   const dir = note.species === "crab" ? (h & 2 ? "left" : "right") : h & 1 ? "left" : "right";
   return (
@@ -56,8 +59,11 @@ function SeaCreature({ note, open, fresh, onOpen }: { note: Note; open: boolean;
       data-dir={dir}
       data-open={open || undefined}
       data-fresh={fresh || undefined}
+      data-mine={mine || undefined}
+      data-just-now={justNow || undefined}
+      data-note={note.id}
       style={motion(note)}
-      aria-label={`${note.name}'s ${COLOR_LABEL[note.color].toLowerCase()} ${SPECIES_LABEL[note.species].toLowerCase()}: read the note`}
+      aria-label={`${mine ? "Your" : `${note.name}'s`} ${COLOR_LABEL[note.color].toLowerCase()} ${SPECIES_LABEL[note.species].toLowerCase()}: read the note`}
       aria-expanded={open}
       onClick={(e) => onOpen(note, e.currentTarget)}
     >
@@ -66,7 +72,7 @@ function SeaCreature({ note, open, fresh, onOpen }: { note: Note; open: boolean;
           <Creature species={note.species} color={note.color} seed={h} />
         </span>
         <span className="gb-creature__name" aria-hidden="true">
-          {note.name}
+          {mine ? `You · ${justNow ? "just now" : note.name}` : note.name}
         </span>
       </span>
     </button>
@@ -250,7 +256,7 @@ function ReleaseForm({ onReleased }: { onReleased: (note: Note, from: DOMRect | 
       <p id="gb-error" className="text-14 font-semibold text-red" role="alert">
         {error}
       </p>
-      <button type="submit" className="pill mt-3 w-full" data-variant="magenta" disabled={busy}>
+      <button type="submit" className="pill mt-3 w-full" data-variant="magenta" aria-disabled={busy || undefined}>
         {busy ? "Releasing…" : "Release into the sea"}
       </button>
       <p className="mt-3 text-12 text-muted">Links are removed and rude words masked. Everyone here can see it.</p>
@@ -267,6 +273,10 @@ function ReleaseForm({ onReleased }: { onReleased: (note: Note, from: DOMRect | 
 export function GuestbookSea() {
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [freshId, setFreshId] = useState<string | null>(null);
+  const [justNow, setJustNow] = useState<string | null>(null);
+  // The creatures this browser released, so yours is still yours after a reload. Creatures only
+  // render once the notes have loaded, so reading this on the first client render is safe.
+  const [mine, setMine] = useState<string[]>(() => (typeof window === "undefined" ? [] : readJSON<string[]>(MINE_KEY, [])));
   const [open, setOpen] = useState<{ note: Note; x: number; y: number; below: boolean } | null>(null);
   const [list, setList] = useState(false);
   const nonce = useLive((s) => s.noteNonce);
@@ -315,21 +325,37 @@ export function GuestbookSea() {
     setOpen({ note, x, y, below });
   };
 
+  const swimming = (notes ?? []).slice(0, IN_THE_SEA);
+
   const onReleased = (note: Note, from: DOMRect | null) => {
     setNotes((n) => [note, ...(n ?? []).filter((x) => x.id !== note.id)]);
     setFreshId(note.id);
+    setJustNow(note.id);
+    window.setTimeout(() => setJustNow((id) => (id === note.id ? null : id)), 6000);
+    const nextMine = [note.id, ...mine.filter((id) => id !== note.id)].slice(0, 10);
+    setMine(nextMine);
+    writeJSON(MINE_KEY, nextMine);
     sfx.success();
     const isNew = unlock("signed", { silent: true });
     toast({ title: "Released into the sea", body: isNew ? "Everyone here can see it swim. The Signed sticker is yours." : "Everyone here right now can see it swim.", tone: "mint", sticker: isNew ? "signed" : undefined });
-    // A splash where it went in.
-    const sea = seaRef.current?.getBoundingClientRect();
-    const x = sea ? sea.left + sea.width * 0.5 : from ? from.left + from.width / 2 : window.innerWidth / 2;
-    const y = sea ? sea.top + 40 : from?.top ?? 200;
-    window.dispatchEvent(new CustomEvent("world:bubbles", { detail: { x, y } }));
-    seaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    seaRef.current?.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "start" });
+    // Once it's in the water: a splash where it is, and focus on it, so you can open its note.
+    window.setTimeout(() => {
+      const el = seaRef.current?.querySelector<HTMLButtonElement>(`[data-note="${note.id}"]`);
+      const r = el?.getBoundingClientRect() ?? from;
+      if (r) window.dispatchEvent(new CustomEvent("world:bubbles", { detail: { x: r.left + r.width / 2, y: r.top + r.height / 2 } }));
+      el?.focus({ preventScroll: true });
+    }, calm() ? 0 : 700);
   };
 
-  const swimming = useMemo(() => (notes ?? []).slice(0, IN_THE_SEA), [notes]);
+  const findMine = () => {
+    const el = [...(seaRef.current?.querySelectorAll<HTMLButtonElement>("[data-mine]") ?? [])][0];
+    const note = el && swimming.find((n) => n.id === el.dataset.note);
+    if (!el || !note) return;
+    el.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "center" });
+    el.focus({ preventScroll: true });
+    onOpen(note, el);
+  };
 
   return (
     <section aria-labelledby="gb-sea-title" className="gb">
@@ -341,7 +367,7 @@ export function GuestbookSea() {
         <div ref={seaRef} className="gb-water" data-waterline="3">
           {notes === null && <p className="gb-sea__status">Looking into the water…</p>}
           {swimming.map((n) => (
-            <SeaCreature key={n.id} note={n} open={open?.note.id === n.id} fresh={n.id === freshId} onOpen={onOpen} />
+            <SeaCreature key={n.id} note={n} open={open?.note.id === n.id} fresh={n.id === freshId} mine={mine.includes(n.id)} justNow={n.id === justNow} onOpen={onOpen} />
           ))}
           <Seabed />
           {open && <NoteCard note={open.note} pos={open} onClose={close} />}
@@ -355,6 +381,11 @@ export function GuestbookSea() {
         <button type="button" className="pill" aria-expanded={list} aria-controls="gb-list" onClick={() => setList((v) => !v)}>
           {list ? "Hide the list" : `Read them all as a list (${notes?.length ?? 0})`}
         </button>
+        {swimming.some((n) => mine.includes(n.id)) && (
+          <button type="button" className="pill" data-variant="ghost" onClick={findMine}>
+            Find my creature
+          </button>
+        )}
         <p className="text-14 text-muted">Tap a creature to read what it carries.</p>
       </div>
       {list && (

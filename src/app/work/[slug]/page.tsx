@@ -6,6 +6,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@/components/icons";
 import { PageTransition } from "@/components/PageTransition";
 import { adjacentProjects, getProject, projects, type Project } from "@/content/projects";
 import { AskAboutProject } from "@/features/case/AskAboutProject";
+import { ReadStamp } from "@/features/work/ReadMark";
 import { CaseStudyShell } from "@/features/case/CaseStudyShell";
 import { Engineering } from "@/features/case/Engineering";
 import { TraceRail, type TraceStep } from "@/features/case/TraceRail";
@@ -160,7 +161,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
       {/* CONTOH — ganti dengan data asli (all copy comes from src/content/projects.ts, the screens from features/screens) */}
       <CaseStudyShell project={project} next={next} index={i} total={projects.length} cover={<Cover project={project} />}>
         <div className="container-page grid gap-10 py-16 md:py-24 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-20">
-          <TraceRail steps={steps} slug={project.slug} />
+          <TraceRail steps={steps} />
 
           <article id="case-body" className="min-w-0 space-y-24 md:space-y-36">
             {/* 01 Problem */}
@@ -527,6 +528,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                 {dir === "Previous case" ? <ArrowLeftIcon className="shrink-0" /> : null}
                 {dir}
                 {dir === "Next case" ? <ArrowRightIcon className="shrink-0" /> : null}
+                <ReadStamp slug={p.slug} />
               </p>
               <Polaroid project={p} tilt={tilt} />
             </li>

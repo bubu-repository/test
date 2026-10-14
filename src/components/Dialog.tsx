@@ -49,7 +49,9 @@ export function Dialog({ open, onClose, label, labelledBy, className, placement 
         onClose();
       }}
       onClose={() => {
-        if (open) onClose();
+        // The close event arrives a task later. If the dialog has been shown again since (a
+        // remount, or React re-running effects in development), that close is stale: ignore it.
+        if (open && !ref.current?.open) onClose();
       }}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();

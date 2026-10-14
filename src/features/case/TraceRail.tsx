@@ -2,21 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
-import { collect } from "@/lib/stickers";
 
 export type TraceStep = { id: string; label: string };
 
 /**
  * The case study's contents: which section you're reading, how far along you are, and how many
- * minutes are left at a calm reading pace. Also counts the visit for the sticker.
+ * minutes are left at a calm reading pace.
  */
-export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string }) {
+export function TraceRail({ steps }: { steps: TraceStep[] }) {
   const [active, setActive] = useState(steps[0]?.id);
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    collect("cases", slug, 4, "collector");
     const article = document.getElementById("case-body");
     const words = article?.innerText.split(/\s+/).length ?? 0;
     const sections = steps.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
@@ -49,7 +47,7 @@ export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string })
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
     };
-  }, [steps, slug]);
+  }, [steps]);
 
   return (
     <>

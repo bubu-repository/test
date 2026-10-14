@@ -343,7 +343,7 @@ export function PhoneWidget() {
           <Phone />
         </div>
       </div>
-      <p className="text-12 text-muted">A live shader: the clouds follow Bekasi&apos;s real weather, and your cursor parts them.</p>
+      <p className="text-12 text-muted">A live shader: the clouds follow Bekasi&apos;s real weather. Brush across them to part them.</p>
     </div>
   );
 }

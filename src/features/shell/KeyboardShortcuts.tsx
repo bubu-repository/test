@@ -88,5 +88,45 @@ export function KeyboardShortcuts() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
+  // The same code on a phone: eight quick swipes, then two taps (B, A).
+  useEffect(() => {
+    if (!window.matchMedia("(pointer: coarse)").matches) return;
+    let step = 0;
+    let start: { x: number; y: number; t: number } | null = null;
+
+    const onStart = (event: TouchEvent) => {
+      const t = event.touches[0];
+      start = event.touches.length === 1 && t ? { x: t.clientX, y: t.clientY, t: performance.now() } : null;
+    };
+    const onEnd = (event: TouchEvent) => {
+      const t = event.changedTouches[0];
+      if (!start || !t) return;
+      const dx = t.clientX - start.x;
+      const dy = t.clientY - start.y;
+      const quick = performance.now() - start.t < 400;
+      start = null;
+      if (Math.hypot(dx, dy) < 10) {
+        // Taps only count as B and A once the arrows are in; any other tap is just a tap.
+        if (step < 8) return;
+        step += 1;
+        if (step === KONAMI.length) {
+          step = 0;
+          window.dispatchEvent(new Event("site:konami"));
+        }
+        return;
+      }
+      if (!quick || Math.max(Math.abs(dx), Math.abs(dy)) < 40) return;
+      const key = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "ArrowRight" : "ArrowLeft") : dy > 0 ? "ArrowDown" : "ArrowUp";
+      step = key === KONAMI[step] ? step + 1 : key === "ArrowUp" ? (step === 2 ? 2 : 1) : 0;
+    };
+
+    window.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("touchend", onEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onStart);
+      window.removeEventListener("touchend", onEnd);
+    };
+  }, []);
+
   return null;
 }

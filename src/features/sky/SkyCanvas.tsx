@@ -77,11 +77,15 @@ export function SkyCanvas({ className }: { className?: string }) {
     };
 
     const state = { time: 52 + Math.random() * 20, mx: -1, my: -1, tx: -1, ty: -1, parted: 0, cover: 0, storm: 0 };
+    // Distance travelled per pointer, so a finger brushing across the phone counts as much as a mouse.
+    const trail = new Map<number, { x: number; y: number }>();
+    const enough = coarse ? 1200 : 2400;
     const onPointer = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
       const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
       if (!inside) {
         state.tx = state.ty = -1;
+        trail.delete(e.pointerId);
         return;
       }
       state.tx = (e.clientX - r.left) / r.width;
@@ -90,8 +94,10 @@ export function SkyCanvas({ className }: { className?: string }) {
         state.mx = state.tx;
         state.my = state.ty;
       }
-      state.parted += Math.abs(e.movementX) + Math.abs(e.movementY);
-      if (state.parted > 2400) unlock("clouds");
+      const prev = trail.get(e.pointerId);
+      if (prev) state.parted += Math.hypot(e.clientX - prev.x, e.clientY - prev.y);
+      trail.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (state.parted > enough) unlock("clouds");
       wake();
     };
 
@@ -164,7 +170,10 @@ export function SkyCanvas({ className }: { className?: string }) {
     });
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
     const onVisibility = () => !document.hidden && wake();
+    const onLift = (e: PointerEvent) => trail.delete(e.pointerId);
     window.addEventListener("pointermove", onPointer, { passive: true });
+    window.addEventListener("pointerup", onLift, { passive: true });
+    window.addEventListener("pointercancel", onLift, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
     resize();
 
@@ -174,6 +183,8 @@ export function SkyCanvas({ className }: { className?: string }) {
       ro.disconnect();
       mo.disconnect();
       window.removeEventListener("pointermove", onPointer);
+      window.removeEventListener("pointerup", onLift);
+      window.removeEventListener("pointercancel", onLift);
       document.removeEventListener("visibilitychange", onVisibility);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };

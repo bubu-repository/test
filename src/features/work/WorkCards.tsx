@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Project } from "@/content/projects";
 import { KEY_SCREEN } from "../screens/registry";
 import { Screen } from "../screens/Screen";
+import { ReadCta, ReadStamp } from "./ReadMark";
 
 /**
  * The work, readable in five seconds: each project as a card with its real key screen, its name,
@@ -24,6 +25,7 @@ export function WorkCards({ projects, headingLevel = 3 }: { projects: Project[];
                   {p.index} · {p.kind} · {p.year}
                 </span>
                 <span className="chip min-h-6 px-2.5 text-12 font-semibold">{p.context}</span>
+                <ReadStamp slug={p.slug} />
               </p>
               <H className="mt-3 text-48 leading-none font-bold tracking-[-0.045em]">{p.name}</H>
               <p className="mt-3 max-w-[46ch] text-18 leading-snug">{p.tagline}</p>
@@ -38,7 +40,9 @@ export function WorkCards({ projects, headingLevel = 3 }: { projects: Project[];
               <p className="mt-4 text-14 text-muted">
                 <span className="font-semibold text-ink">Role:</span> {p.role.title} · {p.timeline}
               </p>
-              <span className="link-arrow mt-5 text-16">Read the case study</span>
+              <span className="link-arrow mt-5 text-16">
+                <ReadCta slug={p.slug} />
+              </span>
             </div>
           </Link>
         </li>

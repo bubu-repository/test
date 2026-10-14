@@ -12,20 +12,34 @@ type Tier = {
 };
 
 /** Six tiers, after a set of game medals: plain metal first, then ribbons, then glow and sparkles. */
-const TIERS: Tier[] = [
-  { name: "Silver", coin: ["#EEF1F6", "#A3ABBB"], core: ["#C3C9D5", "#848C9E"] },
-  { name: "Jade", coin: ["#8AF2C0", "#17A56C"], core: ["#46DE8E", "#0E8F55"] },
-  { name: "Gold", coin: ["#FBE39A", "#F5A300"], core: ["#FFBE55", "#F07A00"], ribbon: ["#FFEBB0", "#F5C24A"] },
-  { name: "Sapphire", coin: ["#84CCFF", "#1460E8"], core: ["#4A93FF", "#0D3FC2"], ribbon: ["#C6EAFF", "#84CCFF"], glow: "#2C7DFF" },
-  { name: "Amethyst", coin: ["#CFC3EE", "#6448B8"], core: ["#A08BE0", "#4E38A8"], ribbon: ["#E6E0F5", "#B5A4E6"], glow: "#8968D4", sparkles: true },
-  { name: "Prism", coin: ["#F2C890", "#D8588F"], core: ["#E89A5A", "#AB366C"], ribbon: ["#F2B4D6", "#8968D4"], glow: "#D8588F", sparkles: true },
+const TIERS: (Tier & { at: number })[] = [
+  { name: "Silver", at: 3, coin: ["#EEF1F6", "#A3ABBB"], core: ["#C3C9D5", "#848C9E"] },
+  { name: "Jade", at: 5, coin: ["#8AF2C0", "#17A56C"], core: ["#46DE8E", "#0E8F55"] },
+  { name: "Gold", at: 8, coin: ["#FBE39A", "#F5A300"], core: ["#FFBE55", "#F07A00"], ribbon: ["#FFEBB0", "#F5C24A"] },
+  { name: "Sapphire", at: 11, coin: ["#84CCFF", "#1460E8"], core: ["#4A93FF", "#0D3FC2"], ribbon: ["#C6EAFF", "#84CCFF"], glow: "#2C7DFF" },
+  { name: "Amethyst", at: 14, coin: ["#CFC3EE", "#6448B8"], core: ["#A08BE0", "#4E38A8"], ribbon: ["#E6E0F5", "#B5A4E6"], glow: "#8968D4", sparkles: true },
+  // The whole set. Its threshold is the set's size, filled in below.
+  { name: "Prism", at: Infinity, coin: ["#FFE3F0", "#7FC8FF"], core: ["#FF9DC6", "#C2286F"], ribbon: ["#FFD6E8", "#8FD3FF"], glow: "#FF7EB6", sparkles: true },
 ];
 
-/** Which tier a collection of `count` out of `total` stickers has reached. */
+const atOf = (t: (typeof TIERS)[number], total: number) => (t.name === "Prism" ? total : Math.min(t.at, total - 1));
+
+/** The medal `count` out of `total` stickers has earned, or null below the first one. */
 export function medalTier(count: number, total: number) {
-  if (count >= total) return TIERS[5];
-  const i = Math.min(4, Math.floor((count / total) * 5.4));
-  return TIERS[i];
+  let earned: Tier | null = null;
+  for (const t of TIERS) if (count >= atOf(t, total)) earned = t;
+  return earned;
+}
+
+/** The next medal up and how many more stickers it needs, or null once the set is complete. */
+export function nextMedal(count: number, total: number) {
+  const t = TIERS.find((tier) => count < atOf(tier, total));
+  return t ? { name: t.name, need: atOf(t, total) - count } : null;
+}
+
+/** Where each medal sits along the progress bar, as fractions of the set. */
+export function medalMarks(total: number) {
+  return TIERS.slice(0, -1).map((t) => ({ name: t.name, at: atOf(t, total) / total }));
 }
 
 const rosette = (() => {
@@ -44,11 +58,21 @@ const spark = (x: number, y: number, r: number) =>
 
 /**
  * The sticker collection's medal: a coin with a white rosette and a star. It earns ribbons, then a
- * glow with rays, then sparkles, as the collection grows. Decorative; say the tier in text beside it.
+ * glow with rays, then sparkles, as the collection grows. Before the first medal it's an empty
+ * pressed outline where the coin will go. Decorative; say the tier in text beside it.
  */
 export function Medal({ count, total, size = 64 }: { count: number; total: number; size?: number }) {
   const id = useId();
   const t = medalTier(count, total);
+  if (!t) {
+    return (
+      <svg viewBox="0 0 100 110" width={size} height={size * 1.1} aria-hidden="true" className="shrink-0 overflow-visible">
+        <circle cx="50" cy="48" r="31" fill="#EEF3F9" />
+        <circle cx="50" cy="48" r="31" fill="none" stroke="#B8C9DE" strokeWidth="2" strokeDasharray="5 5" />
+        <path d="M50 39.5l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.1-5.4 3.1 1.3-6-4.6-4.1 6.1-.6Z" fill="#D3DEEB" />
+      </svg>
+    );
+  }
   return (
     <svg viewBox="0 0 100 110" width={size} height={size * 1.1} aria-hidden="true" className="shrink-0 overflow-visible">
       <defs>

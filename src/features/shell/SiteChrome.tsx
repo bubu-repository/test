@@ -4,9 +4,12 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { readJSON, writeJSON } from "@/lib/storage";
-import { flushStickers, hydrateStickers, unlock } from "@/lib/stickers";
+import { projects } from "@/content/projects";
+import type { SiteAction } from "@/lib/actions";
+import { flushStickers, hydrateStickers, stickerStore, unlock } from "@/lib/stickers";
 import { toast, ui, useUI } from "@/lib/ui";
 import { LiveLayer } from "../live/LiveLayer";
+import { today } from "../pack/pack-store";
 import { StickerLayer } from "../stickers/StickerLayer";
 import { Tour } from "../tour/Tour";
 import { WorldHost } from "../world/WorldHost";
@@ -46,24 +49,27 @@ function VisitTracker() {
     } catch {
       greeted = true;
     }
+    // Once per session, after six hours away, and never in the middle of a case study: the one
+    // thing worth coming back for.
     if (!greeted) {
       const away = Date.now() - visits.last;
-      if (visits.count > 0 && away > 6 * 3600_000) {
+      if (visits.count > 0 && away > 6 * 3600_000 && !pathname.startsWith("/work/")) {
         const days = Math.round(away / 86_400_000);
-        const where = visits.lastPath.startsWith("/work/") ? visits.lastPath.split("/")[2] : null;
-        window.setTimeout(
-          () =>
-            toast(
-              {
-                title: "Welcome back",
-                body: `${days > 1 ? `It's been ${days} days.` : "Good to see you again."}${where ? ` Last time you were reading ${where[0].toUpperCase()}${where.slice(1)}.` : ""}`,
-                tone: "sky",
-                icon: "👋",
-              },
-              6000,
-            ),
-          1500,
-        );
+        const counters = stickerStore.get().counters;
+        const read = counters.cases ?? 0;
+        const unread = projects.find((p) => !counters[`cases:${p.slug}`]);
+        const packWaiting = readJSON<{ day?: string }>("adelia:pack", {}).day !== today();
+        const hello = days > 1 ? `It's been ${days} days.` : "Good to see you again.";
+        let body = hello;
+        let action: { label: string; run: SiteAction } | undefined;
+        if (read > 0 && unread) {
+          body = `${hello} You've read ${read} of ${projects.length} case studies; next is ${unread.name}.`;
+          action = { label: `Read ${unread.name}`, run: { type: "navigate", href: `/work/${unread.slug}` } };
+        } else if (packWaiting) {
+          body = `${hello} Today's pack is sealed and waiting in the Lab.`;
+          action = { label: "Open it", run: { type: "navigate", href: "/lab#pack" } };
+        }
+        window.setTimeout(() => toast({ title: "Welcome back", body, tone: "sky", action }, 6000), 1500);
       }
       writeJSON("adelia:visits", { count: visits.count + 1, last: Date.now(), lastPath: pathname });
     }

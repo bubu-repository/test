@@ -71,7 +71,7 @@ function buildFs(): Dir {
       "README.md": file(`# adelia.cc\n${identity.name} · ${identity.role} · ${identity.location}\n${tagline}\n\nTry: ls, cd work, cat README.md, open tenderlens, ask "is she available?", help`),
       "contact.txt": file(`email: ${identity.email}\nhours: ${identity.workingHours.start}:00–${identity.workingHours.end}:00 ${identity.timeZoneLabel}\n${bio.availability}`),
       "now.txt": file(bio.now),
-      ".secret": file("↑ ↑ ↓ ↓ ← → ← → B A\nEnter it anywhere on the site. Not in here."),
+      ".secret": file("↑ ↑ ↓ ↓ ← → ← → B A\nPress it anywhere on the site.\nOn a phone, swipe it and then tap twice.\nNo patience? Type `konami`."),
     },
   };
 }
@@ -111,6 +111,7 @@ export function routeToCwd(pathname: string): string {
 export const COMMANDS = [
   "help", "ls", "cd", "pwd", "cat", "open", "whoami", "neofetch", "ask", "moci", "sound", "tour",
   "email", "cv", "clear", "history", "date", "echo", "stickers", "brief", "exit", "sudo",
+  "konami",
 ];
 
 export function complete(input: string, cwd: string): string | null {
@@ -268,6 +269,9 @@ export function run(raw: string, cwd: string, history: string[]): ShellResult {
         };
       }
       return { lines: [{ kind: "out", text: "visitor is not in the sudoers file. This incident will be reported to Moci. (Try `sudo hire adelia`.)", tone: "warn" }] };
+    case "konami":
+    case "uuddlrlrba":
+      return { lines: [{ kind: "out", text: "↑ ↑ ↓ ↓ ← → ← → B A. Close enough.", tone: "accent" }], actions: [{ type: "konami" }], close: true };
     case "rm":
       return { lines: [{ kind: "out", text: "rm: Moci is jelly, not reckless. Nothing was deleted.", tone: "warn" }] };
     case "vim":

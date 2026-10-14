@@ -8,7 +8,7 @@ import type { Project } from "@/content/projects";
 import { dispatch } from "@/lib/actions";
 import { cn } from "@/lib/cn";
 import { sfx } from "@/lib/sound";
-import { bump, collect } from "@/lib/stickers";
+import { bump } from "@/lib/stickers";
 import { think } from "../agent/brain";
 import { streamFromApi, streamOfflineText } from "../agent/agent-store";
 import { ArchitectureDiagram } from "./ArchitectureDiagram";
@@ -291,7 +291,6 @@ export function CaseChat({
     setEntries((list) => [...list, { id: uid(), kind: "beat", index }]);
     sfx.pop();
     scrollToLast();
-    if (index === beats.length - 1) collect("cases", project.slug, 3, "collector");
   };
 
   const reveal = (index: number) => {

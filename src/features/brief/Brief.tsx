@@ -9,7 +9,8 @@ import { projects } from "@/content/projects";
 import { dispatch } from "@/lib/actions";
 import { useVisitorZone } from "@/lib/hooks";
 import { formatHour, workingOverlap, zoneCity } from "@/lib/time";
-import { unlock } from "@/lib/stickers";
+import { Sticker } from "@/components/Sticker";
+import { stickerStore, unlock } from "@/lib/stickers";
 import { ui, useUI } from "@/lib/ui";
 
 const SECONDS = 40;
@@ -22,6 +23,9 @@ export function Brief() {
   const [paused, setPaused] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const zone = useVisitorZone();
   const titleId = useId();
+  // Earned here, so it's celebrated here: a toast would land behind the dialog.
+  const [hadSticker] = useState(() => stickerStore.get().unlocked.includes("speed"));
+  const earned = left === 0 && !hadSticker;
   const overlap = useMemo(() => {
     if (!zone) return null;
     const o = workingOverlap(zone);
@@ -37,7 +41,7 @@ export function Brief() {
   }, [open, paused, left]);
 
   useEffect(() => {
-    if (open && left === 0) unlock("speed");
+    if (open && left === 0) unlock("speed", { silent: true });
   }, [open, left]);
 
   const close = () => ui.set({ overlay: null });
@@ -65,15 +69,24 @@ export function Brief() {
                 style={{ transition: "stroke-dashoffset 1s linear" }}
               />
             </svg>
-            <span className="type-pixel relative text-16" aria-hidden="true">
-              {left === 0 ? "✓" : left}
-            </span>
+            {earned ? (
+              <Sticker id="speed" size={48} className="brief__sticker relative" />
+            ) : (
+              <span className="type-pixel relative text-16" aria-hidden="true">
+                {left === 0 ? "✓" : left}
+              </span>
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <p className="type-pixel text-ink">For recruiters in a hurry</p>
             <h2 id={titleId} className="font-display text-32 leading-none font-bold">
               The 40-second version
             </h2>
+            {earned && (
+              <p className="mt-1.5 text-14 text-muted" role="status">
+                Forty seconds, done. The Speed reader sticker is yours.
+              </p>
+            )}
           </div>
           <button type="button" className="pill" data-shape="icon" data-size="sm" aria-label={paused ? "Resume timer" : "Pause timer"} onClick={() => setPaused((p) => !p)} disabled={left === 0}>
             {paused ? <PlayIcon width={16} height={16} /> : <PauseIcon width={16} height={16} />}

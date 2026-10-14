@@ -18,7 +18,8 @@ export type SiteAction =
   | { type: "ask"; question: string }
   | { type: "toast"; message: string }
   | { type: "highlight"; target: string }
-  | { type: "wave" };
+  | { type: "wave" }
+  | { type: "konami" };
 
 type Handler = (action: SiteAction) => void | Promise<void>;
 
@@ -66,5 +67,7 @@ export function describeAction(action: SiteAction): string {
       return `highlight("${action.target}")`;
     case "wave":
       return "wave()";
+    case "konami":
+      return "konami()";
   }
 }
