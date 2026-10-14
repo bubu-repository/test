@@ -1,15 +1,14 @@
 "use client";
 
 import { IdBadge } from "@/features/hero/IdBadge";
-import { SeaSky } from "@/features/world/SeaSky";
 import { Aquarium } from "./Aquarium";
 import { DeskLaptop } from "./DeskLaptop";
 import { Dac, Monitor } from "./MusicRig";
 import { JellyKeychain, SealClock, WhalePlush } from "./Trinkets";
 
 /**
- * Her desk, in 2.5D: a glossy white desk under a window that looks out on the same sky and sea as
- * the home page. On it: the monitor (YouTube plays on it from the DAC), her ID card hanging off the
+ * Her desk, in 2.5D: a glossy white desk standing at the edge of the world's sea, the horizon
+ * along its back edge (on phones, a frosted glass shelf in the water). On it: the monitor (YouTube plays on it from the DAC), her ID card hanging off the
  * monitor, the DAC, her laptop (it opens to a small desktop), the aquarium (the door to the
  * guestbook), a seal-pup desk clock on Bekasi time, a whale plush and a jellyfish keychain.
  * On wide screens it is one scene; on phones the same things stand in a column, so every control
@@ -19,12 +18,8 @@ export function Desk() {
   return (
     <section id="desk" aria-label="Her desk" className="desk-wrap scroll-mt-24" data-xr="Desk · 2.5D scene: window, monitor, DAC, laptop, aquarium">
       <div className="desk">
-        <div className="desk__room on-water" aria-hidden="true">
-          <SeaSky className="desk__view" horizon={0.6} />
-          <span className="desk__mullion" />
-          <span className="desk__sill" />
-        </div>
-        <div className="desk__top" aria-hidden="true" />
+        {/* The desk's back edge is the waterline: the sky behind it, the sea below. */}
+        <div className="desk__top" aria-hidden="true" data-waterline="2" />
 
         <div className="desk__item desk__item--tank">
           <Aquarium />

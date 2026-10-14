@@ -10,7 +10,6 @@ import { dispatch } from "@/lib/actions";
 import { useNow, useVisitorZone } from "@/lib/hooks";
 import { probableStatus, zoneCity } from "@/lib/time";
 import { useLive } from "../live/live-store";
-import { SeaSky } from "../world/SeaSky";
 
 function Status() {
   const now = useNow();
@@ -31,7 +30,7 @@ function VisitorClock() {
 /** Under the case studies and the colophon: a quiet contact strip, so the work ends on the work. */
 function CompactFooter() {
   return (
-    <footer id="contact" className="mt-auto scroll-mt-20 border-t border-line" data-xr="SiteFooter · compact on reading pages">
+    <footer id="contact" className="footer-bar on-water mt-auto scroll-mt-20" data-xr="SiteFooter · compact on reading pages: a frosted bar in the deep">
       <div className="container-page flex flex-col gap-6 py-12 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-18 font-bold tracking-[-0.02em]">
@@ -64,9 +63,7 @@ export function SiteFooter() {
   if (path.startsWith("/work/") || path === "/colophon") return <CompactFooter />;
 
   return (
-    <footer id="contact" className="deep-sea on-water mt-auto scroll-mt-20" data-xr="SiteFooter · the deep end: contact card and the index">
-      {/* The deep end: the same water as the hero, further down. Press it for bubbles. */}
-      <SeaSky className="deep-sea__canvas" horizon={-0.6} />
+    <footer id="contact" className="deep-sea on-water mt-auto scroll-mt-20" data-xr="SiteFooter · the deep sea at the bottom of the world: contact card and the index">
       {/* Contact: the email is the headline. Copy, CV and the brief right under it. */}
       <div className="container-page pt-16 pb-14 md:pt-24">
         <div className="contact-card">

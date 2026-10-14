@@ -5,5 +5,5 @@ export const size = ogSize;
 export const contentType = ogContentType;
 
 export default function Image() {
-  return renderOg({ eyebrow: "Guestbook", title: "Sign the wall.", accent: "wall", subtitle: "Leave a note for Adelia and the next visitor. New notes appear live." });
+  return renderOg({ eyebrow: "Guestbook", title: "Leave a creature in the sea.", accent: "sea", subtitle: "Pick a sea creature, give it a note for Adelia and the next visitor, and let it swim." });
 }

@@ -25,16 +25,24 @@ The pink of reference image 5 is retired.
   horizon, aqua water (`#3CC8F0`) going down to deep sea blue (`#0A56B0`, `#073B86`), white clouds and
   sunlight, Aero grass green for "on" and "open". Aero blue `#1A8FE8` is the brand; text is a deep sea
   navy. Every pair is checked on `/styleguide`.
-- **Where the colour lives:** two live scenes from one WebGL shader (`SeaSky`): the hero, a window of
-  sky over sea, and the footer, the same water further down. The page between them is clear
-  sky-white with Apple-style frosted glass, so the case studies stay calm and readable.
+- **Where the colour lives:** everywhere, as one seamless world (changed in October 2026, after
+  references for real-object texture: Adelia asked for the sky and sea to be continuous, not blocks).
+  A single WebGL shader (`World`) on a fixed canvas behind every page: each page's header stands in
+  the sky, the waterline runs under it, the content floats in bright lagoon water, and the water
+  deepens into the deep sea at the footer. The layout steers it with markers (`data-waterline`,
+  `data-sky-text`, the footer); see the README's design rules. Text is white in the sky and the deep
+  sea and navy in the bright water, so the case studies stay readable.
+- **Materials:** objects you could touch. Cards and widgets are frosted acrylic (grain, sheen, a
+  thickness edge, a light that follows the pointer); labels are die-cut holographic stickers; the
+  guestbook creatures are clear jelly (清透) with small kawaii faces. Pink stays only as a small
+  accent (blush, a sticker bead, coral).
 - **Interactive, quietly:** the sun and a soft underwater light follow the pointer, a press in the water
   lets out a ring of light and bubbles, a few bubbles rise on their own, and the water darkens a little
   as the hero scrolls away. Reduced motion gets one still frame; no WebGL keeps a CSS gradient.
 - **Light only.** Dark mode and its toggle are removed. The water is a scene, not a theme.
 - **Style:** Apple-like type and layout, frosted glass for the dock, keys and cards (dark glass with
   white text on the water, white glass with dark text on the page). Moci's mark is a glossy Aero
-  bubble. No polka dots, stickers or toy effects.
+  bubble. No polka dots or toy effects; the stickers are real-looking holographic labels.
 - **Type:** Mona Sans for headings, text and keys; JetBrains Mono for printed labels. Nunito stays only
   for the playful corners (the Lab tools, the aquarium).
 - The Lab tools and the guestbook have their own themes (a real photo booth, a craft table, an
@@ -67,9 +75,12 @@ The pink of reference image 5 is retired.
   figure waits for her character). Licensed characters (Chiikawa and the others) are not drawn. The acrylic standee and keychain come
   later, when she sends them. The readable story, path and practical details stay below the
   desk.
-- **Guestbook:** a big aquarium. Visitors pick a sea creature (fish, jellyfish, octopus, turtle,
-  seahorse, pufferfish, crab, little whale) and its colour; creatures swim; click one to read
-  its note. Moderation and rate limits stay.
+- **Guestbook:** the open sea of the site itself, not a tank. Visitors pick a sea creature (fish,
+  jellyfish, octopus, turtle, seahorse, pufferfish, crab, little whale) and one of six jelly
+  colours, see it in a live preview with their message, and release it; it drops in from the
+  surface for everyone. Creatures swim; point at one for its name, press it to read its note
+  (Esc closes it). A list of every note stays one button away. Moderation and rate limits stay;
+  old notes get a creature from their id.
 - **Lab:** the five subdomain experiments and the toy box go. What stays or comes:
   - **Studio:** one tool, two inputs (text or photo). Materials shared by both: felt with running
     stitch, cross-stitch with a merrowed edge, embroidery, rhinestones and gems, glitter glue,
@@ -95,7 +106,8 @@ The pink of reference image 5 is retired.
    and sea in Aero blues.)
 2. The About desk. (Done. The DAC plays through YouTube; Kenshi Yonezu's "Umi no Yuurei" holds the
    place until her songs arrive. The synth MP3 player is gone; the CD shelf of games stays.)
-3. The guestbook aquarium.
+3. The guestbook aquarium. (Done, as the open sea: the world became one seamless sky and sea
+   behind every page at the same time. The widgets stay, restyled as frosted acrylic.)
 4. The Lab: Studio, booster pack, cleanup of the old experiments.
 
 ## Waiting on Adelia

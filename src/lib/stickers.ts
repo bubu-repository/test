@@ -34,7 +34,7 @@ export const STICKERS: StickerDef[] = [
   { id: "lost", name: "Lost & found", hint: "Find a page that doesn't exist.", emoji: "🧭" },
   { id: "context", name: "Long context", hint: "Score 20 in Context Window.", emoji: "🐍" },
   { id: "wave", name: "Hello neighbour", hint: "Wave at another visitor.", emoji: "🌊" },
-  { id: "signed", name: "Signed", hint: "Leave a note in the guestbook.", emoji: "✍️" },
+  { id: "signed", name: "Signed", hint: "Release a creature in the guestbook.", emoji: "✍️" },
   { id: "xray", name: "X-ray vision", hint: "See how the page is built.", emoji: "🩻" },
   { id: "konami", name: "Cheat code", hint: "A classic code, entered anywhere.", emoji: "🎮", secret: true },
 ];

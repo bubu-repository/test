@@ -70,7 +70,7 @@ function buildFs(): Dir {
           "cv.pdf": file("Binary file. Run `cv` to download it."),
         },
       },
-      guestbook: { route: "/guestbook", children: { "README.txt": file("Leave a note: open the guestbook page and write something nice.") } },
+      guestbook: { route: "/guestbook", children: { "README.txt": file("Leave a creature: open the guestbook, pick a sea creature and a colour, write a line and let it swim.") } },
       "README.md": file(`# adelia.cc\n${identity.name} · ${identity.role} · ${identity.location}\n${tagline}\n\nTry: ls, cd work, cat README.md, open tenderlens, ask "is she available?", help`),
       "contact.txt": file(`email: ${identity.email}\nhours: ${identity.workingHours.start}:00–${identity.workingHours.end}:00 ${identity.timeZoneLabel}\n${bio.availability}`),
       "now.txt": file(bio.now),

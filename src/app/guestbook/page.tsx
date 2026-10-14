@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
 import { PageHeader } from "@/components/PageHeader";
-import { GuestbookWall } from "@/features/guestbook/GuestbookWall";
+import { GuestbookSea } from "@/features/guestbook/GuestbookSea";
 
 export const metadata: Metadata = pageMeta({
   title: "Guestbook",
-  description: "Leave a note for Adelia Tiara and the next visitor. New notes appear for everyone on the wall, live.",
+  description: "Leave a sea creature with a note for Adelia Tiara and the next visitor. It swims in the guestbook's sea for everyone, live.",
   path: "/guestbook",
 });
 
@@ -18,13 +18,13 @@ export default function GuestbookPage() {
         label="Guestbook"
         title={
           <>
-            Sign the <span className="sticker-text">wall</span>.
+            Leave a creature in the <span className="sticker-text">sea</span>.
           </>
         }
-        lead="Leave a note for me and for whoever visits next. New notes show up for everyone here, live."
+        lead="Pick a sea creature and a colour, give it a line for me and whoever visits next, and let it go. It swims here with everyone else's. Tap any creature to read what it carries."
       />
-      <div className="container-page section-y">
-        <GuestbookWall />
+      <div className="pb-[clamp(72px,9vw,128px)]">
+        <GuestbookSea />
       </div>
     </PageTransition>
   );

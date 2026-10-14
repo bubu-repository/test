@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { SendIcon } from "@/components/icons";
 import { MociAvatar } from "@/components/MociAvatar";
 import { Sticker } from "@/components/Sticker";
-import type { Note } from "@/content/guestbook";
 import { labItems } from "@/content/lab";
 import { dispatch } from "@/lib/actions";
-import { cn } from "@/lib/cn";
 import { STICKERS, useStickers } from "@/lib/stickers";
 import { useLive, wave } from "../live/live-store";
 import { OverlapRing } from "./OverlapRing";
@@ -156,42 +154,6 @@ export function LabWidget() {
         Turn the gumball knob
       </Link>
     </div>
-  );
-}
-
-/* ---------- Guestbook ---------- */
-const TONE_BG: Record<string, string> = { magenta: "bg-pink", cobalt: "bg-sky", sun: "bg-sun", lime: "bg-lime", violet: "bg-violet", mint: "bg-mint", sky: "bg-sky", ink: "bg-surface-2" };
-
-export function GuestbookWidget() {
-  const [notes, setNotes] = useState<Note[] | null>(null);
-  const nonce = useLive((s) => s.noteNonce);
-  useEffect(() => {
-    let alive = true;
-    fetch("/api/guestbook?limit=2")
-      .then((r) => r.json())
-      .then((d: { notes: Note[] }) => alive && setNotes(d.notes))
-      .catch(() => alive && setNotes([]));
-    return () => {
-      alive = false;
-    };
-  }, [nonce]);
-  return (
-    <>
-      <WidgetTitle>Guestbook</WidgetTitle>
-      <ul className="mt-3 space-y-2">
-        {(notes ?? []).map((n, i) => (
-          <li key={n.id} className={cn("sticker rounded-[12px] px-3 py-2 text-14 text-on-fill", TONE_BG[n.color === "magenta" ? "magenta" : n.color])} style={{ rotate: `${i % 2 ? 1.5 : -1.5}deg` }}>
-            <span aria-hidden="true">{n.sticker} </span>
-            {n.message}
-            <span className="mt-0.5 block text-12 font-semibold">— {n.name}</span>
-          </li>
-        ))}
-        {notes === null && <li className="text-14 text-muted">Loading notes…</li>}
-      </ul>
-      <Link href="/guestbook" className="pill mt-3" data-size="sm">
-        Sign it
-      </Link>
-    </>
   );
 }
 

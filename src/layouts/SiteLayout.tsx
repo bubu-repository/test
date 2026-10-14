@@ -5,11 +5,13 @@ import { Loader } from "@/features/shell/Loader";
 import { SiteChrome } from "@/features/shell/SiteChrome";
 import { SiteFooter } from "@/features/shell/SiteFooter";
 import { SiteNav } from "@/features/shell/SiteNav";
+import { World } from "@/features/world/World";
 
-/** Shared by every page: the loading screen, skip link, floating nav, main landmark, footer, and the interactive chrome. */
+/** Shared by every page: the world (sky and sea) behind it all, the loading screen, skip link, floating nav, main landmark, footer, and the interactive chrome. */
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
+      <World />
       <Loader />
       <SkipLink />
       <SiteNav />

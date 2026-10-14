@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import { NAME_MAX, NOTE_COLORS, NOTE_MAX, NOTE_STICKERS, SEED_NOTES, type Note } from "@/content/guestbook";
+import { NAME_MAX, NOTE_COLORS, NOTE_MAX, SEED_NOTES, SPECIES, normalizeNote, type Note } from "@/content/guestbook";
 import { listPush, listRange } from "@/lib/kv";
 import { broadcast } from "@/lib/live-hub";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
@@ -21,9 +21,11 @@ function clean(text: string, max: number) {
 
 async function readNotes(limit: number): Promise<Note[]> {
   const raw = await listRange(KEY, limit);
+  // Older notes (from the wall, before the sea) are read into today's shape: each gets its creature.
   const notes = raw.flatMap((r) => {
     try {
-      return [JSON.parse(r) as Note];
+      const note = normalizeNote(JSON.parse(r));
+      return note ? [note] : [];
     } catch {
       return [];
     }
@@ -43,7 +45,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const limit = rateLimit(`guestbook:${clientKey(request)}`, 3, 10 * 60_000);
-  if (!limit.ok) return Response.json({ error: "Slow down a little: three notes per ten minutes." }, { status: 429 });
+  if (!limit.ok) return Response.json({ error: "Slow down a little: three creatures per ten minutes." }, { status: 429 });
 
   let body: Record<string, unknown>;
   try {
@@ -57,14 +59,14 @@ export async function POST(request: Request) {
   const message = clean(String(body.message ?? ""), NOTE_MAX);
   if (message.length < 2) return Response.json({ error: "Write a little something first." }, { status: 400 });
   const name = clean(String(body.name ?? ""), NAME_MAX) || "Anonymous visitor";
-  const color = NOTE_COLORS.includes(body.color as Note["color"]) ? (body.color as Note["color"]) : "magenta";
-  const sticker = NOTE_STICKERS.includes(String(body.sticker)) ? String(body.sticker) : NOTE_STICKERS[0];
+  const color = NOTE_COLORS.includes(body.color as Note["color"]) ? (body.color as Note["color"]) : "sky";
+  const species = SPECIES.includes(body.species as Note["species"]) ? (body.species as Note["species"]) : "fish";
 
-  const note: Note = { id: crypto.randomUUID(), name, message, color, sticker, createdAt: new Date().toISOString() };
+  const note: Note = { id: crypto.randomUUID(), name, message, color, species, createdAt: new Date().toISOString() };
   try {
     await listPush(KEY, JSON.stringify(note));
   } catch {
-    return Response.json({ error: "The guestbook is resting. Try again in a minute." }, { status: 503 });
+    return Response.json({ error: "The sea is resting. Try again in a minute." }, { status: 503 });
   }
   broadcast("note", note);
   return Response.json({ note }, { status: 201 });

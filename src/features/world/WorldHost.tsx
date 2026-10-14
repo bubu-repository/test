@@ -8,7 +8,7 @@ import { ambience, sfx } from "@/lib/sound";
 /** Anything you can press or pick. */
 const PRESSABLE = 'a[href], button, [role="button"], [role="tab"], [role="radio"], [role="switch"], [role="option"], summary, label[for], input[type="checkbox"], input[type="radio"], select';
 /** Glass that catches the light under the pointer. */
-const GLASS = ".widget, .device, .spec-plate, [data-glass-light]";
+const GLASS = ".widget, .work-card__link, .device, .spec-plate, [data-glass-light]";
 
 /**
  * The layer that makes every page feel alive, without each page wiring it up:

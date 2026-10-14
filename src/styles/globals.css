@@ -2,6 +2,7 @@
 @import "./tokens.css";
 @import "./screens.css";
 @import "./desk.css";
+@import "./guestbook.css";
 
 
 /*
@@ -112,8 +113,11 @@
 
 /* ---------- Base ---------- */
 @layer base {
+  /* The world (features/world/World.tsx) draws the sky and sea; this gradient shows until it can, or without WebGL. */
   html {
-    background: var(--bg);
+    background-color: #2cb4e7;
+    background-image: linear-gradient(180deg, #0a58be 0, #1570d6 40vh, #4fb0f2 60vh, #cff2ff 68vh, #7fe3f7 68.4vh, #3cc8f0 80vh, #2cb4e7 110vh);
+    background-repeat: no-repeat;
     color: var(--ink);
     font-family: var(--font-body);
     font-optical-sizing: auto;
@@ -252,34 +256,42 @@
 }
 
 /*
- * The label above a headline ("CASE STUDY", "SELECTED WORK"): a small glass tag with one
- * raspberry dot. Quiet on purpose; the headline under it does the talking.
+ * The label above a headline ("Case study", "Selected work"): a small holographic sticker. Pastel
+ * foil that shifts as the pointer moves (--mx, set by the world), a white die-cut rim, a glossy bead
+ * of pink and blue, a slight tilt. Navy on the foil reads at 13:1 on any background.
  */
 @utility type-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.7em;
-  padding: 0.5em 1em 0.5em 0.85em;
+  gap: 0.6em;
+  padding: 0.5em 1em 0.5em 0.75em;
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: var(--text-12);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
   line-height: 1.3;
   text-transform: uppercase;
-  color: var(--muted);
-  background: var(--sheen), var(--surface);
-  border: 1px solid var(--edge);
-  box-shadow: var(--bevel), 0 2px 8px rgba(8, 40, 80, 0.06);
+  color: #0b1f33;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(110deg, #d4f3ff 0%, #ffe0f0 22%, #e4dcff 40%, #d2fbef 58%, #fff4c9 76%, #d4f3ff 100%);
+  background-size: 100% 100%, 260% 100%;
+  background-position: 0 0, calc(var(--mx, 0.5) * 100%) 0;
+  box-shadow:
+    0 0 0 2.5px #ffffff,
+    0 1px 0 2.5px rgba(10, 60, 120, 0.14),
+    0 8px 18px -8px rgba(4, 40, 110, 0.45);
+  rotate: -1.2deg;
 
   &::before {
     content: "";
     flex: none;
-    width: 0.55em;
-    height: 0.55em;
+    width: 0.75em;
+    height: 0.75em;
     border-radius: 999px;
-    background: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    background: radial-gradient(circle at 35% 30%, #ffffff 0 18%, #ff8fc3 48%, #1a8fe8 100%);
+    box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.18);
   }
 }
 
@@ -406,20 +418,29 @@
  * that follows the pointer across it (--gx/--gy, set by GlassLight).
  */
 @utility widget {
+  /* Text on glass is navy and slate, wherever the glass floats (sky, water, the deep). */
+  --ink: #0b1f33;
+  --muted: #4a6175;
+  --accent-ink: #0059b8;
   position: relative;
   min-width: 0;
   border-radius: var(--radius-card);
+  color: var(--ink);
+  /* Frosted acrylic: a glint that follows the pointer, a sheen on top, a fine grain, milky white. */
   background:
-    radial-gradient(420px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.32), transparent 45%),
-    var(--sheen),
-    var(--surface);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  border: 1px solid var(--rim);
+    radial-gradient(420px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.5), transparent 45%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 38%),
+    var(--grain),
+    rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(26px) saturate(1.8);
+  backdrop-filter: blur(26px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  /* A bright top edge, a little thickness at the bottom, and a shadow tinted by the water. */
   box-shadow:
-    var(--bevel),
-    0 0 0 1px var(--edge),
-    var(--lift);
+    inset 0 1px 0 #ffffff,
+    inset 0 -1.5px 0 rgba(10, 90, 170, 0.12),
+    0 1px 2px rgba(4, 40, 90, 0.08),
+    0 22px 44px -22px rgba(4, 40, 110, 0.5);
 }
 
 /* A recessed well: inputs, trays, the space a screen sits in. */
@@ -2341,6 +2362,44 @@ html:not([data-loader="run"]) .loader {
   }
 }
 
+/* ---------- The world: one sky and sea behind every page ---------- */
+.world {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100lvh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.world[data-ready] {
+  opacity: 1;
+}
+
+/*
+ * Text that sits right on the water is navy: grey would sink into the blue. Glass objects bring
+ * their own text colours back (see the widget utility and the list below).
+ */
+main {
+  --muted: #0f2a44;
+  --accent-ink: #052a60;
+}
+
+:is(.work-card__link, .glass, .glass-strong, .hero-work__item) {
+  --muted: #4a6175;
+  --accent-ink: #0059b8;
+}
+
+/* The sky over each inner page: the waterline a little under its words. */
+.page-sky__waterline {
+  display: block;
+  height: 0;
+  margin-top: clamp(56px, 7vw, 88px);
+}
+
 /* ---------- On the water: the sky and sea scenes (hero, footer) ---------- */
 /*
  * Inside a scene, text is white and glass is dark: a navy tint under the blur keeps white labels
@@ -2379,36 +2438,15 @@ html:not([data-loader="run"]) .loader {
 /* ---------- Hero: a live window of sky over sea ---------- */
 .hero {
   position: relative;
-  padding: clamp(8px, 1.1vw, 16px);
 }
 
 /* The window. The gradient underneath is what shows without WebGL, or before the first frame. */
+/* No frame: the hero is the open sky of the world, the products float at its waterline. */
 .hero__window {
   position: relative;
-  isolation: isolate;
   display: flex;
-  min-height: calc(100svh - 2 * clamp(8px, 1.1vw, 16px));
+  min-height: 100svh;
   flex-direction: column;
-  overflow: hidden;
-  border-radius: clamp(28px, 3vw, 44px);
-  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-low) 64%, var(--horizon) 67.5%, var(--sea-surface) 67.6%, var(--sea-from) 71%, var(--sea-mid) 84%, var(--sea-to) 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
-    var(--lift);
-}
-
-.hero__canvas {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 700ms var(--ease-out);
-}
-
-.hero__canvas[data-ready] {
-  opacity: 1;
 }
 
 .hero__copy {
@@ -2597,30 +2635,26 @@ html:not([data-loader="run"]) .loader {
   }
 }
 
-/* ---------- Footer: the deep end ---------- */
-/* The footer is a second window, deeper down: the contact card is glass over the water. */
+/* ---------- Footer: the deep end of the world ---------- */
 .deep-sea {
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  margin: clamp(72px, 9vw, 128px) clamp(8px, 1.1vw, 16px) clamp(8px, 1.1vw, 16px);
-  border-radius: clamp(28px, 3vw, 44px);
-  background: linear-gradient(180deg, #0b64bb, var(--sea-to) 35%, var(--sea-deep) 70%, var(--sea-abyss));
-  --muted: #cfe3f2; /* 6:1 and up on the deep water */
+  --muted: #cfe3f2; /* 6:1 and up in the deep water */
 }
 
-.deep-sea__canvas {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 700ms var(--ease-out);
+/* Without the world (no WebGL), the footer brings its own deep water. */
+html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
+  background: linear-gradient(180deg, #0a56b0, #073b86 50%, #052b66);
 }
 
-.deep-sea__canvas[data-ready] {
-  opacity: 1;
+/* The short footer under the case studies: a frosted bar in the deep water. */
+.footer-bar {
+  --muted: #d6e7f4;
+  margin: 0 clamp(8px, 1.1vw, 16px) clamp(8px, 1.1vw, 16px);
+  border-radius: var(--radius-lg);
+  background: var(--sheen), rgba(3, 30, 80, 0.42);
+  -webkit-backdrop-filter: blur(22px) saturate(1.5);
+  backdrop-filter: blur(22px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .contact-card {

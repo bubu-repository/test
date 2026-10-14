@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
 import { ArrowRightIcon, CopyIcon, DownloadIcon } from "@/components/icons";
 import { identity } from "@/content/profile";
 import { projects } from "@/content/projects";
@@ -9,7 +8,6 @@ import { dispatch } from "@/lib/actions";
 import { useNow, useVisitorZone } from "@/lib/hooks";
 import { formatTime, zoneCity } from "@/lib/time";
 import { describeWeather, useWeather } from "../widgets/weather";
-import { SeaSky } from "../world/SeaSky";
 import { HeroName } from "./HeroName";
 import { ResampleSentence } from "./ResampleSentence";
 
@@ -50,21 +48,17 @@ function Status() {
 }
 
 /**
- * The hero: a live window of sky and sea (Frutiger Aero blues). Her name, the role and the way in
+ * The hero, in the open sky of the world behind the page (World): her name, the role and the way in
  * sit in the sky; the four products float just under the waterline with one number each, so the
  * work is on the first screen on every device. The waterline is wherever the products start.
  */
 export function Hero() {
-  const seaRef = useRef<HTMLDivElement>(null);
-  const skyRef = useRef<HTMLDivElement>(null);
   return (
     <section id="hero" aria-labelledby="hero-name" className="hero" data-xr="Hero · live sky and sea, the name and the way in">
       <div className="hero__window on-water">
-        <SeaSky className="hero__canvas" horizonRef={seaRef} textRef={skyRef} />
-
         <div className="container-page">
           <div className="hero__copy">
-            <div ref={skyRef} className="hero__words">
+            <div className="hero__words" data-sky-text>
               <Status />
               <div id="hero-name" className="mt-6">
                 <HeroName />
@@ -104,7 +98,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div ref={seaRef} className="hero__sea">
+        <div className="hero__sea" data-waterline="2">
           <div className="container-page">
             <ul className="hero-work" aria-label="The work, with one number each">
               {projects.map((p) => (

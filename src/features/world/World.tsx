@@ -1,27 +1,26 @@
 "use client";
 
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef } from "react";
 
 /**
- * A live window of sky and sea, in the blues of Frutiger Aero: deep azure sky with a sun, a lens
- * flare and soft clouds, a swelling waterline, and aqua water with caustics, light rays, drifting
- * motes and bubbles. One small WebGL1 fragment shader, drawn at reduced resolution.
+ * The world behind every page: one continuous sky and sea, in the blues of Frutiger Aero, drawn by a
+ * single WebGL1 fragment shader on a fixed canvas. The page is laid out on it like a long dive: the
+ * sky at the top, the waterline wherever the page puts it, bright lagoon water under that, and the
+ * deep sea under the footer. Nothing is boxed in a window; content floats in it as glass objects.
  *
- * - The waterline is the top edge of `horizonRef` (so the layout decides where the sea starts), or
- *   `horizon` (a fraction of the height; negative means the whole window is under water).
- * - `textRef` marks the words in the sky: the sky stays at least as deep as --sky-mid behind them
- *   (white text 4.9:1) and clouds keep out of their way.
- * - The pointer nudges the sun and lights the water like a torch; a press in the water lets out a
- *   ring of light and a few bubbles. Scrolling the window away darkens the water a little.
- * - Reduced motion: one still frame. No WebGL: the CSS gradient behind the canvas stays.
- * - It pauses off screen and in background tabs, and runs at 30 fps on touch devices.
+ * The layout drives it through three markers, measured every frame:
+ * - `[data-waterline]`: the waterline is the top edge of the highest-priority visible marker
+ *   (the value is the priority). The home hero puts it under her name; other pages under the header.
+ * - `[data-sky-text]`: words in the sky. The sky stays at least as deep as --sky-mid behind them
+ *   (white text 4.9:1), and clouds keep out of their way.
+ * - `footer`: the water deepens to the deep sea as the footer comes in, for its white text.
+ * In the bright water in between, text is navy (5.5:1 and up on the water).
+ *
+ * The sun follows the pointer, the water lights up under it, a press in open water lets out bubbles,
+ * and caustics and motes drift with the scroll. It pauses in background tabs, runs at 30 fps and lower
+ * resolution on touch and low-power devices, and draws only when something changes for reduced
+ * motion. Without WebGL the gradient on <html> stays.
  */
-type Props = {
-  horizonRef?: RefObject<HTMLElement | null>;
-  horizon?: number;
-  textRef?: RefObject<HTMLElement | null>;
-  className?: string;
-};
 
 const BUBBLES = 6;
 
@@ -37,9 +36,10 @@ uniform vec2 uRes;
 uniform float uTime;
 uniform float uHorizon;
 uniform vec4 uText;
+uniform vec2 uDeep;
+uniform float uScrollY;
 uniform vec2 uPointer;
 uniform float uPointerOn;
-uniform float uScroll;
 uniform vec4 uBubbles[${BUBBLES}];
 varying vec2 vUv;
 
@@ -86,30 +86,31 @@ void main(){
     float f=clamp((uv.y-tb)/max(wy-tb,.001),0.,1.);
     col=mix(col,SKY_LOW,smoothstep(.05,.7,f)*step(tb,uv.y));
     col=mix(col,HORIZON,smoothstep(.65,1.,f)*step(tb,uv.y));
-    // The sun, top right, nudged by the pointer; a soft halo and three flare ghosts.
+    // The sun, top right, nudged by the pointer; a soft halo and three faint flare ghosts.
     vec2 sun=vec2(aspect*.86,min(.11,wl*.22))+(uPointer-.5)*vec2(.06,.035)*uPointerOn;
     float ds=length(q-sun);
     col+=vec3(1.,.97,.86)*(.95*exp(-ds*ds*1100.)+.2*exp(-ds*8.));
     vec2 axis=vec2(aspect*.45,wl*.55)-sun;
     for(int i=1;i<=3;i++){float k=float(i)*.5;float r=.01+.012*float(i);
       col+=vec3(.75,.92,1.)*.022*smoothstep(r,r*.55,length(q-(sun+axis*k)));}
-    // Clouds: a bank above the horizon, and on wide windows a few to the right of the words.
-    float n=fbm(vec2(q.x*1.5+t*.012+uScroll*.3,q.y*3.4)*2.2);
+    // Clouds: a bank above the horizon, and on wide screens a few to the side of the words.
+    float n=fbm(vec2(q.x*1.5+t*.012,(q.y-wl)*3.4)*2.2);
     float bank=smoothstep(.2,.75,f)*step(tb,uv.y);
-    float side=aspect>1.2?smoothstep(uText.z+.04,uText.z+.16,uv.x)*smoothstep(.05,.3,uv.y/max(wl,.001)):0.;
+    float side=aspect>1.2?max(smoothstep(uText.z+.04,uText.z+.16,uv.x),1.-smoothstep(uText.x-.16,uText.x-.04,uv.x))*smoothstep(.05,.3,uv.y/max(wl,.001)):0.;
     float cloud=smoothstep(.52,.78,n)*clamp(bank+side*.8,0.,1.);
     col=mix(col,mix(vec3(.84,.92,1.),vec3(1.),smoothstep(.5,.9,n)),cloud*.92);
   } else {
-    // The sea.
+    // The sea: bright lagoon water under the surface, deepening as the footer comes in.
     float d=uv.y-wy;
-    float D=max(uv.y-wl,0.);
-    col=seaColor(D)*(1.-.2*uScroll);
+    float D=clamp((uv.y-wl)*.09,0.,.13)+smoothstep(uDeep.x,uDeep.y,uv.y)*1.6;
+    col=seaColor(D);
     col+=vec3(.85,.98,1.)*.35*exp(-d*55.)*(.65+.35*sin(q.x*70.+t*2.4));
-    col+=vec3(.75,.95,1.)*caustic(q*1.5+vec2(0.,t*.02),t*.45)*.3*exp(-D*2.4);
+    vec2 w=q+vec2(0.,uScrollY*.85);
+    col+=vec3(.75,.95,1.)*caustic(w*1.5+vec2(0.,t*.02),t*.45)*.3*exp(-D*2.4);
     float x=q.x+D*.35;
     float rays=pow(.5+.5*sin(x*11.+sin(x*3.1+t*.25)*1.7+t*.15),5.)+.6*pow(.5+.5*sin(x*19.-t*.22+1.3),8.);
     col+=vec3(.7,.92,1.)*rays*.12*exp(-D*1.5)*smoothstep(0.,.06,d);
-    vec2 g=q*38.+vec2(0.,-t*.25);vec2 cell=floor(g);vec2 fr=fract(g)-.5;
+    vec2 g=(q+vec2(0.,uScrollY*.7))*38.+vec2(0.,-t*.25);vec2 cell=floor(g);vec2 fr=fract(g)-.5;
     vec2 off=vec2(hash(cell+3.1),hash(cell+7.7))-.5;
     col+=vec3(.8,.95,1.)*smoothstep(.08,0.,length(fr-off*.7))*step(.82,hash(cell))*.18*exp(-D*.8);
     vec2 pq=vec2(uPointer.x*aspect,uPointer.y);
@@ -148,27 +149,45 @@ function compile(gl: WebGLRenderingContext, type: number, source: string): WebGL
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    if (process.env.NODE_ENV !== "production") console.warn("SeaSky shader:", gl.getShaderInfoLog(shader));
+    if (process.env.NODE_ENV !== "production") console.warn("World shader:", gl.getShaderInfoLog(shader));
     gl.deleteShader(shader);
     return null;
   }
   return shader;
 }
 
-function isInteractive(target: EventTarget | null): boolean {
-  return target instanceof Element && !!target.closest("a, button, input, textarea, select, [role='button'], [data-no-splash]");
+/** Presses on these never make bubbles: controls, and the glass objects floating in the water. */
+const NO_SPLASH = "a, button, input, textarea, select, label, summary, [role='button'], [role='dialog'], .widget, .glass, .glass-strong, [data-no-splash]";
+
+type Markers = { waterline: Element | null; text: Element | null; footer: Element | null };
+
+function visible(el: Element): boolean {
+  const r = el.getBoundingClientRect();
+  return r.width > 0 || r.height > 0;
 }
 
-export function SeaSky({ horizonRef, horizon = 0.62, textRef, className }: Props) {
+function findMarkers(): Markers {
+  let waterline: Element | null = null;
+  let best = -Infinity;
+  for (const el of document.querySelectorAll("[data-waterline]")) {
+    const priority = Number(el.getAttribute("data-waterline")) || 0;
+    if (priority > best && visible(el)) {
+      best = priority;
+      waterline = el;
+    }
+  }
+  const text = Array.from(document.querySelectorAll("[data-sky-text]")).find(visible) ?? null;
+  return { waterline, text, footer: document.querySelector("body > footer, #contact") };
+}
+
+export function World() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const host = canvas?.parentElement;
-    if (!canvas || !host) return;
+    if (!canvas) return;
     const gl = canvas.getContext("webgl", { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: "low-power", preserveDrawingBuffer: false });
     if (!gl) return;
-
     const vs = compile(gl, gl.VERTEX_SHADER, VERTEX);
     const fs = compile(gl, gl.FRAGMENT_SHADER, FRAGMENT);
     if (!vs || !fs) return;
@@ -192,26 +211,31 @@ export function SeaSky({ horizonRef, horizon = 0.62, textRef, className }: Props
       time: gl.getUniformLocation(program, "uTime"),
       horizon: gl.getUniformLocation(program, "uHorizon"),
       text: gl.getUniformLocation(program, "uText"),
+      deep: gl.getUniformLocation(program, "uDeep"),
+      scrollY: gl.getUniformLocation(program, "uScrollY"),
       pointer: gl.getUniformLocation(program, "uPointer"),
       pointerOn: gl.getUniformLocation(program, "uPointerOn"),
-      scroll: gl.getUniformLocation(program, "uScroll"),
       bubbles: gl.getUniformLocation(program, "uBubbles"),
     };
 
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    const lowPower = coarse || (nav.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4;
+    const frameGap = lowPower ? 33 : 0;
     const start = performance.now();
     const now = () => (calm ? 12 : (performance.now() - start) / 1000);
 
-    let wl = horizon;
-    let text = [0, 0, 0, 0];
     const bubbles = new Float32Array(BUBBLES * 4);
     let nextBubble = 0;
     let lastAuto = 0;
     const pointer = { x: 0.5, y: 0.3, tx: 0.5, ty: 0.3, on: 0, target: 0 };
+    let markers = findMarkers();
+    let markersAt = 0;
+    let wl = 0.62;
 
-    const measure = () => {
-      const scale = Math.min(window.devicePixelRatio || 1, 2) * (coarse ? 0.5 : 0.7);
+    const resize = () => {
+      const scale = Math.min(window.devicePixelRatio || 1, 2) * (lowPower ? 0.4 : 0.55);
       const rect = canvas.getBoundingClientRect();
       const w = Math.max(1, Math.round(rect.width * scale));
       const h = Math.max(1, Math.round(rect.height * scale));
@@ -220,37 +244,49 @@ export function SeaSky({ horizonRef, horizon = 0.62, textRef, className }: Props
         canvas.height = h;
         gl.viewport(0, 0, w, h);
       }
-      if (horizonRef?.current && rect.height > 0) wl = (horizonRef.current.getBoundingClientRect().top - rect.top) / rect.height;
-      if (textRef?.current && rect.height > 0) {
-        const r = textRef.current.getBoundingClientRect();
-        text = [(r.left - rect.left) / rect.width, (r.top - rect.top) / rect.height, (r.right - rect.left) / rect.width, (r.bottom - rect.top) / rect.height];
-      }
     };
 
     const spawn = (x: number, y: number, strength = 1) => {
-      const i = nextBubble++ % BUBBLES;
-      bubbles.set([x, y, now(), strength], i * 4);
+      bubbles.set([x, y, now(), strength], (nextBubble++ % BUBBLES) * 4);
     };
 
     let drawn = false;
     const draw = () => {
       const t = now();
+      const ms = performance.now();
+      if (ms - markersAt > 400) {
+        markers = findMarkers();
+        markersAt = ms;
+      }
+      const rect = canvas.getBoundingClientRect();
+      const H = Math.max(rect.height, 1);
+      const W = Math.max(rect.width, 1);
+      // The waterline: under the marker, or above the screen (all water) when a page has none.
+      wl = markers.waterline ? (markers.waterline.getBoundingClientRect().top - rect.top) / H : -1;
+      let text = [0, 0, 0, 0];
+      if (markers.text) {
+        const r = markers.text.getBoundingClientRect();
+        text = [(r.left - rect.left) / W, (r.top - rect.top) / H, (r.right - rect.left) / W, (r.bottom - rect.top) / H];
+      }
+      const footerTop = markers.footer ? (markers.footer.getBoundingClientRect().top - rect.top) / H : 99;
+
       pointer.x += (pointer.tx - pointer.x) * 0.08;
       pointer.y += (pointer.ty - pointer.y) * 0.08;
       pointer.on += (pointer.target - pointer.on) * 0.06;
-      const rect = canvas.getBoundingClientRect();
-      const scroll = Math.min(1, Math.max(0, -rect.top / Math.max(rect.height, 1)));
-      if (!calm && t - lastAuto > 6.5 && wl < 0.95) {
+      if (!calm && t - lastAuto > 6.5) {
         lastAuto = t;
-        spawn(0.55 + Math.random() * 0.4, Math.min(0.97, Math.max(wl + 0.15, 0.92)), 0.5);
+        const top = Math.max(wl + 0.2, 0.55);
+        if (top < 0.95) spawn(0.05 + Math.random() * 0.9, 0.97, 0.5);
       }
+
       gl.uniform2f(u.res, canvas.width, canvas.height);
       gl.uniform1f(u.time, t);
       gl.uniform1f(u.horizon, wl);
       gl.uniform4f(u.text, text[0], text[1], text[2], text[3]);
+      gl.uniform2f(u.deep, footerTop - 0.15, footerTop + 0.7);
+      gl.uniform1f(u.scrollY, window.scrollY / H);
       gl.uniform2f(u.pointer, pointer.x, pointer.y);
       gl.uniform1f(u.pointerOn, pointer.on);
-      gl.uniform1f(u.scroll, scroll);
       gl.uniform4fv(u.bubbles, bubbles);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       if (!drawn) {
@@ -259,54 +295,68 @@ export function SeaSky({ horizonRef, horizon = 0.62, textRef, className }: Props
       }
     };
 
-    measure();
-    const resize = new ResizeObserver(() => {
-      measure();
+    resize();
+    const ro = new ResizeObserver(() => {
+      resize();
       if (calm) draw();
     });
-    resize.observe(canvas);
-    if (horizonRef?.current) resize.observe(horizonRef.current);
-    if (textRef?.current) resize.observe(textRef.current);
-
-    let visible = true;
-    const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-    });
-    io.observe(canvas);
+    ro.observe(canvas);
 
     let raf = 0;
     let last = 0;
     const frame = (ms: number) => {
       raf = requestAnimationFrame(frame);
-      if (!visible || document.hidden) return;
-      if (coarse && ms - last < 32) return;
+      if (document.hidden) return;
+      if (frameGap && ms - last < frameGap) return;
       last = ms;
       draw();
     };
-    if (calm) draw();
-    else raf = requestAnimationFrame(frame);
-
-    const toLocal = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      return { x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height };
+    // Reduced motion: no animation, but the scene still follows the page as it scrolls.
+    let pending = 0;
+    const redraw = () => {
+      if (pending) return;
+      pending = requestAnimationFrame(() => {
+        pending = 0;
+        draw();
+      });
     };
+    if (calm) {
+      draw();
+      window.addEventListener("scroll", redraw, { passive: true });
+    } else {
+      raf = requestAnimationFrame(frame);
+    }
+
     const onMove = (e: PointerEvent) => {
-      const p = toLocal(e);
-      pointer.tx = p.x;
-      pointer.ty = p.y;
+      const rect = canvas.getBoundingClientRect();
+      pointer.tx = (e.clientX - rect.left) / rect.width;
+      pointer.ty = (e.clientY - rect.top) / rect.height;
       pointer.target = e.pointerType === "mouse" ? 1 : 0;
+      // Holographic stickers and foil read the pointer too.
+      document.documentElement.style.setProperty("--mx", pointer.tx.toFixed(3));
+      document.documentElement.style.setProperty("--my", pointer.ty.toFixed(3));
     };
     const onLeave = () => {
       pointer.target = 0;
     };
     const onDown = (e: PointerEvent) => {
-      if (calm || isInteractive(e.target)) return;
-      const p = toLocal(e);
-      if (p.y > wl + 0.01) spawn(p.x, p.y);
+      if (calm) return;
+      if (e.target instanceof Element && e.target.closest(NO_SPLASH)) return;
+      const rect = canvas.getBoundingClientRect();
+      const y = (e.clientY - rect.top) / rect.height;
+      if (y > wl + 0.01) spawn((e.clientX - rect.left) / rect.width, y);
     };
-    host.addEventListener("pointermove", onMove, { passive: true });
-    host.addEventListener("pointerleave", onLeave);
-    host.addEventListener("pointerdown", onDown);
+    // Other parts of the site can ask for a splash (the guestbook does when a creature goes in).
+    const onBubbles = (e: Event) => {
+      const d = (e as CustomEvent<{ x: number; y: number }>).detail;
+      if (calm || !d) return;
+      const rect = canvas.getBoundingClientRect();
+      spawn((d.x - rect.left) / rect.width, (d.y - rect.top) / rect.height);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.documentElement.addEventListener("pointerleave", onLeave);
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("world:bubbles", onBubbles);
 
     const onLost = (e: Event) => {
       e.preventDefault();
@@ -317,18 +367,20 @@ export function SeaSky({ horizonRef, horizon = 0.62, textRef, className }: Props
 
     return () => {
       cancelAnimationFrame(raf);
-      resize.disconnect();
-      io.disconnect();
-      host.removeEventListener("pointermove", onMove);
-      host.removeEventListener("pointerleave", onLeave);
-      host.removeEventListener("pointerdown", onDown);
+      cancelAnimationFrame(pending);
+      ro.disconnect();
+      window.removeEventListener("scroll", redraw);
+      window.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("world:bubbles", onBubbles);
       canvas.removeEventListener("webglcontextlost", onLost);
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
       gl.deleteShader(vs);
       gl.deleteShader(fs);
     };
-  }, [horizon, horizonRef, textRef]);
+  }, []);
 
-  return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="world" aria-hidden="true" />;
 }
