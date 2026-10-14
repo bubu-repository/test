@@ -71,7 +71,6 @@ function buildFs(): Dir {
         },
       },
       guestbook: { route: "/guestbook", children: { "README.txt": file("Leave a note: open the guestbook page and write something nice.") } },
-      play: { route: "/play", children: { "context-window.exe": file("Run `play` to start the game.") } },
       "README.md": file(`# adelia.cc\n${identity.name} · ${identity.role} · ${identity.location}\n${tagline}\n\nTry: ls, cd work, cat README.md, open tenderlens, ask "is she available?", help`),
       "contact.txt": file(`email: ${identity.email}\nhours: ${identity.workingHours.start}:00–${identity.workingHours.end}:00 ${identity.timeZoneLabel}\n${bio.availability}`),
       "now.txt": file(bio.now),
@@ -113,8 +112,8 @@ export function routeToCwd(pathname: string): string {
 }
 
 export const COMMANDS = [
-  "help", "ls", "cd", "pwd", "cat", "open", "whoami", "neofetch", "ask", "moci", "theme", "sound", "tour",
-  "email", "cv", "clear", "history", "date", "echo", "stickers", "play", "xray", "brief", "exit", "sudo",
+  "help", "ls", "cd", "pwd", "cat", "open", "whoami", "neofetch", "ask", "moci", "sound", "tour",
+  "email", "cv", "clear", "history", "date", "echo", "stickers", "brief", "exit", "sudo",
 ];
 
 export function complete(input: string, cwd: string): string | null {
@@ -159,7 +158,7 @@ export function run(raw: string, cwd: string, history: string[]): ShellResult {
           { kind: "out", text: "  cat <file>      print a file              open <name>  open a page or project" },
           { kind: "out", text: "  ask <question>  ask Moci (offline brain)  moci <q>     ask Moci in the chat panel" },
           { kind: "out", text: "  whoami · neofetch · date · history · echo · clear · exit" },
-          { kind: "out", text: "  theme [dark|light] · sound [on|off] · tour · brief · xray · stickers · play" },
+          { kind: "out", text: "  sound [on|off] · tour · brief · stickers" },
           { kind: "out", text: "  email (copies it) · cv (downloads it)" },
           { kind: "out", text: "Tab completes, ↑ ↓ walk history, Ctrl+L clears.", tone: "muted" },
         ],
@@ -239,22 +238,14 @@ export function run(raw: string, cwd: string, history: string[]): ShellResult {
     }
     case "moci":
       return { lines: [{ kind: "out", text: "Opening the chat with Moci…", tone: "ok" }], actions: [{ type: "ask", question: arg || "Hi Moci!" }], close: true };
-    case "theme": {
-      const value = arg === "dark" || arg === "light" ? arg : undefined;
-      return { lines: [{ kind: "out", text: value ? `theme → ${value}` : "theme → toggled", tone: "ok" }], actions: [{ type: "theme", value }] };
-    }
     case "sound":
       return { lines: [{ kind: "out", text: `sound → ${arg || "toggled"}`, tone: "ok" }], actions: [{ type: "sound", value: arg ? arg === "on" : undefined }] };
     case "tour":
-      return { lines: [{ kind: "out", text: "Handing the wheel to Moci…", tone: "ok" }], actions: [{ type: "tour" }], close: true };
+      return { lines: [{ kind: "out", text: "Starting the guided walk…", tone: "ok" }], actions: [{ type: "tour" }], close: true };
     case "brief":
       return { lines: [], actions: [{ type: "open", panel: "brief" }], close: true };
     case "stickers":
       return { lines: [], actions: [{ type: "open", panel: "stickers" }], close: true };
-    case "xray":
-      return { lines: [{ kind: "out", text: "x-ray → toggled", tone: "ok" }], actions: [{ type: "xray" }] };
-    case "play":
-      return { lines: [{ kind: "out", text: "Loading Context Window…", tone: "ok" }], actions: [{ type: "navigate", href: "/play" }], close: true };
     case "email":
       return { lines: [{ kind: "out", text: `${identity.email} (copied to your clipboard)`, tone: "ok" }], actions: [{ type: "copyEmail" }] };
     case "cv":

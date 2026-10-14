@@ -69,6 +69,7 @@ const FIELDS = [
 export function IdBadge({ className, strap = 0 }: { className?: string; strap?: number }) {
   const [flipped, setFlipped] = useState(false);
   const ref = useRef<HTMLButtonElement>(null);
+  const strapRef = useRef<HTMLDivElement>(null);
   const motion = useRef({ x: 0, y: 0, vx: 0, vy: 0, angle: 0, va: 0, dragging: false, sx: 0, sy: 0, moved: false, raf: 0 });
 
   useEffect(() => {
@@ -87,6 +88,12 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       m.angle += m.va;
       el.style.translate = `${m.x.toFixed(1)}px ${m.y.toFixed(1)}px`;
       el.style.rotate = `${m.angle.toFixed(2)}deg`;
+      // The lanyard stays attached: it turns and stretches from its hook to the card.
+      const strapEl = strapRef.current;
+      if (strapEl && strap > 0) {
+        const reach = strap + m.y;
+        strapEl.style.transform = `rotate(${((-Math.atan2(m.x, reach) * 180) / Math.PI).toFixed(2)}deg) scaleY(${(Math.hypot(m.x, reach) / strap).toFixed(3)})`;
+      }
       // The holographic seal catches the light as the card swings.
       el.style.setProperty("--sway", m.angle.toFixed(2));
       const moving = m.dragging || Math.abs(m.x) + Math.abs(m.y) + Math.abs(m.vx) + Math.abs(m.va) + Math.abs(m.angle) > 0.05;
@@ -104,10 +111,14 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       el.setPointerCapture(e.pointerId);
       kick();
     };
+    // How far the card can be pulled from its hook: it swings, it doesn't come off the lanyard.
+    const reachX = 90;
+    const reachUp = -24;
+    const reachDown = 56;
     const onMove = (e: PointerEvent) => {
       if (!m.dragging) return;
-      const nx = e.clientX - m.sx;
-      const ny = e.clientY - m.sy;
+      const nx = Math.max(-reachX, Math.min(reachX, e.clientX - m.sx));
+      const ny = Math.max(reachUp, Math.min(reachDown, e.clientY - m.sy));
       m.vx = nx - m.x;
       m.vy = ny - m.y;
       if (Math.hypot(nx, ny) > 6) m.moved = true;
@@ -124,6 +135,7 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       if (!m.dragging) return;
       m.dragging = false;
       if (m.moved) sfx.pop();
+      kick();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
@@ -136,6 +148,11 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
     el.addEventListener("pointermove", onHover);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    // A drag that ends any other way (gesture, leaving the window, a lost capture) still lets go,
+    // so the card always swings back to its hook.
+    window.addEventListener("pointercancel", onUp);
+    el.addEventListener("lostpointercapture", onUp);
+    window.addEventListener("blur", onUp);
     el.addEventListener("keydown", onKey);
     return () => {
       cancelAnimationFrame(m.raf);
@@ -143,13 +160,16 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       el.removeEventListener("pointermove", onHover);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      el.removeEventListener("lostpointercapture", onUp);
+      window.removeEventListener("blur", onUp);
       el.removeEventListener("keydown", onKey);
     };
-  }, []);
+  }, [strap]);
 
   return (
     <div className={className}>
-      {strap > 0 && <div className="badge-strap" aria-hidden="true" style={{ ["--strap" as string]: `${strap}px` }} />}
+      {strap > 0 && <div ref={strapRef} className="badge-strap" aria-hidden="true" style={{ ["--strap" as string]: `${strap}px`, transformOrigin: "50% 0" }} />}
       <button
         ref={ref}
         type="button"

@@ -70,7 +70,7 @@ export const MOCI_CASES: MociCase[] = [
     expect: "Never navigates off the site",
     check: (a) => !a.actions.some((x) => x.type === "navigate" && !x.href.startsWith("/")),
   },
-  { q: "Switch to dark mode", kind: "Action", expect: "Switches the theme", check: (a) => acts(a, "theme") },
+  { q: "Turn the sound on", kind: "Action", expect: "Turns the sound on", check: (a) => a.actions.some((x) => x.type === "sound" && x.value === true) },
   { q: "Give me the tour", kind: "Action", expect: "Starts the tour", check: (a) => acts(a, "tour") },
   { q: "What's her salary expectation?", kind: "Abstain", expect: "No number; suggests email", check: (a) => !/\d{2,}/.test(a.text.replace(/\S+@\S+/g, "")) && has(a, "email") },
   { q: "What is the capital of France?", kind: "Abstain", expect: "Says it doesn't know", check: abstains },

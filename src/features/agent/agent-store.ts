@@ -49,8 +49,8 @@ export function toolToAction(name: string, input: Record<string, unknown>): Site
       return typeof input.path === "string" && input.path.startsWith("/") ? { type: "navigate", href: input.path } : null;
     case "open_project":
       return typeof input.slug === "string" ? { type: "navigate", href: `/work/${input.slug}` } : null;
-    case "set_theme":
-      return input.theme === "light" || input.theme === "dark" ? { type: "theme", value: input.theme } : null;
+    case "set_sound":
+      return typeof input.on === "boolean" ? { type: "sound", value: input.on } : null;
     case "start_tour":
       return { type: "tour" };
     case "copy_email":

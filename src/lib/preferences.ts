@@ -1,26 +1,21 @@
 /**
- * Theme, sound and cursor preferences.
- * The source of truth is the set of attributes on <html> (data-theme, data-sound, data-cursor,
- * data-daypart), set before first paint by `preferencesInitScript`. Explicit choices are stored.
+ * Sound preference and the first-paint attributes on <html>.
+ * The site is light only (docs/revamp-plan.md), so there is no theme to choose. The source of truth
+ * is the set of attributes on <html>, set before first paint by `preferencesInitScript`.
  */
 
-export type Theme = "light" | "dark";
-
-const THEME_KEY = "theme";
 const SOUND_KEY = "sound";
-const CURSOR_KEY = "cursor";
-const SYSTEM_DARK = "(prefers-color-scheme: dark)";
+const LOADER_KEY = "adelia:loaded";
 
 /**
  * Runs in <head> before paint:
- * - theme: stored choice, else the OS preference
  * - sound: off unless the visitor turned it on
- * - cursor: the custom cursor is on for fine pointers unless turned off or motion is reduced
- * - daypart: dawn / day / dusk / late from the visitor's local clock (tints the day sky)
- * - opened: which of the three booster packs (home and /work) are open; they reseal on every visit
- * - boot: the home device plays its boot sequence on the first home visit of a session
+ * - daypart: dawn / day / dusk / late from the visitor's local clock
+ * - opened: which of the booster packs are open; they reseal on every visit
+ * - loader: the loading screen plays once per session, never for reduced motion, and never when
+ *   someone lands straight on a case study (a recruiter following a link wants the case, now)
  */
-export const preferencesInitScript = `(function(){var d=document.documentElement,t=null,s=null,c=null;try{t=localStorage.getItem("${THEME_KEY}");s=localStorage.getItem("${SOUND_KEY}");c=localStorage.getItem("${CURSOR_KEY}")}catch(e){}if(t!=="light"&&t!=="dark")t=window.matchMedia&&matchMedia("${SYSTEM_DARK}").matches?"dark":"light";d.setAttribute("data-theme",t);d.setAttribute("data-sound",s==="on"?"on":"off");var fine=window.matchMedia&&matchMedia("(pointer: fine)").matches,calm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;d.setAttribute("data-cursor",c==="off"||!fine||calm&&c!=="on"?"off":"on");var h=new Date().getHours();d.setAttribute("data-daypart",h>=5&&h<8?"dawn":h>=8&&h<16?"day":h>=16&&h<19?"dusk":"late");var p="";try{p=sessionStorage.getItem("adelia:packs")||""}catch(e){}d.setAttribute("data-opened",location.search.indexOf("pack=fresh")<0?p:"");})()`;
+export const preferencesInitScript = `(function(){var d=document.documentElement,s=null,seen=false;try{s=localStorage.getItem("${SOUND_KEY}")}catch(e){}d.setAttribute("data-sound",s==="on"?"on":"off");var h=new Date().getHours();d.setAttribute("data-daypart",h>=5&&h<8?"dawn":h>=8&&h<16?"day":h>=16&&h<19?"dusk":"late");var p="";try{p=sessionStorage.getItem("adelia:packs")||"";seen=sessionStorage.getItem("${LOADER_KEY}")==="1"}catch(e){seen=true}d.setAttribute("data-opened",location.search.indexOf("pack=fresh")<0?p:"");var calm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;d.setAttribute("data-loader",seen||calm||location.pathname.indexOf("/work/")===0?"off":"run");})()`;
 
 function readStorage(key: string): string | null {
   try {
@@ -51,40 +46,6 @@ export function subscribePreferences(listener: () => void): () => void {
   };
 }
 
-/* ---------- Theme ---------- */
-
-export function getStoredTheme(): Theme | null {
-  const value = readStorage(THEME_KEY);
-  return value === "light" || value === "dark" ? value : null;
-}
-
-export function getSystemTheme(): Theme {
-  return window.matchMedia(SYSTEM_DARK).matches ? "dark" : "light";
-}
-
-export function getTheme(): Theme {
-  return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-}
-
-export function applyTheme(theme: Theme, { persist }: { persist: boolean }): void {
-  const root = document.documentElement;
-  const swap = () => {
-    root.setAttribute("data-theme", theme);
-    if (persist) writeStorage(THEME_KEY, theme);
-    emit();
-  };
-  // A circular reveal from the toggle when the browser supports view transitions.
-  const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
-  const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (persist && doc.startViewTransition && !calm && root.getAttribute("data-theme") !== theme) {
-    root.setAttribute("data-theme-swap", "");
-    const transition = doc.startViewTransition(swap) as { finished?: Promise<void> };
-    transition.finished?.finally(() => root.removeAttribute("data-theme-swap"));
-  } else {
-    swap();
-  }
-}
-
 /* ---------- Sound (default off) ---------- */
 
 export function getStoredSound(): boolean {
@@ -101,24 +62,23 @@ export function applySound(on: boolean, { persist }: { persist: boolean }): void
   emit();
 }
 
-/* ---------- Custom cursor ---------- */
+/* ---------- Loading screen ---------- */
 
-export function getCursor(): boolean {
-  return document.documentElement.getAttribute("data-cursor") === "on";
-}
-
-export function applyCursor(on: boolean, { persist }: { persist: boolean }): void {
-  document.documentElement.setAttribute("data-cursor", on ? "on" : "off");
-  if (persist) writeStorage(CURSOR_KEY, on ? "on" : "off");
-  emit();
+/** Marks the loading screen as seen for this session and hides it. */
+export function finishLoader(): void {
+  try {
+    window.sessionStorage.setItem(LOADER_KEY, "1");
+  } catch {
+    // Storage blocked: the screen may show again next page load, which is harmless.
+  }
+  document.documentElement.setAttribute("data-loader", "off");
 }
 
 /* ---------- Sync ---------- */
 
 /** Re-applies stored values to <html>. Needed after React's dev-only remount clears them. */
 export function applyStoredPreferences(): void {
-  applyTheme(getStoredTheme() ?? getSystemTheme(), { persist: false });
   applySound(getStoredSound(), { persist: false });
 }
 
-export { THEME_KEY, SOUND_KEY, CURSOR_KEY, SYSTEM_DARK };
+export { SOUND_KEY };

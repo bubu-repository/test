@@ -6,9 +6,7 @@ import { readJSON, writeJSON } from "@/lib/storage";
 import { ui } from "@/lib/ui";
 import { stopTour } from "../tour/tour-store";
 
-const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
-
-const GO: Record<string, string> = { h: "/", w: "/work", l: "/lab", a: "/about", g: "/guestbook", p: "/play" };
+const GO: Record<string, string> = { h: "/", w: "/work", l: "/lab", a: "/about", g: "/guestbook" };
 
 const SINGLE: Record<string, SiteAction> = {
   "/": { type: "open", panel: "agent" },
@@ -17,8 +15,6 @@ const SINGLE: Record<string, SiteAction> = {
   t: { type: "tour" },
   b: { type: "open", panel: "brief" },
   s: { type: "open", panel: "stickers" },
-  d: { type: "theme" },
-  x: { type: "xray" },
 };
 
 export function isEditable(target: EventTarget | null) {
@@ -34,21 +30,9 @@ export function KeyboardShortcuts() {
   }, []);
 
   useEffect(() => {
-    let konami = 0;
     let goPending = 0;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      // Konami works everywhere except while typing.
-      if (!isEditable(event.target)) {
-        const expected = KONAMI[konami];
-        konami = event.key.toLowerCase() === expected.toLowerCase() ? konami + 1 : event.key === KONAMI[0] ? 1 : 0;
-        if (konami === KONAMI.length) {
-          konami = 0;
-          void dispatch({ type: "rave" });
-          return;
-        }
-      }
-
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         ui.set((s) => ({ overlay: s.overlay === "palette" ? null : "palette" }));

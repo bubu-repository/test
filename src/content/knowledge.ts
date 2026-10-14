@@ -36,7 +36,6 @@ export const siteMap = [
       "About Adelia: her ID card on a lanyard, the short story and path, an MP3 player of the songs she codes to (original synth loops; you can drop your own song on it), a CD shelf of the games that taught her about design (Story of Seasons, Kingdom Hearts, Stardew Valley, Animal Crossing, Persona 5) with what each one taught her, the practical details for hiring teams (level, location, notice, languages, references) and the CV.",
   },
   { path: "/guestbook", title: "Guestbook", description: "A live scrapbook wall of notes from visitors." },
-  { path: "/play", title: "Context Window (game)", description: "Snake, but you're an LLM eating tokens." },
 ] as const;
 
 export type Doc = {
@@ -160,8 +159,8 @@ export function buildDocs(): Doc[] {
     {
       id: "moci",
       title: "Moci",
-      text: "I'm Moci, Adelia's agent. I'm a jelly, I live on this site, and I can answer questions about her work, open pages, switch the theme, start a guided tour or copy her email for you.",
-      keywords: ["moci", "you", "bot", "agent", "assistant", "jelly", "mascot", "name"],
+      text: "I'm Moci, Adelia's agent. I live on this site wearing a little version of her, and I can answer questions about her work, open pages, turn the sound on or off, show you how the site works or copy her email for you. I'm an AI agent, not Adelia.",
+      keywords: ["moci", "you", "bot", "agent", "assistant", "mascot", "character", "name"],
     },
   ];
 

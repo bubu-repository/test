@@ -8,7 +8,7 @@ import { projects } from "@/content/projects";
  * employer check, and /colophon runs the checks below against them at build time.
  */
 
-export const PATHS: string[] = [...siteMap.map((s) => s.path), "/play"];
+export const PATHS: string[] = siteMap.map((s) => s.path);
 
 /** A tool call only reaches the visitor's screen if its input passes this check. */
 export function validToolInput(name: string, input: unknown): input is Record<string, unknown> {
@@ -17,8 +17,8 @@ export function validToolInput(name: string, input: unknown): input is Record<st
   switch (name) {
     case "navigate":
       return typeof value.path === "string" && PATHS.includes(value.path);
-    case "set_theme":
-      return value.theme === "light" || value.theme === "dark";
+    case "set_sound":
+      return typeof value.on === "boolean";
     case "open_panel":
       return value.panel === "brief" || value.panel === "terminal" || value.panel === "stickers";
     case "set_lens":

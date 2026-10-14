@@ -10,11 +10,11 @@ import { useId, type ReactNode } from "react";
 
 /** Tile backgrounds. White tiles carry most icons; a few get a vivid gradient. */
 export const TILE = {
-  white: "linear-gradient(180deg, #FFFFFF 0%, #EEF1F6 100%)",
-  purple: "linear-gradient(155deg, #CBBCEE 0%, #8968D4 46%, #6E52C4 100%)",
-  blue: "linear-gradient(160deg, #9CD0F3 0%, #499FE3 50%, #2F6BC4 100%)",
-  lime: "linear-gradient(210deg, #A8F25A 0%, #7EE05C 38%, #CDF3D2 80%, #DCEBFF 100%)",
-  navy: "linear-gradient(180deg, #3D4E88 0%, #18234F 100%)",
+  white: "linear-gradient(180deg, #FFFFFF 0%, #FBF1F6 100%)",
+  pink: "linear-gradient(155deg, #FCC8DF 0%, #F078B4 52%, #E0318C 100%)",
+  sky: "linear-gradient(160deg, #D8F0FC 0%, #90D8FC 52%, #5CB8EC 100%)",
+  butter: "linear-gradient(180deg, #FFFBE6 0%, #FCF0C0 100%)",
+  lavender: "linear-gradient(160deg, #EDE5FD 0%, #B9A3F0 100%)",
 };
 
 function Art({ children }: { children: ReactNode }) {
@@ -62,7 +62,7 @@ export function SparkleArt() {
       <defs>
         <linearGradient id={`${id}s`} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#FFFFFF" />
-          <stop offset="1" stopColor="#E6DCFF" />
+          <stop offset="1" stopColor="#FFE3F0" />
         </linearGradient>
         <linearGradient id={`${id}tr`} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#FFFFFF" stopOpacity=".55" />
@@ -75,7 +75,7 @@ export function SparkleArt() {
         d="M33 9.5c1.1 5.6 3.3 7.8 8.8 9.1-5.5 1.3-7.7 3.5-8.8 9.1-1.1-5.6-3.3-7.8-8.8-9.1 5.5-1.3 7.7-3.5 8.8-9.1Z"
         fill={`url(#${id}s)`}
         transform="translate(-14 2)"
-        style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(70,30,160,.35))" }}
+        style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(160,20,90,.35))" }}
       />
       <path d="M36 10.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8Z" fill="#FFFFFF" opacity=".85" />
       <path d="M11 35l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6Z" fill="#FFFFFF" opacity=".7" />
@@ -108,21 +108,17 @@ export function IdCardArt() {
   );
 }
 
-/** Guestbook: a graphite speech bubble with googly eyes, as a die-cut sticker. */
-export function BubbleArt() {
+/** Guestbook: a little round fish with a bubble, for the aquarium. */
+export function FishArt() {
   return (
     <Art>
-      <ellipse cx="24" cy="40.5" rx="12" ry="2.4" fill="rgba(20,40,20,.14)" />
-      <path d="M15 11h18a8 8 0 0 1 8 8v6.5a8 8 0 0 1-8 8H21.5l-6.5 5.2v-5.4A8 8 0 0 1 7 25.5V19a8 8 0 0 1 8-8Z" fill="#FFFFFF" style={{ filter: "drop-shadow(0 1.5px 2px rgba(20,40,20,.22))" }} />
-      <path d="M15.3 13.4h17.4a5.8 5.8 0 0 1 5.8 5.8v6.2a5.8 5.8 0 0 1-5.8 5.8H21l-4.3 3.4v-3.5A5.8 5.8 0 0 1 9.5 25.4v-6.2a5.8 5.8 0 0 1 5.8-5.8Z" fill={GRAPHITE} />
-      <path d="M12 16.5c1.2-1.6 2.8-2.3 4.6-2.3" stroke="rgba(255,255,255,.35)" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-      <circle cx="19" cy="21.6" r="4.4" fill="#FFFFFF" />
-      <circle cx="29" cy="21.6" r="4.4" fill="#FFFFFF" />
-      <circle cx="20" cy="22.6" r="2.1" fill="#16171B" />
-      <circle cx="30" cy="22.6" r="2.1" fill="#16171B" />
-      <circle cx="20.6" cy="21.9" r=".6" fill="#FFFFFF" />
-      <circle cx="30.6" cy="21.9" r=".6" fill="#FFFFFF" />
-      <path d="M22.4 27.4c1 .9 2.2.9 3.2 0" stroke="#FFFFFF" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+      <path d="M33 24l8-6.5v13Z" fill="#F078B4" />
+      <ellipse cx="22" cy="24" rx="12.5" ry="10" fill="#FFFFFF" style={{ filter: "drop-shadow(0 1.5px 1.5px rgba(30,90,150,.25))" }} />
+      <path d="M17 15.5c3 2.6 3 14.4 0 17" stroke="#FCA8CC" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <circle cx="14.6" cy="22" r="2.1" fill="#2A2346" />
+      <circle cx="15.2" cy="21.4" r=".7" fill="#FFFFFF" />
+      <circle cx="35" cy="11.5" r="2.6" fill="none" stroke="#FFFFFF" strokeWidth="1.4" />
+      <circle cx="39.5" cy="7" r="1.5" fill="none" stroke="#FFFFFF" strokeWidth="1.2" />
     </Art>
   );
 }
@@ -142,47 +138,18 @@ export function PlaneArt() {
   );
 }
 
-/** Moci, the jelly: sky blue with an iridescent glow, little arms, dark blue eyes and smile. */
+/** Moci, her agent: a white sparkle on the pink-to-sky mark. */
 export function MociArt() {
-  const id = useId();
   return (
     <Art>
       <defs>
-        <radialGradient id={`${id}j`} cx=".5" cy=".15" r="1">
-          <stop offset="0" stopColor="#E6F7FF" />
-          <stop offset=".45" stopColor="#A6DEFA" />
-          <stop offset=".85" stopColor="#5EC4F2" />
-        </radialGradient>
-        <radialGradient id={`${id}p`}>
-          <stop offset="0" stopColor="#FFA8D4" stopOpacity=".9" />
-          <stop offset="1" stopColor="#FFA8D4" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={`${id}y`}>
-          <stop offset="0" stopColor="#FFEC96" stopOpacity=".95" />
-          <stop offset="1" stopColor="#FFEC96" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={`${id}m`}>
-          <stop offset="0" stopColor="#56ECD6" stopOpacity=".85" />
-          <stop offset="1" stopColor="#56ECD6" stopOpacity="0" />
-        </radialGradient>
-        <clipPath id={`${id}c`}>
-          <path d="M24 9.5c8.6 0 13.4 6.6 13.4 15 0 5.6 1.6 9.6 1.6 11.6 0 3-6.6 4.4-15 4.4s-15-1.4-15-4.4c0-2 1.6-6 1.6-11.6 0-8.4 4.8-15 13.4-15Z" />
-        </clipPath>
+        <linearGradient id="moci-mark" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FCA8CC" />
+          <stop offset="1" stopColor="#90D8FC" />
+        </linearGradient>
       </defs>
-      <ellipse cx="24" cy="41.6" rx="12" ry="2.2" fill="rgba(20,90,160,.16)" />
-      <ellipse cx="9.6" cy="29" rx="3.4" ry="5" transform="rotate(40 9.6 29)" fill="#7FD0F5" />
-      <ellipse cx="38.4" cy="29" rx="3.4" ry="5" transform="rotate(-40 38.4 29)" fill="#7FD0F5" />
-      <g clipPath={`url(#${id}c)`}>
-        <rect x="0" y="0" width="48" height="48" fill={`url(#${id}j)`} />
-        <ellipse cx="19" cy="20" rx="9" ry="7" fill={`url(#${id}p)`} />
-        <ellipse cx="28" cy="23" rx="9" ry="7" fill={`url(#${id}y)`} />
-        <ellipse cx="23" cy="31" rx="11" ry="7" fill={`url(#${id}m)`} />
-        <path d="M9 34c6 4 24 4 30 0v8H9Z" fill="#3FB2EA" opacity=".35" />
-      </g>
-      <ellipse cx="17.6" cy="15" rx="3.2" ry="2" transform="rotate(-25 17.6 15)" fill="#FFFFFF" opacity=".95" />
-      <rect x="23.1" y="18.6" width="2.1" height="4.4" rx="1.05" fill="#2A64AD" />
-      <rect x="30.1" y="18.6" width="2.1" height="4.4" rx="1.05" fill="#2A64AD" />
-      <path d="M23.4 26.2c1.8 1.8 5.6 1.8 7.4 0" stroke="#2A64AD" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <circle cx="24" cy="24" r="15" fill="url(#moci-mark)" />
+      <path d="M24 13.5c.8 5.2 2.7 7.6 8 8.5-5.3.9-7.2 3.3-8 8.5-.8-5.2-2.7-7.6-8-8.5 5.3-.9 7.2-3.3 8-8.5Z" fill="#FFFFFF" />
     </Art>
   );
 }
@@ -207,36 +174,7 @@ export function SearchArt() {
   );
 }
 
-/** Night: a cream crescent moon with craters, and two stars. */
-export function MoonArt() {
-  const id = useId();
-  return (
-    <Art>
-      <defs>
-        <linearGradient id={`${id}m`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#FFF6D2" />
-          <stop offset="1" stopColor="#F2CF6A" />
-        </linearGradient>
-      </defs>
-      <path d="M33.5 30.8A13 13 0 0 1 19.2 11.6a13 13 0 1 0 14.3 19.2Z" fill={`url(#${id}m)`} style={{ filter: "drop-shadow(0 1.5px 2px rgba(0,0,0,.35))" }} />
-      <circle cx="17" cy="27" r="1.8" fill="#D1AC55" opacity=".7" />
-      <circle cx="22.5" cy="32.5" r="1.2" fill="#D1AC55" opacity=".7" />
-      <path d="M34 11l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7Z" fill="#FFFFFF" />
-      <path d="M38.5 20l.4 1.1 1.1.4-1.1.4-.4 1.1-.4-1.1-1.1-.4 1.1-.4Z" fill="#FFFFFF" opacity=".75" />
-    </Art>
-  );
-}
 
-/** Day (shown at night): a puffy white cloud on blue. */
-export function CloudArt() {
-  return (
-    <Art>
-      <path d="M-2 12 50 30v6L-2 18Z" fill="#FFFFFF" opacity=".14" />
-      <path d="M14.5 34a6.5 6.5 0 0 1-.9-12.9A9.5 9.5 0 0 1 32 19.4a7.3 7.3 0 0 1 2.2 14.6Z" fill="#FFFFFF" style={{ filter: "drop-shadow(0 2px 2px rgba(10,60,160,.3))" }} />
-      <path d="M14 30.5h20" stroke="#DCEBFF" strokeWidth="2.4" strokeLinecap="round" />
-    </Art>
-  );
-}
 
 /** Sound: a graphite speaker, with blue waves when on and a pink cross when off. */
 export function SpeakerArt({ on }: { on: boolean }) {
@@ -291,6 +229,17 @@ export function CalendarArt() {
       <text x="24" y="34" textAnchor="middle" fontSize="13" fontWeight="700" fill="#1D2A4D" style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}>
         40s
       </text>
+    </Art>
+  );
+}
+
+/** How it works: a round question mark, like a help key. */
+export function HelpArt() {
+  return (
+    <Art>
+      <circle cx="24" cy="24" r="13" fill="#FFFFFF" stroke="#F0489C" strokeWidth="2.4" />
+      <path d="M19.6 20.4c.4-2.6 2.3-4 4.6-4 2.6 0 4.5 1.6 4.5 3.9 0 1.9-1.2 2.9-2.6 3.8-1.2.8-1.9 1.4-1.9 2.9" stroke="#2A2346" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+      <circle cx="24.2" cy="31.6" r="1.7" fill="#2A2346" />
     </Art>
   );
 }

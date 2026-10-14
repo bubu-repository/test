@@ -9,6 +9,7 @@
 :root {
   --font-display: var(--font-sans-face);
   --font-body: var(--font-sans-face);
+  --font-round: var(--font-round-face);
   --font-pixel: var(--font-pixel-face);
   --font-mono: var(--font-mono-face);
   --font-ui: var(--font-ui-face);

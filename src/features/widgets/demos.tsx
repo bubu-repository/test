@@ -247,7 +247,7 @@ const CAPS: { keys: string[]; label: string; action: SiteAction; match: (e: Keyb
   { keys: ["⌘", "K"], label: "Palette", action: { type: "open", panel: "palette" }, match: (e) => e.key === "Meta" || e.key === "Control" || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") },
   { keys: ["T"], label: "Tour", action: { type: "tour" }, match: (e) => e.key.toLowerCase() === "t" },
   { keys: ["B"], label: "Brief", action: { type: "open", panel: "brief" }, match: (e) => e.key.toLowerCase() === "b" },
-  { keys: ["D"], label: "Night", action: { type: "theme" }, match: (e) => e.key.toLowerCase() === "d" },
+  { keys: ["S"], label: "Stickers", action: { type: "open", panel: "stickers" }, match: (e) => e.key.toLowerCase() === "s" },
   { keys: ["?"], label: "Keys", action: { type: "open", panel: "shortcuts" }, match: (e) => e.key === "?" },
 ];
 

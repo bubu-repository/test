@@ -30,11 +30,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: requireToken("light", "--bg") },
-    { media: "(prefers-color-scheme: dark)", color: requireToken("dark", "--bg") },
-  ],
+  colorScheme: "light",
+  themeColor: requireToken("light", "--bg"),
 };
 
 const personJsonLd = {
@@ -49,7 +46,7 @@ const personJsonLd = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-theme="light" data-sound="off" data-cursor="off" data-xray="off" className={fontVariables} suppressHydrationWarning>
+    <html lang="en" data-theme="light" data-sound="off" data-loader="off" className={fontVariables} suppressHydrationWarning>
       <head>
         <InlineScript html={preferencesInitScript} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />

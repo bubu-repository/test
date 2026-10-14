@@ -105,7 +105,6 @@ function destinations(): { label: string; href: string }[] {
     { label: "home", href: "/" },
     { label: "work projects portfolio", href: "/work" },
     { label: "cv resume", href: "/about" },
-    { label: "game snake play", href: "/play" },
     ...labItems.filter((l) => l.where === "subdomain").map((l) => ({ label: l.name, href: "/lab" })),
   ];
 }
@@ -142,12 +141,10 @@ export function think(raw: string): BrainAnswer {
     };
   }
 
-  // Theme
-  if (/\b(dark|night)\b.*\b(mode|theme|sky)\b|\bturn off the lights\b|\bgo dark\b/i.test(q)) {
-    return { text: "Switching to the night sky. 🌙", actions: [{ type: "theme", value: "dark" }], followups: ["Back to daylight", "Give me the tour"], confidence: 1 };
-  }
-  if (/\b(light|day|bright)\b.*\b(mode|theme|sky)\b|\bback to daylight\b|\bturn on the lights\b/i.test(q)) {
-    return { text: "Back to the day sky. ☀️", actions: [{ type: "theme", value: "light" }], followups: defaultFollowups, confidence: 1 };
+  // Sound
+  if (/\b(sound|audio|sfx)\b.*\b(on|off)\b|\b(turn|switch)\b.*\b(on|off)\b.*\b(sound|audio)\b|\b(mute|unmute)\b/i.test(q)) {
+    const on = !/\b(off|mute)\b/i.test(q) || /\bunmute\b/i.test(q);
+    return { text: on ? "Sound is on. Soft clicks only." : "Sound is off.", actions: [{ type: "sound", value: on }], followups: defaultFollowups, confidence: 1 };
   }
 
   // Tour

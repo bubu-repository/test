@@ -6,12 +6,12 @@ import { useEffect } from "react";
 import { readJSON, writeJSON } from "@/lib/storage";
 import { hydrateStickers, unlock } from "@/lib/stickers";
 import { toast, useUI } from "@/lib/ui";
-import { Cursor } from "../cursor/Cursor";
 import { LiveLayer } from "../live/LiveLayer";
 import { StickerLayer } from "../stickers/StickerLayer";
 import { Tour } from "../tour/Tour";
 import { WorldHost } from "../world/WorldHost";
 import { ActionHost } from "./ActionHost";
+import { FloatingActions } from "./FloatingActions";
 import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { Toasts } from "./Toasts";
 
@@ -108,8 +108,8 @@ export function SiteChrome() {
       {overlay === "shortcuts" && <ShortcutSheet />}
       {agentOpen && <AgentPanel />}
       <Toasts />
+      <FloatingActions />
       <Tour />
-      <Cursor />
     </>
   );
 }

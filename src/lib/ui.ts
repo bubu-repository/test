@@ -17,8 +17,6 @@ type UIState = {
   agentOpen: boolean;
   touring: boolean;
   lens: Lens | null;
-  xray: boolean;
-  rave: boolean;
   liveCursors: boolean;
   jiggle: boolean;
   /** Single-key shortcuts (WCAG 2.1.4: they can be turned off). */
@@ -31,8 +29,6 @@ export const ui = createStore<UIState>({
   agentOpen: false,
   touring: false,
   lens: null,
-  xray: false,
-  rave: false,
   liveCursors: true,
   jiggle: false,
   keys: true,

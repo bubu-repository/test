@@ -37,7 +37,7 @@ function parseDeclarations(body: string): TokenDeclaration[] {
 export const tokens: TokenGroups = parseBlocks(source);
 
 /** Resolves a token to its literal value for a theme, following var() aliases. */
-export function resolveToken(theme: "light" | "dark", name: string, depth = 0): string | undefined {
+export function resolveToken(theme: "light", name: string, depth = 0): string | undefined {
   const own = tokens[theme].find((token) => token.name === name)?.value;
   const value = own ?? tokens.light.find((token) => token.name === name)?.value;
   const alias = value?.match(/^var\((--[\w-]+)\)$/);
@@ -46,7 +46,7 @@ export function resolveToken(theme: "light" | "dark", name: string, depth = 0): 
 }
 
 /** Like resolveToken, but fails the build if the token is missing. */
-export function requireToken(theme: "light" | "dark", name: string): string {
+export function requireToken(theme: "light", name: string): string {
   const value = resolveToken(theme, name);
   if (!value) throw new Error(`Token ${name} is not defined for the ${theme} theme.`);
   return value;

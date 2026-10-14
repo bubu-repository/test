@@ -15,7 +15,7 @@ const base = process.argv[2] ?? "http://localhost:3000";
 
 const TOOL = {
   navigate: (i) => ({ type: "navigate", href: i.path }),
-  set_theme: (i) => ({ type: "theme", value: i.theme }),
+  set_sound: (i) => ({ type: "sound", value: i.on }),
   start_tour: () => ({ type: "tour" }),
   copy_email: () => ({ type: "copyEmail" }),
   download_cv: () => ({ type: "download", href: "/cv.pdf" }),

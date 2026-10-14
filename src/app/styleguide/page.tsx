@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/styleguide" },
 };
 
-type Theme = "light" | "dark";
+type Theme = "light";
 
-const colorNames = Array.from(new Set([...tokens.light, ...tokens.dark].map((t) => t.name))).filter((n) => !n.startsWith("--font"));
+const colorNames = Array.from(new Set(tokens.light.map((t) => t.name))).filter((n) => !n.startsWith("--font"));
 
 const contrastPairs = [
   { fg: "--ink", bg: "--bg", use: "Body text on the page", min: 4.5 },
@@ -24,10 +24,13 @@ const contrastPairs = [
   { fg: "--accent-display", bg: "--bg", use: "Highlighted headline words (display size)", min: 3 },
   { fg: "--on-fill", bg: "--accent-soft", use: "Label on a pale pink fill", min: 4.5 },
   { fg: "--on-accent", bg: "--accent-strong", use: "White on the pink key", min: 4.5 },
-  { fg: "--on-cobalt", bg: "--cobalt", use: "Label on blue", min: 4.5 },
-  { fg: "--on-fill", bg: "--butter", use: "Label on sunshine yellow", min: 4.5 },
-  { fg: "--on-fill", bg: "--green", use: "Label on palm green", min: 4.5 },
+  { fg: "--on-cobalt", bg: "--cobalt", use: "White on deep sky", min: 4.5 },
+  { fg: "--on-fill", bg: "--butter", use: "Label on butter", min: 4.5 },
+  { fg: "--on-fill", bg: "--green", use: "Label on leaf green", min: 4.5 },
   { fg: "--on-fill", bg: "--lime", use: "Label on fresh green", min: 4.5 },
+  { fg: "--on-fill", bg: "--sky", use: "Label on sky blue", min: 4.5 },
+  { fg: "--on-fill", bg: "--accent-soft-2", use: "Label on mid pink", min: 4.5 },
+  { fg: "--on-fill", bg: "--violet", use: "Label on lavender", min: 4.5 },
   { fg: "--screen-ink", bg: "--screen", use: "LCD segments", min: 4.5 },
   { fg: "--screen-muted", bg: "--screen", use: "Dim LCD segments", min: 4.5 },
 ];
@@ -74,12 +77,11 @@ export default function StyleguidePage() {
         </div>
       </header>
 
-      <Section index="01" title="Colour" lead="White paper and navy ink, with the summer sky and sea in windows. Raspberry is the one colour you always feel; summer blue, leaf green and honey yellow are the accents, all kept below 0.17 chroma so nothing glares.">
-        <div className="grid gap-5 md:grid-cols-2">
-          {(["light", "dark"] as const).map((theme) => (
-            <div key={theme} data-theme={theme} className="widget bg-surface p-5 text-ink">
-              <p className="type-pixel">{theme === "light" ? "Light" : "Dark"}</p>
-              <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <Section index="01" title="Colour" lead="Pink-white paper and plum ink, after reference image 5. Line pink #F0489C and sky #90D8FC mark lines and small panels; big surfaces stay pale. Light only.">
+        <div className="grid gap-5">
+          {(["light"] as const).map((theme) => (
+            <div key={theme} className="widget bg-surface p-5 text-ink">
+              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
                 {colorNames.map((name) => {
                   const value = resolveToken(theme, name);
                   return (
@@ -98,10 +100,10 @@ export default function StyleguidePage() {
 
       <Section index="02" title="Contrast" lead="Computed from the token values. Text needs 4.5:1; markers need 3:1.">
         <div className="widget overflow-x-auto p-4" tabIndex={0} role="region" aria-label="Contrast table">
-          <table className="w-full min-w-[640px] border-collapse text-left text-14">
+          <table className="w-full min-w-[560px] border-collapse text-left text-14">
             <thead>
               <tr className="border-b border-line">
-                {["Pair", "Use", "Need", "Day", "Night"].map((h) => (
+                {["Pair", "Use", "Need", "Ratio"].map((h) => (
                   <th key={h} scope="col" className="type-pixel py-3 pr-4">
                     {h}
                   </th>
@@ -119,7 +121,6 @@ export default function StyleguidePage() {
                   <td className="py-3 pr-4">{pair.use}</td>
                   <td className="type-code py-3 pr-4">{pair.min}:1</td>
                   <Ratio theme="light" {...pair} />
-                  <Ratio theme="dark" {...pair} />
                 </tr>
               ))}
             </tbody>

@@ -6,14 +6,11 @@ import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, 
 import { Dialog } from "@/components/Dialog";
 import { CloseIcon } from "@/components/icons";
 import { SoundToggle } from "@/components/SoundToggle";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { dispatch } from "@/lib/actions";
 import { cn } from "@/lib/cn";
-import { applySound, applyTheme, getSound, getTheme, subscribePreferences } from "@/lib/preferences";
-import { sfx } from "@/lib/sound";
-import { unlock } from "@/lib/stickers";
+import { applySound, getSound, subscribePreferences } from "@/lib/preferences";
 import { useLive } from "../live/live-store";
-import { BoxArt, BubbleArt, CalendarArt, CloudArt, CvArt, IdCardArt, MociArt, MoonArt, MoreArt, PlaneArt, SearchArt, SparkleArt, SpeakerArt, TILE } from "./DockIcons";
+import { BoxArt, CalendarArt, CvArt, FishArt, HelpArt, IdCardArt, MociArt, MoreArt, PlaneArt, SearchArt, SparkleArt, SpeakerArt, TILE } from "./DockIcons";
 
 type ItemProps = {
   label: string;
@@ -31,7 +28,7 @@ type ItemProps = {
 } & ({ href: string; onClick?: never; pressed?: never } | { href?: never; onClick: () => void; pressed?: boolean });
 
 function DockItem({ label, caption, bg, fg, ink, active, className, iconClassName, children, tour, cursor, ...rest }: ItemProps) {
-  const style = { "--app-bg": bg, "--app-fg": fg ?? "#fff", "--app-ink": ink ?? "#3FA866" } as CSSProperties;
+  const style = { "--app-bg": bg, "--app-fg": fg ?? "#fff", "--app-ink": ink ?? "#4FB772" } as CSSProperties;
   const inner = (
     <>
       <span className={cn("app-icon app-icon--art", bg === TILE.white && "app-icon--white", iconClassName)} style={style}>
@@ -73,7 +70,6 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const serverTheme = () => "light" as const;
 const serverSound = () => false;
 
 /**
@@ -85,7 +81,6 @@ export function SiteNav() {
   const pathname = usePathname();
   const [menu, setMenu] = useState(false);
   const dockRef = useRef<HTMLElement>(null);
-  const theme = useSyncExternalStore(subscribePreferences, getTheme, serverTheme);
   const sound = useSyncExternalStore(subscribePreferences, getSound, serverSound);
   const count = useLive((s) => s.count);
 
@@ -163,21 +158,10 @@ export function SiteNav() {
     };
   }, []);
 
-  const isDark = theme === "dark";
-  // The theme swap grows from the top of the screen, where the menu opened.
-  const toggleTheme = () => {
-    const root = document.documentElement;
-    root.style.setProperty("--swap-x", `${window.innerWidth / 2}px`);
-    root.style.setProperty("--swap-y", "40px");
-    sfx.pop();
-    applyTheme(isDark ? "light" : "dark", { persist: true });
-    if (!isDark) unlock("night");
-  };
-
   return (
     <header ref={headerRef} className="site-header pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-2 pt-3 md:pt-4">
-      <nav ref={dockRef} aria-label="Primary" data-xr="Dock · app icons with magnification" className="dock glass-strong pointer-events-auto">
-        <DockItem href="/" label="Home" bg={TILE.white} fg="#1D2A4D" active={pathname === "/"} cursor="Home">
+      <nav ref={dockRef} aria-label="Primary" data-tour="dock" data-xr="Dock · app icons with magnification" className="dock glass-strong pointer-events-auto">
+        <DockItem href="/" label="Home" bg={TILE.white} fg="#2A2346" active={pathname === "/"} cursor="Home">
           <span className="text-[calc(22px*var(--m,1))] leading-none font-bold tracking-[-0.06em]">
             a<span className="text-accent">.</span>
           </span>
@@ -189,17 +173,17 @@ export function SiteNav() {
         <DockItem href="/about" label="About" bg={TILE.white} active={isActive(pathname, "/about")} tour="nav-about">
           <IdCardArt />
         </DockItem>
-        <DockItem href="/lab" label="Lab" bg={TILE.purple} active={isActive(pathname, "/lab")} tour="nav-lab">
+        <DockItem href="/lab" label="Lab" bg={TILE.pink} active={isActive(pathname, "/lab")} tour="nav-lab">
           <SparkleArt />
         </DockItem>
         <span className="dock-sep" aria-hidden="true" />
         <DockItem label="Download the CV" caption="CV" bg={TILE.white} onClick={() => dispatch({ type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" })} cursor="CV">
           <CvArt />
         </DockItem>
-        <DockItem label="Copy email" caption="Email" bg={TILE.blue} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
+        <DockItem label="Copy email" caption="Email" bg={TILE.sky} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
           <PlaneArt />
         </DockItem>
-        <DockItem label="More: guestbook, brief, Moci, search, night, sound" caption="More" bg={TILE.white} pressed={menu} onClick={() => setMenu(true)}>
+        <DockItem label="More: guestbook, brief, Moci, search, how it works, sound" caption="More" bg={TILE.white} pressed={menu} onClick={() => setMenu(true)}>
           <MoreArt />
         </DockItem>
       </nav>
@@ -214,14 +198,14 @@ export function SiteNav() {
           </div>
           <ul className="grid grid-cols-4 gap-x-2 gap-y-4 text-center text-12 font-medium">
             {[
-              { label: "Guestbook", bg: TILE.lime, art: <BubbleArt />, href: "/guestbook" },
+              { label: "Guestbook", bg: TILE.sky, art: <FishArt />, href: "/guestbook" },
               { label: "40s brief", bg: TILE.white, art: <CalendarArt />, run: () => dispatch({ type: "open", panel: "brief" }) },
               { label: "Ask Moci", bg: TILE.white, art: <MociArt />, run: () => dispatch({ type: "open", panel: "agent" }) },
-              { label: "Copy email", bg: TILE.blue, art: <PlaneArt />, run: () => dispatch({ type: "copyEmail" }) },
+              { label: "Copy email", bg: TILE.sky, art: <PlaneArt />, run: () => dispatch({ type: "copyEmail" }) },
               { label: "Search", bg: TILE.white, art: <SearchArt />, run: () => dispatch({ type: "open", panel: "palette" }) },
-              { label: isDark ? "Day sky" : "Night sky", bg: isDark ? TILE.blue : TILE.navy, art: isDark ? <CloudArt /> : <MoonArt />, run: () => toggleTheme() },
+              { label: "How it works", bg: TILE.butter, art: <HelpArt />, run: () => dispatch({ type: "tour" }) },
               { label: sound ? "Sound off" : "Sound on", bg: TILE.white, art: <SpeakerArt on={sound} />, run: () => applySound(!sound, { persist: true }) },
-              { label: "The lab", bg: TILE.purple, art: <SparkleArt />, href: "/lab" },
+              { label: "The lab", bg: TILE.pink, art: <SparkleArt />, href: "/lab" },
             ].map((a) => {
               const icon = (
                 <span className={cn("app-icon app-icon--art mx-auto", a.bg === TILE.white && "app-icon--white")} style={{ "--app-bg": a.bg, "--size": "52px" } as CSSProperties}>
@@ -253,19 +237,7 @@ export function SiteNav() {
             })}
           </ul>
           <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
-            <ThemeToggle />
             <SoundToggle />
-            <button
-              type="button"
-              className="pill"
-              data-size="sm"
-              onClick={() => {
-                setMenu(false);
-                void dispatch({ type: "tour" });
-              }}
-            >
-              Autopilot tour
-            </button>
             {count > 0 && (
               <span className="chip">
                 <span className="live-dot" aria-hidden="true" /> {count} here now

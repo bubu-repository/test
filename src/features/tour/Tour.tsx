@@ -1,128 +1,185 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { MociAvatar } from "@/components/MociAvatar";
-import { ghost, runTour } from "./script";
-import { registerTourRunner, stopTour, useTour } from "./tour-store";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { SiteAvatar } from "@/components/SiteAvatar";
+import { CloseIcon } from "@/components/icons";
+import { sfx } from "@/lib/sound";
+import { stopTour, useTour } from "./tour-store";
+
+type Step = { target: string; title: string; body: string };
+
+/** The walk, in reading order. Steps whose target isn't on this page are skipped. */
+const STEPS: Step[] = [
+  {
+    target: '[data-tour="dock"]',
+    title: "This is the dock",
+    body: "Work, About and Lab are the three rooms. CV downloads her CV, Email copies her address, and More has the guestbook, search and sound.",
+  },
+  {
+    target: '[data-tour="go"]',
+    title: "Start with the work",
+    body: "Four case studies, each answering one hiring question: the problem, her role, the design, the engineering, the evals and what happened.",
+  },
+  {
+    target: '[data-tour="agent"]',
+    title: "Ask her agent",
+    body: "An AI agent that answers from this site and names the page it used. When it doesn't know, it says so. It's her agent, not her.",
+  },
+  {
+    target: '[data-tour="lab-tools"]',
+    title: "Tools you can use",
+    body: "The Lab has a craft studio for lettering and photos, and one card pack a day.",
+  },
+  {
+    target: "#contact",
+    title: "CV and email, on every page",
+    body: "Every page ends with her email, a copy button and the CV.",
+  },
+  {
+    target: '[data-tour="help"]',
+    title: "Lost again? Press here",
+    body: "This walk lives behind the question mark. Press ⌘K (Ctrl+K) any time to search everything.",
+  },
+];
+
+type Rect = { x: number; y: number; w: number; h: number };
+
+function visible(selector: string): HTMLElement | null {
+  for (const el of document.querySelectorAll<HTMLElement>(selector)) {
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== "hidden") return el;
+  }
+  return null;
+}
 
 /**
- * The autopilot's ghost cursor, its speech bubble and the stop bar.
- * Rendered in the top layer (popover) so it stays visible above modal dialogs.
+ * "How this site works": a spotlight on one part of the page at a time, with a short note on
+ * each. Back, Next, Esc to leave; arrow keys work too. Nothing moves on its own.
  */
 export function Tour() {
   const running = useTour((s) => s.running);
-  const caption = useTour((s) => s.caption);
-  const step = useTour((s) => s.step);
-  const total = useTour((s) => s.total);
-  const layerRef = useRef<HTMLDivElement>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const bubbleRef = useRef<HTMLDivElement>(null);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [index, setIndex] = useState(0);
+  const [rect, setRect] = useState<Rect | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const opener = useRef<Element | null>(null);
 
-  useEffect(() => {
-    registerTourRunner(runTour);
-    return () => registerTourRunner(null);
-  }, []);
-
-  // Keep the layer on top: re-show it whenever a dialog opens during the tour.
-  useEffect(() => {
-    const layer = layerRef.current;
-    if (!layer || !running) return;
-    const raise = () => {
-      try {
-        if (layer.matches(":popover-open")) layer.hidePopover();
-        layer.showPopover();
-      } catch {
-        // Popover API missing: the layer falls back to a high z-index.
-      }
-    };
-    raise();
-    const observer = new MutationObserver(() => raise());
-    observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["open"] });
-    return () => {
-      observer.disconnect();
-      try {
-        layer.hidePopover();
-      } catch {
-        // ignore
-      }
-    };
-  }, [running]);
-
-  // Spring-follow the target.
-  useEffect(() => {
+  // Pick the steps that exist on this page when the walk starts.
+  useLayoutEffect(() => {
     if (!running) return;
-    let raf = 0;
-    let vx = 0;
-    let vy = 0;
-    const tick = () => {
-      if (ghost.teleport) {
-        ghost.x = ghost.tx;
-        ghost.y = ghost.ty;
-        vx = vy = 0;
-      } else {
-        const ax = (ghost.tx - ghost.x) * 0.075;
-        const ay = (ghost.ty - ghost.y) * 0.075;
-        vx = (vx + ax) * 0.72;
-        vy = (vy + ay) * 0.72;
-        ghost.x += vx;
-        ghost.y += vy;
-      }
-      const cursor = cursorRef.current;
-      const bubble = bubbleRef.current;
-      if (cursor) {
-        cursor.style.transform = `translate3d(${ghost.x}px, ${ghost.y}px, 0) scale(${ghost.pressed ? 0.82 : 1})`;
-        cursor.style.opacity = ghost.visible ? "1" : "0";
-      }
-      if (bubble) {
-        const w = bubble.offsetWidth;
-        const h = bubble.offsetHeight;
-        const flipX = ghost.x + 40 + w > window.innerWidth - 12;
-        const flipY = ghost.y + 44 + h > window.innerHeight - 90;
-        const bx = Math.max(12, flipX ? ghost.x - w - 24 : ghost.x + 40);
-        const by = Math.max(12, flipY ? ghost.y - h - 20 : ghost.y + 44);
-        bubble.style.transform = `translate3d(${bx}px, ${by}px, 0)`;
-      }
-      raf = requestAnimationFrame(tick);
+    opener.current = document.activeElement;
+    // Which steps apply depends on the DOM of the page the visitor is on.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSteps(STEPS.filter((s) => visible(s.target)));
+    setIndex(0);
+    return () => {
+      (opener.current as HTMLElement | null)?.focus?.();
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
   }, [running]);
 
-  if (!running) return null;
+  const step = steps[index];
+
+  // Follow the target as the page scrolls or resizes.
+  useEffect(() => {
+    if (!running || !step) return;
+    const el = visible(step.target);
+    if (!el) return;
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const fixed = getComputedStyle(el).position === "fixed" || el.closest(".site-header, .float-actions") !== null;
+    if (!fixed) el.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "center" });
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const r = el.getBoundingClientRect();
+      setRect({ x: r.left, y: r.top, w: r.width, h: r.height });
+    };
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    measure();
+    const settle = window.setInterval(queue, 120);
+    const stop = window.setTimeout(() => window.clearInterval(settle), 900);
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearInterval(settle);
+      window.clearTimeout(stop);
+      window.removeEventListener("scroll", queue);
+      window.removeEventListener("resize", queue);
+    };
+  }, [running, step]);
+
+  // Focus the card once it's on screen, and again on every step, so the arrow keys work.
+  const shown = running && !!step && !!rect;
+  useEffect(() => {
+    if (shown) cardRef.current?.focus({ preventScroll: true });
+  }, [shown, index]);
+
+  if (!running || !step || !rect) return null;
+
+  const last = index === steps.length - 1;
+  const go = (delta: number) => {
+    sfx.tick();
+    const next = index + delta;
+    if (next < 0) return;
+    if (next >= steps.length) stopTour();
+    else setIndex(next);
+  };
+
+  // The card sits below the target, or above it when there's no room.
+  const pad = 10;
+  const cardW = Math.min(360, window.innerWidth - 24);
+  const below = rect.y + rect.h + pad + 220 < window.innerHeight;
+  const left = Math.max(12, Math.min(window.innerWidth - cardW - 12, rect.x + rect.w / 2 - cardW / 2));
+  const top = below ? rect.y + rect.h + pad + 8 : undefined;
+  const bottom = below ? undefined : window.innerHeight - rect.y + pad + 8;
 
   return (
-    <div ref={layerRef} popover="manual" className="tour-layer" data-xr="Autopilot · scripted agent driving the real UI">
-      <div ref={cursorRef} className="tour-ghost" aria-hidden="true">
-        <svg width="34" height="40" viewBox="0 0 34 40" className="drop-shadow-[0_6px_10px_rgba(15,18,48,0.3)]">
-          <path d="M3 3 L3 31 L11 24 L16.5 36 L22 33.5 L16.5 22 L27 22 Z" fill="var(--accent)" stroke="#fff" strokeWidth="3" strokeLinejoin="round" />
-        </svg>
-        <span className="tour-ghost__moci">
-          <MociAvatar size={30} mood="happy" />
-        </span>
-        <span className="tour-ghost__label type-pixel">moci</span>
-      </div>
-      {caption && (
-        <div ref={bubbleRef} className="tour-bubble widget" aria-hidden="true">
-          <p className="text-16 leading-snug font-medium">{caption}</p>
+    <div className="coach" role="presentation">
+      <div className="coach__spot" style={{ left: rect.x - pad, top: rect.y - pad, width: rect.w + pad * 2, height: rect.h + pad * 2 }} aria-hidden="true" />
+      <div
+        ref={cardRef}
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="coach-title"
+        aria-describedby="coach-body"
+        tabIndex={-1}
+        className="coach__card"
+        style={{ left, top, bottom, width: cardW }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight") go(1);
+          if (e.key === "ArrowLeft") go(-1);
+        }}
+      >
+        <div className="flex items-start gap-3">
+          <SiteAvatar size={44} className="shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="font-round text-12 font-bold tracking-[0.04em] text-accent-ink">
+              {index + 1} of {steps.length}
+            </p>
+            <h2 id="coach-title" className="mt-0.5 text-18 leading-tight font-bold tracking-[-0.01em]">
+              {step.title}
+            </h2>
+          </div>
+          <button type="button" className="pill" data-variant="ghost" data-shape="icon" data-size="sm" onClick={() => stopTour()} aria-label="Leave the walk">
+            <CloseIcon width={16} height={16} />
+          </button>
         </div>
-      )}
-      <div className="tour-bar widget" role="region" aria-label="Autopilot tour">
-        <span className="live-dot" aria-hidden="true" />
-        <p className="min-w-0 flex-1 text-14">
-          <span className="type-pixel mr-2 text-accent-ink">Autopilot</span>
-          <span className="hidden sm:inline">Moci is driving · move your mouse or press any key to take over</span>
-          <span className="sm:hidden">Tap anywhere to take over</span>
+        <p id="coach-body" className="mt-2 text-14 leading-relaxed text-muted">
+          {step.body}
         </p>
-        <span className="type-pixel hidden text-muted sm:inline" aria-hidden="true">
-          {step}/{total}
-        </span>
-        <button type="button" className="pill" data-variant="ink" data-size="sm" onClick={() => stopTour("Tour stopped.")}>
-          Stop
-        </button>
+        <div className="mt-4 flex items-center justify-end gap-2">
+          {index > 0 && (
+            <button type="button" className="pill game-button" data-size="sm" data-variant="ghost" onClick={() => go(-1)}>
+              Back
+            </button>
+          )}
+          <button type="button" className="pill game-button" data-size="sm" data-variant="magenta" onClick={() => go(1)}>
+            {last ? "Done" : "Next"}
+          </button>
+        </div>
       </div>
-      <p className="sr-only" aria-live="assertive">
-        {caption}
-      </p>
     </div>
   );
 }

@@ -30,7 +30,6 @@ export const commands: Command[] = [
       action: { type: "navigate", href: item.href },
     }),
   ),
-  { id: "play", group: "Navigate", title: "Play Context Window", subtitle: "Snake, but you're an LLM", keywords: "game snake fun", icon: "∿", action: { type: "navigate", href: "/play" } },
   ...projects.map(
     (p): Command => ({
       id: `project-${p.slug}`,
@@ -43,7 +42,7 @@ export const commands: Command[] = [
     }),
   ),
   { id: "ask", group: "Actions", title: "Ask Moci", subtitle: "Questions about Adelia's work", keywords: "agent ai chat question", icon: "/", keys: ["/"], action: { type: "open", panel: "agent" } },
-  { id: "tour", group: "Actions", title: "Start the autopilot tour", subtitle: "Moci drives for 40 seconds", keywords: "guide demo walkthrough", icon: "➤", keys: ["T"], action: { type: "tour" } },
+  { id: "tour", group: "Actions", title: "How this site works", subtitle: "A short guided walk, one spotlight at a time", keywords: "guide help tutorial walkthrough tour", icon: "➤", keys: ["T"], action: { type: "tour" } },
   { id: "brief", group: "Actions", title: "40-second brief", subtitle: "Everything a recruiter needs", keywords: "recruiter summary hr quick tl;dr", icon: "40", keys: ["B"], action: { type: "open", panel: "brief" } },
   { id: "email", group: "Actions", title: "Copy email address", subtitle: "aadeliatiara@gmail.com", keywords: "contact mail hire", icon: "@", action: { type: "copyEmail" } },
   { id: "cv", group: "Actions", title: "Download CV", subtitle: "PDF, generated from this site", keywords: "resume pdf", icon: "CV", action: { type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" } },
@@ -67,8 +66,6 @@ export const commands: Command[] = [
         external: item.where === "subdomain" ? labUrl(item.subdomain) : "/lab",
       }),
     ),
-  { id: "theme", group: "Settings", title: "Toggle night sky", subtitle: "Dark / light theme", keywords: "dark light mode theme", icon: "☾", keys: ["D"], action: { type: "theme" } },
-  { id: "sound", group: "Settings", title: "Toggle sound", subtitle: "Synthesised jelly sounds", keywords: "audio mute", icon: "♪", action: { type: "sound" } },
-  { id: "xray", group: "Settings", title: "Toggle X-ray mode", subtitle: "See how the page is built", keywords: "debug components outline inspect", icon: "⊙", keys: ["X"], action: { type: "xray" } },
+  { id: "sound", group: "Settings", title: "Toggle sound", subtitle: "Soft interface sounds", keywords: "audio mute", icon: "♪", action: { type: "sound" } },
   { id: "live", group: "Settings", title: "Toggle live cursors", subtitle: "Show or hide other visitors", keywords: "presence multiplayer realtime", icon: "➶", action: { type: "liveCursors" } },
 ];

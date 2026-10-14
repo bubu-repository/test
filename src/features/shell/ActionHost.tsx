@@ -4,9 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { identity } from "@/content/profile";
 import { registerActionHandler, type SiteAction } from "@/lib/actions";
-import { applySound, applyTheme, getSound, getTheme } from "@/lib/preferences";
+import { applySound, getSound } from "@/lib/preferences";
 import { sfx } from "@/lib/sound";
-import { unlock } from "@/lib/stickers";
 import { toast, ui } from "@/lib/ui";
 import { askAgent } from "../agent/agent-store";
 import { startTour } from "../tour/tour-store";
@@ -57,12 +56,6 @@ export function ActionHost() {
         case "close":
           ui.set({ overlay: null, agentOpen: false });
           return;
-        case "theme": {
-          const next = action.value ?? (getTheme() === "dark" ? "light" : "dark");
-          applyTheme(next, { persist: true });
-          if (next === "dark") unlock("night");
-          return;
-        }
         case "sound": {
           const next = action.value ?? !getSound();
           applySound(next, { persist: true });
@@ -87,30 +80,13 @@ export function ActionHost() {
           toast({ title: "Downloading", body: action.filename ?? action.href, tone: "sky", icon: "📄" });
           return;
         }
-        case "xray": {
-          const next = action.value ?? !ui.get().xray;
-          ui.set({ xray: next });
-          document.documentElement.setAttribute("data-xray", next ? "on" : "off");
-          if (next) {
-            unlock("xray");
-            toast({ title: "X-ray on", body: "Every major component is labelled. Press X again to turn it off.", tone: "sky", icon: "🩻" });
-          }
-          return;
-        }
         case "lens":
           ui.set({ lens: action.value });
           return;
-        case "rave": {
-          const next = !ui.get().rave;
-          ui.set({ rave: next });
-          document.documentElement.setAttribute("data-rave", next ? "on" : "off");
-          if (next) unlock("konami");
-          return;
-        }
         case "liveCursors": {
           const next = action.value ?? !ui.get().liveCursors;
           ui.set({ liveCursors: next });
-          toast({ title: next ? "Live cursors on" : "Live cursors hidden", body: next ? "Other visitors show up as little jellies." : undefined, tone: "sky", icon: "🫧" });
+          toast({ title: next ? "Live cursors on" : "Live cursors hidden", body: next ? "Other visitors show up as little heads." : undefined, tone: "sky", icon: "🫧" });
           return;
         }
         case "ask":

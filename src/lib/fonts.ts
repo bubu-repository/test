@@ -1,9 +1,9 @@
 import localFont from "next/font/local";
 
 /*
- * Four families, self-hosted from Fontsource (latin subset; the site is English).
+ * Five families, self-hosted from Fontsource (latin subset; the site is English).
  * Mona Sans carries everything: one variable file with weight (200–900) and width (75–125) axes
- * gives sturdy, quiet display headlines and open, readable text. Only Mona Sans is preloaded.
+ * gives sturdy, quiet display headlines and open, readable text. Mona Sans and Nunito are preloaded.
  */
 
 export const fontSans = localFont({
@@ -15,6 +15,16 @@ export const fontSans = localFont({
   preload: true,
   declarations: [{ prop: "font-stretch", value: "75% 125%" }],
   fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
+});
+
+// Rounded, for game-UI parts only: buttons, labels, the character's speech bubbles.
+export const fontRound = localFont({
+  src: "../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2",
+  variable: "--font-round-face",
+  weight: "200 1000",
+  display: "swap",
+  preload: true,
+  fallback: ["ui-rounded", "system-ui", "sans-serif"],
 });
 
 // Bitmap micro-labels and LCD digits: a small nod to the pixel references, never body copy.
@@ -49,4 +59,4 @@ export const fontUi = localFont({
   fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
-export const fontVariables = [fontSans.variable, fontPixel.variable, fontMono.variable, fontUi.variable].join(" ");
+export const fontVariables = [fontSans.variable, fontRound.variable, fontPixel.variable, fontMono.variable, fontUi.variable].join(" ");

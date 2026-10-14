@@ -1,8 +1,7 @@
 "use client";
 
-import { useId, useSyncExternalStore } from "react";
+import { useId } from "react";
 import { Dialog } from "@/components/Dialog";
-import { applyCursor, getCursor, subscribePreferences } from "@/lib/preferences";
 import { ui, useUI } from "@/lib/ui";
 
 const GROUPS: { title: string; items: { keys: string[]; label: string }[] }[] = [
@@ -16,14 +15,11 @@ const GROUPS: { title: string; items: { keys: string[]; label: string }[] }[] = 
   {
     title: "Single keys",
     items: [
-      { keys: ["/"], label: "Ask Moci" },
+      { keys: ["/"], label: "Ask the agent" },
       { keys: ["`"], label: "Terminal" },
-      { keys: ["T"], label: "Autopilot tour" },
+      { keys: ["T"], label: "How this site works" },
       { keys: ["B"], label: "40-second brief" },
       { keys: ["S"], label: "Sticker book" },
-      { keys: ["D"], label: "Day / night sky" },
-      { keys: ["X"], label: "X-ray mode" },
-      { keys: ["P"], label: "Power the home device on or off" },
       { keys: ["?"], label: "This sheet" },
     ],
   },
@@ -35,7 +31,6 @@ const GROUPS: { title: string; items: { keys: string[]; label: string }[] }[] = 
       { keys: ["G", "L"], label: "Lab" },
       { keys: ["G", "A"], label: "About" },
       { keys: ["G", "G"], label: "Guestbook" },
-      { keys: ["G", "P"], label: "Play" },
     ],
   },
 ];
@@ -59,7 +54,6 @@ function Switch({ checked, onChange, label, hint }: { checked: boolean; onChange
 export function ShortcutSheet() {
   const open = useUI((s) => s.overlay === "shortcuts");
   const keys = useUI((s) => s.keys);
-  const cursor = useSyncExternalStore(subscribePreferences, getCursor, () => false);
   const titleId = useId();
   const close = () => ui.set({ overlay: null });
 
@@ -91,7 +85,6 @@ export function ShortcutSheet() {
         </div>
         <div className="mt-6 grid gap-2">
           <Switch checked={keys} onChange={(v) => ui.set({ keys: v })} label="Single-key shortcuts" hint="Turn off if they clash with your screen reader or speech input." />
-          <Switch checked={cursor} onChange={(v) => applyCursor(v, { persist: true })} label="Jelly cursor" hint="The custom cursor. Off means your system cursor." />
         </div>
       </div>
     </Dialog>

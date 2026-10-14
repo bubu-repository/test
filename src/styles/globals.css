@@ -2,12 +2,10 @@
 @import "./tokens.css";
 @import "./screens.css";
 
-/* `dark:` follows the data-theme attribute (set before paint), not the OS setting. */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /*
  * Tailwind theme: defaults are cleared so only token values can be used.
- * `inline reference`: utilities read the live custom property (so they follow data-theme).
+ * `inline reference`: utilities read the live custom property.
  */
 @theme {
   --color-*: initial;
@@ -79,6 +77,7 @@
 
   --font-display: var(--font-display);
   --font-body: var(--font-body);
+  --font-round: var(--font-round);
   --font-pixel: var(--font-pixel);
   --font-mono: var(--font-mono);
 
@@ -527,10 +526,6 @@
     }
   }
 
-  [data-theme="dark"] .pill[data-variant="magenta"] {
-    --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 2px 0 #6e1c42, 0 10px 26px rgba(216, 88, 143, 0.35);
-  }
-
   .pill[data-variant="ink"] {
     --pill-bg: linear-gradient(180deg, color-mix(in srgb, var(--ink) 82%, var(--bg)), var(--ink));
     --pill-fg: var(--bg);
@@ -762,11 +757,6 @@
     box-decoration-break: clone;
   }
 
-  [data-theme="dark"] .sticker-text {
-    color: var(--accent-display);
-    background-image: linear-gradient(100deg, color-mix(in srgb, var(--accent) 26%, transparent), color-mix(in srgb, var(--accent) 16%, transparent));
-  }
-
   /* Sparkle glyph that twinkles. */
   .sparkle {
     display: inline-block;
@@ -852,7 +842,6 @@
   }
 
   /* Theme and sound icons follow the <html> attributes, so they are right before hydration. */
-  [data-theme="dark"] .icon-when-light,
   [data-theme="light"] .icon-when-dark,
   [data-sound="on"] .icon-when-sound-off,
   [data-sound="off"] .icon-when-sound-on {
@@ -888,62 +877,6 @@
     .slide-up {
       animation: fade-in var(--dur-reduced) linear both;
     }
-  }
-}
-
-/* ---------- X-ray mode: shows how the page is built ---------- */
-[data-xray="on"] [data-xr] {
-  outline: 1.5px dashed var(--cobalt) !important;
-  outline-offset: 2px;
-  position: relative;
-}
-
-[data-xray="on"] [data-xr]::after {
-  content: attr(data-xr);
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translateY(-100%);
-  z-index: 60;
-  padding: 2px 6px;
-  border-radius: 4px 4px 0 0;
-  background: var(--cobalt);
-  color: var(--on-cobalt);
-  font: 600 10px/1.3 var(--font-mono);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-[data-xray="on"] body {
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--cobalt) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--cobalt) 10%, transparent) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* ---------- Rave mode (Konami code) ---------- */
-@media (prefers-reduced-motion: no-preference) {
-  [data-rave="on"] main {
-    animation: rave-hue 3s linear infinite;
-  }
-}
-
-/* ---------- Custom cursor: hide the native one only where ours is drawn ---------- */
-@media (pointer: fine) {
-  [data-cursor="on"],
-  [data-cursor="on"] a,
-  [data-cursor="on"] button,
-  [data-cursor="on"] [role="button"],
-  [data-cursor="on"] label,
-  [data-cursor="on"] summary {
-    cursor: none;
-  }
-
-  [data-cursor="on"] input,
-  [data-cursor="on"] textarea,
-  [data-cursor="on"] [contenteditable="true"] {
-    cursor: text;
   }
 }
 
@@ -1404,314 +1337,228 @@
   }
 }
 
-/* The custom cursor can't sit above the top layer, so modals get the native cursor back. */
-html:has(dialog:modal) .cursor-layer {
+
+
+
+/* ---------- Moci's avatar while it thinks ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .site-avatar.is-thinking {
+    animation: think 1.4s var(--ease-in-out) infinite alternate;
+  }
+}
+
+@keyframes think {
+  to {
+    scale: 1.06;
+    box-shadow:
+      inset 0 0 0 2px #ffffff,
+      0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+}
+
+/* ---------- Loading screen (once per session, at most a second) ---------- */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(50% 45% at 50% 48%, #ffffff, transparent 75%),
+    linear-gradient(160deg, var(--stage-from), #fdeef6 50%, var(--stage-to));
+  transition: opacity 240ms var(--ease-out);
+}
+
+html:not([data-loader="run"]) .loader {
   display: none;
 }
 
-@media (pointer: fine) {
-  html[data-cursor="on"]:has(dialog:modal),
-  html[data-cursor="on"]:has(dialog:modal) a,
-  html[data-cursor="on"]:has(dialog:modal) button,
-  html[data-cursor="on"]:has(dialog:modal) [role="button"],
-  html[data-cursor="on"]:has(dialog:modal) label {
-    cursor: auto;
-  }
-
-  html[data-cursor="on"]:has(dialog:modal) a,
-  html[data-cursor="on"]:has(dialog:modal) button,
-  html[data-cursor="on"]:has(dialog:modal) [role="option"] {
-    cursor: pointer;
+@media (scripting: none) {
+  .loader {
+    display: none;
   }
 }
 
-/* ---------- Theme swap: a circular reveal from the toggle ---------- */
-html[data-theme-swap]::view-transition-old(root) {
-  animation: none;
+.loader[data-done] {
+  opacity: 0;
 }
 
-html[data-theme-swap]::view-transition-new(root) {
-  animation: theme-reveal 700ms var(--ease-in-out) both;
+.loader__inner {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
 }
 
-@keyframes theme-reveal {
-  from {
-    clip-path: circle(0 at var(--swap-x, 50%) var(--swap-y, 0%));
-  }
-
-  to {
-    clip-path: circle(150vmax at var(--swap-x, 50%) var(--swap-y, 0%));
-  }
+.loader__name {
+  font-size: var(--text-24);
+  font-weight: 750;
+  letter-spacing: -0.03em;
 }
 
-/* ---------- Moci, a little jelly of summer water ---------- */
-/*
- * Translucent sky blue, deeper at the bottom, with an iridescent glow inside (pink, yellow, mint)
- * and a bright highlight; two small arms; dark blue eyes and smile. The same in both themes.
- */
-.moci-avatar {
-  --jelly-ink: #2a64ad;
-}
-
-.moci-avatar__body {
-  position: absolute;
-  inset: 0;
-  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
-  background:
-    radial-gradient(15% 10% at 33% 20%, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0) 100%),
-    radial-gradient(34% 26% at 36% 34%, rgba(255, 168, 212, 0.85), rgba(255, 168, 212, 0) 100%),
-    radial-gradient(34% 26% at 62% 42%, rgba(255, 236, 150, 0.9), rgba(255, 236, 150, 0) 100%),
-    radial-gradient(40% 28% at 48% 64%, rgba(86, 236, 214, 0.8), rgba(86, 236, 214, 0) 100%),
-    radial-gradient(130% 110% at 50% 12%, #e4f6ff 0%, #a6defa 42%, #62c6f2 78%, #45b6ec 100%);
-  box-shadow:
-    inset 0 -5px 9px rgba(30, 140, 215, 0.35),
-    inset 0 2px 3px rgba(255, 255, 255, 0.85),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.45),
-    0 5px 12px rgba(40, 150, 225, 0.28);
-}
-
-/* Little arms, held out from the sides. */
-.moci-avatar__arm {
-  position: absolute;
-  top: 50%;
-  width: 24%;
-  height: 30%;
-  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
-  background: linear-gradient(180deg, #b7e7fb, #5ec4f1);
-  box-shadow: inset 0 -2px 3px rgba(30, 140, 215, 0.3);
-}
-
-.moci-avatar__arm--l {
-  left: -10%;
-  rotate: 38deg;
-}
-
-.moci-avatar__arm--r {
-  right: -10%;
-  rotate: -38deg;
-}
-
-.moci-avatar__eyes {
-  position: absolute;
-  left: 53%;
-  top: 34%;
-  display: flex;
-  gap: 26%;
-  width: 46%;
-  transform: translateX(-50%);
-  justify-content: center;
-}
-
-.moci-avatar__eyes span {
-  position: relative;
-  display: block;
-  width: 13%;
-  aspect-ratio: 0.55;
-  min-width: 2px;
+.loader__bar {
+  width: 160px;
+  height: 6px;
+  overflow: hidden;
   border-radius: 999px;
-  background: var(--jelly-ink);
-  transform-origin: center;
+  background: rgba(240, 72, 156, 0.14);
+}
+
+.loader__bar > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-soft-2), var(--accent));
+  transform: scaleX(0.08);
+  transform-origin: left;
+  animation: loader-fill 900ms var(--ease-out) forwards;
+}
+
+.loader[data-done] .loader__bar > span {
+  transform: scaleX(1);
+  animation: none;
+  transition: transform 200ms var(--ease-out);
+}
+
+@keyframes loader-fill {
+  to {
+    transform: scaleX(0.86);
+  }
+}
+
+.loader__skip {
+  margin-top: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: var(--text-14);
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.loader__skip:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- The guided walk ("How this site works") ---------- */
+.coach {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.coach__spot {
+  position: fixed;
+  border-radius: 22px;
+  box-shadow:
+    0 0 0 3px var(--accent),
+    0 0 0 9999px rgba(42, 35, 70, 0.42);
+  transition:
+    left var(--dur-short) var(--ease-out),
+    top var(--dur-short) var(--ease-out),
+    width var(--dur-short) var(--ease-out),
+    height var(--dur-short) var(--ease-out);
+}
+
+.coach__card {
+  position: fixed;
+  pointer-events: auto;
+  padding: 16px 16px 14px;
+  border-radius: 24px;
+  background: var(--sheen), var(--surface-solid);
+  border: 2px solid var(--accent-soft-2);
+  box-shadow: var(--bevel), var(--lift-lg);
+  outline: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .moci-avatar__eyes span {
-    animation: blink 5.5s infinite;
-  }
-
-  .moci-avatar__body {
-    animation: drop-wobble 4.8s var(--ease-in-out) infinite;
-  }
-
-  .moci-avatar[data-mood="think"] .moci-avatar__body {
-    animation: wobble 1.2s var(--ease-in-out) infinite;
-    --wobble-from: -5deg;
-    --wobble-to: 5deg;
+  .coach__card {
+    animation: pop-in var(--dur-short) var(--ease-out) both;
   }
 }
 
-/* Jelly never sits perfectly still. */
-@keyframes drop-wobble {
-  0%,
-  100% {
-    border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
-  }
-
-  50% {
-    border-radius: 48% 52% 43% 47% / 57% 62% 38% 43%;
+@media (prefers-reduced-motion: reduce) {
+  .coach__spot {
+    transition: none;
   }
 }
 
-.moci-avatar__mouth {
-  position: absolute;
-  left: 53%;
-  top: 50%;
-  width: 24%;
-  height: 9%;
-  transform: translateX(-50%);
-  border-bottom: 2px solid var(--jelly-ink);
-  border-radius: 0 0 999px 999px;
-}
-
-.moci-avatar[data-mood="oops"] .moci-avatar__mouth {
-  top: 50%;
-  width: 14%;
-  height: 12%;
-  border: 2px solid var(--jelly-ink);
+/* ---------- The site's round mark (agent, guide, loader) ---------- */
+.site-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
   border-radius: 999px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), transparent 55%),
+    linear-gradient(140deg, var(--accent-soft-2), var(--sky));
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.85),
+    0 0 0 1px var(--edge),
+    var(--lift-sm);
 }
 
-/* ---------- Autopilot tour ---------- */
-.tour-layer {
+/* ---------- Floating actions: the agent and the help key ---------- */
+.float-actions {
   position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100dvh;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  overflow: visible;
-  pointer-events: none;
-  z-index: 200;
-  color: var(--ink);
-}
-
-.tour-ghost {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 34px;
-  height: 40px;
-  margin: -3px 0 0 -3px;
-  transition: opacity var(--dur-short) var(--ease-out);
-  will-change: transform;
-}
-
-.tour-ghost__moci {
-  position: absolute;
-  left: 22px;
-  top: 26px;
-}
-
-.tour-ghost__label {
-  position: absolute;
-  left: 52px;
-  top: 34px;
-  padding: 3px 7px;
-  border-radius: 7px;
-  background: var(--accent-strong);
-  color: var(--on-accent);
-  box-shadow: 0 0 0 2px #fff;
-}
-
-.tour-bubble {
-  position: fixed;
-  top: 0;
-  left: 0;
-  max-width: min(320px, calc(100vw - 24px));
-  padding: 12px 16px;
-  border-radius: 18px;
-  box-shadow: var(--shadow-lg);
-}
-
-.tour-bar {
-  position: fixed;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 70;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  width: min(640px, calc(100vw - 24px));
-  padding: 8px 8px 8px 16px;
-  border-radius: var(--radius-pill);
-  pointer-events: auto;
-  box-shadow: var(--shadow-lg);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
 
-/* ---------- Jelly cursor ---------- */
-.cursor-layer {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 190;
-}
-
-.cursor-dot,
-.cursor-blob {
-  position: fixed;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  will-change: transform;
-}
-
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--ink);
-  box-shadow: 0 0 0 1.5px var(--surface);
-}
-
-.cursor-blob {
+.float-button {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 52px;
+  height: 52px;
   border-radius: 999px;
-  background: radial-gradient(40% 30% at 32% 26%, rgba(255, 255, 255, 0.85), transparent 70%), rgba(190, 225, 255, 0.12);
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent), inset 0 -3px 6px rgba(80, 150, 235, 0.25);
-  -webkit-backdrop-filter: blur(1px) saturate(1.8) brightness(1.06);
-  backdrop-filter: blur(1px) saturate(1.8) brightness(1.06);
+  border: 1px solid var(--glass-line);
+  background: var(--sheen), var(--glass-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  box-shadow: var(--bevel), var(--glass-shadow);
+  color: var(--ink);
+  font-family: var(--font-round);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
   transition:
-    background-color var(--dur-micro) var(--ease-out),
-    border-color var(--dur-micro) var(--ease-out),
-    opacity var(--dur-micro) var(--ease-out);
+    transform var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
 }
 
-.cursor-blob[data-mode="hover"] {
-  background: radial-gradient(40% 30% at 32% 26%, rgba(255, 255, 255, 0.9), transparent 70%), rgba(160, 210, 255, 0.22);
-  border-color: #ffffff;
+.float-button--help {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  color: var(--accent-ink);
 }
 
-.cursor-blob[data-mode="hover"][data-label="on"] {
-  background: var(--ink);
-  border-color: transparent;
+@media (hover: hover) {
+  .float-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--bevel), 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent), var(--glass-shadow);
+  }
 }
 
-.cursor-blob[data-mode="text"] {
-  background: var(--accent);
-  border-color: transparent;
-  border-radius: 2px;
+.float-button:active {
+  transform: translateY(1px) scale(0.97);
 }
 
-.cursor-label {
-  font: 600 11px/1 var(--font-body);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  color: var(--bg);
-  opacity: 0;
+/* Game-UI buttons and labels use the rounded face. */
+.game-button,
+.font-round {
+  font-family: var(--font-round);
 }
 
-.cursor-blob[data-label="on"] .cursor-label {
-  opacity: 1;
-}
-
-.cursor-spark {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 16px;
-  height: 16px;
-  margin: -8px 0 0 -8px;
-  z-index: 191;
-  pointer-events: none;
-  border: 1.5px solid rgba(120, 190, 255, 0.9);
-  border-radius: 999px;
+.game-button {
+  font-weight: 800;
+  letter-spacing: 0.005em;
 }
 
 /* ---------- The dock (primary navigation) ---------- */
@@ -2216,10 +2063,6 @@ html[data-theme-swap]::view-transition-new(root) {
   color: #10213a;
 }
 
-[data-theme="dark"] .phone__screen {
-  color: #fff;
-}
-
 .phone__island {
   position: absolute;
   top: 9px;
@@ -2243,11 +2086,6 @@ html[data-theme-swap]::view-transition-new(root) {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.6);
 }
 
-[data-theme="dark"] .phone__note {
-  background: rgba(30, 30, 40, 0.5);
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
-}
-
 .phone__unlock {
   width: 100%;
   min-height: 34px;
@@ -2265,10 +2103,6 @@ html[data-theme-swap]::view-transition-new(root) {
 
 .phone__unlock:hover {
   background: rgba(255, 255, 255, 0.65);
-}
-
-[data-theme="dark"] .phone__unlock {
-  background: rgba(255, 255, 255, 0.14);
 }
 
 /* The keychain: a carabiner with acrylic tags fanned below it. */
@@ -2493,53 +2327,139 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-/* ---------- The hero stage ---------- */
-/* The hero holds its own sky window (with a soft light behind the device so the glass glows). */
-.hero-stage {
+/* ---------- Hero: the character in a window of pink paper and sky ---------- */
+.hero {
+  position: relative;
   isolation: isolate;
+  padding: clamp(104px, 12vw, 132px) 0 clamp(40px, 6vw, 72px);
 }
 
-.scroll-cue {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  font: 600 10px/1 var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-decoration: none;
+/* The window: pale pink paper fading to pale sky, a polka-dot field and a few sparkles. */
+.hero__window {
+  position: absolute;
+  inset: clamp(8px, 1.1vw, 16px);
+  z-index: -1;
+  overflow: hidden;
+  border-radius: clamp(28px, 3vw, 44px);
+  background:
+    radial-gradient(55% 50% at 50% 48%, rgba(255, 255, 255, 0.9), transparent 72%),
+    linear-gradient(160deg, var(--stage-from) 0%, #fdeef6 45%, var(--stage-to) 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(240, 72, 156, 0.18),
+    inset 0 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
-.scroll-cue:hover {
-  color: var(--ink);
+.hero__dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--dot) 2.2px, transparent 2.6px);
+  background-size: 34px 34px;
+  -webkit-mask: radial-gradient(60% 60% at 50% 50%, transparent 55%, #000 100%);
+  mask: radial-gradient(60% 60% at 50% 50%, transparent 55%, #000 100%);
 }
 
-.scroll-cue__line {
-  width: 1px;
-  height: 36px;
-  background: linear-gradient(var(--line), var(--muted));
-  transform-origin: top;
+.hero__spark {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  background: var(--sun);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  opacity: 0.85;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .scroll-cue__line {
-    animation: cue-drop 2.2s var(--ease-in-out) infinite;
+  .hero__spark {
+    animation: glint 6s var(--ease-in-out) infinite;
+    animation-delay: calc(var(--s) * -0.3);
   }
 }
 
-@keyframes cue-drop {
-  0% {
-    scale: 1 0;
-    opacity: 1;
+.hero__copy {
+  display: flex;
+  min-height: min(720px, calc(100svh - 190px));
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-status {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 7px 14px 7px 12px;
+  border-radius: 999px;
+  background: var(--sheen), var(--glass-strong);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--bevel), var(--lift-sm);
+  font-family: var(--font-round);
+  font-size: var(--text-14);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.hero .hero-name {
+  font-size: clamp(60px, 10vw, 140px);
+  line-height: 0.9;
+}
+
+.hero__role {
+  margin-top: 16px;
+  font-size: clamp(20px, 2.1vw, 28px);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.hero__place {
+  margin-top: 8px;
+  font: 600 12px/1.4 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* The four products, one number each, under the buttons. */
+.hero-work {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 640px;
+}
+
+@media (width >= 40rem) {
+  .hero-work {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-  60% {
-    scale: 1 1;
-    opacity: 1;
-  }
-  100% {
-    scale: 1 1;
-    opacity: 0;
+}
+
+.hero-work__item {
+  display: flex;
+  min-height: 44px;
+  height: 100%;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid var(--glass-line);
+  border-radius: 18px;
+  background: var(--sheen), var(--glass-strong);
+  box-shadow: var(--bevel), var(--lift-sm);
+  font-size: var(--text-14);
+  line-height: 1.25;
+  text-decoration: none;
+  transition:
+    transform var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .hero-work__item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--bevel), 0 0 0 2px var(--accent-soft-2), var(--lift);
   }
 }
 
@@ -2562,15 +2482,6 @@ html[data-theme-swap]::view-transition-new(root) {
     inset 0 2px 0 #ffffff,
     inset 0 -6px 14px rgba(15, 23, 42, 0.06),
     0 0 0 1px rgba(15, 23, 42, 0.08),
-    var(--lift-lg);
-}
-
-[data-theme="dark"] .psp {
-  background: linear-gradient(180deg, #232a35, #10141b);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -6px 14px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(0, 0, 0, 0.6),
     var(--lift-lg);
 }
 
@@ -2873,14 +2784,6 @@ html[data-theme-swap]::view-transition-new(root) {
     var(--lift-lg);
 }
 
-[data-theme="dark"] .laptop__lid {
-  box-shadow:
-    0 0 0 1.5px #3a4352,
-    0 0 0 3px #2a313c,
-    0 0 0 3.5px #1a1f27,
-    var(--lift-lg);
-}
-
 .laptop__camera {
   position: absolute;
   top: 7px;
@@ -2916,13 +2819,6 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-[data-theme="dark"] .laptop__base {
-  background: linear-gradient(180deg, #3b4352, #262c37 55%, #171b22);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 12px 24px rgba(0, 0, 0, 0.4);
-}
-
 .laptop__notch {
   position: absolute;
   top: 0;
@@ -2932,10 +2828,6 @@ html[data-theme-swap]::view-transition-new(root) {
   translate: -50% 0;
   border-radius: 0 0 8px 8px;
   background: linear-gradient(180deg, #b7bfcb, #dde2e9);
-}
-
-[data-theme="dark"] .laptop__notch {
-  background: linear-gradient(180deg, #1c2129, #2c333f);
 }
 
 /* A sticky note stuck to the corner of the laptop screen. */
@@ -2958,36 +2850,73 @@ html[data-theme-swap]::view-transition-new(root) {
   }
 }
 
-/* ---------- The spec plate (footer) ---------- */
-.spec-plate {
+/* ---------- Footer: the contact card and the index ---------- */
+.contact-card {
   position: relative;
-  padding: 28px 28px 18px;
-  border-radius: 22px;
-  font-size: var(--text-14);
-  color: var(--muted);
+  display: grid;
+  align-items: end;
+  gap: 24px;
+  overflow: hidden;
+  padding: clamp(28px, 4vw, 56px);
+  border-radius: var(--radius-lg);
   background:
-    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.3), transparent 45%),
-    var(--sheen),
-    var(--glass-strong);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
-  border: 1px solid var(--rim);
-  box-shadow: var(--bevel), 0 18px 40px rgba(10, 40, 100, 0.25);
+    radial-gradient(70% 90% at 100% 100%, #d8f0fc, transparent 70%),
+    radial-gradient(60% 80% at 0% 0%, #fdeef6, transparent 70%),
+    var(--surface-solid);
+  border: 1px solid var(--glass-line);
+  box-shadow:
+    var(--bevel),
+    inset 0 0 0 1.5px rgba(240, 72, 156, 0.14),
+    var(--lift);
 }
 
-@media (min-width: 768px) {
-  .spec-plate {
-    padding: 32px 40px 20px;
+.contact-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--dot) 2.2px, transparent 2.6px);
+  background-size: 34px 34px;
+  -webkit-mask: linear-gradient(110deg, transparent 40%, #000 100%);
+  mask: linear-gradient(110deg, transparent 40%, #000 100%);
+  pointer-events: none;
+}
+
+@media (width >= 48rem) {
+  .contact-card {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 }
 
-/* On the ocean card the plate is a white card, like a widget on a photo. */
-[data-theme="light"] .sea .spec-plate {
-  background:
-    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.5), transparent 45%),
-    rgba(255, 255, 255, 0.9);
-  border-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 18px 40px rgba(5, 60, 140, 0.22);
+.contact-card > * {
+  position: relative;
+}
+
+.contact-card__email {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: clamp(28px, 4.6vw, 60px);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: var(--ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  background-image: linear-gradient(var(--accent-soft-2), var(--accent-soft-2));
+  background-size: 100% 0.12em;
+  background-position: 0 92%;
+  background-repeat: no-repeat;
+}
+
+.contact-card__email:hover {
+  color: var(--accent-ink);
+}
+
+.site-index {
+  padding: 40px 0 calc(40px + 72px);
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg), #fdeef6);
+  font-size: var(--text-14);
+  color: var(--muted);
 }
 
 .spec-label {
@@ -2995,161 +2924,6 @@ html[data-theme-swap]::view-transition-new(root) {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
-}
-
-/* ---------- The device (home hero) ---------- */
-.device {
-  position: relative;
-  border-radius: var(--radius-lg);
-  padding: 18px;
-  background:
-    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.3), transparent 45%),
-    var(--sheen),
-    var(--surface);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
-  border: 1px solid var(--rim);
-  box-shadow:
-    var(--bevel),
-    0 0 0 1px var(--edge),
-    var(--lift-lg);
-}
-
-.device__screen {
-  border-radius: 18px;
-  overflow: hidden;
-}
-
-/* Boot sequence: plays once per session, before the screen content shows. */
-.device__boot {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: none;
-  padding: 22px;
-  font: 500 13px/1.7 var(--font-mono);
-  color: var(--screen-muted);
-  background: var(--screen);
-  pointer-events: none;
-}
-
-@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
-  html[data-boot="run"] .device__boot {
-    display: block;
-    animation: boot-out 300ms ease-in 1750ms forwards;
-  }
-
-  html[data-boot="run"] .device__boot > span {
-    opacity: 0;
-    animation: fade-in 80ms linear forwards;
-    animation-delay: calc(var(--i) * 240ms);
-  }
-}
-
-@keyframes boot-out {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-
-/* Screen off (the power key, or P). */
-.device[data-power="off"] .device__content {
-  opacity: 0;
-}
-
-.device[data-power="off"] .device__screen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--screen);
-}
-
-.device__content {
-  transition: opacity 240ms var(--ease-out);
-}
-
-[data-theme="dark"] .screen {
-  background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 40%),
-    linear-gradient(var(--screen-line) 1px, transparent 1px) 0 0 / 100% 28px,
-    radial-gradient(120% 100% at 30% 0%, color-mix(in srgb, var(--screen) 80%, #3a4a80), var(--screen));
-  box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.5),
-    0 0 0 4px var(--rim),
-    0 1px 0 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Soft keys printed on the LCD. */
-.screen-key {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 9px;
-  border-radius: 6px;
-  border: 1px solid var(--screen-line);
-  background: var(--screen-well);
-  color: var(--screen-ink);
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  cursor: pointer;
-}
-
-.screen-key:hover {
-  border-color: color-mix(in srgb, var(--screen-accent) 60%, transparent);
-}
-
-.screen-key:active {
-  translate: 0 1px;
-  background: var(--screen-line);
-}
-
-/* Controls: dial + switches + go key, keys underneath on phones; three columns from 640px. */
-.device__controls {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-areas:
-    "go go"
-    "keys keys";
-  align-items: center;
-  gap: 20px 18px;
-}
-
-@media (min-width: 640px) {
-  .device__controls {
-    grid-template-columns: minmax(0, 1fr) 200px;
-    grid-template-areas: "go keys";
-    gap: 12px;
-  }
-}
-
-.screen .hero-name {
-  font-size: clamp(44px, 5.6vw, 76px);
-}
-
-.screen .resample-sentence {
-  font-size: clamp(17px, 1.6vw, 21px);
-  color: color-mix(in srgb, var(--screen-ink) 88%, transparent);
-}
-
-
-
-.screen .hero-name__letter {
-  color: color-mix(in oklab, var(--screen-ink), var(--screen-accent) calc(var(--k) * 100%));
-}
-
-.screen .resample-token {
-  color: var(--screen-ink);
-  text-decoration-color: color-mix(in srgb, var(--screen-ink) 22%, transparent);
-}
-
-.screen .resample-token:hover,
-.screen .resample-token[aria-expanded="true"] {
-  background-color: var(--screen-well);
-  text-decoration-color: var(--screen-accent);
 }
 
 /* ---------- Hero ---------- */
@@ -5023,24 +4797,12 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     0 1px 2px rgba(16, 40, 90, 0.06);
 }
 
-[data-theme="dark"] .sky {
-  background:
-    radial-gradient(50% 42% at 50% 52%, rgba(64, 96, 180, 0.18), transparent 70%),
-    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-low) 100%);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-
 .sky__image {
   position: absolute;
   inset: 0;
   background: var(--sky-image) center top / cover no-repeat;
   mix-blend-mode: luminosity;
   opacity: 0.35;
-}
-
-[data-theme="dark"] .sky__image {
-  mix-blend-mode: normal;
-  opacity: 0.7;
 }
 
 /* The moon, at night only. */
@@ -5055,10 +4817,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   background: radial-gradient(circle, #fbf8ee 0 19%, #ece6d2 21%, rgba(230, 232, 255, 0.45) 23%, rgba(170, 175, 255, 0.16) 42%, transparent 70%);
 }
 
-[data-theme="dark"] .sky__moon {
-  display: block;
-}
-
 .sky__stars {
   position: absolute;
   inset: 0;
@@ -5071,10 +4829,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     radial-gradient(1.2px 1.2px at 260px 40px, #dfe8ff, transparent);
   background-size: 300px 240px;
   opacity: 0.75;
-}
-
-[data-theme="dark"] .sky__stars {
-  display: block;
 }
 
 .sky__clouds {
@@ -5099,14 +4853,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   height: 520px;
   opacity: 0.72;
   background: url("/sky/clouds-near.webp") 0 0 / var(--tile) 100% repeat-x;
-}
-
-[data-theme="dark"] .sky__clouds--far {
-  opacity: 0.12;
-}
-
-[data-theme="dark"] .sky__clouds--near {
-  opacity: 0.1;
 }
 
 /* The faint grid from the game UI reference. */
@@ -5144,10 +4890,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   .sky__glint {
     opacity: 0;
     animation: glint 5.5s var(--ease-in-out) var(--d) infinite;
-  }
-
-  [data-theme="dark"] .sky__stars {
-    animation: stars 5s var(--ease-in-out) infinite alternate;
   }
 }
 
@@ -5246,11 +4988,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   opacity: 0.3;
 }
 
-[data-theme="dark"] .sea__sky::before {
-  mix-blend-mode: normal;
-  opacity: 0.6;
-}
-
 .sea__sky .sky__clouds--far {
   top: auto;
   bottom: -30%;
@@ -5266,10 +5003,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   height: 64px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
   pointer-events: none;
-}
-
-[data-theme="dark"] .sea::before {
-  background: linear-gradient(180deg, rgba(160, 175, 255, 0.22), rgba(160, 175, 255, 0));
 }
 
 .sea__surface {
@@ -5289,12 +5022,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.45) 35%, rgba(255, 255, 255, 0) 80%);
   -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27320%27%20height=%27120%27%20viewBox=%270%200%20320%20120%27%3E%3Cg%20fill=%27black%27%3E%3Cellipse%20cx=%2730%27%20cy=%2720%27%20rx=%2714%27%20ry=%271.6%27/%3E%3Cellipse%20cx=%27120%27%20cy=%2748%27%20rx=%2722%27%20ry=%272%27/%3E%3Cellipse%20cx=%27210%27%20cy=%2714%27%20rx=%2710%27%20ry=%271.4%27/%3E%3Cellipse%20cx=%27270%27%20cy=%2780%27%20rx=%2718%27%20ry=%271.8%27/%3E%3Cellipse%20cx=%2770%27%20cy=%2796%27%20rx=%2712%27%20ry=%271.5%27/%3E%3Cellipse%20cx=%27170%27%20cy=%27104%27%20rx=%2726%27%20ry=%272.2%27/%3E%3C/g%3E%3C/svg%3E") 0 0 / 320px 120px repeat;
   mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27320%27%20height=%27120%27%20viewBox=%270%200%20320%20120%27%3E%3Cg%20fill=%27black%27%3E%3Cellipse%20cx=%2730%27%20cy=%2720%27%20rx=%2714%27%20ry=%271.6%27/%3E%3Cellipse%20cx=%27120%27%20cy=%2748%27%20rx=%2722%27%20ry=%272%27/%3E%3Cellipse%20cx=%27210%27%20cy=%2714%27%20rx=%2710%27%20ry=%271.4%27/%3E%3Cellipse%20cx=%27270%27%20cy=%2780%27%20rx=%2718%27%20ry=%271.8%27/%3E%3Cellipse%20cx=%2770%27%20cy=%2796%27%20rx=%2712%27%20ry=%271.5%27/%3E%3Cellipse%20cx=%27170%27%20cy=%27104%27%20rx=%2726%27%20ry=%272.2%27/%3E%3C/g%3E%3C/svg%3E") 0 0 / 320px 120px repeat;
-}
-
-[data-theme="dark"] .sea__glare {
-  right: calc(9vw + 4vmax);
-  width: min(160px, 26vw);
-  background: linear-gradient(180deg, rgba(246, 242, 228, 0.85), rgba(246, 242, 228, 0.3) 40%, rgba(246, 242, 228, 0) 80%);
 }
 
 /* Lines of swell: thin and slow near the horizon, wider and faster closer in. */
@@ -5593,13 +5320,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     0 12px 26px rgba(29, 42, 77, 0.16);
 }
 
-[data-theme="dark"] .moci-sticker {
-  background: radial-gradient(60% 50% at 50% 30%, #2c3a66, #1d2850);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 12px 26px rgba(0, 0, 0, 0.4);
-}
-
 /* ---------- The MP3 player (About) ---------- */
 .ipod {
   position: relative;
@@ -5625,16 +5345,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     0 0 0 3px var(--bg),
     0 0 0 6px var(--accent),
     0 26px 52px rgba(40, 90, 160, 0.2);
-}
-
-[data-theme="dark"] .ipod {
-  background:
-    radial-gradient(520px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.08), transparent 45%),
-    linear-gradient(160deg, #2c3a6b, #1c2752 60%, #141c3e);
-  border-color: rgba(200, 215, 255, 0.2);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 26px 52px rgba(0, 0, 0, 0.4);
 }
 
 /* The headphone jack, with the earbud cable curling off the top. */
@@ -5822,13 +5532,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   user-select: none;
 }
 
-[data-theme="dark"] .ipod__wheel {
-  background: radial-gradient(circle at 50% 30%, #3a4a7e, #26335f 60%, #1d2850);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
 .ipod__key {
   position: absolute;
   padding: 8px;
@@ -5899,10 +5602,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   box-shadow:
     0 0 0 1px rgba(64, 104, 168, 0.2),
     inset 0 3px 6px rgba(64, 104, 168, 0.28);
-}
-
-[data-theme="dark"] .ipod__center {
-  background: radial-gradient(circle at 50% 30%, #4a5b92, #2c3a6b);
 }
 
 .ipod__drop {
@@ -6158,11 +5857,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     0 12px 22px rgba(40, 90, 160, 0.16);
 }
 
-[data-theme="dark"] .cdshelf__ledge {
-  background: linear-gradient(180deg, rgba(120, 140, 200, 0.4), rgba(40, 55, 100, 0.5));
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.35);
-}
-
 .cdshelf__detail {
   margin-top: 28px;
 }
@@ -6348,13 +6042,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     box-shadow 300ms var(--ease-out);
 }
 
-[data-theme="dark"] .playwidget__console {
-  background: linear-gradient(180deg, #2c3a6b, #1c2752);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 10px 22px rgba(0, 0, 0, 0.35);
-}
-
 @media (hover: hover) {
   .playwidget__console:hover {
     transform: translateY(-3px) rotate(-1deg);
@@ -6537,10 +6224,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   height: auto;
   pointer-events: none;
   filter: drop-shadow(0 4px 6px rgba(5, 60, 130, 0.18));
-}
-
-[data-theme="dark"] .sea__island {
-  filter: brightness(0.55) saturate(0.8);
 }
 
 @media (prefers-reduced-motion: no-preference) {

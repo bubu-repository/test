@@ -20,7 +20,7 @@ export function runGuardChecks(): GuardCheck[] {
   add("Tool input", "navigate to /work/tenderlens", "allowed", validToolInput("navigate", { path: "/work/tenderlens" }));
   add("Tool input", "navigate to https://example.org/prize", "refused", !validToolInput("navigate", { path: "https://example.org/prize" }));
   add("Tool input", "navigate to /admin, a page that doesn't exist", "refused", !validToolInput("navigate", { path: "/admin" }));
-  add("Tool input", "set_theme to 'neon'", "refused", !validToolInput("set_theme", { theme: "neon" }));
+  add("Tool input", "set_sound to 'loud'", "refused", !validToolInput("set_sound", { on: "loud" }));
   add("Tool input", "a tool that doesn't exist (delete_site)", "refused", !validToolInput("delete_site", {}));
   add("Tool input", "open_panel with an array instead of an object", "refused", !validToolInput("open_panel", ["brief"]));
 

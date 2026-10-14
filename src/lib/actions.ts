@@ -9,14 +9,11 @@ export type SiteAction =
   | { type: "navigate"; href: string }
   | { type: "open"; panel: Overlay | "agent" }
   | { type: "close" }
-  | { type: "theme"; value?: "light" | "dark" }
   | { type: "sound"; value?: boolean }
   | { type: "tour" }
   | { type: "copyEmail" }
   | { type: "download"; href: string; filename?: string }
-  | { type: "xray"; value?: boolean }
   | { type: "lens"; value: Lens | null }
-  | { type: "rave" }
   | { type: "liveCursors"; value?: boolean }
   | { type: "ask"; question: string }
   | { type: "toast"; message: string }
@@ -48,8 +45,6 @@ export function describeAction(action: SiteAction): string {
       return `open("${action.panel}")`;
     case "close":
       return "close()";
-    case "theme":
-      return `set_theme(${action.value ? `"${action.value}"` : "toggle"})`;
     case "sound":
       return `sound(${action.value ?? "toggle"})`;
     case "tour":
@@ -58,12 +53,8 @@ export function describeAction(action: SiteAction): string {
       return "copy_email()";
     case "download":
       return `download("${action.href}")`;
-    case "xray":
-      return `xray(${action.value ?? "toggle"})`;
     case "lens":
       return `set_lens("${action.value ?? "none"}")`;
-    case "rave":
-      return "rave()";
     case "liveCursors":
       return `live_cursors(${action.value ?? "toggle"})`;
     case "ask":
