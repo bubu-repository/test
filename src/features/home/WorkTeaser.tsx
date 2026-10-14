@@ -6,14 +6,14 @@ import { WorkCards } from "../work/WorkCards";
 export function WorkTeaser() {
   return (
     <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16">
-      <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+      <div className="grid items-end gap-x-10 gap-y-4 lg:grid-cols-[minmax(0,1fr)_26rem]">
         <div className="max-w-[46rem]">
           <p className="type-eyebrow">Selected work · 2024–2026</p>
           <h2 id="work-teaser-title" className="type-title mt-2">
             AI that shows its work.
           </h2>
         </div>
-        <p className="max-w-[40ch] pb-2 text-muted">
+        <p className="max-w-[44ch] pb-2 text-muted">
           Four products with real users: my thesis, my internship feature in a product squad, a product I co-founded in a campus incubator, and a side project. Each case shows the pipeline, the
           evals and the design.
         </p>

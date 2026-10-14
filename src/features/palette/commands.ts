@@ -14,6 +14,10 @@ export type Command = {
   keywords?: string;
   /** A short printed glyph (1–3 characters), shown on a small key. */
   icon: string;
+  /** Drawn instead of the glyph: the dock's own icon for the same place or action. */
+  art?: "work" | "lab" | "about" | "guestbook" | "moci" | "cv" | "help";
+  /** A project's slug: its app icon is drawn instead of the glyph. */
+  project?: string;
   /** Visible shortcut hint, e.g. ["G", "W"]. */
   keys?: string[];
 } & ({ action: SiteAction } | { external: string });
@@ -26,6 +30,7 @@ export const commands: Command[] = [
       group: "Navigate",
       title: item.label,
       icon: { "/work": "◆", "/lab": "◎", "/about": "ID", "/guestbook": "✎" }[item.href] ?? "→",
+      art: ({ "/work": "work", "/lab": "lab", "/about": "about", "/guestbook": "guestbook" } as const)[item.href as "/work"],
       keys: ["G", item.label[0]],
       action: { type: "navigate", href: item.href },
     }),
@@ -38,14 +43,15 @@ export const commands: Command[] = [
       subtitle: p.tagline,
       keywords: `${p.kind} ${p.stack.join(" ")} case study`,
       icon: p.index,
+      project: p.slug,
       action: { type: "navigate", href: `/work/${p.slug}` },
     }),
   ),
-  { id: "ask", group: "Actions", title: "Ask Moci", subtitle: "Questions about Adelia's work", keywords: "agent ai chat question", icon: "/", keys: ["/"], action: { type: "open", panel: "agent" } },
-  { id: "tour", group: "Actions", title: "How this site works", subtitle: "A short guided walk, one spotlight at a time", keywords: "guide help tutorial walkthrough tour", icon: "➤", keys: ["T"], action: { type: "tour" } },
+  { id: "ask", group: "Actions", title: "Ask Moci", subtitle: "Questions about Adelia's work", keywords: "agent ai chat question", icon: "/", art: "moci", keys: ["/"], action: { type: "open", panel: "agent" } },
+  { id: "tour", group: "Actions", title: "How this site works", subtitle: "A short guided walk, one spotlight at a time", keywords: "guide help tutorial walkthrough tour", icon: "➤", art: "help", keys: ["T"], action: { type: "tour" } },
   { id: "brief", group: "Actions", title: "40-second brief", subtitle: "Everything a recruiter needs", keywords: "recruiter summary hr quick tl;dr", icon: "40", keys: ["B"], action: { type: "open", panel: "brief" } },
   { id: "email", group: "Actions", title: "Copy email address", subtitle: "aadeliatiara@gmail.com", keywords: "contact mail hire", icon: "@", action: { type: "copyEmail" } },
-  { id: "cv", group: "Actions", title: "Download CV", subtitle: "PDF, generated from this site", keywords: "resume pdf", icon: "CV", action: { type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" } },
+  { id: "cv", group: "Actions", title: "Download CV", subtitle: "PDF, generated from this site", keywords: "resume pdf", icon: "CV", art: "cv", action: { type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" } },
   { id: "terminal", group: "Actions", title: "Open terminal", subtitle: "Explore the site from a CLI", keywords: "cli shell console command", icon: ">_", keys: ["`"], action: { type: "open", panel: "terminal" } },
   { id: "stickers", group: "Actions", title: "Sticker book", subtitle: "Collect and place stickers", keywords: "achievements badges collect", icon: "★", keys: ["S"], action: { type: "open", panel: "stickers" } },
   { id: "shortcuts", group: "Actions", title: "Keyboard shortcuts", keywords: "keys help hotkeys", icon: "?", keys: ["?"], action: { type: "open", panel: "shortcuts" } },

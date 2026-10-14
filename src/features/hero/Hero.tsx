@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRightIcon, CopyIcon, DownloadIcon } from "@/components/icons";
+import { MociDrop } from "@/components/SiteAvatar";
 import { identity } from "@/content/profile";
 import { projects } from "@/content/projects";
 import { dispatch } from "@/lib/actions";
@@ -80,6 +81,17 @@ export function Hero() {
             </div>
           </div>
         </div>
+
+        {/* Moci floats in the open sky beside the words (desktop): the site's guide, and a way to ask it. */}
+        <button type="button" className="hero__moci" onClick={() => void dispatch({ type: "open", panel: "agent" })}>
+          <span className="hero__moci-bob">
+            <MociDrop size={140} />
+          </span>
+          <span className="hero__moci-bubble" aria-hidden="true" />
+          <span className="hero__moci-bubble" aria-hidden="true" />
+          <span className="hero__moci-bubble" aria-hidden="true" />
+          <span className="hero__moci-tag">Ask Moci about her</span>
+        </button>
 
         <div className="hero__clouds">
           <div className="container-page">

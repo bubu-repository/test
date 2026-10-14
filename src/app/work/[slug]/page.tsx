@@ -176,7 +176,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   <p key={p}>{p}</p>
                 ))}
               </div>
-              <h3 className="type-pixel mt-8 text-muted">Constraints</h3>
+              <h3 className="type-headline mt-8">Constraints</h3>
               <ul className="mt-3 grid gap-2 sm:grid-cols-2">
                 {project.problem.constraints.map((c) => (
                   <li key={c} className="rounded-[18px] bg-surface-2 px-4 py-3 text-16">
@@ -193,7 +193,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                 <div className="space-y-3 text-18">
                   <p className="text-24 font-bold tracking-[-0.025em]">{project.role.title}</p>
                   <p>{project.role.summary}</p>
-                  <h3 className="type-pixel pt-4 text-muted">The calls that were mine</h3>
+                  <h3 className="type-headline pt-4">The calls that were mine</h3>
                   <ol className="space-y-2 text-16">
                     {project.role.decisions.map((d, n) => (
                       <li key={d} className="flex gap-3">
@@ -206,7 +206,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                   </ol>
                 </div>
                 <div className="widget self-start p-6">
-                  <h3 className="type-pixel text-muted">Who I worked with</h3>
+                  <h3 className="type-headline">Who I worked with</h3>
                   <ul className="mt-4 space-y-4">
                     {project.role.with.map((w) => (
                       <li key={w.who}>
@@ -288,8 +288,8 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
               <ol className="space-y-5">
                 {project.decisions.map((d, n) => (
                   <li key={d.title} className="widget p-6 md:p-8">
-                    <p className="type-pixel text-muted">Decision {n + 1}</p>
-                    <h3 className="mt-2 text-32 leading-tight font-bold tracking-[-0.03em]">{d.title}</h3>
+                    <p className="text-14 font-semibold text-accent-ink">Decision {n + 1}</p>
+                    <h3 className="type-title-2 mt-2">{d.title}</h3>
                     <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                       <div>
                         <p className="text-14 font-semibold text-muted">Options I tried</p>
@@ -302,7 +302,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                                 className={
                                   chosen
                                     ? "flex gap-2.5 rounded-[14px] bg-accent-soft px-3 py-2 text-16 font-semibold text-on-fill"
-                                    : "flex gap-2.5 px-3 py-2 text-16 text-muted line-through decoration-[1.5px]"
+                                    : "flex items-baseline gap-2.5 px-3 py-2 text-16 text-muted"
                                 }
                               >
                                 <span aria-hidden="true" className="no-underline">
@@ -310,7 +310,11 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
                                 </span>
                                 <span>
                                   {o}
-                                  <span className="sr-only">{chosen ? " (chosen)" : " (dropped)"}</span>
+                                  {chosen ? (
+                                    <span className="sr-only"> (chosen)</span>
+                                  ) : (
+                                    <span className="ml-2 inline-block rounded-pill bg-surface-2 px-2 py-0.5 align-[1px] text-12 font-semibold text-muted">Not chosen</span>
+                                  )}
                                 </span>
                               </li>
                             );

@@ -2,12 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { readJSON, writeJSON } from "@/lib/storage";
 import { projects } from "@/content/projects";
 import type { SiteAction } from "@/lib/actions";
 import { flushStickers, hydrateStickers, stickerStore, unlock } from "@/lib/stickers";
-import { toast, ui, useUI } from "@/lib/ui";
+import { toast, ui, useUI, type Overlay } from "@/lib/ui";
 import { LiveLayer } from "../live/LiveLayer";
 import { today } from "../pack/pack-store";
 import { StickerLayer } from "../stickers/StickerLayer";
@@ -108,10 +108,34 @@ function VisitTracker() {
   return null;
 }
 
+/** The overlay that just closed, kept mounted for a moment so its dialog can animate out. */
+function useLeaving() {
+  const [leaving, setLeaving] = useState<Overlay | null>(null);
+  useEffect(() => {
+    let was = ui.get().overlay;
+    let timer = 0;
+    const unsubscribe = ui.subscribe(() => {
+      const now = ui.get().overlay;
+      if (now === was) return;
+      window.clearTimeout(timer);
+      setLeaving(now ? null : was);
+      if (!now) timer = window.setTimeout(() => setLeaving(null), 220);
+      was = now;
+    });
+    return () => {
+      unsubscribe();
+      window.clearTimeout(timer);
+    };
+  }, []);
+  return leaving;
+}
+
 /** Everything interactive that lives above the pages: one instance for the whole site. */
 export function SiteChrome() {
   const overlay = useUI((s) => s.overlay);
   const agentOpen = useUI((s) => s.agentOpen);
+  const leaving = useLeaving();
+  const on = (o: Overlay) => overlay === o || leaving === o;
 
   return (
     <>
@@ -121,11 +145,11 @@ export function SiteChrome() {
       <VisitTracker />
       <LiveLayer />
       <StickerLayer />
-      {overlay === "palette" && <CommandPalette />}
-      {overlay === "terminal" && <Terminal />}
-      {overlay === "brief" && <Brief />}
-      {overlay === "stickers" && <StickerBook />}
-      {overlay === "shortcuts" && <ShortcutSheet />}
+      {on("palette") && <CommandPalette />}
+      {on("terminal") && <Terminal />}
+      {on("brief") && <Brief />}
+      {on("stickers") && <StickerBook />}
+      {on("shortcuts") && <ShortcutSheet />}
       {agentOpen && <AgentPanel />}
       <CheatWhale />
       <Toasts />

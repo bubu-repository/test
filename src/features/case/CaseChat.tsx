@@ -397,7 +397,7 @@ export function CaseChat({
           <button
             type="button"
             className="pill"
-            data-variant="ink"
+            data-variant="magenta"
             data-tour="case-next"
             disabled={typing}
             onClick={() => {

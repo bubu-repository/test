@@ -22,12 +22,13 @@ export function WorkCards({ projects, headingLevel = 3 }: { projects: Project[];
             <div className="work-card__body">
               <p className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <span className="type-pixel text-muted">
-                  {p.index} · {p.kind} · {p.year}
+                  {p.index}
+                  <span className="hidden min-[30rem]:inline"> · {p.kind}</span> · {p.year}
                 </span>
                 <span className="chip min-h-6 px-2.5 text-12 font-semibold">{p.context}</span>
                 <ReadStamp slug={p.slug} />
               </p>
-              <H className="mt-3 text-48 leading-none font-bold tracking-[-0.045em]">{p.name}</H>
+              <H className="type-title-2 mt-3">{p.name}</H>
               <p className="mt-3 max-w-[46ch] text-18 leading-snug">{p.tagline}</p>
               <dl className="work-card__stats">
                 {p.stats.map((s) => (

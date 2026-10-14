@@ -101,7 +101,7 @@ export function StickerBook() {
             </svg>
           </button>
           <div className="min-w-0 flex-1 basis-[22rem]">
-            <h2 id={titleId} className="type-title">
+            <h2 id={titleId} className="type-title-2">
               Sticker book
             </h2>
             <p className="mt-2 max-w-[48ch] text-muted">Each one is earned somewhere on the site. Peel off the ones you have and stick them on any page; they stay where you put them.</p>

@@ -160,7 +160,7 @@ export function FindTimeWidget() {
 
 /* ---------- Workspaces: switch projects, see their stack light up ---------- */
 
-const STACK_TONES: Tone[] = ["ink", "cobalt", "violet", "mint", "sun", "sky", "red", "lime", "pink", "magenta"];
+const STACK_TONES: Tone[] = ["cobalt", "sky", "mint", "violet"];
 
 const MONOGRAM: Record<string, string> = {
   "Next.js": "NX",

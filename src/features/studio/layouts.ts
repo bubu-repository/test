@@ -309,7 +309,7 @@ function tcg(ctx: CanvasRenderingContext2D, W: number, H: number, art: Art, o: L
   const r = 38;
   // The foil border: pastel spectrum, with a diagonal shine.
   const foil = ctx.createLinearGradient(0, 0, W, H);
-  ["#FFB3D9", "#B5E8FF", "#C9B8FF", "#FFE9A6", "#B9F5D8", "#FFB3D9"].forEach((c, i, a) => foil.addColorStop(i / (a.length - 1), c));
+  ["#FFD6E8", "#B5E8FF", "#C9B8FF", "#FFE9A6", "#B9F5D8", "#FFD6E8"].forEach((c, i, a) => foil.addColorStop(i / (a.length - 1), c));
   ctx.fillStyle = foil;
   ctx.beginPath();
   ctx.roundRect(0, 0, W, H, r);

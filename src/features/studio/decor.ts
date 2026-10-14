@@ -11,8 +11,8 @@ export type DecorText = { kind: "text"; id: string; text: string; color: string;
 export type Decor = DecorSticker | DecorText;
 export type Stroke = { color: string; width: number; points: [number, number][] };
 
-const P = "#FF5FA8";
-const PD = "#C2287A";
+const P = "#FF7EB6";
+const PD = "#C2286F";
 const B = "#1FB0F0";
 const BD = "#0A68D0";
 const Y = "#FFCF3F";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 type DialogProps = {
@@ -17,16 +17,36 @@ type DialogProps = {
 
 /**
  * Modal built on the native <dialog>: focus is trapped, the page behind is inert, Esc closes,
- * and focus returns to the opener. Clicking the backdrop closes it too.
+ * and focus returns to the opener. Clicking the backdrop closes it too. It leaves the way it came:
+ * the panel sinks and fades for 160ms before the dialog really closes (instantly under reduced motion).
  */
 export function Dialog({ open, onClose, label, labelledBy, className, placement = "center", children }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  // Whether the contents are on screen: true while open, and through the closing animation.
+  const [shown, setShown] = useState(open);
+  if (open && !shown) setShown(true);
 
   useLayoutEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
+    if (open) {
+      delete dialog.dataset.closing;
+      if (!dialog.open) dialog.showModal();
+      return;
+    }
+    if (!dialog.open) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      dialog.close();
+      setTimeout(() => setShown(false));
+      return;
+    }
+    dialog.dataset.closing = "";
+    const timer = window.setTimeout(() => {
+      delete dialog.dataset.closing;
+      dialog.close();
+      setShown(false);
+    }, 160);
+    return () => window.clearTimeout(timer);
   }, [open]);
 
   // Close if this component unmounts while open (navigation with Activity, HMR).
@@ -57,7 +77,7 @@ export function Dialog({ open, onClose, label, labelledBy, className, placement 
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      {open ? children : null}
+      {open || shown ? children : null}
     </dialog>
   );
 }

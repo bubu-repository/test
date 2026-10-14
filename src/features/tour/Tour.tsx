@@ -63,6 +63,7 @@ export function Tour() {
   const [index, setIndex] = useState(0);
   const [rect, setRect] = useState<Rect | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const coachRef = useRef<HTMLDivElement>(null);
   const opener = useRef<Element | null>(null);
 
   // Pick the steps that exist on this page when the walk starts.
@@ -97,16 +98,25 @@ export function Tour() {
     const queue = () => {
       if (!raf) raf = requestAnimationFrame(measure);
     };
+    // While the page scrolls the ring tracks its target 1:1; it only glides between steps.
+    let still = 0;
+    const onScroll = () => {
+      coachRef.current?.setAttribute("data-scrolling", "");
+      window.clearTimeout(still);
+      still = window.setTimeout(() => coachRef.current?.removeAttribute("data-scrolling"), 120);
+      queue();
+    };
     measure();
     const settle = window.setInterval(queue, 120);
     const stop = window.setTimeout(() => window.clearInterval(settle), 900);
-    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", queue);
     return () => {
       cancelAnimationFrame(raf);
       window.clearInterval(settle);
       window.clearTimeout(stop);
-      window.removeEventListener("scroll", queue);
+      window.clearTimeout(still);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", queue);
     };
   }, [running, step]);
@@ -139,9 +149,10 @@ export function Tour() {
   const bottom = below ? undefined : window.innerHeight - rect.y + pad + 8;
 
   return (
-    <div className="coach" role="presentation">
+    <div ref={coachRef} className="coach" role="presentation">
       <div className="coach__spot" style={{ left: rect.x - pad, top: rect.y - pad, width: rect.w + pad * 2, height: rect.h + pad * 2 }} aria-hidden="true" />
       <div
+        key={index}
         ref={cardRef}
         role="dialog"
         aria-modal="false"

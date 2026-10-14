@@ -6,7 +6,6 @@
 @import "./studio.css";
 @import "./pack.css";
 
-
 /*
  * Tailwind theme: defaults are cleared so only token values can be used.
  * `inline reference`: utilities read the live custom property.
@@ -254,6 +253,15 @@
   line-height: 1.06;
 }
 
+/* Title 2: work-card names, a decision's title, dialog titles. */
+@utility type-title-2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.024em;
+  line-height: 1.1;
+}
+
 /* Subheads inside a section (case study, brief, matcher): sentence case, meant to be skimmed. */
 @utility type-headline {
   font-family: var(--font-display);
@@ -325,26 +333,17 @@
     width: 0.75em;
     height: 0.75em;
     border-radius: 999px;
-    background: radial-gradient(circle at 65% 30%, #ffffff 0 18%, #ff8fc3 48%, #1a8fe8 100%);
+    background: radial-gradient(circle at 65% 30%, #ffffff 0 18%, #ff7eb6 48%, #1a8fe8 100%);
     box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.18);
   }
 }
 
-@utility type-label {
-  font-family: var(--font-mono);
-  font-size: var(--text-12);
-  font-weight: 600;
-  letter-spacing: var(--tracking-label);
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-/* Small caps label: tiny metadata only ("BEKASI · WIB", "STEP 02"). Never more than a few words. */
+/* The one mono label: metadata only, three words or fewer, never a heading. */
 @utility type-pixel {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   line-height: 1.3;
   text-transform: uppercase;
 }
@@ -930,20 +929,12 @@
   }
 
   /* Theme and sound icons follow the <html> attributes, so they are right before hydration. */
-  [data-theme="light"] .icon-when-dark,
   [data-sound="on"] .icon-when-sound-off,
   [data-sound="off"] .icon-when-sound-on {
     display: none;
   }
 
   /* Overlay panels shared by palette, terminal, agent, brief. */
-  .scrim {
-    position: fixed;
-    inset: 0;
-    background: color-mix(in srgb, var(--ink) 18%, transparent);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
 
   @media (prefers-reduced-motion: no-preference) {
     .pop-in {
@@ -1257,6 +1248,43 @@
   .site-dialog[data-placement="bottom"][open] > * {
     animation: slide-up var(--dur-short) var(--ease-out) both;
   }
+
+  /* Leaving: quicker than arriving, and the dim lifts with it. */
+  .site-dialog[data-closing] > * {
+    animation: pop-out 160ms var(--ease-in-out) both;
+  }
+
+  .site-dialog[data-placement="bottom"][data-closing] > * {
+    animation: slide-down 160ms var(--ease-in-out) both;
+  }
+
+  .site-dialog::backdrop {
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  .site-dialog[data-closing]::backdrop {
+    opacity: 0;
+  }
+
+  @starting-style {
+    .site-dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+}
+
+@keyframes slide-down {
+  to {
+    opacity: 0;
+    transform: translateY(24px);
+  }
 }
 
 /*
@@ -1390,55 +1418,21 @@
   }
 }
 
-/* The lab card's cover: a soft tint of the experiment's tone with a faint dot grid. */
-.lab-cover {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border: 0;
-  border-radius: calc(var(--radius-card) - 6px);
-  background:
-    radial-gradient(80% 90% at 20% 10%, color-mix(in srgb, var(--tone) 18%, transparent), transparent 70%),
-    linear-gradient(160deg, color-mix(in srgb, var(--tone) 8%, var(--surface-2)), var(--surface-2));
-  color: var(--ink);
-  transition: box-shadow var(--dur-micro) var(--ease-out);
-}
-
-.lab-cover__dots {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, color-mix(in srgb, var(--tone) 30%, var(--dot)) 1.2px, transparent 1.3px);
-  background-size: 22px 22px;
-  -webkit-mask: radial-gradient(70% 70% at 50% 50%, #000 30%, transparent 100%);
-  mask: radial-gradient(70% 70% at 50% 50%, #000 30%, transparent 100%);
-  opacity: 0.6;
-}
-
-@media (hover: hover) {
-  .lab-cover:hover {
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 35%, transparent);
-  }
-}
-
-
-
-
-/* ---------- Moci's avatar while it thinks ---------- */
+/* ---------- Moci while it thinks: the jelly wobbles, the bubble stays still ---------- */
 @media (prefers-reduced-motion: no-preference) {
-  .site-avatar.is-thinking {
-    animation: think 1.4s var(--ease-in-out) infinite alternate;
+  .site-avatar.is-thinking .site-avatar__drop {
+    transform-origin: 50% 80%;
+    animation: jelly-think 1.2s var(--ease-jelly) infinite alternate;
   }
 }
 
-@keyframes think {
+@keyframes jelly-think {
+  from {
+    scale: 1.04 0.96;
+  }
+
   to {
-    scale: 1.06;
-    box-shadow:
-      inset 0 0 0 2px #ffffff,
-      0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+    scale: 0.96 1.04;
   }
 }
 
@@ -1561,10 +1555,15 @@ html:not([data-loader="run"]) .loader {
   outline: none;
 }
 
+/* Each step's card lands just after the ring arrives, instead of racing ahead of it. */
 @media (prefers-reduced-motion: no-preference) {
   .coach__card {
-    animation: pop-in var(--dur-short) var(--ease-out) both;
+    animation: pop-in 260ms var(--ease-out) 140ms both;
   }
+}
+
+.coach[data-scrolling] .coach__spot {
+  transition: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1589,6 +1588,12 @@ html:not([data-loader="run"]) .loader {
     inset 0 -3px 8px rgba(4, 60, 140, 0.35),
     0 0 0 1px rgba(10, 80, 160, 0.18),
     0 4px 12px rgba(10, 90, 190, 0.3);
+}
+
+.site-avatar__drop {
+  overflow: visible;
+  translate: 0 4%;
+  filter: drop-shadow(0 2px 3px rgba(4, 40, 110, 0.35));
 }
 
 /* ---------- Floating actions: the agent and the help key ---------- */
@@ -1853,13 +1858,7 @@ body:has(:is(.studio__panel, .gb-form, .dac) :focus-within) .float-actions {
       inset 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
-  /* Speaker grille: a field of drilled holes. */
-  .grille {
-    background-image: radial-gradient(circle, color-mix(in srgb, var(--ink) 30%, transparent) 1.3px, transparent 1.6px);
-    background-size: 7px 7px;
-    border-radius: 6px;
-  }
-
+  
   /* Screws in the corners of a panel. */
   .screw {
     width: 9px;
@@ -1989,20 +1988,7 @@ body:has(:is(.studio__panel, .gb-form, .dac) :focus-within) .float-actions {
     letter-spacing: -0.01em;
   }
 
-  /* A sticky note, slightly curled at the corner. */
-  .sticky-note {
-    position: relative;
-    padding: 16px 16px 18px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 30%),
-      #dcebff;
-    color: #10213a;
-    border-radius: 2px 2px 14px 2px;
-    box-shadow:
-      0 1px 1px rgba(15, 23, 42, 0.08),
-      0 10px 22px rgba(15, 23, 42, 0.12);
-  }
-
+  
   /* A strip of matte tape holding something down. */
   .tape {
     position: absolute;
@@ -2018,29 +2004,6 @@ body:has(:is(.studio__panel, .gb-form, .dac) :focus-within) .float-actions {
     pointer-events: none;
   }
 
-
-}
-
-/* A big latching key (the case study's "how do you want to read it"): plastic when up, pressed in when chosen. */
-.mode-key {
-  background: var(--sheen), var(--surface);
-  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
-  box-shadow: var(--bevel), var(--key-edge), var(--lift-sm);
-  transition:
-    transform 120ms var(--ease-out),
-    box-shadow 120ms var(--ease-out),
-    background-color 120ms var(--ease-out);
-}
-
-.mode-key:hover {
-  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
-}
-
-.mode-key[aria-pressed="true"],
-.mode-key:active {
-  transform: translateY(2px);
-  background: var(--surface-2);
-  box-shadow: var(--recess);
 }
 
 /* ---------- Real-world objects (poster, phone, keychain, stamps, labels) ---------- */
@@ -2079,71 +2042,6 @@ body:has(:is(.studio__panel, .gb-form, .dac) :focus-within) .float-actions {
 
 .poster__email:hover {
   background: color-mix(in srgb, var(--accent-strong) 88%, #000);
-}
-
-.poster-name {
-  display: grid;
-  font-family: var(--font-display);
-  font-size: 60px;
-  font-weight: 700;
-  font-stretch: 75%;
-  line-height: 0.84;
-  letter-spacing: -0.01em;
-}
-
-.poster-name__layer {
-  grid-area: 1 / 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.poster-name__edge {
-  color: #fff;
-  -webkit-text-stroke: 0.16em #fff;
-  filter: drop-shadow(0.02em 0.055em 0 #111);
-}
-
-.poster-name__fill {
-  /* Positioned so it paints above the edge layer (its filter makes it a stacking context). */
-  position: relative;
-  color: var(--accent);
-}
-
-.poster-name__word {
-  display: inline-flex;
-  white-space: nowrap;
-}
-
-.poster-name__letter {
-  display: inline-block;
-  font-stretch: 75%;
-  transition: font-stretch 320ms var(--ease-out);
-}
-
-/* Highlighter rows: a value on a colour block, then a label ("18:32:02 TIME"). */
-.hl-row {
-  display: flex;
-  align-items: baseline;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-stretch: 75%;
-  font-size: 15px;
-  line-height: 1;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.hl-row > .hl {
-  padding: 0.12em 0.25em 0.06em;
-  background: var(--hl, var(--coral));
-  color: #1d2a4d;
-  font-variant-numeric: tabular-nums;
-}
-
-.hl-row > .hl-label {
-  padding: 0.12em 0.25em 0.06em;
-  background: #fff;
-  color: #111;
 }
 
 /* A phone on the desk, showing a lock screen over the live sky. */
@@ -2534,6 +2432,147 @@ html:not(:has(.world[data-ready])) .shore {
   max-width: min(100%, 62rem);
 }
 
+/*
+ * Moci, floating in the open sky to the right of the words on wide screens, with a few bubbles
+ * rising off it. It's a button: a tap opens the chat. Phones have the floating Moci instead.
+ */
+.hero__moci {
+  display: none;
+}
+
+@media (width >= 64rem) {
+  .hero__moci {
+    position: absolute;
+    top: clamp(220px, 34vh, 340px);
+    right: max(5vw, calc((100vw - 1240px) / 2));
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding: 12px;
+    border-radius: 28px;
+    color: #ffffff;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .hero__moci svg {
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0 10px 18px rgba(2, 40, 110, 0.35));
+  }
+
+  .hero__moci-tag {
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    background: rgba(3, 40, 100, 0.32);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    font-size: var(--text-14);
+    font-weight: 600;
+    opacity: 0;
+    translate: 0 -4px;
+    transition:
+      opacity var(--dur-micro) var(--ease-out),
+      translate var(--dur-micro) var(--ease-out);
+  }
+
+  .hero__moci:hover .hero__moci-tag,
+  .hero__moci:focus-visible .hero__moci-tag {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .hero__moci:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+  }
+
+  .hero__moci-bubble {
+    position: absolute;
+    top: 18px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 62% 32%, #ffffff 0 22%, rgba(255, 255, 255, 0.25) 60%, rgba(255, 255, 255, 0.5));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .hero__moci-bubble:nth-of-type(1) {
+    left: 30%;
+  }
+
+  .hero__moci-bubble:nth-of-type(2) {
+    left: 62%;
+    width: 7px;
+    height: 7px;
+  }
+
+  .hero__moci-bubble:nth-of-type(3) {
+    left: 46%;
+    width: 5px;
+    height: 5px;
+  }
+}
+
+@media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
+  .hero__moci-bob {
+    display: block;
+    animation: moci-bob 3.2s var(--ease-in-out) infinite alternate;
+  }
+
+  .hero__moci:hover .hero__moci-bob {
+    animation-play-state: paused;
+    scale: 1.04 0.97;
+    transition: scale 260ms var(--ease-jelly);
+  }
+
+  .hero__moci:active .hero__moci-bob {
+    scale: 1.1 0.88;
+    transition-duration: 90ms;
+  }
+
+  .hero__moci-bubble {
+    animation: moci-bubble 3.6s var(--ease-out) infinite;
+  }
+
+  .hero__moci-bubble:nth-of-type(2) {
+    animation-delay: 1.2s;
+  }
+
+  .hero__moci-bubble:nth-of-type(3) {
+    animation-delay: 2.4s;
+  }
+}
+
+@keyframes moci-bob {
+  from {
+    translate: 0 -6px;
+  }
+
+  to {
+    translate: 0 6px;
+  }
+}
+
+@keyframes moci-bubble {
+  0% {
+    opacity: 0;
+    translate: 0 0;
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  100% {
+    opacity: 0;
+    translate: 6px -70px;
+  }
+}
+
 .hero__keys {
   display: flex;
   flex-wrap: wrap;
@@ -2802,13 +2841,6 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   color: var(--muted);
 }
 
-.spec-label {
-  font: 600 10px/1 var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
 /* ---------- Hero ---------- */
 .hero-name {
   font-family: var(--font-display);
@@ -2832,11 +2864,6 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   .hero-name__letter {
     animation: rise-in 700ms var(--ease-out) both;
     animation-delay: calc(var(--i) * 28ms + 80ms);
-  }
-
-  .hero-rise {
-    animation: rise-in 700ms var(--ease-out) both;
-    animation-delay: var(--d, 0ms);
   }
 }
 
@@ -3406,60 +3433,6 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   color: var(--ink);
 }
 
-/* Pixel sparkle, from the board. */
-.sparkle-px {
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  background:
-    linear-gradient(#fff 0 0) 50% 0 / 5px 100% no-repeat,
-    linear-gradient(#fff 0 0) 0 50% / 100% 5px no-repeat;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .sparkle-px {
-    animation: twinkle 2.6s var(--ease-in-out) infinite;
-    animation-delay: var(--twinkle-delay, 0s);
-  }
-}
-
-/* Scalloped email bar (the footer's last word). */
-.email-bar {
-  --scallop: 12px;
-  background: var(--surface-2);
-  color: var(--ink);
-}
-
-/* App icons tucked into a headline, overlapping like a little stack. */
-.inline-icons {
-  display: inline-flex;
-  vertical-align: -0.12em;
-  margin: 0 0.02em 0 0.18em;
-}
-
-.inline-icons > span {
-  display: inline-block;
-  margin-left: -14px;
-  rotate: calc((var(--i) - 1) * 7deg);
-  transition: rotate 300ms var(--ease-jelly), translate 300ms var(--ease-jelly);
-}
-
-.inline-icons > span:first-child {
-  margin-left: 0;
-}
-
-.inline-icons:hover > span {
-  translate: calc((var(--i) - 1) * 8px) -4px;
-}
-
-@media (max-width: 640px) {
-  .inline-icons {
-    zoom: 0.7;
-  }
-}
-
 /* A proof badge floating over a product screenshot. */
 .proof-badge {
   position: absolute;
@@ -3486,6 +3459,28 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 }
 
 /* The small printed key at the start of a palette row. */
+/* The dock's own icon on a small squircle tile. */
+.palette-art {
+  display: grid;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border-radius: 28%;
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 60, 110, 0.08),
+    0 1px 2px rgba(8, 40, 80, 0.12);
+}
+
+.palette-art > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.palette-keys kbd {
+  color: var(--muted);
+}
+
 .palette-key {
   display: grid;
   flex: none;
@@ -3509,7 +3504,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 2px 0 #8e0e42;
+    0 2px 0 #08479c;
 }
 
 /* ---------- Playable UI demos in the widget board (after marco.fyi) ---------- */
@@ -3675,8 +3670,8 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   --o: 0;
   --bgx: 50%;
   --bgy: 50%;
-  --frame: linear-gradient(140deg, #ffb3cf, #d8588f 42%, #9a2f5e 78%, #eb8dae);
-  --tone-ink: #ab366c;
+  --frame: linear-gradient(140deg, #d4f3ff, #7cc4f5 42%, #1a8fe8 78%, #ffd6e8);
+  --tone-ink: var(--accent-ink);
   /* A printed card keeps its daylight colours in night mode. */
   --ink: #0e1726;
   --muted: #556070;
@@ -3962,11 +3957,13 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   mix-blend-mode: soft-light;
 }
 
-/* Back: the printed back of the set. */
+/* Back: the printed back of the set, the same azure sunburst as the daily cards (pack.css). */
 .tcg__back {
   transform: rotateY(180deg);
   padding: 3.2cqi;
-  background: linear-gradient(140deg, #dfe6f1, #9aa6b8 45%, #e9eef5 70%, #b3bdcc);
+  background:
+    repeating-conic-gradient(from 0deg at 50% 46%, rgba(255, 255, 255, 0.09) 0 6deg, transparent 6deg 12deg),
+    radial-gradient(circle at 50% 46%, #57bdf7, #0a5fcc 70%);
 }
 
 .tcg__back-inner {
@@ -3975,38 +3972,34 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   align-content: center;
   gap: 5cqi;
   height: 100%;
+  border: 0.6cqi solid rgba(255, 255, 255, 0.55);
   border-radius: 2.6cqi;
-  background:
-    radial-gradient(circle at 50% 42%, rgba(216, 88, 143, 0.35), transparent 45%),
-    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.04) 0 6px, transparent 6px 12px),
-    linear-gradient(160deg, #1a2440, #0b1020);
 }
 
 .tcg__back-logo {
   display: grid;
   place-items: center;
-  width: 38cqi;
-  height: 38cqi;
+  width: 30cqi;
+  height: 30cqi;
   border-radius: 999px;
-  font: 700 22cqi/1 var(--font-display);
+  font: 700 14cqi/1 var(--font-display);
   letter-spacing: -0.06em;
-  color: #ffffff;
-  background: radial-gradient(circle at 35% 30%, #eb8dae, #d8588f 50%, #8e2755);
+  color: #0a5fcc;
+  background: radial-gradient(circle at 62% 30%, #ffffff, #d6efff 60%, #a6daff);
   box-shadow:
-    0 0 0 1.4cqi rgba(255, 255, 255, 0.85),
-    0 0 0 2.4cqi rgba(255, 255, 255, 0.15),
-    0 2cqi 6cqi rgba(0, 0, 0, 0.5);
+    0 0 0 1.4cqi rgba(255, 255, 255, 0.4),
+    0 1.6cqi 4cqi rgba(2, 30, 90, 0.35);
 }
 
 .tcg__back-logo b {
-  color: #0b1020;
+  color: var(--pink-ink);
 }
 
 .tcg__back-text {
   font: 700 3.2cqi/1 var(--font-mono);
-  letter-spacing: 0.24em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
+  color: #ffffff;
 }
 
 @media (hover: hover) {
@@ -4053,19 +4046,6 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 }
 
 /* The reveal: the card pops out of its pack face down, then flips over. */
-@media (prefers-reduced-motion: no-preference) {
-  .packslot[data-dealing] .packslot__card {
-    animation: card-pop 640ms var(--ease-jelly) both;
-  }
-
-  .packslot[data-dealing] .tcg__flipper {
-    animation: tcg-reveal 820ms var(--ease-out) 280ms both;
-  }
-
-  .packslot[data-dealing] .tcg[data-finish="holo"] .tcg__glare {
-    animation: tcg-flash 900ms var(--ease-out) 700ms both;
-  }
-}
 
 @keyframes card-pop {
   from {
@@ -4107,11 +4087,6 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 }
 
 /* ---------- Gumball capsule: drops out of the chute and rolls to a stop ---------- */
-@media (prefers-reduced-motion: no-preference) {
-  .gb-capsule {
-    animation: gb-roll 900ms var(--ease-out) both;
-  }
-}
 
 @keyframes gb-roll {
   0% {
@@ -4133,151 +4108,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   }
 }
 
-/* ---------- Booster packs: one product in each ---------- */
-.packrow {
-  display: grid;
-  gap: clamp(20px, 3vw, 32px);
-  max-width: 1120px;
-  margin-inline: auto;
-  text-align: left;
-}
-
-/* Phones: a row you swipe through, with the next pack peeking in. */
-@media (max-width: 639px) {
-  .packrow {
-    display: flex;
-    gap: 14px;
-    margin-inline: calc(var(--gutter) * -1);
-    padding: 6px var(--gutter) 22px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--gutter);
-    scrollbar-width: none;
-  }
-
-  .packrow::-webkit-scrollbar {
-    display: none;
-  }
-
-  .packslot {
-    flex: 0 0 80%;
-    scroll-snap-align: center;
-  }
-}
-
-@media (min-width: 640px) {
-  .packrow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .packrow {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-/* Each slot keeps the card's size, so nothing moves when a pack turns into its card. */
-.packslot {
-  position: relative;
-  display: grid;
-  width: 100%;
-  max-width: 360px;
-  margin-inline: auto;
-}
-
-.packslot > * {
-  grid-area: 1 / 1;
-  min-width: 0;
-}
-
-.packslot__pack {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 63 / 88;
-}
-
-.packslot__card {
-  display: none;
-  position: relative;
-}
-
-/* Which packs are open lives on <html data-opened="0 2">, set before paint. */
-html[data-opened~="0"] .packslot[data-i="0"] .packslot__pack,
-html[data-opened~="1"] .packslot[data-i="1"] .packslot__pack,
-html[data-opened~="2"] .packslot[data-i="2"] .packslot__pack,
-html[data-opened~="3"] .packslot[data-i="3"] .packslot__pack,
-html[data-opened~="4"] .packslot[data-i="4"] .packslot__pack,
-html[data-opened~="5"] .packslot[data-i="5"] .packslot__pack {
-  display: none;
-}
-
-html[data-opened~="0"] .packslot[data-i="0"] .packslot__card,
-html[data-opened~="1"] .packslot[data-i="1"] .packslot__card,
-html[data-opened~="2"] .packslot[data-i="2"] .packslot__card,
-html[data-opened~="3"] .packslot[data-i="3"] .packslot__card,
-html[data-opened~="4"] .packslot[data-i="4"] .packslot__card,
-html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
-  display: block;
-}
-
-/* No JavaScript, no tearing: just show the cards. */
-@media (scripting: none) {
-  .packslot__pack {
-    display: none;
-  }
-
-  .packslot__card {
-    display: block;
-  }
-}
-
-/* Each pack's foil follows its product's colour. */
-.packslot {
-  --foil: linear-gradient(165deg, #ffb6dc, #e88cb1 30%, #e94b9e 55%, #a98cff 92%);
-}
-
-.packslot[data-tone="cobalt"] {
-  --foil: linear-gradient(165deg, #b9e0ff, #4db3ff 30%, #406bce 62%, #8e9bff 92%);
-}
-
-.packslot[data-tone="violet"] {
-  --foil: linear-gradient(165deg, #d9ccff, #a98cff 30%, #8968d4 58%, #58bad6 94%);
-}
-
 /* Sparkles thrown by a holo rare as it comes out. */
-.packslot__burst {
-  position: absolute;
-  left: 50%;
-  top: 42%;
-  pointer-events: none;
-}
-
-.packslot__burst i {
-  position: absolute;
-  left: -7px;
-  top: -7px;
-  width: 14px;
-  height: 14px;
-  background: #ffffff;
-  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
-  opacity: 0;
-}
-
-.packslot__burst i:nth-child(3n) {
-  background: #ffd3ea;
-}
-
-.packslot__burst i:nth-child(3n + 1) {
-  background: #cfe6ff;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .packslot[data-dealing][data-finish="holo"] .packslot__burst i,
-  .packslot[data-dealing][data-finish="reverse"] .packslot__burst i:nth-child(odd) {
-    animation: burst 900ms var(--ease-out) 620ms both;
-  }
-}
 
 @keyframes burst {
   0% {
@@ -4419,8 +4250,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   box-shadow: 0 0 0 1.2cqi #c9d1dc inset;
 }
 
-
-
 /* The perforation, and the torn edge that runs along it as you drag. */
 .pack__perf {
   position: absolute;
@@ -4505,7 +4334,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 }
 
 .pack__brand b {
-  color: #eb8dae;
+  color: var(--pink);
 }
 
 .pack__no {
@@ -4578,22 +4407,9 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   rotate: -12deg;
 }
 
-.packslot[data-state="tearing"] .pack__strip-label {
-  opacity: 0;
-  transition: opacity 200ms var(--ease-out);
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .pack__body {
     animation: pack-float 3.6s var(--ease-in-out) infinite alternate;
-  }
-
-  .packslot[data-state="tearing"] .pack__strip {
-    animation: pack-strip-off 460ms var(--ease-in) forwards;
-  }
-
-  .packslot[data-state="tearing"] .pack__body {
-    animation: pack-burst 520ms var(--ease-out) forwards;
   }
 }
 
@@ -4639,31 +4455,11 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
 /* Tile tones are plain cards now; only the night-console tile (clock) is dark. */
 .tone-lime,
-.tone-pink,
 .tone-sun,
 .tone-sky,
 .tone-accent,
-.tone-red,
-.tone-violet,
-.tone-mint,
-.tone-grey {
+.tone-violet {
   --tone: transparent;
-}
-
-/* One dark tile per screen at most: the night-console widgets (clock, terminal). */
-.tone-charcoal {
-  --bg: #1C1C1E;
-  --ink: #F5F5F7;
-  --muted: #A1A1A6;
-  --surface: #2C2C2E;
-  --surface-2: rgba(255, 255, 255, 0.07);
-  --line: rgba(255, 255, 255, 0.1);
-  --glass-line: rgba(255, 255, 255, 0.08);
-  --glass-edge: rgba(255, 255, 255, 0.12);
-  --glass-strong: rgba(255, 255, 255, 0.1);
-  --accent-ink: #7FD7FF;
-  background: rgba(28, 28, 30, 0.88) !important;
-  color: var(--ink);
 }
 
 /* ---------- The world: a window onto the summer sky ---------- */
@@ -5150,7 +4946,10 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   bottom: -24px;
   height: 104px;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--sea-from), var(--sea-mid) 70%);
+  /* The sun's glint sits where the sun is: top right. */
+  background:
+    radial-gradient(28% 40% at 80% 0%, rgba(255, 255, 255, 0.45), transparent 70%),
+    linear-gradient(180deg, var(--sea-from), var(--sea-mid) 70%);
   -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27600%27%20height=%2760%27%20viewBox=%270%200%20600%2060%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2030%20C%2050%2018%20100%2018%20150%2030%20S%20250%2042%20300%2030%20S%20400%2018%20450%2030%20S%20550%2042%20600%2030%20L%20600%2060%20L%200%2060%20Z%27%20fill=%27black%27/%3E%3C/svg%3E") 0 0 / 600px calc(30px * var(--amp)) repeat-x, linear-gradient(#000 0 0) 0 calc(30px * var(--amp) - 1px) / 100% 100% no-repeat;
   mask: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%27600%27%20height=%2760%27%20viewBox=%270%200%20600%2060%27%20preserveAspectRatio=%27none%27%3E%3Cpath%20d=%27M0%2030%20C%2050%2018%20100%2018%20150%2030%20S%20250%2042%20300%2030%20S%20400%2018%20450%2030%20S%20550%2042%20600%2030%20L%20600%2060%20L%200%2060%20Z%27%20fill=%27black%27/%3E%3C/svg%3E") 0 0 / 600px calc(30px * var(--amp)) repeat-x, linear-gradient(#000 0 0) 0 calc(30px * var(--amp) - 1px) / 100% 100% no-repeat;
 }
@@ -5183,29 +4982,35 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   opacity: 0.3;
 }
 
-/* A buoy, with the brand dot on top. */
+/*
+ * A buoy floating IN the water: its lower third is under the surface (masked off), with a bright
+ * ring where it meets the water, and the brand dot lit on top.
+ */
 .seawidget__buoy {
   position: absolute;
-  top: calc(30px * var(--amp) - 14px);
+  top: calc(30px * var(--amp) - 10px);
   right: 18%;
   z-index: 1;
   width: 18px;
-  height: 24px;
+  height: 26px;
   border-radius: 9px 9px 4px 4px;
-  background: linear-gradient(90deg, #ffffff, #ffe3f0 45%, #ffffff 46% 60%, #ffd0e6);
-  box-shadow: 0 2px 4px rgba(10, 40, 100, 0.3);
+  background:
+    linear-gradient(90deg, rgba(8, 40, 80, 0.14), transparent 35%, rgba(255, 255, 255, 0.55) 62%, transparent 74%, rgba(8, 40, 80, 0.16)),
+    linear-gradient(180deg, var(--pink) 0 30%, #ffffff 30% 48%, var(--pink) 48%);
+  -webkit-mask: linear-gradient(#000 64%, transparent 64%);
+  mask: linear-gradient(#000 64%, transparent 64%);
 }
 
 .seawidget__buoy::before {
   content: "";
   position: absolute;
-  top: -7px;
+  top: 3px;
   left: 50%;
   width: 6px;
   height: 6px;
   margin-left: -3px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #ffffff;
   box-shadow: 0 0 8px var(--accent);
 }
 
@@ -5236,16 +5041,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     -webkit-mask-position: -600px 0, 0 calc(30px * var(--amp) - 1px);
     mask-position: -600px 0, 0 calc(30px * var(--amp) - 1px);
   }
-}
-
-/* Moci's bubble on the corner of the hero device: a white die-cut sticker, so the blue jelly shows. */
-.moci-sticker {
-  background: radial-gradient(60% 50% at 50% 30%, #ffffff, #f1f6fb);
-  box-shadow:
-    inset 0 0 0 1px rgba(8, 40, 80, 0.06),
-    inset 0 -4px 8px rgba(8, 40, 80, 0.05),
-    0 2px 3px rgba(8, 40, 80, 0.08),
-    0 12px 26px rgba(8, 40, 80, 0.16);
 }
 
 /* ---------- The CD shelf (About) ---------- */
@@ -5473,19 +5268,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   }
 
   /* Moci's bubble wobbles when pressed. */
-  .moci-sticker[data-boop="a"] {
-    animation: boop-a 620ms var(--ease-jelly);
-  }
-
-  .moci-sticker[data-boop="b"] {
-    animation: boop-b 620ms var(--ease-jelly);
-  }
-
-  .moci-sticker:hover .moci-avatar {
-    animation: wobble 900ms var(--ease-in-out);
-    --wobble-from: -6deg;
-    --wobble-to: 6deg;
-  }
 }
 
 @media (hover: hover) {
@@ -5495,12 +5277,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
       var(--bevel),
       var(--lift-lg);
   }
-}
-
-.moci-sticker {
-  border: 0;
-  padding: 0;
-  cursor: pointer;
 }
 
 @keyframes boop-a {
@@ -5578,182 +5354,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   background: linear-gradient(90deg, #0a58be, #1a8fe8 55%, #3cc8f0);
 }
 
-/* ---------- Take a break: the pocket console in the live board ---------- */
-.playwidget {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 250px;
-}
-
-.playwidget__console {
-  position: relative;
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) 34px;
-  align-items: center;
-  gap: 12px;
-  margin-top: 14px;
-  padding: 12px 14px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ffffff, #eef2f7);
-  box-shadow:
-    inset 0 1px 0 #ffffff,
-    inset 0 -4px 10px rgba(8, 40, 80, 0.06),
-    0 0 0 1px rgba(8, 40, 80, 0.08),
-    0 10px 22px rgba(8, 40, 80, 0.12);
-  text-decoration: none;
-  transition:
-    transform 420ms var(--ease-jelly),
-    box-shadow 300ms var(--ease-out);
-}
-
-@media (hover: hover) {
-  .playwidget__console:hover {
-    transform: translateY(-3px) rotate(-1deg);
-    box-shadow:
-      inset 0 1px 0 #ffffff,
-      0 0 0 1px rgba(8, 40, 80, 0.1),
-      0 16px 30px rgba(8, 40, 80, 0.16);
-  }
-}
-
-.playwidget__dpad {
-  justify-self: center;
-  width: 28px;
-  height: 28px;
-  background:
-    linear-gradient(#c3cbd8, #c3cbd8) center / 9px 100% no-repeat,
-    linear-gradient(#c3cbd8, #c3cbd8) center / 100% 9px no-repeat;
-  border-radius: 3px;
-}
-
-.playwidget__buttons {
-  position: relative;
-  justify-self: center;
-  width: 28px;
-  height: 28px;
-}
-
-.playwidget__buttons i {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #c3cbd8;
-}
-
-.playwidget__buttons i:nth-child(1) {
-  top: 0;
-  left: 9.5px;
-  background: var(--mint);
-}
-
-.playwidget__buttons i:nth-child(2) {
-  top: 9.5px;
-  right: 0;
-  background: var(--accent);
-}
-
-.playwidget__buttons i:nth-child(3) {
-  bottom: 0;
-  left: 9.5px;
-  background: var(--cobalt);
-}
-
-.playwidget__buttons i:nth-child(4) {
-  top: 9.5px;
-  left: 0;
-  background: var(--violet);
-}
-
 /* The screen: the title, a snake of tokens crawling toward a token, and a start prompt. */
-.playwidget__screen {
-  position: relative;
-  display: block;
-  height: 96px;
-  overflow: hidden;
-  border-radius: 8px;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 8px,
-    linear-gradient(160deg, #1d2a4d, #0e1630);
-  box-shadow: inset 0 0 0 2px #0a1028;
-}
-
-.playwidget__title {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  right: 0;
-  font: 700 12px/1 var(--font-display);
-  letter-spacing: -0.01em;
-  text-align: center;
-  color: #eaf0fa;
-}
-
-.playwidget__snake {
-  position: absolute;
-  top: 46px;
-  left: 14%;
-  display: flex;
-  gap: 2px;
-}
-
-.playwidget__snake i {
-  display: block;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--lime);
-  opacity: calc(1 - var(--i) * 0.14);
-}
-
-.playwidget__snake i:first-child {
-  background: var(--pink);
-}
-
-.playwidget__snake {
-  flex-direction: row-reverse;
-}
-
-.playwidget__token {
-  position: absolute;
-  top: 43px;
-  left: 74%;
-  font-size: 11px;
-  color: #ffe58f;
-}
-
-.playwidget__start {
-  position: absolute;
-  bottom: 9px;
-  left: 0;
-  right: 0;
-  font: 600 9px/1 var(--font-mono);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-align: center;
-  color: #ff9cc9;
-}
-
-.playwidget__ground {
-  margin-top: auto;
-  height: 36px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .playwidget__snake {
-    animation: snake-crawl 3.2s steps(16) infinite;
-  }
-
-  .playwidget__token {
-    animation: twinkle 1.6s var(--ease-in-out) infinite;
-  }
-
-  .playwidget__start {
-    animation: blink-start 1.2s steps(1) infinite;
-  }
-}
 
 @keyframes snake-crawl {
   from {
@@ -5770,9 +5371,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     opacity: 0;
   }
 }
-
-/* The scroll cue sits on the pale bottom of the sky window: navy, quiet. */
-
 
 /* ---------- The island on the ocean card's horizon ---------- */
 .sea__island {
@@ -5807,7 +5405,6 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
     rotate: 5deg;
   }
 }
-
 
 /* ---------- Illustrated app icons (the dock) ---------- */
 /* One shaded object on a white or vivid tile; the art fills the tile and the tile clips it. */
@@ -5854,39 +5451,8 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 }
 
 /* ---------- The keys to the site, on a hook beside the laptop (home) ---------- */
-.laptop-keys {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  margin-top: 56px;
-  padding-top: 14px;
-}
 
 /* The hook: a small metal peg the carabiner hangs from. */
-.laptop-keys::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  z-index: 3;
-  width: 22px;
-  height: 22px;
-  translate: -50% 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ffffff, var(--metal-to) 70%);
-  box-shadow:
-    inset 0 -2px 3px rgba(8, 40, 80, 0.2),
-    0 3px 6px rgba(8, 40, 80, 0.18);
-}
-
-@media (min-width: 1400px) {
-  .laptop-keys {
-    position: absolute;
-    top: -6px;
-    left: -250px;
-    margin: 0;
-  }
-}
 
 .keychain {
   transform-origin: 50% 8px;

@@ -60,14 +60,14 @@ export function ShortcutSheet() {
   return (
     <Dialog open={open} onClose={close} labelledBy={titleId}>
       <div className="widget max-h-[calc(100dvh-24px)] overflow-y-auto p-5 md:p-7">
-        <h2 id={titleId} className="font-display text-32 font-bold">
+        <h2 id={titleId} className="type-title-2">
           Keyboard shortcuts
         </h2>
         <p className="mt-1 text-muted">Everything on this site works with a keyboard.</p>
         <div className="mt-5 grid gap-6 md:grid-cols-3">
           {GROUPS.map((group) => (
             <section key={group.title}>
-              <h3 className="type-pixel text-accent-ink">{group.title}</h3>
+              <h3 className="text-14 font-semibold text-accent-ink">{group.title}</h3>
               <ul className="mt-2 space-y-2">
                 {group.items.map((item) => (
                   <li key={item.label} className="flex items-center gap-3 text-14">

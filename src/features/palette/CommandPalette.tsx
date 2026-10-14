@@ -8,13 +8,37 @@ import { cn } from "@/lib/cn";
 import { fuzzyScore } from "@/lib/fuzzy";
 import { sfx } from "@/lib/sound";
 import { ui, useUI } from "@/lib/ui";
+import { projects } from "@/content/projects";
 import { think, type BrainAnswer } from "../agent/brain";
+import { BoxArt, CvArt, FishArt, HelpArt, IdCardArt, MociArt, SparkleArt, TILE } from "../shell/DockIcons";
+import { ProjectIcon } from "../work/ProjectIcon";
 import { commands, type Command, type CommandGroup } from "./commands";
 import { paletteStore, usePalette } from "./palette-store";
 
 const GROUP_ORDER: (CommandGroup | "Ask")[] = ["Ask", "Navigate", "Projects", "Actions", "Lens", "Lab", "Settings"];
 
 type Item = { kind: "command"; command: Command; score: number } | { kind: "ask"; question: string };
+
+const ART = { work: BoxArt, lab: SparkleArt, about: IdCardArt, guestbook: FishArt, moci: MociArt, cv: CvArt, help: HelpArt };
+
+/** The row's icon: the project's own app icon, the dock's icon for the same place, or a small printed key. */
+function CommandIcon({ command, selected }: { command: Command; selected: boolean }) {
+  const project = command.project ? projects.find((p) => p.slug === command.project) : undefined;
+  if (project) return <ProjectIcon project={project} size={32} />;
+  if (command.art) {
+    const Art = ART[command.art];
+    return (
+      <span aria-hidden="true" className="palette-art" style={{ background: command.art === "lab" ? TILE.azure : TILE.white }}>
+        <Art />
+      </span>
+    );
+  }
+  return (
+    <span aria-hidden="true" className="palette-key" data-on={selected}>
+      {command.icon}
+    </span>
+  );
+}
 
 function looksLikeQuestion(q: string) {
   return /\?\s*$/.test(q) || /^(who|what|what's|whats|where|when|why|how|is|are|can|could|does|do|did|tell|which|should|would|will|has|have)\b/i.test(q.trim());
@@ -145,7 +169,7 @@ export function CommandPalette() {
             aria-activedescendant={items[activeIndex] ? `${baseId}-opt-${activeIndex}` : undefined}
             aria-autocomplete="list"
             aria-label="Search pages and actions, or ask a question"
-            placeholder="Search, run a command, or ask a question…"
+            placeholder="Search or ask"
             className="min-w-0 flex-1 bg-transparent py-1 text-18 outline-none placeholder:text-muted"
             autoComplete="off"
             spellCheck={false}
@@ -219,9 +243,7 @@ export function CommandPalette() {
                     </>
                   ) : (
                     <>
-                      <span aria-hidden="true" className="palette-key" data-on={selected}>
-                        {item.command.icon}
-                      </span>
+                      <CommandIcon command={item.command} selected={selected} />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate font-semibold">
                           {item.command.title}
@@ -231,8 +253,8 @@ export function CommandPalette() {
                           <span className="block truncate text-14 text-muted">{item.command.subtitle}</span>
                         )}
                       </span>
-                      {item.command.keys && (
-                        <span className="hidden shrink-0 gap-1 sm:flex" aria-hidden="true">
+                      {item.command.keys && selected && (
+                        <span className="palette-keys hidden shrink-0 gap-1 sm:flex" aria-hidden="true">
                           {item.command.keys.map((k, i) => (
                             <kbd key={i}>
                               {k}
@@ -250,7 +272,7 @@ export function CommandPalette() {
         </div>
 
         <div className="flex items-center justify-between gap-3 border-t border-line px-4 py-2.5 text-12 text-muted md:px-5">
-          <span className="flex items-center gap-2">
+          <span className="flex items-center gap-2 [@media(pointer:coarse)]:invisible">
             <kbd>↑</kbd>
             <kbd>↓</kbd> to move <kbd>↵</kbd> to run
           </span>

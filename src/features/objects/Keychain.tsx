@@ -6,8 +6,8 @@ import { sfx } from "@/lib/sound";
 const TAGS = [
   { label: "Work", href: "/work", tint: "var(--accent)" },
   { label: "Lab", href: "/lab", tint: "var(--violet)" },
-  { label: "About", href: "/about", tint: "var(--sun)" },
-  { label: "Guestbook", href: "/guestbook", tint: "var(--green)" },
+  { label: "About", href: "/about", tint: "var(--pink)" },
+  { label: "Guestbook", href: "/guestbook", tint: "var(--cyan)" },
   { label: "Studio", href: "/lab#studio", tint: "var(--sky)" },
 ];
 

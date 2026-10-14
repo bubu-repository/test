@@ -43,7 +43,7 @@ export function CaseStudyShell({ project, next, index, total, cover, children }:
     <>
       <PageHeader
         id="case-title"
-        label={`Case study ${pad(index)} of ${pad(total)}`}
+        label={`Case study ${pad(index)} of ${pad(total)} · ${project.context}, ${project.year}`}
         top={
           <ViewTransition name={`card-${project.slug}`} share="card-morph" default="none">
             <div className="mx-auto mb-6 w-fit">
@@ -51,14 +51,7 @@ export function CaseStudyShell({ project, next, index, total, cover, children }:
             </div>
           </ViewTransition>
         }
-        title={
-          <span className="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            {project.name}
-            <span className="chip min-h-7 translate-y-1 px-3 text-12 font-semibold tracking-normal text-ink">
-              {project.context} · {project.year}
-            </span>
-          </span>
-        }
+        title={project.name}
         lead={project.tagline}
       >
         <p className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-2 text-16">

@@ -24,7 +24,7 @@ export async function renderAppIcon(size: number) {
           color: "#111111",
         }}
       >
-        a<span style={{ color: "#D8588F" }}>.</span>
+        a<span style={{ color: "#FF7EB6" }}>.</span>
       </div>
     ),
     { width: size, height: size, fonts: [{ name: "Mona Sans", data: await bold, weight: 700, style: "normal" }] },

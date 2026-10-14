@@ -9,7 +9,7 @@ import { OverlapRing } from "./OverlapRing";
 export function WidgetTitle({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <h3 className="type-pixel text-muted">{children}</h3>
+      <h3 className="text-14 leading-snug font-semibold text-muted">{children}</h3>
       {aside}
     </div>
   );

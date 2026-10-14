@@ -45,7 +45,7 @@ export default function AboutPage() {
             <h2 id="story-title" className="type-title">
               The short story
             </h2>
-            <div className="mt-6 max-w-[62ch] space-y-5 text-18 leading-relaxed">
+            <div className="mt-6 max-w-[36em] space-y-5 text-18 leading-relaxed">
               {bio.long.map((p) => (
                 <p key={p}>{p}</p>
               ))}

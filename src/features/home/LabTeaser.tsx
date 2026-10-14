@@ -17,7 +17,7 @@ export function LabTeaser() {
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-3">
-          <Link href="/colophon" className="pill" data-size="lg">
+          <Link href="/colophon" className="pill">
             How it&apos;s built
           </Link>
           <Link href="/lab" className="link-arrow text-16" data-tour="lab-tools">

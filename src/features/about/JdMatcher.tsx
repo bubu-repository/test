@@ -75,7 +75,7 @@ export function JdMatcher() {
           onChange={(e) => setText(e.target.value)}
           rows={11}
           placeholder="Paste the role here. Nothing leaves your browser."
-          className="mt-3 w-full flex-1 resize-y rounded-[18px] border border-line bg-surface-2 p-4 text-16 leading-relaxed outline-none placeholder:text-muted focus:border-accent"
+          className="mt-3 w-full flex-1 resize-y rounded-[14px] border border-line bg-surface-2 p-4 text-16 leading-relaxed outline-none placeholder:text-muted focus:border-accent"
         />
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button type="submit" className="pill" data-variant="magenta" disabled={!text.trim()}>
@@ -114,7 +114,7 @@ export function JdMatcher() {
                   </div>
                 </div>
 
-                <h3 className="type-pixel mt-6 text-muted">What it asks for, and the proof</h3>
+                <h3 className="type-headline mt-6">What it asks for, and the proof</h3>
                 <ul className="mt-3 space-y-2">
                   {result.matched.map((s) => (
                     <li key={s.id} className="flex items-start gap-3 rounded-[14px] bg-surface-2 px-3.5 py-2.5 text-14">
@@ -136,7 +136,7 @@ export function JdMatcher() {
 
                 {result.gaps.length > 0 && (
                   <>
-                    <h3 className="type-pixel mt-6 text-muted">Honest gaps</h3>
+                    <h3 className="type-headline mt-6">Honest gaps</h3>
                     <ul className="mt-3 space-y-2">
                       {result.gaps.map((s) => (
                         <li key={s.id} className={cn("flex items-start gap-3 rounded-[14px] border border-dashed border-line px-3.5 py-2.5 text-14")}>

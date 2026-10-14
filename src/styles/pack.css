@@ -97,7 +97,7 @@
       transparent calc(var(--wx, 0.5) * 60% + 34%)
     ),
     repeating-linear-gradient(115deg, rgba(255, 120, 200, 0.1) 0 2px, rgba(120, 220, 255, 0.1) 2px 4px, rgba(255, 240, 140, 0.08) 4px 6px),
-    linear-gradient(160deg, #1a8fe8 0%, #57bdf7 34%, #ffb3d9 70%, #c9b8ff 100%);
+    linear-gradient(160deg, #1a8fe8 0%, #57bdf7 34%, #ffd6e8 70%, #c9b8ff 100%);
 }
 
 .daily-pack__face {
@@ -426,7 +426,7 @@
 }
 
 .dcard__back-logo b {
-  color: #ff5fa8;
+  color: var(--pink-ink);
 }
 
 .dcard__back-text {
@@ -468,7 +468,7 @@
 
 .dcard--front {
   --tint: #ffe3f0;
-  --rim: #ffb3d9;
+  --rim: #ffd6e8;
   padding: 16px 16px 14px;
   border: 7px solid transparent;
   background:
@@ -561,7 +561,7 @@
 }
 
 .daily__burst i:nth-child(3n) {
-  background: #ff5fa8;
+  background: var(--pink);
 }
 
 .daily__burst i:nth-child(3n + 1) {

@@ -39,12 +39,12 @@ export default function LabPage() {
         <Studio />
       </section>
 
-      <section id="pack" aria-labelledby="pack-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)] text-center">
+      <section id="pack" aria-labelledby="pack-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">Once a day</p>
         <h2 id="pack-title" className="type-title mt-2">
           Today&apos;s pack
         </h2>
-        <p className="mx-auto mt-4 mb-10 max-w-[52ch] text-muted">
+        <p className="mt-4 mb-10 max-w-[52ch] text-muted">
           Three cards: something kind, advice from the weather in Bekasi right now, and one more. About one pack in eight hides a holo rare of one of my products.
         </p>
         <DailyPack />

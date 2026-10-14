@@ -23,7 +23,14 @@ export function SeaSoundToggle({ className }: { className?: string }) {
         ambience.start();
       }}
     >
-      <span aria-hidden="true">{on ? "〰" : "🌊"}</span> {on ? "Stop the sea" : "Listen to the sea"}
+      <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+        {on ? (
+          <rect x="5.5" y="5.5" width="9" height="9" rx="2" fill="currentColor" />
+        ) : (
+          <path d="M2 11.5c2.2 0 2.2-2.5 4.4-2.5s2.2 2.5 4.4 2.5 2.2-2.5 4.4-2.5 2.2 2.5 2.8 2.5M2 15.5c2.2 0 2.2-2.5 4.4-2.5s2.2 2.5 4.4 2.5 2.2-2.5 4.4-2.5 2.2 2.5 2.8 2.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        )}
+      </svg>
+      {on ? "Stop the sea" : "Listen to the sea"}
     </button>
   );
 }
@@ -84,7 +91,7 @@ export function Sea({ children }: { children: ReactNode }) {
           <path d="M101 32 C 110 31 117 36 120 42 C 114 37 108 34 101 32 Z" fill="#3A965C" />
         </g>
         <path d="M134 66 L 134 50" stroke="#ffffff" strokeWidth="1.6" />
-        <path d="M122 51 Q 134 40 146 51 Z" fill="#D8588F" />
+        <path d="M122 51 Q 134 40 146 51 Z" fill="#FF7EB6" />
         <path d="M128 51 Q 134 42 140 51 Z" fill="#ffffff" />
       </svg>
       <div className="sea__surface" aria-hidden="true">
@@ -111,7 +118,7 @@ export function Sea({ children }: { children: ReactNode }) {
       >
         <svg viewBox="0 0 72 48" aria-hidden="true">
           <path d="M36 4v20" stroke="#1D2A4D" strokeOpacity=".5" strokeWidth="1.5" />
-          <path d="M37 5l11 4-11 4z" fill="#D8588F" />
+          <path d="M37 5l11 4-11 4z" fill="#FF7EB6" />
           <path d="M14 24 L34 8 L34 24 Z" fill="#FFE3F0" />
           <path d="M38 10 L56 24 L38 24 Z" fill="#E4F0FF" />
           <path d="M4 25 H68 L56 40 H16 Z" fill="#FFFFFF" />

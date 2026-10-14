@@ -46,8 +46,8 @@ const STEPS: { id: Step; name: string }[] = [
   { id: "save", name: "Save" },
 ];
 
-const COLORS = ["#FF5FA8", "#FFA6CF", "#1FB0F0", "#93DCFB", "#22CDB0", "#9474FF", "#FFBE1F", "#4FD566", "#0B1F33", "#FFFFFF"];
-const PEN = ["#FF5FA8", "#1A8FE8", "#FFBE1F", "#22CDB0", "#0B1F33", "#FFFFFF"];
+const COLORS = ["#FF7EB6", "#FFD6E8", "#1FB0F0", "#93DCFB", "#22CDB0", "#9474FF", "#FFBE1F", "#4FD566", "#0B1F33", "#FFFFFF"];
+const PEN = ["#FF7EB6", "#1A8FE8", "#FFBE1F", "#22CDB0", "#0B1F33", "#FFFFFF"];
 const LIGHT = { x: 0.3, y: 0.2 };
 
 /** Live preview of a filter on the camera, close to what the CPU filter does to the still. */
@@ -162,7 +162,7 @@ export function Studio() {
     shots: [],
     filter: "natural",
     material: "jelly",
-    color: "#FF5FA8",
+    color: "#FF7EB6",
     layout: "card",
     backdrop: "sky",
     caption: "",
@@ -1000,10 +1000,10 @@ export function Studio() {
 
           {step === "save" && (
             <div className="grid gap-3">
-              <button type="button" className="pill" data-variant="magenta" data-size="lg" onClick={() => void savePng()} disabled={!canSave || !!busy}>
+              <button type="button" className="pill" data-variant="magenta" onClick={() => void savePng()} disabled={!canSave || !!busy}>
                 Save as PNG{cfg.layout === "sticker" ? " (transparent)" : ""}
               </button>
-              <button type="button" className="pill" data-size="lg" onClick={() => void saveGif()} disabled={!canSave || !!busy}>
+              <button type="button" className="pill" onClick={() => void saveGif()} disabled={!canSave || !!busy}>
                 {hasBurst ? "Save the boomerang (GIF)" : "Save as a GIF"}
               </button>
               <p className="text-14 text-muted">

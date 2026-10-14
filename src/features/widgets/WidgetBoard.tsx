@@ -183,29 +183,31 @@ export function WidgetBoard() {
           <p className="mt-4 max-w-[44ch] text-muted">Her clock, her sky, your overlap. Pick who you are and the board rearranges itself.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div role="radiogroup" aria-label="Who's visiting? Rearranges the widgets" className="flex flex-wrap gap-1.5">
-            {LENSES.map((l) => (
-              <button
-                key={l.id}
-                type="button"
-                role="radio"
-                aria-checked={lens === l.id}
-                onClick={() => {
-                  sfx.pop();
-                  ui.set({ lens: l.id });
-                }}
-                className="pill"
-                data-size="sm"
-                data-variant={lens === l.id ? "magenta" : undefined}
-              >
-                {l.label}
-              </button>
+          {/* A segmented control: there's always a choice, and "Everyone" is the board as it ships. */}
+          <div className="seg flex-wrap" role="radiogroup" aria-label="Who's visiting? Rearranges the widgets">
+            {[{ id: null, label: "Everyone" }, ...LENSES].map((l) => (
+              <label key={l.id ?? "everyone"} className="seg__opt">
+                <input
+                  type="radio"
+                  name="widget-lens"
+                  checked={lens === l.id}
+                  onChange={() => {
+                    sfx.pop();
+                    ui.set({ lens: l.id });
+                    if (!l.id) {
+                      appliedLens.current = null;
+                      reorder(DEFAULT_ORDER, "Widgets reset");
+                    }
+                  }}
+                />
+                <span>{l.label}</span>
+              </label>
             ))}
           </div>
-          <button type="button" className="pill js-only" data-size="sm" data-variant={jiggle ? "ink" : "ghost"} aria-pressed={jiggle} onClick={() => ui.set({ jiggle: !jiggle })}>
+          <button type="button" className="pill js-only" data-size="sm" data-variant={jiggle ? "magenta" : "ghost"} aria-pressed={jiggle} onClick={() => ui.set({ jiggle: !jiggle })}>
             <GridIcon width={16} height={16} /> {jiggle ? "Done" : "Edit"}
           </button>
-          {(lens || order.join() !== DEFAULT_ORDER.join()) && (
+          {!lens && order.join() !== DEFAULT_ORDER.join() && (
             <button
               type="button"
               className="text-14 font-semibold underline decoration-accent decoration-2 underline-offset-4"

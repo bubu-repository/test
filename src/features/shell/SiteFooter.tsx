@@ -69,7 +69,7 @@ export function SiteFooter() {
         <div className="contact-card">
           <div className="min-w-0">
             <p className="type-sticker">Contact</p>
-            <p className="mt-5 text-18 font-semibold text-muted">
+            <p className="mt-5 max-w-[52ch] text-18 font-semibold text-muted">
               {bio.availability} Replies within a day.
             </p>
             <a href={`mailto:${identity.email}`} className="contact-card__email">
@@ -105,7 +105,7 @@ export function SiteFooter() {
         <div className="container-page">
           <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_auto]">
             <div>
-              <p className="spec-label">Base</p>
+              <p className="type-pixel text-muted">Base</p>
               <p className="mt-2 text-ink">
                 {identity.location} · {identity.timeZoneLabel}
               </p>
@@ -122,12 +122,12 @@ export function SiteFooter() {
               </p>
             </div>
             <div>
-              <p className="spec-label">Focus</p>
+              <p className="type-pixel text-muted">Focus</p>
               <p className="mt-2 text-ink">AI product engineering</p>
               <p className="mt-1">Pipelines, evals, interfaces</p>
             </div>
             <nav aria-label="Footer">
-              <p className="spec-label">Index</p>
+              <p className="type-pixel text-muted">Index</p>
               <ul className="mt-2 grid grid-cols-2 gap-x-5 gap-y-1">
                 <li>
                   <Link href="/" className="hover:text-ink">
@@ -144,7 +144,7 @@ export function SiteFooter() {
               </ul>
             </nav>
             <div>
-              <p className="spec-label">Engineering</p>
+              <p className="type-pixel text-muted">Engineering</p>
               <ul className="mt-2 space-y-1">
                 <li>
                   <Link href="/colophon" className="hover:text-ink">
@@ -164,7 +164,7 @@ export function SiteFooter() {
               </ul>
             </div>
           </div>
-          <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-dashed border-line pt-4 font-mono text-[10px] tracking-[0.14em] uppercase">
+          <p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-dashed border-line pt-4 font-mono text-12 tracking-[0.08em] uppercase">
             <span>
               © {edition} {identity.name}
             </span>

@@ -12,7 +12,7 @@ export const TONE_GRADIENT: Record<Tone, string> = {
   mint: "linear-gradient(180deg, #A5DEEA, #3EA7C2)",
   sky: "linear-gradient(180deg, #B7DCF6, #499FE3)",
   ink: "linear-gradient(180deg, #3A4A78, #1D2A4D)",
-  pink: "linear-gradient(180deg, #F9D3E2, #E88CB1)",
+  pink: "linear-gradient(180deg, #FFD6E8, #FF7EB6)",
   red: "linear-gradient(180deg, #F2A9B4, #E05864)",
 };
 

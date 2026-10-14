@@ -20,7 +20,7 @@ export async function renderOg({ eyebrow, title, accent, subtitle }: { eyebrow: 
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#FFFFFF", padding: "64px 72px", fontFamily: "Mona Sans", color: "#111111" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{ width: 56, height: 56, borderRadius: 15, background: "#FFFFFF", border: "2px solid #E7E8EC", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, fontWeight: 700, letterSpacing: -2 }}>
-            a<span style={{ color: "#D8588F" }}>.</span>
+            a<span style={{ color: "#FF7EB6" }}>.</span>
           </div>
           <div style={{ fontSize: 26, fontWeight: 700, letterSpacing: -0.5 }}>{identity.domain}</div>
         </div>
@@ -30,7 +30,7 @@ export async function renderOg({ eyebrow, title, accent, subtitle }: { eyebrow: 
             {parts.length === 2 ? (
               <>
                 <span>{parts[0]}</span>
-                <span style={{ color: "#D8588F" }}>{accent}</span>
+                <span style={{ color: "#FF7EB6" }}>{accent}</span>
                 <span>{parts[1]}</span>
               </>
             ) : (

@@ -684,7 +684,7 @@
   padding: 0;
   border: 0;
   border-radius: 999px;
-  background: conic-gradient(#ff5fa8, #ffbe1f, #4fd566, #1fb0f0, #9474ff, #ff5fa8);
+  background: conic-gradient(#ff7eb6, #ffbe1f, #4fd566, #1fb0f0, #9474ff, #ff7eb6);
   box-shadow:
     0 0 0 2px #ffffff,
     0 2px 6px rgba(4, 40, 110, 0.25);
@@ -774,14 +774,14 @@
   border-radius: 5px;
   background:
     linear-gradient(180deg, #cff2ff, #cff2ff) 4px 7px / 22px 16px no-repeat,
-    linear-gradient(135deg, #ffb3d9, #b5e8ff, #c9b8ff, #ffe9a6);
+    linear-gradient(135deg, #ffd6e8, #b5e8ff, #c9b8ff, #ffe9a6);
 }
 
 .studio__layout-icon[data-layout="sticker"]::before {
   width: 34px;
   height: 34px;
   border-radius: 50% 46% 52% 44%;
-  background: #ff5fa8;
+  background: var(--pink);
   box-shadow:
     0 0 0 4px #ffffff,
     0 3px 8px rgba(8, 40, 80, 0.3);

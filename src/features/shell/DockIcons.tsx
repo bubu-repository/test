@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, type ReactNode } from "react";
+import { MociDropShape } from "@/components/SiteAvatar";
 
 /*
  * The dock's app icons as little illustrations, after a set of glossy app icons: a white (or vivid
@@ -25,31 +26,36 @@ function Art({ children }: { children: ReactNode }) {
   );
 }
 
-const GRAPHITE = "#2B2D34";
+/** Glyph ink on the white tiles: the site's navy, never graphite. */
+const NAVY = "#17375C";
 
-/** Work: a shipped package, a soft graphite box with a white tab and a label slot. */
+/** Work: a shipped parcel in azure glass, lit from the top right, with white tape and a label. */
 export function BoxArt() {
   const id = useId();
   return (
     <Art>
       <defs>
         <linearGradient id={`${id}t`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#7A7E8A" />
-          <stop offset="1" stopColor="#555963" />
+          <stop offset="0" stopColor="#EAF7FF" />
+          <stop offset="1" stopColor="#CFEAFF" />
         </linearGradient>
         <linearGradient id={`${id}l`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#474A54" />
-          <stop offset="1" stopColor="#30323A" />
+          <stop offset="0" stopColor="#A9DBFB" />
+          <stop offset="1" stopColor="#7CC4F5" />
+        </linearGradient>
+        <linearGradient id={`${id}r`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3AA2F2" />
+          <stop offset="1" stopColor="#1478D8" />
         </linearGradient>
       </defs>
-      <ellipse cx="24" cy="41" rx="12" ry="2.6" fill="rgba(20,24,40,.16)" />
-      <path d="M24 9.5 37 17v15.4L24 40 11 32.4V17Z" fill={GRAPHITE} stroke={GRAPHITE} strokeWidth="3.4" strokeLinejoin="round" />
+      <ellipse cx="23" cy="41" rx="12" ry="2.6" fill="rgba(8,40,80,.16)" />
+      <path d="M24 9.5 37 17v15.4L24 40 11 32.4V17Z" fill="#5DB4F3" stroke="#5DB4F3" strokeWidth="3.4" strokeLinejoin="round" />
       <path d="M24 9.5 37 17 24 24.6 11 17Z" fill={`url(#${id}t)`} />
       <path d="M11 17 24 24.6V40L11 32.4Z" fill={`url(#${id}l)`} />
-      <path d="M24 24.6 37 17v15.4L24 40Z" fill="#26282E" />
-      <path d="M26.6 11 31.6 13.9v6.4l-2.5-1.5-2.5 1.5Z" fill="#F4F6FA" />
-      <path d="M14.4 27.2 20.2 30.6" stroke="#F4F6FA" strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M24 9.5 37 17" stroke="rgba(255,255,255,.35)" strokeWidth="1" strokeLinecap="round" />
+      <path d="M24 24.6 37 17v15.4L24 40Z" fill={`url(#${id}r)`} />
+      <path d="M26.6 11 31.6 13.9v6.4l-2.5-1.5-2.5 1.5Z" fill="#FFFFFF" />
+      <path d="M14.4 27.2 20.2 30.6" stroke="#FFFFFF" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M24 9.5 37 17" stroke="#FFFFFF" strokeOpacity=".8" strokeWidth="1.2" strokeLinecap="round" />
     </Art>
   );
 }
@@ -138,23 +144,19 @@ export function PlaneArt() {
   );
 }
 
-/** Moci, her agent: a white sparkle on the pink-to-sky mark. */
+/** Moci: the jelly drop with a face, the same one as the floating button. */
 export function MociArt() {
   return (
     <Art>
-      <defs>
-        <linearGradient id="moci-mark" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#7FE3F7" />
-          <stop offset="1" stopColor="#0A68D0" />
-        </linearGradient>
-      </defs>
-      <circle cx="24" cy="24" r="15" fill="url(#moci-mark)" />
-      <path d="M24 13.5c.8 5.2 2.7 7.6 8 8.5-5.3.9-7.2 3.3-8 8.5-.8-5.2-2.7-7.6-8-8.5 5.3-.9 7.2-3.3 8-8.5Z" fill="#FFFFFF" />
+      <ellipse cx="23" cy="41.5" rx="10" ry="2.2" fill="rgba(8,40,80,.14)" />
+      <svg x="5" y="3" width="38" height="38" viewBox="0 0 100 100" overflow="visible">
+        <MociDropShape />
+      </svg>
     </Art>
   );
 }
 
-/** Search: a graphite magnifier with a glass lens. */
+/** Search: a navy magnifier with a glass lens. */
 export function SearchArt() {
   const id = useId();
   return (
@@ -166,9 +168,9 @@ export function SearchArt() {
         </radialGradient>
       </defs>
       <ellipse cx="25" cy="41" rx="11" ry="2.3" fill="rgba(20,24,40,.12)" />
-      <path d="M29.5 29.5 37 37" stroke={GRAPHITE} strokeWidth="6" strokeLinecap="round" />
+      <path d="M29.5 29.5 37 37" stroke={NAVY} strokeWidth="6" strokeLinecap="round" />
       <path d="M31 31 36 36" stroke="rgba(255,255,255,.18)" strokeWidth="1.4" strokeLinecap="round" />
-      <circle cx="21.5" cy="21.5" r="10" fill={`url(#${id}g)`} stroke={GRAPHITE} strokeWidth="4.2" />
+      <circle cx="21.5" cy="21.5" r="10" fill={`url(#${id}g)`} stroke={NAVY} strokeWidth="4.2" />
       <path d="M15.8 19.4a6.4 6.4 0 0 1 4.6-4.4" stroke="#FFFFFF" strokeWidth="2" fill="none" strokeLinecap="round" />
     </Art>
   );
@@ -176,12 +178,12 @@ export function SearchArt() {
 
 
 
-/** Sound: a graphite speaker, with blue waves when on and a pink cross when off. */
+/** Sound: a navy speaker, with blue waves when on and a pink cross when off. */
 export function SpeakerArt({ on }: { on: boolean }) {
   return (
     <Art>
       <ellipse cx="22" cy="40.5" rx="11" ry="2.3" fill="rgba(20,24,40,.12)" />
-      <path d="M10 19.5h5.5l8-7v23l-8-7H10a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Z" fill={GRAPHITE} stroke={GRAPHITE} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M10 19.5h5.5l8-7v23l-8-7H10a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Z" fill={NAVY} stroke={NAVY} strokeWidth="2" strokeLinejoin="round" />
       <path d="M12 21h3" stroke="rgba(255,255,255,.3)" strokeWidth="1.3" strokeLinecap="round" />
       {on ? (
         <>
@@ -195,13 +197,13 @@ export function SpeakerArt({ on }: { on: boolean }) {
   );
 }
 
-/** More: three graphite dots. */
+/** More: three navy dots. */
 export function MoreArt() {
   return (
     <Art>
-      <circle cx="14" cy="24" r="3.4" fill={GRAPHITE} />
-      <circle cx="24" cy="24" r="3.4" fill={GRAPHITE} />
-      <circle cx="34" cy="24" r="3.4" fill={GRAPHITE} />
+      <circle cx="14" cy="24" r="3.4" fill={NAVY} />
+      <circle cx="24" cy="24" r="3.4" fill={NAVY} />
+      <circle cx="34" cy="24" r="3.4" fill={NAVY} />
     </Art>
   );
 }

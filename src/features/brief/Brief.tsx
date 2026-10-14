@@ -79,7 +79,7 @@ export function Brief() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="type-pixel text-ink">For recruiters in a hurry</p>
-            <h2 id={titleId} className="font-display text-32 leading-none font-bold">
+            <h2 id={titleId} className="type-title-2">
               The 40-second version
             </h2>
             {earned && (
@@ -95,14 +95,14 @@ export function Brief() {
 
         <div className="grid gap-5 px-5 py-5 md:grid-cols-2 md:gap-6 md:px-7 md:py-6">
           <section>
-            <h3 className="type-pixel text-accent-ink">Who</h3>
+            <h3 className="type-headline">Who</h3>
             <p className="mt-2 text-16">
               <strong>{identity.name}</strong>, {identity.role} ({identity.degree}, {identity.cohort.toLowerCase()}) in {identity.location} ({identity.timeZoneLabel}). Fresh graduate. She designs and
               builds AI products people can trust: the interface, the pipeline and the evals. A 6-month AI engineering internship, and three products of her own with real users.
             </p>
           </section>
           <section>
-            <h3 className="type-pixel text-accent-ink">Logistics</h3>
+            <h3 className="type-headline">Logistics</h3>
             <ul className="mt-2 space-y-1 text-16">
               <li>{bio.availability}</li>
               <li>{overlap ?? "…"}</li>
@@ -110,7 +110,7 @@ export function Brief() {
             </ul>
           </section>
           <section className="md:col-span-2">
-            <h3 className="type-pixel text-accent-ink">Proof</h3>
+            <h3 className="type-headline">Proof</h3>
             <ul className="mt-2 grid gap-2 sm:grid-cols-2">
               {projects.map((p) => (
                 <li key={p.slug}>
@@ -128,7 +128,7 @@ export function Brief() {
             </ul>
           </section>
           <section className="md:col-span-2">
-            <h3 className="type-pixel text-accent-ink">Strengths</h3>
+            <h3 className="type-headline">Strengths</h3>
             <ul className="mt-2 flex flex-wrap gap-2">
               {["LLM tool use and agents", "Evals with frozen test sets", "Abstention and citations", "TypeScript, Next.js, Python", "Postgres + pgvector", "Field research in Bahasa + English"].map(
                 (s) => (

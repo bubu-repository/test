@@ -8,8 +8,8 @@ import type { ReactNode } from "react";
 
 const NAVY = "#1D2A4D";
 const GRAPHITE = "#2B2D34";
-const PINK = "#D8588F";
-const PINK_DEEP = "#AB366C";
+const PINK = "#FF7EB6";
+const PINK_DEEP = "#C2286F";
 const BLUE = "#499FE3";
 const BLUE_DEEP = "#1260C9";
 const YELLOW = "#F4CC64";
@@ -71,7 +71,7 @@ export const STICKER_ART: Record<string, ReactNode> = {
     <g transform="rotate(8 50 50)">
       <defs>
         <linearGradient id="sticker-rare-foil" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#FFB3D9" />
+          <stop offset="0" stopColor="#FFD6E8" />
           <stop offset=".35" stopColor="#B5E8FF" />
           <stop offset=".65" stopColor="#C9B8FF" />
           <stop offset="1" stopColor="#FFE9A6" />

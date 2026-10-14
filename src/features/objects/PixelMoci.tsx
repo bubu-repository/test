@@ -14,7 +14,7 @@ function pixels(rows: string[], y0: number) {
       if (ch === "#") out.push({ x, y: y + y0, c: y + y0 > 4 ? "#9fd0ff" : "#c9e6ff" });
       else if (ch === "w") out.push({ x, y: y + y0, c: "#ffffff" });
       else if (ch === "o") out.push({ x, y: y + y0, c: "#1d2a4d" });
-      else if (ch === ".") out.push({ x, y: y + y0, c: "#ff9cc9" });
+      else if (ch === ".") out.push({ x, y: y + y0, c: "#ff8fb8" });
     }),
   );
   return out;

@@ -280,14 +280,14 @@ export function DailyPack() {
       <div className="daily__actions">
         {!s.opened ? (
           <>
-            <button type="button" className="pill" data-variant="magenta" data-size="lg" onClick={open} data-sfx="off">
+            <button type="button" className="pill" data-variant="magenta" onClick={open} data-sfx="off">
               Tear it open
             </button>
             <p className="text-14 text-muted">Or drag across the strip at the top of the pack.</p>
           </>
         ) : upCount(s.turned) < 3 ? (
           everyday.length > 0 ? (
-            <button type="button" className="pill" data-size="lg" onClick={flipAll} data-sfx="off">
+            <button type="button" className="pill" onClick={flipAll} data-sfx="off">
               {last >= 0 ? "Turn over the everyday cards" : "Turn them all over"}
             </button>
           ) : (
@@ -316,7 +316,7 @@ function Glyph({ card }: { card: Card }) {
     case "kind":
       return (
         <svg {...common}>
-          <path d="M20 33C10 26 5 21 5 14.5 5 10 8.4 7 12.4 7c3 0 5.6 1.8 7.6 4.5C22 8.8 24.6 7 27.6 7 31.6 7 35 10 35 14.5 35 21 30 26 20 33Z" fill="#FF5FA8" stroke="#C2287A" strokeWidth="2" />
+          <path d="M20 33C10 26 5 21 5 14.5 5 10 8.4 7 12.4 7c3 0 5.6 1.8 7.6 4.5C22 8.8 24.6 7 27.6 7 31.6 7 35 10 35 14.5 35 21 30 26 20 33Z" fill="#FF7EB6" stroke="#C2286F" strokeWidth="2" />
           <path d="M11 13c.6-2 2-3 3.6-3" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" fill="none" />
         </svg>
       );
