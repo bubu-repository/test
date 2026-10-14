@@ -5,44 +5,24 @@ import { ArrowRightIcon, CopyIcon, DownloadIcon } from "@/components/icons";
 import { identity } from "@/content/profile";
 import { projects } from "@/content/projects";
 import { dispatch } from "@/lib/actions";
-import { useNow, useVisitorZone } from "@/lib/hooks";
-import { formatTime, zoneCity } from "@/lib/time";
-import { describeWeather, useWeather } from "../widgets/weather";
+import { useNow } from "@/lib/hooks";
+import { formatTime } from "@/lib/time";
+import { ProjectIcon } from "../work/ProjectIcon";
 import { HeroName } from "./HeroName";
 import { ResampleSentence } from "./ResampleSentence";
 
-/** "14:02 in Bekasi · 09:02 in London · 31°C, clear", or one clock when the visitor shares the time zone. */
+/** "Open to work · 14:02 in Bekasi": one fact and one clock (the visitor's clock and the weather live in the footer). */
 function Status() {
   const now = useNow();
-  const zone = useVisitorZone();
-  const weather = useWeather();
   const date = now ? new Date(now * 1000) : null;
-  const w = describeWeather(weather?.code ?? null);
   return (
     <p className="hero-status">
       <span className="led" aria-hidden="true" />
       <span>Open to work</span>
-      <span className="hero-status__sep" aria-hidden="true">
-        ·
-      </span>
+      <span aria-hidden="true">·</span>
       <span>
-        <span className="tabular-nums">{date ? formatTime(identity.timeZone, date) : "--:--"}</span> in {identity.city}
-        {date && zone && zone !== identity.timeZone && (
-          <>
-            {" · "}
-            <span className="tabular-nums">{formatTime(zone, date)}</span> in {zoneCity(zone)}
-          </>
-        )}
+        <span className="hero-status__clock">{date ? formatTime(identity.timeZone, date) : "--:--"}</span> in {identity.city}
       </span>
-      {/* The weather only shows when there is some: no "offline" states on the first screen. */}
-      {weather?.ok && (
-        <>
-          <span aria-hidden="true">·</span>
-          <span>
-            {Math.round(weather.temperature ?? 0)}°C, {w.label.toLowerCase()}
-          </span>
-        </>
-      )}
     </p>
   );
 }
@@ -65,11 +45,13 @@ export function Hero() {
                 <HeroName />
               </div>
               <p className="hero__role">
-                {identity.role} <span className="hero__cohort">· {identity.cohort}</span>
+                {identity.role}{" "}
+                <span className="hero__cohort">
+                  · {identity.cohort} · {identity.city}, remote or Jakarta
+                </span>
               </p>
-              <p className="hero__place">{identity.location} · remote or Jakarta</p>
               <div className="hero__line">
-                <ResampleSentence controls={false} />
+                <ResampleSentence controls={false} quiet />
               </div>
 
               <div className="hero__keys">
@@ -105,8 +87,14 @@ export function Hero() {
               {projects.map((p) => (
                 <li key={p.slug}>
                   <Link href={`/work/${p.slug}`} className="hero-work__item">
-                    <span className="hero-work__name">{p.name}</span>
-                    <span className="hero-work__value tabular-nums">{p.stats[0].value}</span>
+                    <span className="hero-work__head">
+                      <ProjectIcon project={p} size={30} />
+                      <span className="hero-work__name">{p.name}</span>
+                      <span className="hero-work__go" aria-hidden="true">
+                        ›
+                      </span>
+                    </span>
+                    <span className="hero-work__value">{p.stats[0].value}</span>
                     <span className="hero-work__label">{p.stats[0].label}</span>
                   </Link>
                 </li>

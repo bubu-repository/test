@@ -106,9 +106,10 @@ void main(){
     col=mix(col,mix(HORIZON,PAGE,smoothstep(.15,.8,g)),step(S,uv.y));
     // The sun, top right, sinking with the sky as it scrolls away; a soft halo and three faint flare ghosts.
     if(S>0.){
-      vec2 sun=vec2(aspect*.86,min(.11,S*.2))+(uPointer-.5)*vec2(.06,.035)*uPointerOn;
+      float sy=uText.z>0.?min(.11,uText.y-.035):min(.11,S*.2);
+      vec2 sun=vec2(aspect*(aspect<1.?.9:.86),sy)+(uPointer-.5)*vec2(.06,.035)*uPointerOn;
       float ds=length(q-sun);
-      col+=vec3(1.,.97,.86)*(.95*exp(-ds*ds*1100.)+.2*exp(-ds*8.))*(1.-g);
+      col+=vec3(1.,.97,.86)*(.95*exp(-ds*ds*(aspect<1.?2400.:1100.))+.2*exp(-ds*8.))*(1.-g);
       vec2 axis=vec2(aspect*.45,S*.55)-sun;
       for(int i=1;i<=3;i++){float k=float(i)*.5;float r=.01+.012*float(i);
         col+=vec3(.75,.92,1.)*.022*smoothstep(r,r*.55,length(q-(sun+axis*k)))*(1.-g);}
@@ -119,10 +120,11 @@ void main(){
     float n=fbm(cp);
     float lit=clamp((n-fbm(cp+vec2(.0,.22)))*5.,-1.,1.);
     float cov=smoothstep(S-.2,S+FADE*.8,uv.y);
-    float bank=smoothstep(.62-.66*cov,.8-.6*cov,n)*smoothstep(S-.24,S-.1,uv.y)*below;
+    float bank=smoothstep(.62-.66*cov,.8-.6*cov,n)*smoothstep(max(S-.24,tb+.03),max(S-.1,tb+.12),uv.y)*below;
     float side=aspect>1.2?max(smoothstep(uText.z+.04,uText.z+.16,uv.x),1.-smoothstep(uText.x-.16,uText.x-.04,uv.x))*smoothstep(.05,.3,uv.y/max(S,.001))*step(uv.y,S):0.;
-    float cloud=clamp(bank+smoothstep(.52,.78,n)*side*.8,0.,1.);
-    vec3 cloudCol=mix(vec3(.80,.89,.98),vec3(1.),.6+.4*lit);
+    float cloud=clamp(bank+smoothstep(.56,.68,n)*side*.8,0.,1.);
+    // Sunlit cumulus: the shadow side a pale sky blue, the tops a touch warm (like Bliss), never grey.
+    vec3 cloudCol=mix(vec3(.87,.94,1.),vec3(1.),.72+.28*lit)+vec3(.03,.02,0.)*max(lit,0.);
     col=mix(col,mix(cloudCol,PAGE,smoothstep(.3,1.,g)),cloud*.94);
     // Past the clouds, the page: exactly --bg, so the white between sky and sea has no seam.
     paper=smoothstep(.55,1.,g)*step(S,uv.y);
@@ -135,14 +137,14 @@ void main(){
   } else {
     // The sea: bright lagoon water under the surface, deepening as the footer comes in.
     float d=uv.y-wy;
-    float D=clamp((uv.y-wl)*.09,0.,.13)+smoothstep(uDeep.x,uDeep.y,uv.y)*1.6;
+    float D=clamp((uv.y-wl)*.2,0.,.55)+smoothstep(uDeep.x,uDeep.y,uv.y)*1.6;
     col=seaColor(D);
-    col+=vec3(.85,.98,1.)*.35*exp(-d*55.)*(.65+.35*sin(q.x*70.+t*2.4));
+    col+=vec3(.85,.98,1.)*.2*exp(-d*40.)*(.65+.35*sin(q.x*70.+t*2.4));
     vec2 w=q+vec2(0.,uScrollY*.85);
-    col+=vec3(.75,.95,1.)*caustic(w*1.5+vec2(0.,t*.02),t*.45)*.3*exp(-D*2.4);
+    col+=vec3(.75,.95,1.)*caustic(w*1.5+vec2(0.,t*.02),t*.45)*.22*exp(-D*2.4);
     float x=q.x+D*.35;
     float rays=pow(.5+.5*sin(x*11.+sin(x*3.1+t*.25)*1.7+t*.15),5.)+.6*pow(.5+.5*sin(x*19.-t*.22+1.3),8.);
-    col+=vec3(.7,.92,1.)*rays*.12*exp(-D*1.5)*smoothstep(0.,.06,d);
+    col+=vec3(.7,.92,1.)*rays*.08*exp(-D*1.5)*smoothstep(0.,.06,d);
     vec2 g=(q+vec2(0.,uScrollY*.7))*38.+vec2(0.,-t*.25);vec2 cell=floor(g);vec2 fr=fract(g)-.5;
     vec2 off=vec2(hash(cell+3.1),hash(cell+7.7))-.5;
     col+=vec3(.8,.95,1.)*smoothstep(.08,0.,length(fr-off*.7))*step(.82,hash(cell))*.18*exp(-D*.8);
@@ -169,13 +171,16 @@ void main(){
         col+=vec3(.9,.98,1.)*(rim*.55+hi*.6);
       }
     }
+    // Glassy aqua, never neon: no channel pegs at white; and an antialiased meniscus at the surface.
+    col=min(col,vec3(.93,.99,1.));
+    col=mix(mix(PAGE,HORIZON,.85),col,smoothstep(0.,1.5/uRes.y,d));
   }
   // Mist over the surface, so the white page goes into the sea through soft wisps, not along a ruled line.
   float mz=uv.y-wl;
   float mist=fbm(vec2(q.x*1.7-t*.015,mz*7.)*2.);
   col=mix(col,vec3(.93,.98,1.),smoothstep(.4,.72,mist)*exp(-mz*mz*420.)*.8);
   vec2 vc=uv-.5;
-  col*=1.-.24*dot(vc,vc)*(1.-paper);
+  col*=1.-.16*dot(vc,vc)*step(wy,uv.y)*(1.-paper);
   col+=(hash(gl_FragCoord.xy+fract(t))-.5)/255.;
   gl_FragColor=vec4(col,1.);
 }`;
@@ -192,6 +197,9 @@ function compile(gl: WebGLRenderingContext, type: number, source: string): WebGL
   }
   return shader;
 }
+
+/** What reads the pointer as foil: the holographic labels, today's pack and its cards. */
+const FOIL = ".type-sticker, .daily-pack, .dcard";
 
 /** Presses on these never make bubbles: controls, and the glass objects floating in the water. */
 const NO_SPLASH = "a, button, input, textarea, select, label, summary, [role='button'], [role='dialog'], .widget, .glass, .glass-strong, [data-no-splash]";
@@ -379,14 +387,34 @@ export function World() {
       raf = requestAnimationFrame(frame);
     }
 
+    // Holographic stickers and foil read the pointer too (--wx/--wy). Writing them on <html> would
+    // restyle the whole page on every move, so they go, once a frame, only to the foil in view.
+    let foil: HTMLElement[] = [];
+    let foilAt = -1e9;
+    let foilFrame = 0;
+    const writeFoil = () => {
+      foilFrame = 0;
+      const ms = performance.now();
+      if (ms - foilAt > 600) {
+        foilAt = ms;
+        foil = Array.from(document.querySelectorAll<HTMLElement>(FOIL)).filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.bottom > 0 && r.top < window.innerHeight;
+        });
+      }
+      const x = pointer.tx.toFixed(3);
+      const y = pointer.ty.toFixed(3);
+      for (const el of foil) {
+        el.style.setProperty("--wx", x);
+        el.style.setProperty("--wy", y);
+      }
+    };
     const onMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      pointer.tx = (e.clientX - rect.left) / rect.width;
-      pointer.ty = (e.clientY - rect.top) / rect.height;
+      // The canvas is fixed to the viewport, so the viewport is its rect.
+      pointer.tx = e.clientX / window.innerWidth;
+      pointer.ty = e.clientY / window.innerHeight;
       pointer.target = e.pointerType === "mouse" ? 1 : 0;
-      // Holographic stickers and foil read the pointer too.
-      document.documentElement.style.setProperty("--wx", pointer.tx.toFixed(3));
-      document.documentElement.style.setProperty("--wy", pointer.ty.toFixed(3));
+      if (!foilFrame) foilFrame = requestAnimationFrame(writeFoil);
     };
     const onLeave = () => {
       pointer.target = 0;
@@ -420,6 +448,7 @@ export function World() {
     return () => {
       cancelAnimationFrame(raf);
       cancelAnimationFrame(pending);
+      cancelAnimationFrame(foilFrame);
       ro.disconnect();
       window.removeEventListener("scroll", redraw);
       window.removeEventListener("pointermove", onMove);

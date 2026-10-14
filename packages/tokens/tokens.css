@@ -149,6 +149,12 @@
 
   /* A whisper of grain, for paper only (polaroids, the poster, sticky notes) */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .055 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* White specks only: a grain for acrylic and glass that brightens instead of greying */
+  --grain-lite: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .16 0 0 0 -.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* White acrylic, lit by the sun above: brighter than the page, a cyan polished edge, navy shadows */
+  --acrylic-fill: linear-gradient(180deg, rgba(253, 254, 255, .95), rgba(247, 251, 255, .92));
+  --acrylic-edge: inset 0 1px 0 #fff, inset 0 -2px 0 rgba(150, 205, 240, .28), 0 1px 0 rgba(255, 255, 255, .9), 0 2px 0 rgba(170, 210, 238, .5);
+  --acrylic-shadow: 0 3px 4px rgba(8, 40, 80, .07), 0 20px 40px -20px rgba(8, 50, 110, .34);
   --shadow-glow: 0 8px 24px rgba(10, 104, 208, .22);
   --gloss: inset 0 1px 0 rgba(255, 255, 255, .5);
   --hard: 0 4px 12px rgba(17, 17, 17, .12); /* sticker lift */

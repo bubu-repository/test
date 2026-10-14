@@ -8,6 +8,7 @@ import { applySound, getSound } from "@/lib/preferences";
 import { sfx } from "@/lib/sound";
 import { toast, ui } from "@/lib/ui";
 import { askAgent } from "../agent/agent-store";
+import { wave } from "../live/live-store";
 import { startTour } from "../tour/tour-store";
 
 /** Finds the first *visible* element for a selector (hidden Activity pages stay in the DOM). */
@@ -95,6 +96,10 @@ export function ActionHost() {
           return;
         case "toast":
           toast({ title: action.message, tone: "magenta", icon: "💡" });
+          return;
+        case "wave":
+          wave();
+          sfx.pop();
           return;
         case "highlight": {
           const el = findVisible(action.target);

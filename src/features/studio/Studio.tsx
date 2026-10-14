@@ -469,9 +469,9 @@ export function Studio() {
   };
 
   const saved = (what: string) => {
-    unlock("studio");
+    const isNew = unlock("studio", { silent: true });
     sfx.success();
-    toast({ title: `${what} saved`, body: "It's in your downloads. Nothing was uploaded.", tone: "sky", icon: "✂️" });
+    toast({ title: `${what} saved`, body: isNew ? "It's in your downloads (nothing was uploaded), and the Maker sticker is yours." : "It's in your downloads. Nothing was uploaded.", tone: "sky", sticker: isNew ? "studio" : undefined });
   };
 
   const savePng = async () => {

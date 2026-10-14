@@ -177,7 +177,7 @@ export function WidgetBoard() {
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
         <div className="max-w-[40rem]">
           <p className="type-eyebrow">Right now</p>
-          <h2 id="widgets-title" className="type-display mt-3">
+          <h2 id="widgets-title" className="type-title mt-2">
             Live from Bekasi.
           </h2>
           <p className="mt-4 max-w-[44ch] text-muted">Her clock, her sky, your overlap. Pick who you are and the board rearranges itself.</p>

@@ -319,8 +319,8 @@ export function GuestbookSea() {
     setNotes((n) => [note, ...(n ?? []).filter((x) => x.id !== note.id)]);
     setFreshId(note.id);
     sfx.success();
-    unlock("signed");
-    toast({ title: "Released into the sea", body: "Everyone here right now can see it swim.", tone: "mint" });
+    const isNew = unlock("signed", { silent: true });
+    toast({ title: "Released into the sea", body: isNew ? "Everyone here can see it swim. The Signed sticker is yours." : "Everyone here right now can see it swim.", tone: "mint", sticker: isNew ? "signed" : undefined });
     // A splash where it went in.
     const sea = seaRef.current?.getBoundingClientRect();
     const x = sea ? sea.left + sea.width * 0.5 : from ? from.left + from.width / 2 : window.innerWidth / 2;

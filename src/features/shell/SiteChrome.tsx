@@ -4,8 +4,8 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { readJSON, writeJSON } from "@/lib/storage";
-import { hydrateStickers, unlock } from "@/lib/stickers";
-import { toast, useUI } from "@/lib/ui";
+import { flushStickers, hydrateStickers, unlock } from "@/lib/stickers";
+import { toast, ui, useUI } from "@/lib/ui";
 import { LiveLayer } from "../live/LiveLayer";
 import { StickerLayer } from "../stickers/StickerLayer";
 import { Tour } from "../tour/Tour";
@@ -84,7 +84,20 @@ function VisitTracker() {
     const visits = readJSON<Visits>("adelia:visits", { count: 1, last: Date.now(), lastPath: pathname });
     writeJSON("adelia:visits", { ...visits, last: Date.now(), lastPath: pathname });
     if (pathname === "/") unlock("hello", { silent: true });
+    // Stickers earned while reading are announced when the visitor leaves the case study.
+    const t = window.setTimeout(flushStickers, 1200);
+    return () => window.clearTimeout(t);
   }, [pathname]);
+
+  // …or when they close the panel they earned it in.
+  useEffect(() => {
+    let was = ui.get().overlay;
+    return ui.subscribe(() => {
+      const now = ui.get().overlay;
+      if (was && !now) window.setTimeout(flushStickers, 400);
+      was = now;
+    });
+  }, []);
 
   return null;
 }

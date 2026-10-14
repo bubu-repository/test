@@ -36,7 +36,7 @@
   position: absolute;
   inset: 40% 0 auto;
   text-align: center;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 /* ---------- The creatures ---------- */
@@ -84,9 +84,11 @@
   scale: 1.1;
 }
 
+/* A two-tone ring, so it shows on pale and deep water alike. */
 .gb-creature:focus-visible {
-  outline: 3px solid #ffffff;
+  outline: 2px solid #ffffff;
   outline-offset: 4px;
+  box-shadow: 0 0 0 7px #0a58be;
 }
 
 /* Its name, on a glass tag, while you point at it. */
@@ -105,7 +107,7 @@
   box-shadow: 0 4px 12px -4px rgba(4, 40, 110, 0.4);
   color: #0b1f33;
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 600;
   opacity: 0;
   pointer-events: none;
   transition:
@@ -150,6 +152,11 @@
   .gb-creature:focus-visible .gb-creature__bob,
   .gb-creature[data-open] .gb-creature__bob {
     animation-play-state: paused;
+  }
+
+  /* Reached with the keyboard, a creature comes to its place on its lane, so focus is never off-screen. */
+  .gb-creature:focus-visible:not([data-open]) {
+    animation: none;
   }
 
   /* A new creature drops in from the surface, in the middle of the screen. */

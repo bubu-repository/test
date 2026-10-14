@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { TONE_GRADIENT } from "@/components/AppIcon";
+import { colourOf } from "./project-colours";
 import type { Project } from "@/content/projects";
 import { cn } from "@/lib/cn";
 
@@ -51,7 +51,7 @@ export function ProjectIcon({ project, size = 76, className }: { project: Projec
     <span
       aria-hidden="true"
       className={cn("app-icon", className)}
-      style={{ "--app-bg": TONE_GRADIENT[project.tone], "--size": `${size}px`, "--glyph-ink": project.tone === "violet" ? "#3C55B0" : project.tone === "cobalt" ? "#2F5FC2" : "#0A58BE", borderRadius: "23%" } as CSSProperties}
+      style={{ "--app-bg": colourOf(project.slug).icon, "--size": `${size}px`, "--glyph-ink": colourOf(project.slug).glyphInk, borderRadius: "23%" } as CSSProperties}
     >
       {glyph ? (
         <svg viewBox="0 0 24 24" focusable="false">

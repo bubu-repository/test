@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ADVICE, KIND_WORDS, weatherCard, type WeatherCard } from "@/content/daily";
 import { projects } from "@/content/projects";
@@ -8,20 +9,22 @@ import { unlock } from "@/lib/stickers";
 import { useStore } from "@/lib/store";
 import { HoloCard } from "../work/HoloCard";
 import { describeWeather, useWeather } from "../widgets/weather";
-import { hydratePack, openPack, packSeed, packStore, reveal } from "./pack-store";
+import { hydratePack, isUp, openPack, packSeed, packStore, reveal, upCount } from "./pack-store";
 
 /**
  * Today's pack: one foil pack a day per visitor. Drag across the strip at the top (or press the
  * key under it) to tear it open; three cards come out face down, and you turn them over one by one.
- * Something kind, advice from the weather in Bekasi right now, and one more: advice, or (about one
- * pack in eight) a holo rare of one of her products that opens its case study. `?pack=fresh`
- * seals a new pack, `?pack=rare` puts a rare in it.
+ * Something kind, advice from the weather in Bekasi right now, and one more: advice, or one of her
+ * products as a trading card that opens its case study. The first pack always has a product card;
+ * about one pack in eight has a product in holo foil, and the third pack in a row without one
+ * always does. Every card has a collector number and goes into the visitor's binder.
+ * `?pack=fresh` seals a new pack, `?pack=rare` puts a holo in it.
  */
 
 const OWN = projects.filter((p) => !p.company);
 const calm = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-type Card = { kind: "kind"; text: string } | { kind: "weather"; card: WeatherCard } | { kind: "advice"; text: string } | { kind: "rare"; slug: string };
+type Card = { id: string; no: string } & ({ kind: "kind"; text: string } | { kind: "weather"; card: WeatherCard } | { kind: "advice"; text: string } | { kind: "product"; slug: string; foil: boolean });
 
 const LABEL = { kind: "Kind words", weather: "Weather · Bekasi", advice: "Advice" } as const;
 
@@ -52,8 +55,12 @@ export function DailyPack() {
   const left = useUntilMidnight();
   const [tearing, setTearing] = useState(false);
   const [tear, setTear] = useState(0);
+  const [dragging, setDragging] = useState(false);
   const [forceRare, setForceRare] = useState(false);
-  const drag = useRef<{ x: number; w: number } | null>(null);
+  const drag = useRef<{ start: number; w: number } | null>(null);
+  const slots = useRef<(HTMLLIElement | null)[]>([]);
+  const listRef = useRef<HTMLOListElement>(null);
+  const nextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     hydratePack();
@@ -62,83 +69,128 @@ export function DailyPack() {
   }, []);
 
   const seed = packSeed(s);
-  const rare = forceRare || (seed >>> 11) % 8 === 0;
+  // Decided while the pack is sealed, and kept with it once it's open (opening changes the counts).
+  const first = s.opened ? s.first : s.collected === 0;
+  const foil = s.opened ? s.holo : forceRare || (seed >>> 11) % 8 === 0 || s.sinceHolo >= 2;
+  const k = seed % KIND_WORDS.length;
+  const a = (seed >>> 5) % ADVICE.length;
+  const w = weatherCard(weather, describeWeather);
+  const product = OWN[(seed >>> 3) % OWN.length];
+  const pad2 = (n: number) => String(n).padStart(2, "0");
   const cards: Card[] = [
-    { kind: "kind", text: KIND_WORDS[seed % KIND_WORDS.length] },
-    { kind: "weather", card: weatherCard(weather, describeWeather) },
-    rare ? { kind: "rare", slug: OWN[(seed >>> 3) % OWN.length].slug } : { kind: "advice", text: ADVICE[(seed >>> 5) % ADVICE.length] },
+    { id: `k${k}`, no: `K${pad2(k + 1)}/${KIND_WORDS.length}`, kind: "kind", text: KIND_WORDS[k] },
+    { id: `w:${w.kind}`, no: `W · ${w.kind}`, kind: "weather", card: w },
+    foil || first
+      ? { id: `${foil ? "h" : "p"}:${product.slug}`, no: `P${pad2(OWN.indexOf(product) + 1)}/${pad2(OWN.length)}${foil ? " ★" : ""}`, kind: "product", slug: product.slug, foil }
+      : { id: `a${a}`, no: `A${pad2(a + 1)}/${ADVICE.length}`, kind: "advice", text: ADVICE[a] },
   ];
-  const number = String((seed % 899) + 101);
   const date = new Date(`${s.day || "2026-01-01"}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
   const open = () => {
     if (s.opened || tearing) return;
     sfx.tear();
     unlock("pack");
+    const focusFirst = () => requestAnimationFrame(() => listRef.current?.querySelector<HTMLElement>(".dcard--back")?.focus({ preventScroll: true }));
     if (calm()) {
-      openPack(rare);
+      openPack(foil, first);
+      focusFirst();
       return;
     }
     setTearing(true);
     window.setTimeout(() => {
-      openPack(rare);
+      openPack(foil, first);
       setTearing(false);
       setTear(0);
       sfx.pop();
+      focusFirst();
     }, 620);
   };
 
   const flip = (i: number) => {
-    if (s.revealed > i) return;
-    reveal(i + 1);
-    if (cards[i].kind === "rare") {
+    if (isUp(packStore.get().turned, i)) return;
+    const c = cards[i];
+    reveal(i, c.id);
+    // Keyboard: the next face-down card, or the line under the cards once all three are up.
+    requestAnimationFrame(() => {
+      const next = listRef.current?.querySelector<HTMLElement>(".dcard--back:not([data-up] *)") ?? nextRef.current;
+      next?.focus({ preventScroll: true });
+    });
+    // On phones the cards sit in a row you swipe: bring the one turning over to the middle.
+    slots.current[i]?.scrollIntoView({ inline: "center", block: "nearest", behavior: calm() ? "auto" : "smooth" });
+    if (c.kind === "product" && c.foil) {
       sfx.success();
       unlock("rare");
     } else sfx.pop();
   };
 
+  // "Turn them all over" turns the everyday cards; a product card is always yours to turn.
+  const last = cards.findIndex((c) => c.kind === "product");
+  const everyday = cards.map((_, i) => i).filter((i) => i !== last && !isUp(s.turned, i));
   const flipAll = () => {
-    cards.forEach((_, i) => window.setTimeout(() => flip(i), calm() ? 0 : i * 260));
+    everyday.forEach((i, n) => window.setTimeout(() => flip(i), calm() ? 0 : n * 260));
+  };
+
+  const binder = {
+    kind: s.seen.filter((id) => /^k\d/.test(id)).length,
+    advice: s.seen.filter((id) => /^a\d/.test(id)).length,
+    products: new Set(s.seen.filter((id) => /^[ph]:/.test(id)).map((id) => id.slice(2))).size,
+    holo: s.seen.filter((id) => id.startsWith("h:")).length,
   };
 
   return (
     <div className="daily" data-hydrated={s.hydrated || undefined}>
       <div className="daily__table">
         {!s.opened ? (
-          <div className="daily-pack" data-tearing={tearing || undefined} style={{ ["--tear" as string]: tear } as CSSProperties}>
+          <div className="daily-pack" data-tearing={tearing || undefined} data-dragging={dragging || undefined} style={{ ["--tear" as string]: tearing ? 1 : tear } as CSSProperties}>
             <button type="button" className="daily-pack__body" onClick={open} aria-label="Tear open today's pack: three cards inside" data-sfx="off">
-              <span className="daily-pack__crimp" aria-hidden="true" />
-              <span
-                className="daily-pack__strip touch-none select-none"
-                aria-hidden="true"
-                onPointerDown={(e) => {
-                  const r = e.currentTarget.getBoundingClientRect();
-                  drag.current = { x: e.clientX - r.left, w: r.width };
-                  e.currentTarget.setPointerCapture(e.pointerId);
-                }}
-                onPointerMove={(e) => {
-                  if (!drag.current) return;
-                  const r = e.currentTarget.getBoundingClientRect();
-                  const p = Math.max(0, Math.min(1, (e.clientX - r.left - drag.current.x) / (drag.current.w * 0.55)));
-                  if (Math.floor(p * 8) > Math.floor(tear * 8)) sfx.tick();
-                  setTear(p);
-                  if (p >= 1) {
+              {/* The top of the pack: the heat seal and the strip. What's torn lifts away as a flap. */}
+              <span className="daily-pack__top">
+                <span className="daily-pack__crimp" aria-hidden="true" />
+                <span
+                  className="daily-pack__strip touch-none select-none"
+                  aria-hidden="true"
+                  onPointerDown={(e) => {
+                    // Measured from where the finger starts, against the strip's width at that moment.
+                    drag.current = { start: e.clientX, w: e.currentTarget.getBoundingClientRect().width };
+                    setDragging(true);
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                  }}
+                  onPointerMove={(e) => {
+                    if (!drag.current) return;
+                    const p = Math.max(0, Math.min(1, (e.clientX - drag.current.start) / (drag.current.w * 0.5)));
+                    if (Math.floor(p * 8) > Math.floor(tear * 8)) sfx.tick();
+                    if (p >= 0.6 && tear < 0.6) navigator.vibrate?.(8);
+                    setTear(p);
+                    if (p >= 1) {
+                      drag.current = null;
+                      setDragging(false);
+                      open();
+                    }
+                  }}
+                  onPointerUp={() => {
+                    const torn = tear >= 0.6;
                     drag.current = null;
-                    open();
-                  }
-                }}
-                onPointerUp={() => {
-                  drag.current = null;
-                  if (!tearing) setTear(0);
-                }}
-                onPointerCancel={() => {
-                  drag.current = null;
-                  setTear(0);
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <span className="daily-pack__strip-foil" />
-                <span className="daily-pack__strip-label">tear here →</span>
+                    setDragging(false);
+                    if (torn) open();
+                    else if (!tearing) setTear(0);
+                  }}
+                  onPointerCancel={() => {
+                    drag.current = null;
+                    setDragging(false);
+                    setTear(0);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span className="daily-pack__strip-foil" />
+                  <span className="daily-pack__strip-label">tear here →</span>
+                </span>
+              </span>
+              <span className="daily-pack__flap" aria-hidden="true">
+                <span className="daily-pack__crimp" />
+                <span className="daily-pack__strip">
+                  <span className="daily-pack__strip-foil" />
+                  <span className="daily-pack__strip-label">tear here →</span>
+                </span>
               </span>
               <span className="daily-pack__perf" aria-hidden="true" />
               <span className="daily-pack__face" aria-hidden="true">
@@ -149,44 +201,75 @@ export function DailyPack() {
                 <PackArt />
                 <span className="daily-pack__meta">
                   <span>{date}</span>
-                  <span>3 cards · 1 in 8 holo</span>
+                  <span>{first ? "3 cards · 1 product" : "3 cards · 1 in 8 holo"}</span>
                 </span>
               </span>
               <span className="daily-pack__crimp daily-pack__crimp--bottom" aria-hidden="true" />
             </button>
           </div>
         ) : (
-          <ol className="daily__cards" aria-label="Today's three cards">
+          <ol ref={listRef} className="daily__cards" aria-label="Today's three cards">
             {cards.map((c, i) => {
-              const up = s.revealed > i;
+              const up = isUp(s.turned, i);
+              const p = c.kind === "product" ? (OWN.find((x) => x.slug === c.slug) ?? OWN[0]) : null;
               return (
-                <li key={i} className="daily__slot" style={{ ["--i" as string]: i } as CSSProperties}>
-                  {!up ? (
-                    <button type="button" className="dcard dcard--back" onClick={() => flip(i)} aria-label={`Turn over card ${i + 1} of 3`} data-sfx="off">
+                <li
+                  key={i}
+                  ref={(el) => {
+                    slots.current[i] = el;
+                  }}
+                  className="daily__slot"
+                  style={{ ["--i" as string]: i } as CSSProperties}
+                >
+                  {c.kind !== "product" ? (
+                    <div className="dcard-flip" data-up={up || undefined}>
+                      <button type="button" className="dcard dcard--back" onClick={() => flip(i)} aria-label={`Turn over card ${i + 1} of 3`} aria-hidden={up || undefined} tabIndex={up ? -1 : undefined} data-sfx="off">
+                        <CardBack />
+                      </button>
+                      <article className="dcard dcard--front" data-kind={c.kind} aria-hidden={!up || undefined}>
+                        <header className="dcard__top">
+                          <span>{LABEL[c.kind]}</span>
+                          <Glyph card={c} />
+                        </header>
+                        <p className="dcard__text">{c.kind === "weather" ? c.card.text : c.text}</p>
+                        <footer className="dcard__foot">
+                          <span>{c.kind === "weather" ? c.card.line : c.no}</span>
+                          <span>{date}</span>
+                        </footer>
+                      </article>
+                    </div>
+                  ) : !up ? (
+                    <button
+                      type="button"
+                      className="dcard dcard--back"
+                      onClick={() => flip(i)}
+                      aria-label={c.foil ? `Turn over card ${i + 1} of 3. Something glints.` : `Turn over card ${i + 1} of 3: one of her products`}
+                      data-glint={c.foil || undefined}
+                      data-sfx="off"
+                    >
                       <CardBack />
                     </button>
-                  ) : c.kind === "rare" ? (
-                    <div className="daily__rare">
-                      <HoloCard project={OWN.find((p) => p.slug === c.slug) ?? OWN[0]} total={projects.length} morph={false} level={3} />
-                      <span className="daily__burst" aria-hidden="true">
-                        {Array.from({ length: 10 }, (_, k) => (
-                          <i key={k} style={{ "--a": `${k * 36 + 8}deg`, "--d": `${70 + (k % 3) * 26}px` } as CSSProperties} />
-                        ))}
-                      </span>
+                  ) : p ? (
+                    <div className="daily__rare" data-foil={c.foil || undefined}>
+                      <HoloCard project={p} total={OWN.length} morph={false} level={3} finish={c.foil ? "holo" : undefined} rarityLabel={c.foil ? "Holo rare, pack foil" : first ? "Starter" : undefined} />
+                      {c.foil && (
+                        <span className="daily__burst" aria-hidden="true">
+                          {Array.from({ length: 10 }, (_, k) => (
+                            <i key={k} style={{ "--a": `${k * 36 + 8}deg`, "--d": `${70 + (k % 3) * 26}px` } as CSSProperties} />
+                          ))}
+                        </span>
+                      )}
+                      <p className="daily__under">
+                        <Link href={`/work/${p.slug}`} className="link-arrow text-14">
+                          Read the case study
+                        </Link>
+                        <span className="daily__no">
+                          {c.no}
+                          {c.foil ? " · holo foil" : first ? " · starter" : ""}
+                        </span>
+                      </p>
                     </div>
-                  ) : (
-                    <article className="dcard dcard--front" data-kind={c.kind}>
-                      <header className="dcard__top">
-                        <span>{LABEL[c.kind]}</span>
-                        <Glyph card={c} />
-                      </header>
-                      <p className="dcard__text">{c.kind === "weather" ? c.card.text : c.text}</p>
-                      <footer className="dcard__foot">
-                        <span>{c.kind === "weather" ? c.card.line : `No. ${number}-${i + 1}`}</span>
-                        <span>{date}</span>
-                      </footer>
-                    </article>
-                  )}
+                  ) : null}
                 </li>
               );
             })}
@@ -202,18 +285,24 @@ export function DailyPack() {
             </button>
             <p className="text-14 text-muted">Or drag across the strip at the top of the pack.</p>
           </>
-        ) : s.revealed < 3 ? (
-          <button type="button" className="pill" data-size="lg" onClick={flipAll} data-sfx="off">
-            Turn them all over
-          </button>
+        ) : upCount(s.turned) < 3 ? (
+          everyday.length > 0 ? (
+            <button type="button" className="pill" data-size="lg" onClick={flipAll} data-sfx="off">
+              {last >= 0 ? "Turn over the everyday cards" : "Turn them all over"}
+            </button>
+          ) : (
+            <p className="text-16 font-semibold">{cards[last]?.kind === "product" && cards[last].foil ? "The last one glints. Turn it yourself." : "The last one is one of her products. Turn it over."}</p>
+          )
         ) : (
-          <p className="daily__next">
-            <strong>Next pack in {left || "a few hours"}.</strong>{" "}
-            <span className="text-muted">
-              You&apos;ve collected {s.collected} {s.collected === 1 ? "card" : "cards"}
-              {s.rares > 0 ? `, ${s.rares} holo ${s.rares === 1 ? "rare" : "rares"}` : ""}.
-            </span>
-          </p>
+          <div className="daily__next" ref={nextRef} tabIndex={-1}>
+            <p>
+              <strong>Next pack in {left || "a few hours"}.</strong>
+            </p>
+            <p className="daily__binder">
+              Your binder: kind words {binder.kind}/{KIND_WORDS.length} · advice {binder.advice}/{ADVICE.length} · products {binder.products}/{OWN.length}
+              {binder.holo > 0 ? ` (${binder.holo} in holo)` : ""}
+            </p>
+          </div>
         )}
       </div>
     </div>

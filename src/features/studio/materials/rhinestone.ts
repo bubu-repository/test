@@ -44,7 +44,7 @@ export function rhinestone(input: MaterialInput): HTMLCanvasElement {
   const sdAt = (x: number, y: number) => sample(sd2, gw, gh, x / f - 0.5, y / f - 0.5) * f;
 
   // --- Placement ---
-  const R = photo ? clamp(u * 0.032, 4, 30) : clamp(u * 0.056, 4, 44);
+  const R = photo ? clamp(u * 0.064, 4, 60) : clamp(u * 0.056, 4, 44);
   const gems: Gems = { x: [], y: [], r: [] };
   const cell = R * 2;
   const cw = Math.ceil(w / cell) + 1;
@@ -344,8 +344,9 @@ export function rhinestone(input: MaterialInput): HTMLCanvasElement {
     const k = Math.pow(tw, 3) * clamp01((glint[g] - 0.6) * 4) * (0.6 + 0.4 * pick);
     if (k < 0.08) continue;
     const r = gems.r[g];
-    const sx2 = gems.x[g] - r * 0.2;
-    const sy2 = gems.y[g] - r * 0.25;
+    // The glint sits on the side of the stone facing the light.
+    const sx2 = gems.x[g] + L[0] * r * 0.45;
+    const sy2 = gems.y[g] + L[1] * r * 0.45;
     const len = r * (2.4 + pick * pick * 3) * (0.6 + 0.4 * k);
     const glow = ctx.createRadialGradient(sx2, sy2, 0, sx2, sy2, r * 1.3);
     glow.addColorStop(0, `rgba(255,255,255,${0.95 * k})`);

@@ -5,7 +5,7 @@ export function OffTheClock() {
   return (
     <section id="off-the-clock" aria-labelledby="otc-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
       <p className="type-eyebrow">Off the clock</p>
-      <h2 id="otc-title" className="type-title mt-3">
+      <h2 id="otc-title" className="type-title mt-2">
         The games that taught me design
       </h2>
       <p className="mt-4 max-w-[54ch] text-muted">

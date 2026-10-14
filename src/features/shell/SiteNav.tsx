@@ -5,11 +5,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { Dialog } from "@/components/Dialog";
 import { CloseIcon } from "@/components/icons";
-import { SoundToggle } from "@/components/SoundToggle";
+import { Sticker } from "@/components/Sticker";
 import { dispatch } from "@/lib/actions";
 import { cn } from "@/lib/cn";
 import { applySound, getSound, subscribePreferences } from "@/lib/preferences";
-import { useLive } from "../live/live-store";
+import { STICKERS, stickerStore, unlock } from "@/lib/stickers";
+import { useStore } from "@/lib/store";
+import { toast } from "@/lib/ui";
+import { useLive, wave } from "../live/live-store";
 import { BoxArt, CalendarArt, CvArt, FishArt, HelpArt, IdCardArt, MociArt, MoreArt, PlaneArt, SearchArt, SparkleArt, SpeakerArt, TILE } from "./DockIcons";
 
 type ItemProps = {
@@ -27,7 +30,7 @@ type ItemProps = {
   cursor?: string;
 } & ({ href: string; onClick?: never; pressed?: never } | { href?: never; onClick: () => void; pressed?: boolean });
 
-function DockItem({ label, caption, bg, fg, ink, active, className, iconClassName, children, tour, cursor, ...rest }: ItemProps) {
+function DockItem({ label, caption, tip, bg, fg, ink, active, className, iconClassName, children, tour, cursor, ...rest }: ItemProps & { tip?: string }) {
   const style = { "--app-bg": bg, "--app-fg": fg ?? "#fff", "--app-ink": ink ?? "#4FB772" } as CSSProperties;
   const inner = (
     <>
@@ -37,9 +40,12 @@ function DockItem({ label, caption, bg, fg, ink, active, className, iconClassNam
       <span className="dock-caption" aria-hidden="true">
         {caption ?? label.split(/ ·| \(/)[0]}
       </span>
-      <span className="dock-label" aria-hidden="true">
-        {label}
-      </span>
+      {/* A tooltip only when it says more than the caption under the icon. */}
+      {tip && (
+        <span className="dock-label" aria-hidden="true">
+          {tip}
+        </span>
+      )}
       {active && <span className="dock-dot" aria-hidden="true" />}
     </>
   );
@@ -83,6 +89,7 @@ export function SiteNav() {
   const dockRef = useRef<HTMLElement>(null);
   const sound = useSyncExternalStore(subscribePreferences, getSound, serverSound);
   const count = useLive((s) => s.count);
+  const stickerCount = useStore(stickerStore, (s) => s.unlocked.length);
 
   // Magnification, like the macOS dock: icons near the pointer grow, pushing their neighbours aside.
   useEffect(() => {
@@ -177,13 +184,13 @@ export function SiteNav() {
           <SparkleArt />
         </DockItem>
         <span className="dock-sep" aria-hidden="true" />
-        <DockItem label="Download the CV" caption="CV" bg={TILE.white} onClick={() => dispatch({ type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" })} cursor="CV">
+        <DockItem label="Download the CV" caption="CV" tip="Download CV (PDF)" bg={TILE.white} onClick={() => dispatch({ type: "download", href: "/cv.pdf", filename: "Adelia-Tiara-CV.pdf" })} cursor="CV">
           <CvArt />
         </DockItem>
-        <DockItem label="Copy email" caption="Email" bg={TILE.aqua} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
+        <DockItem label="Copy email" caption="Email" tip="Copy email" bg={TILE.aqua} className="max-sm:hidden" onClick={() => dispatch({ type: "copyEmail" })} cursor="Copy">
           <PlaneArt />
         </DockItem>
-        <DockItem label="More: guestbook, brief, Moci, search, how it works, sound" caption="More" bg={TILE.white} pressed={menu} onClick={() => setMenu(true)}>
+        <DockItem label="More: guestbook, brief, Moci, stickers, search, how it works, sound" caption="More" bg={TILE.white} pressed={menu} onClick={() => setMenu(true)}>
           <MoreArt />
         </DockItem>
       </nav>
@@ -205,7 +212,7 @@ export function SiteNav() {
               { label: "Search", bg: TILE.white, art: <SearchArt />, run: () => dispatch({ type: "open", panel: "palette" }) },
               { label: "How it works", bg: TILE.grass, art: <HelpArt />, run: () => dispatch({ type: "tour" }) },
               { label: sound ? "Sound off" : "Sound on", bg: TILE.white, art: <SpeakerArt on={sound} />, run: () => applySound(!sound, { persist: true }) },
-              { label: "The lab", bg: TILE.azure, art: <SparkleArt />, href: "/lab" },
+              { label: `Stickers ${stickerCount}/${STICKERS.length}`, bg: TILE.white, art: <Sticker id="hello" size={40} />, run: () => dispatch({ type: "open", panel: "stickers" }) },
             ].map((a) => {
               const icon = (
                 <span className={cn("app-icon app-icon--art mx-auto", a.bg === TILE.white && "app-icon--white")} style={{ "--app-bg": a.bg, "--size": "52px" } as CSSProperties}>
@@ -236,14 +243,26 @@ export function SiteNav() {
               );
             })}
           </ul>
-          <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
-            <SoundToggle />
-            {count > 0 && (
+          {count > 1 && (
+            <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
               <span className="chip">
                 <span className="live-dot" aria-hidden="true" /> {count} here now
               </span>
-            )}
-          </div>
+              <button
+                type="button"
+                className="pill"
+                data-size="sm"
+                onClick={() => {
+                  wave();
+                  unlock("wave", { silent: true });
+                  setMenu(false);
+                  toast({ title: "Wave sent", body: `Everyone else here (${count - 1}) sees it.`, tone: "sky", sticker: "wave" });
+                }}
+              >
+                Wave at them
+              </button>
+            </div>
+          )}
         </div>
       </Dialog>
     </header>

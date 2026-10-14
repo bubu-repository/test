@@ -233,20 +233,32 @@
   line-height: var(--leading-display);
 }
 
+/* Inner page titles (H1). */
 @utility type-display {
   font-family: var(--font-display);
-  font-size: clamp(40px, 5.4vw, 72px);
+  font-size: clamp(44px, 6vw, 80px);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.032em;
   line-height: 1.02;
 }
 
+/* Every section title (H2), on every page: one size. */
 @utility type-title {
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.2vw, 44px);
+  font-size: clamp(34px, 4.2vw, 56px);
   font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.08;
+  letter-spacing: -0.028em;
+  line-height: 1.06;
+}
+
+/* Subheads inside a section (case study, brief, matcher): sentence case, meant to be skimmed. */
+@utility type-headline {
+  font-family: var(--font-display);
+  font-size: clamp(19px, 1.4vw, 20px);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.3;
+  color: var(--ink);
 }
 
 @utility type-subtitle {
@@ -258,11 +270,26 @@
 }
 
 /*
- * The label above a headline ("Case study", "Selected work"): a small holographic sticker. Pastel
- * foil that shifts as the pointer moves (--wx, set by the world), a white die-cut rim, a glossy bead
- * of pink and blue, a slight tilt. Navy on the foil reads at 13:1 on any background.
+ * The label above a section title ("Selected work"): plain blue text, sentence case. The holographic
+ * sticker below is kept for one label per page, so it stays special.
  */
 @utility type-eyebrow {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+  color: var(--accent-ink);
+}
+
+/*
+ * The page's own label (the page header, "Case study 01 of 04", Contact): a die-cut holographic
+ * vinyl sticker, stuck down. Pastel foil with fine diffraction lines that shift as the pointer moves
+ * (--wx, written by the world), a white vinyl border with its cut edge, a pink-and-blue bead lit from
+ * the sun (top right), and a slight tilt. Navy on the foil reads at 13:1 on any background.
+ */
+@utility type-sticker {
   display: inline-flex;
   align-items: center;
   gap: 0.6em;
@@ -276,14 +303,17 @@
   text-transform: uppercase;
   color: #0b1f33;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 55%),
-    linear-gradient(110deg, #d4f3ff 0%, #ffe0f0 22%, #e4dcff 40%, #d2fbef 58%, #fff4c9 76%, #d4f3ff 100%);
-  background-size: 100% 100%, 260% 100%;
-  background-position: 0 0, calc(var(--wx, 0.5) * 100%) 0;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 55%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0) 0 2px, rgba(255, 255, 255, 0.4) 2px 3px, rgba(255, 255, 255, 0) 3px 5px),
+    linear-gradient(110deg, #bfe6ff 0%, #ffc9e6 16%, #d6c8ff 30%, #b9f5e1 46%, #fff0b0 62%, #bfe6ff 78%, #ffc9e6 100%);
+  background-size: 100% 100%, 100% 100%, 320% 100%;
+  background-position: 0 0, 0 0, calc(var(--wx, 0.5) * 100%) 0;
+  background-blend-mode: normal, soft-light, normal;
   box-shadow:
     0 0 0 2.5px #ffffff,
-    0 1px 0 2.5px rgba(10, 60, 120, 0.14),
-    0 8px 18px -8px rgba(4, 40, 110, 0.45);
+    0 1px 0 2.5px #dbe6f0,
+    0 1.5px 1.5px 2.5px rgba(10, 60, 120, 0.16),
+    0 3px 6px -2px rgba(4, 40, 110, 0.18);
   rotate: -1.2deg;
 
   &::before {
@@ -292,7 +322,7 @@
     width: 0.75em;
     height: 0.75em;
     border-radius: 999px;
-    background: radial-gradient(circle at 35% 30%, #ffffff 0 18%, #ff8fc3 48%, #1a8fe8 100%);
+    background: radial-gradient(circle at 65% 30%, #ffffff 0 18%, #ff8fc3 48%, #1a8fe8 100%);
     box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.18);
   }
 }
@@ -428,21 +458,25 @@
   min-width: 0;
   border-radius: var(--radius-card);
   color: var(--ink);
-  /* Frosted acrylic: a glint that follows the pointer, a sheen on top, a fine grain, milky white. */
+  /*
+   * White acrylic, lit by the sun: a glint that follows the pointer, a sheen on the top 28%, white
+   * specks (never grey), a fill brighter than the page, a polished cyan edge and navy shadows. The
+   * light blur only matters where the sky or the sea shows through.
+   */
   background:
-    radial-gradient(420px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.5), transparent 45%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 38%),
-    var(--grain),
-    rgba(255, 255, 255, 0.8);
-  -webkit-backdrop-filter: blur(26px) saturate(1.8);
-  backdrop-filter: blur(26px) saturate(1.8);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  /* A bright top edge, a little thickness at the bottom, and a shadow tinted by the water. */
-  box-shadow:
-    inset 0 1px 0 #ffffff,
-    inset 0 -1.5px 0 rgba(10, 90, 170, 0.12),
-    0 1px 2px rgba(4, 40, 90, 0.08),
-    0 22px 44px -22px rgba(4, 40, 110, 0.5);
+    radial-gradient(420px circle at var(--gx, -999px) var(--gy, -999px), rgba(255, 255, 255, 0.6), transparent 45%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 28%),
+    var(--grain-lite),
+    var(--acrylic-fill);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--acrylic-edge), var(--acrylic-shadow);
+}
+
+/* Glass only where something real is behind it: over the sky or the sea, and panels that float. */
+:is(.on-water, .gb-sea) .widget,
+.widget:is(.fixed, [data-float]) {
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  backdrop-filter: blur(18px) saturate(1.6);
 }
 
 /* A recessed well: inputs, trays, the space a screen sits in. */
@@ -524,7 +558,7 @@
    * a white label (5.5:1 on the label's band). The variant keeps its old name in the markup.
    */
   .pill[data-variant="magenta"] {
-    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0) 51%), linear-gradient(180deg, #1c7fe6, #0a5fcc 75%);
+    --pill-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 42%), linear-gradient(180deg, #0a64d0, #0855b8);
     --pill-fg: #ffffff;
     --pill-edge: rgba(255, 255, 255, 0.5);
     --pill-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 0 rgba(4, 40, 100, 0.25), 0 2px 0 #08479c, 0 10px 22px rgba(10, 96, 204, 0.32);
@@ -690,10 +724,13 @@
   }
 
   /* Apple-style text link: "Learn more ›" */
+  /* A 44px target without moving the layout: the padding reaches out, the margin takes it back. */
   .link-arrow {
     display: inline-flex;
     align-items: center;
     gap: 0.2em;
+    padding-block: 10px;
+    margin-block: -10px;
     color: var(--accent-ink);
     font-weight: 600;
     text-decoration: none;
@@ -784,7 +821,7 @@
     --tone: var(--ink);
   }
 
-  /* Highlighted phrase in a headline: the word in raspberry (display size, 4:1) over a soft rose band. */
+  /* Highlighted phrase in a headline: the word in Aero blue (display size, 4:1) over a soft band. */
   .sticker-text {
     color: var(--accent-display);
     background-image: linear-gradient(100deg, color-mix(in srgb, var(--accent) 20%, transparent), color-mix(in srgb, var(--accent) 12%, transparent));
@@ -795,6 +832,14 @@
     padding-inline: 0.04em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
+  }
+
+  /* In the sky the band reads as a half-finished selection: a pale underline instead. */
+  .on-water .sticker-text {
+    background: none;
+    color: #bfeaff;
+    text-decoration: underline 0.08em rgba(191, 234, 255, 0.7);
+    text-underline-offset: 0.12em;
   }
 
   /* Sparkle glyph that twinkles. */
@@ -926,32 +971,30 @@
   animation-duration: 0s;
 }
 
+/* Quick and sharp: a short fade out and a small rise in, no blur (blurring a full screen is slow on cheap phones). */
 ::view-transition-old(.page-fade) {
-  animation: page-out 240ms var(--ease-in-out) both;
+  animation: page-out 140ms var(--ease-in-out) both;
 }
 
 ::view-transition-new(.page-fade) {
-  animation: page-in 560ms var(--ease-out) 60ms both;
+  animation: page-in 280ms var(--ease-out) both;
 }
 
 @keyframes page-out {
   to {
     opacity: 0;
-    transform: translateY(-16px) scale(0.992);
-    filter: blur(6px);
   }
 }
 
 @keyframes page-in {
   from {
     opacity: 0;
-    transform: translateY(24px);
-    filter: blur(8px);
+    transform: translateY(10px);
   }
 }
 
 ::view-transition-group(.card-morph) {
-  animation-duration: 560ms;
+  animation-duration: 420ms;
   animation-timing-function: var(--ease-out);
 }
 
@@ -1431,7 +1474,7 @@ html:not([data-loader="run"]) .loader {
 
 .loader__name {
   font-size: var(--text-24);
-  font-weight: 750;
+  font-weight: 700;
   letter-spacing: -0.03em;
 }
 
@@ -1471,7 +1514,7 @@ html:not([data-loader="run"]) .loader {
   padding: 6px 14px;
   border-radius: 999px;
   font-size: var(--text-14);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--muted);
 }
 
@@ -1492,8 +1535,9 @@ html:not([data-loader="run"]) .loader {
   position: fixed;
   border-radius: 22px;
   box-shadow:
-    0 0 0 3px var(--accent),
-    0 0 0 9999px rgba(42, 35, 70, 0.42);
+    0 0 0 3px #ffffff,
+    0 0 0 6px var(--accent-strong),
+    0 0 0 9999px rgba(6, 30, 60, 0.5);
   transition:
     left var(--dur-short) var(--ease-out),
     top var(--dur-short) var(--ease-out),
@@ -1506,8 +1550,10 @@ html:not([data-loader="run"]) .loader {
   pointer-events: auto;
   padding: 16px 16px 14px;
   border-radius: 24px;
-  background: var(--sheen), var(--surface-solid);
-  border: 2px solid var(--accent-soft-2);
+  background: var(--sheen), var(--glass-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  border: 1px solid var(--edge);
   box-shadow: var(--bevel), var(--lift-lg);
   outline: none;
 }
@@ -1552,6 +1598,29 @@ html:not([data-loader="run"]) .loader {
   flex-direction: column;
   align-items: flex-end;
   gap: 10px;
+  transition:
+    translate 320ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+
+/* Out of the way while you scroll down, and while you work in a form or a tool. */
+.float-actions[data-hidden],
+body:has(:is(.studio__panel, .gb-form, .dac) :focus-within) .float-actions {
+  translate: 0 calc(100% + 24px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Phones: the guided walk lives in More; the agent alone, a little smaller. */
+@media (width < 48rem) {
+  .float-actions .float-button--help {
+    display: none;
+  }
+
+  .float-actions .float-button {
+    width: 48px;
+    height: 48px;
+  }
 }
 
 .float-button {
@@ -1566,9 +1635,9 @@ html:not([data-loader="run"]) .loader {
   backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
   box-shadow: var(--bevel), var(--glass-shadow);
   color: var(--ink);
-  font-family: var(--font-round);
+  font-family: var(--font-display);
   font-size: 22px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
   transition:
     transform var(--dur-micro) var(--ease-out),
@@ -1591,11 +1660,6 @@ html:not([data-loader="run"]) .loader {
 
 .float-button:active {
   transform: translateY(1px) scale(0.97);
-}
-
-/* The rounded face, kept for the playful corners (the lab tools, the aquarium). */
-.font-round {
-  font-family: var(--font-round);
 }
 
 /* ---------- The dock (primary navigation) ---------- */
@@ -1683,15 +1747,14 @@ html:not([data-loader="run"]) .loader {
 
 /* The running-app dot under the current page. */
 .dock-dot {
-  display: none;
   position: absolute;
   left: 50%;
-  bottom: -6px;
-  width: 4px;
-  height: 4px;
+  bottom: -7px;
+  width: 5px;
+  height: 5px;
   translate: -50% 0;
   border-radius: 999px;
-  background: var(--accent);
+  background: var(--accent-strong);
 }
 
 .dock-label {
@@ -1736,7 +1799,7 @@ html:not([data-loader="run"]) .loader {
   display: block;
   margin-top: 4px;
   color: var(--muted);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.005em;
@@ -2019,7 +2082,7 @@ html:not([data-loader="run"]) .loader {
   display: grid;
   font-family: var(--font-display);
   font-size: 60px;
-  font-weight: 800;
+  font-weight: 700;
   font-stretch: 75%;
   line-height: 0.84;
   letter-spacing: -0.01em;
@@ -2059,7 +2122,7 @@ html:not([data-loader="run"]) .loader {
   display: flex;
   align-items: baseline;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-stretch: 75%;
   font-size: 15px;
   line-height: 1;
@@ -2250,7 +2313,7 @@ html:not([data-loader="run"]) .loader {
   border: 2px solid color-mix(in srgb, var(--accent-strong) 85%, transparent);
   border-radius: 4px;
   color: color-mix(in srgb, var(--accent-strong) 90%, transparent);
-  font: 800 9px/1.2 var(--font-mono);
+  font: 700 9px/1.2 var(--font-mono);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   rotate: -8deg;
@@ -2411,7 +2474,8 @@ html:not(:has(.world[data-ready])) .shore {
   --muted: #ffffff;
   --line: rgba(255, 255, 255, 0.18);
   --accent: #a6e4ff;
-  --accent-ink: #d6f1ff;
+  /* On the sky or the water, small text is white only (4.86:1 on --sky-mid); links carry an underline. */
+  --accent-ink: #ffffff;
   --accent-display: #d6f1ff;
   --surface: rgba(3, 32, 86, 0.26);
   --surface-2: rgba(3, 32, 86, 0.3);
@@ -2424,10 +2488,15 @@ html:not(:has(.world[data-ready])) .shore {
   color: var(--ink);
 }
 
-.on-water .pill:not([data-variant="light"]):not([data-variant="magenta"]),
-.on-water .type-eyebrow {
+.on-water .pill:not([data-variant="light"]):not([data-variant="magenta"]) {
   -webkit-backdrop-filter: blur(14px) saturate(1.6);
   backdrop-filter: blur(14px) saturate(1.6);
+}
+
+/* Links in the sky don't rely on colour: a soft underline at rest. */
+.on-water .link-arrow {
+  text-decoration: underline 1.5px rgba(255, 255, 255, 0.5);
+  text-underline-offset: 0.2em;
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -2504,13 +2573,11 @@ html:not(:has(.world[data-ready])) .shore {
   color: var(--ink);
 }
 
-/* Phones: "Open to work" on its own line (the dot becomes a line break), the clocks under it. */
-@media (width < 30rem) {
-  .hero-status__sep {
-    flex-basis: 100%;
-    height: 0;
-    overflow: hidden;
-  }
+/* The clock keeps its width as the minutes tick, without tabular figures. */
+.hero-status__clock {
+  display: inline-block;
+  min-width: 5ch;
+  text-align: right;
 }
 
 .hero .hero-name {
@@ -2529,20 +2596,13 @@ html:not(:has(.world[data-ready])) .shore {
 .hero__role {
   margin-top: 18px;
   font-size: clamp(20px, 2.1vw, 28px);
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
 .hero__cohort {
-  font-weight: 450;
-}
-
-.hero__place {
-  margin-top: 8px;
-  font: 600 12px/1.4 var(--font-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-weight: 400;
 }
 
 .hero__line {
@@ -2598,15 +2658,42 @@ html:not(:has(.world[data-ready])) .shore {
     background-color 220ms var(--ease-out);
 }
 
+.hero-work__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .hero-work__name {
+  min-width: 0;
+  flex: 1;
   font-size: var(--text-14);
-  font-weight: 650;
+  font-weight: 600;
+}
+
+.hero-work__go {
+  font-size: 18px;
+  line-height: 1;
+  color: var(--muted);
+  transition: translate var(--dur-micro) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .hero-work__item:hover .hero-work__go {
+    translate: 2px 0;
+  }
+}
+
+/* The cloud bank is pale, so the ring is deep blue (4.8:1 on the clouds). */
+.hero-work__item:focus-visible {
+  outline: 3px solid #0a58be;
+  outline-offset: 3px;
 }
 
 .hero-work__value {
   margin-top: 6px;
   font-size: clamp(22px, 2.2vw, 30px);
-  font-weight: 720;
+  font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1;
   white-space: nowrap;
@@ -2751,7 +2838,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 /* ---------- Resampled headline ---------- */
 .resample-sentence {
   font-size: clamp(19px, 1.9vw, 26px);
-  font-weight: 450;
+  font-weight: 400;
   line-height: 1.5;
   letter-spacing: -0.018em;
 }
@@ -2783,6 +2870,15 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 .resample-token[aria-expanded="true"] {
   background-color: var(--surface-2);
   text-decoration-color: var(--accent);
+}
+
+/* In the hero the sentence reads as a sentence: the underline only shows on the word you point at. */
+.resample-sentence[data-quiet] .resample-token {
+  text-decoration-color: transparent;
+}
+
+.resample-sentence[data-quiet] .resample-token:is(:hover, :focus-visible, [aria-expanded="true"]) {
+  text-decoration-color: color-mix(in srgb, var(--ink) 55%, transparent);
 }
 
 /* ---------- The ID card on its lanyard (CR80, portrait) ---------- */
@@ -2948,7 +3044,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   display: flex;
   align-items: center;
   gap: 2.2cqi;
-  font: 800 6.4cqi/1 var(--font-display);
+  font: 700 6.4cqi/1 var(--font-display);
   letter-spacing: -0.03em;
 }
 
@@ -3035,7 +3131,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 .idc__name {
   display: block;
   margin-top: 0.6cqi;
-  font: 800 7.4cqi/0.98 var(--font-display);
+  font: 700 7.4cqi/0.98 var(--font-display);
   letter-spacing: -0.035em;
 }
 
@@ -3120,7 +3216,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   width: 14cqi;
   height: 14cqi;
   border-radius: 999px;
-  font: 800 4cqi/1 var(--font-display);
+  font: 700 4cqi/1 var(--font-display);
   letter-spacing: -0.04em;
   color: rgba(23, 42, 102, 0.75);
   background:
@@ -3181,7 +3277,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 .idc__url {
   display: block;
   margin-top: 0.6cqi;
-  font: 800 6cqi/1 var(--font-display);
+  font: 700 6cqi/1 var(--font-display);
   letter-spacing: -0.03em;
 }
 
@@ -3299,7 +3395,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 .reveal__glyph {
   font-family: var(--font-display);
   font-size: 80px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
   color: var(--ink);
@@ -3669,7 +3765,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 .tcg__name {
   font-family: var(--font-display);
   font-size: 9.2cqi;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -0.035em;
   color: var(--ink);
@@ -3679,7 +3775,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   display: inline-flex;
   align-items: baseline;
   gap: 0.6cqi;
-  font: 800 6.4cqi/1 var(--font-display);
+  font: 700 6.4cqi/1 var(--font-display);
   color: var(--tone-ink);
 }
 
@@ -3757,7 +3853,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
 }
 
 .tcg__move-value {
-  font: 800 4.8cqi/1 var(--font-display);
+  font: 700 4.8cqi/1 var(--font-display);
   letter-spacing: -0.02em;
   color: var(--ink);
   white-space: nowrap;
@@ -3887,7 +3983,7 @@ html:not(:has(.world[data-ready])) :is(.deep-sea, .footer-bar) {
   width: 38cqi;
   height: 38cqi;
   border-radius: 999px;
-  font: 800 22cqi/1 var(--font-display);
+  font: 700 22cqi/1 var(--font-display);
   letter-spacing: -0.06em;
   color: #ffffff;
   background: radial-gradient(circle at 35% 30%, #eb8dae, #d8588f 50%, #8e2755);
@@ -4408,7 +4504,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 }
 
 .pack__no {
-  font: 800 44cqi/0.8 var(--font-display);
+  font: 700 44cqi/0.8 var(--font-display);
   font-stretch: 75%;
   letter-spacing: -0.06em;
   color: rgba(255, 255, 255, 0.35);
@@ -4419,7 +4515,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
 .pack__title {
   margin-top: -2cqi;
-  font: 800 11cqi/0.9 var(--font-display);
+  font: 700 11cqi/0.9 var(--font-display);
   font-stretch: 80%;
   letter-spacing: -0.035em;
   -webkit-text-stroke: 1.1cqi #ffffff;
@@ -4465,7 +4561,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
   width: 15cqi;
   height: 15cqi;
   border-radius: 999px;
-  font: 800 3.4cqi/0.95 var(--font-mono);
+  font: 700 3.4cqi/0.95 var(--font-mono);
   text-align: center;
   color: #0b1020;
   background:
@@ -4724,11 +4820,11 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
  */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    main :is(h2, .type-eyebrow, .type-lead, .widget, .polaroid, .spec-plate, [data-rv-item]):not(:is(#hero, .packs, dialog, [data-no-reveal], .widget, .polaroid, .spec-plate, [data-rv-item]) *),
-    footer :is(h2, .type-eyebrow) {
+    main :is(h2, .type-eyebrow, .type-sticker, .type-lead, .widget, .polaroid, .spec-plate, [data-rv-item]):not(:is(#hero, .packs, dialog, [data-no-reveal], .widget, .polaroid, .spec-plate, [data-rv-item]) *),
+    footer :is(h2, .type-eyebrow, .type-sticker) {
       animation: rv-up var(--ease-out) both;
       animation-timeline: view();
-      animation-range: entry 0% entry 70%;
+      animation-range: entry 0% entry 45%;
     }
 
     /* Section headings also wipe up into view, not just fade. */
@@ -5254,7 +5350,7 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
 .cdcase__title {
   display: block;
-  font: 800 12.5px/1.05 var(--font-display);
+  font: 700 12.5px/1.05 var(--font-display);
   letter-spacing: -0.02em;
   color: #1d2a4d;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -5861,5 +5957,36 @@ html[data-opened~="5"] .packslot[data-i="5"] .packslot__card {
 
   .cheat-whale__body {
     animation: none;
+  }
+}
+
+/* ---------- Toasts ---------- */
+.toast[data-leaving] {
+  opacity: 0;
+  translate: -12px 0;
+  transition:
+    opacity 180ms var(--ease-in-out),
+    translate 180ms var(--ease-in-out);
+}
+
+/* A holo find gets a foil edge. */
+.toast[data-holo] {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--glass-strong), var(--glass-strong)) padding-box,
+    linear-gradient(115deg, #bfe6ff, #ffc9e6, #d6c8ff, #b9f5e1, #fff0b0) border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast__sticker {
+    animation: toast-peel 320ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  }
+}
+
+@keyframes toast-peel {
+  from {
+    rotate: -12deg;
+    scale: 0.6;
+    opacity: 0;
   }
 }

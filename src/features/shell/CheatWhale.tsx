@@ -16,9 +16,9 @@ export function CheatWhale() {
 
   useEffect(() => {
     const onCode = () => {
-      unlock("konami");
+      const isNew = unlock("konami", { silent: true });
       sfx.success();
-      toast({ title: "Cheat code accepted", body: "The sea sent a whale to say hi.", tone: "sky", icon: "🐋" }, 5200);
+      toast({ title: "Cheat code accepted", body: isNew ? "The sea sent a whale to say hi, and the secret sticker is yours." : "The sea sent a whale to say hi.", tone: "sky", sticker: "konami" }, 5200);
       setRun((n) => n + 1);
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       for (let i = 0; i < 5; i++) {

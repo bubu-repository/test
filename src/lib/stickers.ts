@@ -3,7 +3,7 @@
 import { sfx } from "./sound";
 import { readJSON, writeJSON } from "./storage";
 import { createStore, useStore } from "./store";
-import { toast } from "./ui";
+import { toast, ui } from "./ui";
 
 /**
  * Achievements, as collectible die-cut vinyl stickers (each its own illustration, see
@@ -45,12 +45,14 @@ type StickerState = {
   counters: Record<string, number>;
   /** route → placed stickers (x, y are page coordinates in px, x relative to viewport width %). */
   placed: Record<string, Placement[]>;
+  /** Unlocked while the visitor was reading or had a panel open: announced once they're done. */
+  pending: string[];
   hydrated: boolean;
 };
 
 const KEY = "adelia:stickers";
 
-export const stickerStore = createStore<StickerState>({ unlocked: [], counters: {}, placed: {}, hydrated: false });
+export const stickerStore = createStore<StickerState>({ unlocked: [], counters: {}, placed: {}, pending: [], hydrated: false });
 
 export function hydrateStickers() {
   if (stickerStore.get().hydrated) return;
@@ -59,13 +61,14 @@ export function hydrateStickers() {
     unlocked: Array.isArray(saved.unlocked) ? saved.unlocked : [],
     counters: saved.counters ?? {},
     placed: saved.placed ?? {},
+    pending: Array.isArray(saved.pending) ? saved.pending : [],
     hydrated: true,
   });
 }
 
 function persist() {
-  const { unlocked, counters, placed } = stickerStore.get();
-  writeJSON(KEY, { unlocked, counters, placed });
+  const { unlocked, counters, placed, pending } = stickerStore.get();
+  writeJSON(KEY, { unlocked, counters, placed, pending });
 }
 
 export function unlock(id: string, { silent = false }: { silent?: boolean } = {}) {
@@ -76,12 +79,45 @@ export function unlock(id: string, { silent = false }: { silent?: boolean } = {}
   if (!def) return false;
   stickerStore.set({ unlocked: [...state.unlocked, id] });
   persist();
-  // No confetti while someone is reading a case study or the colophon: the sticker still counts.
-  const reading = typeof window !== "undefined" && /^\/(work\/|colophon)/.test(window.location.pathname);
-  if (silent || reading) return true;
-  sfx.sparkle();
-  toast({ title: `Sticker unlocked: ${def.name}`, body: "Open the sticker book to peel it off and stick it anywhere.", tone: "sun", icon: def.emoji });
+  if (silent) return true;
+  // No confetti while someone is reading a case study or has a panel open: it waits until they're done.
+  if (quietTime()) {
+    stickerStore.set({ pending: [...stickerStore.get().pending, id] });
+    persist();
+    return true;
+  }
+  announce([id]);
   return true;
+}
+
+const MODAL = new Set(["brief", "stickers", "terminal", "palette", "shortcuts"]);
+
+function quietTime() {
+  if (typeof window === "undefined") return true;
+  return /^\/(work\/|colophon)/.test(window.location.pathname) || MODAL.has(ui.get().overlay ?? "");
+}
+
+/** The toast for one or more new stickers: the sticker itself, its number in the set, and a way to see it. */
+function announce(ids: string[]) {
+  const defs = ids.map((id) => STICKERS.find((s) => s.id === id)).filter((d): d is StickerDef => !!d);
+  if (!defs.length) return;
+  sfx.sparkle();
+  const n = stickerStore.get().unlocked.length;
+  const see = { label: "See it in the book", run: { type: "open" as const, panel: "stickers" as const } };
+  if (defs.length === 1) {
+    toast({ title: `Sticker ${n} of ${STICKERS.length}: ${defs[0].name}`, body: "Peel it off in the sticker book and stick it anywhere.", tone: "sun", sticker: defs[0].id, action: see }, 6000);
+  } else {
+    toast({ title: `While you were reading: ${defs.length} stickers`, body: defs.map((d) => d.name).join(", "), tone: "sun", sticker: defs[0].id, action: see }, 6000);
+  }
+}
+
+/** Announces stickers held back while reading, once the visitor is somewhere quieter. */
+export function flushStickers() {
+  const { pending } = stickerStore.get();
+  if (!pending.length || quietTime()) return;
+  stickerStore.set({ pending: [] });
+  persist();
+  announce(pending);
 }
 
 /** Increments a counter and unlocks `id` once it reaches `target`. */

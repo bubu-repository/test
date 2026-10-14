@@ -106,7 +106,7 @@ export function ascii(input: MaterialInput): HTMLCanvasElement {
       r *= k;
       g *= k;
       b *= k;
-      // A soft bevel: light along the top-left rim.
+      // A soft bevel: light along the rim facing the light.
       const rim = clamp01(1 + d / 2.5);
       const ex = (x + 0.5 - ccx) / hw;
       const ey = (y + 0.5 - ccy) / hh;

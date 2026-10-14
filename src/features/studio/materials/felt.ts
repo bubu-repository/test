@@ -161,14 +161,14 @@ export function felt(input: MaterialInput): HTMLCanvasElement {
       if (c <= 0) continue;
       const fib = fibreAt(tile, x / fs, y / fs);
       const nl = nx[i] * lx + ny[i] * ly + nz[i] * lz;
-      // Wrapped diffuse: felt is soft and matte, light bleeds round the bumps.
-      let lit = 0.36 + 0.7 * clamp01((nl + 0.3) / 1.3);
+      // Wrapped diffuse, low contrast: felt scatters light, it never shines.
+      let lit = 0.58 + 0.42 * clamp01((nl + 0.3) / 1.3);
       // Fuzz catches light at grazing angles.
       lit += (1 - nz[i]) * 0.12;
       // Groove occlusion.
       const g = (sd[i] - stitchLevel) / (tw * 1.6);
       lit *= 1 - 0.18 * Math.exp(-g * g);
-      const tex = 1 + fib * 0.2 + mottle[i] * 0.07;
+      const tex = 1 + fib * 0.3 + mottle[i] * 0.08;
       let r = base[0];
       let gg = base[1];
       let b = base[2];

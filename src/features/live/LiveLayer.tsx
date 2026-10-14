@@ -60,8 +60,14 @@ export function LiveLayer() {
       });
     const onWave = (data: { id: string; name?: string }) => {
       sfx.success();
-      toast({ title: `${data.name ?? "Someone"} waved at you`, body: "Wave back from the presence widget on the home page.", tone: "sky", icon: "👋" });
-      unlock("wave");
+      const isNew = unlock("wave", { silent: true });
+      toast({
+        title: `${data.name ?? "Someone"} waved at you`,
+        body: isNew ? "The Hello neighbour sticker is yours." : undefined,
+        tone: "sky",
+        sticker: isNew ? "wave" : undefined,
+        action: { label: "Wave back", run: { type: "wave" } },
+      });
     };
 
     const post = (body: Record<string, unknown>) => {

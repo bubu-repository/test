@@ -29,7 +29,7 @@ export default function LabPage() {
         <p className="type-eyebrow" data-tour="lab-tools">
           Studio
         </p>
-        <h2 id="studio-title" className="type-title mt-3">
+        <h2 id="studio-title" className="type-title mt-2">
           Make it out of something.
         </h2>
         <p className="mt-4 mb-10 max-w-[58ch] text-muted">
@@ -41,7 +41,7 @@ export default function LabPage() {
 
       <section id="pack" aria-labelledby="pack-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)] text-center">
         <p className="type-eyebrow">Once a day</p>
-        <h2 id="pack-title" className="type-title mt-3">
+        <h2 id="pack-title" className="type-title mt-2">
           Today&apos;s pack
         </h2>
         <p className="mx-auto mt-4 mb-10 max-w-[52ch] text-muted">
@@ -54,7 +54,7 @@ export default function LabPage() {
 
       <section id="match" aria-labelledby="match-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">For hiring teams</p>
-        <h2 id="match-title" className="type-title mt-3">
+        <h2 id="match-title" className="type-title mt-2">
           Does she fit your role?
         </h2>
         <p className="mt-4 mb-10 max-w-[56ch] text-muted">Paste a job description. The matcher runs in your browser, shows the evidence for every match, and is honest about the gaps.</p>
@@ -63,7 +63,7 @@ export default function LabPage() {
 
       <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
         <p className="type-eyebrow">If I were a model</p>
-        <h2 id="model-title" className="type-title mt-3">
+        <h2 id="model-title" className="type-title mt-2">
           Model card
         </h2>
         <div className="mt-10">

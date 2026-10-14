@@ -59,20 +59,43 @@ export function emboss(input: MaterialInput): HTMLCanvasElement {
       h2[i] = Ha * t * t * (3 - 2 * t);
     }
   } else {
-    // Luminance relief (on the coarse grid), with a soft rise at the photo's edge.
+    // Luminance relief (on the coarse grid), with a soft rise at the photo's edge. The tones are
+    // stretched to the photo's own 5th–95th percentile first, so a soft photo still presses deep.
+    const lum = new Float32Array(gw * gh);
+    const hist = new Int32Array(256);
+    let count = 0;
     for (let y = 0; y < gh; y++) {
       for (let x = 0; x < gw; x++) {
         const i = y * gw + x;
         const sx = Math.min(w - 1, x * f);
         const sy = Math.min(h - 1, y * f);
         const j = (sy * w + sx) * 4;
-        const lum = (art.rgba[j] * 0.3 + art.rgba[j + 1] * 0.59 + art.rgba[j + 2] * 0.11) / 255;
-        const t = clamp01((-sd2[i] * f) / ab);
-        h2[i] = (Ha * 0.25 + lum * lum * Ha * 1.4) * (t * t * (3 - 2 * t));
+        const l = (art.rgba[j] * 0.3 + art.rgba[j + 1] * 0.59 + art.rgba[j + 2] * 0.11) / 255;
+        lum[i] = l;
+        if (sd2[i] < 0) {
+          hist[Math.min(255, Math.round(l * 255))]++;
+          count++;
+        }
       }
     }
+    let lo = 0;
+    let hi = 1;
+    if (count > 16) {
+      let acc = 0;
+      let b = 0;
+      for (; b < 256 && acc + hist[b] < count * 0.05; b++) acc += hist[b];
+      lo = b / 255;
+      for (; b < 256 && acc + hist[b] < count * 0.95; b++) acc += hist[b];
+      hi = Math.max(lo + 0.08, b / 255);
+    }
+    for (let i = 0; i < lum.length; i++) {
+      const t = clamp01((-sd2[i] * f) / ab);
+      const l = clamp01((lum[i] - lo) / (hi - lo));
+      h2[i] = (Ha * 0.25 + l * l * Ha * 1.4) * (t * t * (3 - 2 * t));
+    }
   }
-  const hs2 = gauss(h2, gw, gh, photo ? 1.2 : 0.7);
+  // Photos: blur the relief into soft domes (clouds as pillows, not noise).
+  const hs2 = gauss(h2, gw, gh, photo ? Math.max(2, (u * 0.022) / f) : 0.7);
   const nx2 = new Float32Array(gw * gh);
   const ny2 = new Float32Array(gw * gh);
   for (let y = 1; y < gh - 1; y++) {
@@ -245,7 +268,7 @@ export function emboss(input: MaterialInput): HTMLCanvasElement {
 
   const { canvas, ctx } = output(art);
   softShadows(ctx, mask, art, L, 1.3);
-  drawShadow(ctx, mask, w, h, { blur: 2, dx: 0, dy: 1.5, opacity: 0.3 });
+  drawShadow(ctx, mask, w, h, { blur: 2, dx: -0.25, dy: 1.5, opacity: 0.3 });
   ctx.drawImage(toCanvas(px, w, h), 0, 0);
   return canvas;
 }

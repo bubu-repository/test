@@ -175,7 +175,7 @@ export default function ColophonPage() {
 
       <section aria-labelledby="moci-title" className="container-page pt-12 pb-[clamp(72px,9vw,128px)] md:pt-16">
         <p className="type-eyebrow">The agent</p>
-        <h2 id="moci-title" className="type-title mt-3">
+        <h2 id="moci-title" className="type-title mt-2">
           Moci, two brains
         </h2>
         <p className="mt-4 max-w-[62ch] text-18 text-muted">
@@ -208,7 +208,7 @@ export default function ColophonPage() {
 
       <section id="guards" aria-labelledby="guards-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
         <p className="type-eyebrow">Guardrails</p>
-        <h2 id="guards-title" className="type-title mt-3">
+        <h2 id="guards-title" className="type-title mt-2">
           Checked when this page was built
         </h2>
         <p className="mt-4 mb-8 max-w-[62ch] text-18 text-muted">
@@ -220,7 +220,7 @@ export default function ColophonPage() {
 
       <section id="eval" aria-labelledby="eval-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
         <p className="type-eyebrow">Evals</p>
-        <h2 id="eval-title" className="type-title mt-3">
+        <h2 id="eval-title" className="type-title mt-2">
           Moci&apos;s eval, in your browser
         </h2>
         <p className="mt-4 mb-8 max-w-[62ch] text-18 text-muted">
@@ -253,7 +253,7 @@ export default function ColophonPage() {
       {perf.measuredOn && (
         <section id="speed" aria-labelledby="speed-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
           <p className="type-eyebrow">On a cheap phone</p>
-          <h2 id="speed-title" className="type-title mt-3">
+          <h2 id="speed-title" className="type-title mt-2">
             What this site costs to load
           </h2>
           <p className="mt-4 mb-8 max-w-[62ch] text-18 text-muted">
@@ -289,7 +289,7 @@ export default function ColophonPage() {
 
       <section aria-labelledby="stack-title" className="container-page pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">The rest</p>
-        <h2 id="stack-title" className="type-title mt-3">
+        <h2 id="stack-title" className="type-title mt-2">
           The stack
         </h2>
         <dl className="widget mt-10 grid gap-x-10 p-6 md:grid-cols-2 md:p-8">

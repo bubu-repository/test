@@ -68,7 +68,7 @@ export function SiteFooter() {
       <div className="container-page pt-16 pb-14 md:pt-24">
         <div className="contact-card">
           <div className="min-w-0">
-            <p className="type-eyebrow">Contact</p>
+            <p className="type-sticker">Contact</p>
             <p className="mt-5 text-18 font-semibold text-muted">
               {bio.availability} Replies within a day.
             </p>

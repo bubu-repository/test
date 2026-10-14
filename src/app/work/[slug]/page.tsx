@@ -61,7 +61,7 @@ function SectionHead({ index, eyebrow, title, id, lead }: { index: number; eyebr
       <p className="type-pixel text-accent-ink">
         {String(index).padStart(2, "0")} · {eyebrow}
       </p>
-      <h2 id={`${id}-title`} className="type-title mt-3">
+      <h2 id={`${id}-title`} className="type-title mt-2">
         {title}
       </h2>
       {lead && <p className="mt-3 max-w-[60ch] text-18 text-muted">{lead}</p>}

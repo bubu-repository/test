@@ -17,13 +17,13 @@ export const fontSans = localFont({
   fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
-// Rounded, for game-UI parts only: buttons, labels, the character's speech bubbles.
+// Rounded: no longer used by the interface (it was for game-UI corners); kept, not preloaded.
 export const fontRound = localFont({
   src: "../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2",
   variable: "--font-round-face",
   weight: "200 1000",
   display: "swap",
-  preload: true,
+  preload: false,
   fallback: ["ui-rounded", "system-ui", "sans-serif"],
 });
 

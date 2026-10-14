@@ -92,7 +92,7 @@ export default function AboutPage() {
 
       <section id="practical" aria-labelledby="practical-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">For hiring teams</p>
-        <h2 id="practical-title" className="type-title mt-3">
+        <h2 id="practical-title" className="type-title mt-2">
           The practical details
         </h2>
         {/* CONTOH — ganti dengan data asli */}
@@ -124,7 +124,7 @@ export default function AboutPage() {
 
       <section aria-labelledby="skills-title" className="container-page pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">Toolbox</p>
-        <h2 id="skills-title" className="type-title mt-3">
+        <h2 id="skills-title" className="type-title mt-2">
           What I work with
         </h2>
         {/* CONTOH — ganti dengan data asli */}

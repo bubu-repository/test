@@ -158,7 +158,7 @@ export function Tour() {
         <div className="flex items-start gap-3">
           <SiteAvatar size={44} className="shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="font-round text-12 font-bold tracking-[0.04em] text-accent-ink">
+            <p className="text-12 font-semibold text-accent-ink">
               {index + 1} of {steps.length}
             </p>
             <h2 id="coach-title" className="mt-0.5 text-18 leading-tight font-bold tracking-[-0.01em]">

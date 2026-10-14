@@ -90,6 +90,7 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
   }
   const lshift = (input.light.x - 0.5) * 0.9 + (input.light.y - 0.5) * 0.5;
   const lightAng = Math.atan2(L[1], L[0]) + TAU * phase;
+  const hueSway = 0.08 * Math.sin(TAU * phase);
   const hc = new Float32Array(3);
   const tgw = (w + 1) >> 1;
   const tgh = (h + 1) >> 1;
@@ -176,19 +177,23 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
         const diag = ((x - art.x0) * 0.8 + (y - art.y0) * 0.6) / diagLen;
         // Cracked-ice shards (Voronoi, looked up on the half grid): each tilts the spectrum a little.
         const tilt = tiltF[y * tiltW + x];
-        const hue = diag * 1.25 + wav[i] * 0.18 + lshift + phase + tilt * 0.05;
-        const band = 0.5 + 0.5 * Math.cos(TAU * (diag * 2 - lshift * 1.3 - phase + tilt * 0.04));
+        // The band of rainbow sweeps across once per loop; the hues only sway a little (a GIF
+        // shouldn't strobe through the whole spectrum).
+        const hue = diag * 1.25 + wav[i] * 0.04 + lshift + hueSway + tilt * 0.03;
+        const band = 0.5 + 0.5 * Math.cos(TAU * (diag * 1.3 - lshift * 1.3 - phase + tilt * 0.04));
         // Fine diffraction lines.
         const fine = Math.sin(((x * 0.866 + y * 0.5) * TAU) / 2.3 + hue * TAU) * 0.5 + 0.5;
-        // A bright rainbow flash where the foil faces the light, metal-dark elsewhere.
+        // A silver mirror: the rainbow only lives in the band facing the light; the cracked-ice
+        // facets show as steps in lightness.
         const b2 = band * band;
         const flash = b2 * b2 * b2;
-        const light = 0.52 + band * 0.2 + flash * 0.16 + fine * 0.05 + tilt * 0.04 + clamp01(sparkle[i] * 3 - 2.2) * 0.35;
-        hslInto(hue, 0.78, Math.min(0.95, light), hc);
-        const silver = 0.42 * (1 - band) * (1 - band);
-        let hr = hc[0] + (138 - hc[0]) * silver;
-        let hg = hc[1] + (150 - hc[1]) * silver;
-        let hb = hc[2] + (176 - hc[2]) * silver;
+        const light = 0.4 + band * 0.26 + flash * 0.22 + fine * 0.06 + tilt * 0.1 + clamp01(sparkle[i] * 3 - 2.2) * 0.35;
+        hslInto(hue, 0.3 + 0.55 * band, Math.min(0.95, light), hc);
+        const nb = 1 - band;
+        const silver = 0.72 * nb * nb;
+        let hr = hc[0] + (146 - hc[0]) * silver;
+        let hg = hc[1] + (154 - hc[1]) * silver;
+        let hb = hc[2] + (168 - hc[2]) * silver;
         if (photo) {
           const k = 0.32;
           hr = art.rgba[j] * (1 - k) + hr * k;
@@ -237,8 +242,8 @@ export function holo(input: MaterialInput): HTMLCanvasElement {
 
   const { canvas, ctx } = output(art);
   // Shadows: the sticker lies flat (tight), the flap stands off the page (soft, further).
-  drawShadow(ctx, front, w, h, { blur: Math.max(2, u * 0.008), dx: 0, dy: u * 0.004, opacity: 0.28 });
-  drawShadow(ctx, front, w, h, { blur: u * 0.03, dx: -L[0] * u * 0.01, dy: u * 0.015, opacity: 0.12 });
+  drawShadow(ctx, front, w, h, { blur: Math.max(2, u * 0.008), dx: -L[0] * u * 0.002, dy: u * 0.004, opacity: 0.28 });
+  drawShadow(ctx, front, w, h, { blur: u * 0.03, dx: -L[0] * u * 0.008, dy: u * 0.015, opacity: 0.12 });
   drawShadow(ctx, flapM, w, h, { blur: u * 0.035, dx: -L[0] * u * 0.04 + nx * u * 0.03, dy: -L[1] * u * 0.04 + ny * u * 0.03, opacity: 0.3 });
   // The vinyl's thickness: a hairline of its edge below the face.
   const edgeLayer = new Uint8ClampedArray(n * 4);

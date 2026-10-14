@@ -199,7 +199,7 @@ export function jelly(input: MaterialInput): HTMLCanvasElement {
   const er = new Float32Array(n);
   for (let i = 0; i < n; i++) er[i] = clamp01((-sd[i] - R * 0.35) / (R * 0.3));
   const tint = hslToRgb(hsl[0], Math.min(1, hsl[1] * 1.1), 0.6);
-  drawShadow(ctx, er, w, h, { blur: u * 0.035, dx: -L[0] * u * 0.08, dy: -L[1] * u * 0.08 + u * 0.05, opacity: 0.45, color: tint });
+  drawShadow(ctx, er, w, h, { blur: u * 0.035, dx: -L[0] * u * 0.045, dy: -L[1] * u * 0.08 + u * 0.05, opacity: 0.45, color: tint });
   ctx.drawImage(toCanvas(px, w, h), 0, 0);
   return canvas;
 }

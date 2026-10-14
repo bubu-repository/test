@@ -79,7 +79,7 @@ function sample(options: Option[], temperature: number): number {
 
 const SCRAMBLE = "abcdefghijklmnopqrstuvwxyz";
 
-function Token({ slot, choice, onChoose, first, color }: { slot: Slot; choice: number; onChoose: (i: number) => void; first: boolean; color: string }) {
+function Token({ slot, choice, onChoose, first, color, quiet }: { slot: Slot; choice: number; onChoose: (i: number) => void; first: boolean; color: string; quiet: boolean }) {
   const [open, setOpen] = useState(false);
   const [display, setDisplay] = useState(slot.options[choice].text);
   const id = useId();
@@ -135,6 +135,7 @@ function Token({ slot, choice, onChoose, first, color }: { slot: Slot; choice: n
           if (e.key === "Escape") setOpen(false);
         }}
         className="resample-token"
+        tabIndex={quiet ? -1 : undefined}
         style={{ ["--tok" as string]: color }}
       >
         {calm ? option.text : display}
@@ -195,7 +196,8 @@ function Token({ slot, choice, onChoose, first, color }: { slot: Slot; choice: n
   );
 }
 
-export function ResampleSentence({ controls = true, className }: { controls?: boolean | "screen"; className?: string }) {
+/** `quiet`: in the hero, the words read as a sentence (no underlines until you point at one, and out of the tab order). */
+export function ResampleSentence({ controls = true, quiet = false, className }: { controls?: boolean | "screen"; quiet?: boolean; className?: string }) {
   const [choices, setChoices] = useState<number[]>(() => SLOTS.map(() => 0));
   const temperature = useHero((s) => s.temperature);
   const [announce, setAnnounce] = useState("");
@@ -221,11 +223,11 @@ export function ResampleSentence({ controls = true, className }: { controls?: bo
   const isCanonical = choices.every((c) => c === 0);
   // Each resample-able token gets one accent colour, shown only as a soft underline.
   const COLORS = ["var(--accent)", "var(--violet)", "var(--cobalt)", "var(--cyan)", "var(--orange)"];
-  const T = (i: number) => <Token slot={SLOTS[i]} choice={choices[i]} onChoose={(o) => choose(i, o)} first={i === 0} color={COLORS[i]} />;
+  const T = (i: number) => <Token slot={SLOTS[i]} choice={choices[i]} onChoose={(o) => choose(i, o)} first={i === 0} color={COLORS[i]} quiet={quiet} />;
 
   return (
     <div>
-      <p className={cn("resample-sentence text-muted", className)}>
+      <p className={cn("resample-sentence text-muted", className)} data-quiet={quiet || undefined}>
         I {T(0)} {T(1)} people can <span className="whitespace-nowrap">{T(2)},</span> from the {T(3)} to the {T(4)}.
       </p>
       <p className="sr-only" aria-live="polite">

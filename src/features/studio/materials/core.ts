@@ -817,10 +817,11 @@ export function smin(a: number, b: number, k: number): number {
 
 /**
  * The key light's direction (towards the light), from `light`: {0.5, 0.5} is the house light, up
- * and to the left; moving the pointer swings it around.
+ * and to the right (where the site's sun is drawn); moving the pointer swings it around. Shadows
+ * therefore fall down and a little to the left.
  */
 export function lightDir(light: { x: number; y: number }): Vec3 {
-  const lx = (light.x - 0.5) * 1.7 - 0.5;
+  const lx = (light.x - 0.5) * 1.7 + 0.35;
   const ly = (light.y - 0.5) * 1.7 - 0.6;
   const l = Math.hypot(lx, ly, 1);
   return [lx / l, ly / l, 1 / l];
@@ -929,7 +930,10 @@ export function shadowBase(alpha: Float32Array, w: number, h: number) {
   return { ...d, f: 2 };
 }
 
-/** The usual pair: a tight contact shadow and a wide ambient one, falling away from the light. */
+/**
+ * The usual pair: a tight contact shadow and a wide ambient one, falling away from the light (with
+ * the house light, down and slightly left: dx ≈ -0.15·dy).
+ */
 export function softShadows(ctx: CanvasRenderingContext2D, alpha: Float32Array, art: Art, L: Vec3, lift = 1, strength = 1) {
   const u = art.u;
   const ox = -L[0] * 0.5;

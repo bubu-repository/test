@@ -12,7 +12,7 @@ export function PageHeader({ id, label, title, lead, top, children }: { id: stri
       <div data-sky-text>
         <header className="page-head">
           {top}
-          <p className="type-eyebrow" style={{ ["--i" as string]: 0 }}>
+          <p className="type-sticker" style={{ ["--i" as string]: 0 }}>
             {label}
           </p>
           <h1 id={id} className="type-display mx-auto mt-5 max-w-[16ch]" style={{ ["--i" as string]: 1 }}>

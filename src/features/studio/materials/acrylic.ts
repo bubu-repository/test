@@ -284,6 +284,27 @@ function thickness(ctx: CanvasRenderingContext2D, pieceD: Float32Array, w: numbe
   ctx.drawImage(toCanvas(px, w, h), 0, 0);
 }
 
+/**
+ * The shadow of a clear piece: clear PMMA only blocks light where it refracts it away, at its
+ * edges, and focuses light through its middle. So: a navy band under the edges, a whisper of
+ * shadow under the whole piece, and a white caustic where the light comes through.
+ */
+function clearShadow(ctx: CanvasRenderingContext2D, mask: Float32Array, pieceD: Float32Array, T: number, w: number, h: number, blur: number, dx: number, dy: number) {
+  const n = w * h;
+  const band = new Float32Array(n);
+  const core = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const m = mask[i];
+    if (m <= 0) continue;
+    const din = -pieceD[i];
+    band[i] = m * clamp01(1 - din / (T * 1.2));
+    core[i] = din > T ? m : 0;
+  }
+  drawShadow(ctx, band, w, h, { blur, dx, dy, opacity: 0.2 });
+  drawShadow(ctx, mask, w, h, { blur: blur * 1.4, dx, dy, opacity: 0.05 });
+  drawShadow(ctx, core, w, h, { blur, dx, dy, opacity: 0.35, color: [255, 255, 255] });
+}
+
 /* ------------------------------------------------------------------ standee */
 
 export function acrylicStandee(input: MaterialInput): HTMLCanvasElement {
@@ -335,9 +356,9 @@ export function acrylicStandee(input: MaterialInput): HTMLCanvasElement {
       sh[y * w + x] = clamp01(1.2 - Math.sqrt(ex * ex + ey * ey));
     }
   }
-  drawShadow(ctx, sh, w, h, { blur: u * 0.04, dx: -L[0] * u * 0.04, dy: u * 0.01, opacity: 0.35 });
+  drawShadow(ctx, sh, w, h, { blur: u * 0.04, dx: -L[0] * u * 0.007, dy: u * 0.014, opacity: 0.35 });
   // A soft hint of the standee's own shadow falling behind it on the ground.
-  drawShadow(ctx, s.mask, w, h, { blur: u * 0.06, dx: -L[0] * u * 0.08, dy: -L[1] * u * 0.02 + u * 0.03, opacity: 0.06 });
+  clearShadow(ctx, s.mask, pieceD, s.T, w, h, u * 0.03, -L[0] * u * 0.02, -L[1] * u * 0.02 + u * 0.03);
 
   // The base: a clear rounded slab seen from a little above (top face, then its front edge).
   const base = makeCanvas(w, h);
@@ -446,7 +467,7 @@ export function acrylicKeychain(input: MaterialInput): HTMLCanvasElement {
   lc.translate(pivX0, topY);
   lc.rotate(ang);
   lc.translate(-pivX0, -topY);
-  drawShadow(lc, s.mask, w, h, { blur: u * 0.035, dx: -L[0] * u * 0.05, dy: -L[1] * u * 0.04 + u * 0.03, opacity: 0.16 });
+  clearShadow(lc, s.mask, pieceD, s.T, w, h, u * 0.035, -L[0] * u * 0.025, -L[1] * u * 0.04 + u * 0.03);
   // Ring geometry: a jump ring through the hole, seen almost edge-on.
   const ringRy = rt * 1.12;
   const ringRx = ringRy * 0.42;
@@ -682,8 +703,8 @@ export function acrylicBlock(input: MaterialInput): HTMLCanvasElement {
       foot[y * w + x] = clamp01(0.5 - d);
     }
   }
-  drawShadow(ctx, foot, w, h, { blur: u * 0.025, dx: -L[0] * u * 0.02, dy: u * 0.012, opacity: 0.32 });
-  drawShadow(ctx, foot, w, h, { blur: u * 0.07, dx: -L[0] * u * 0.06, dy: u * 0.04, opacity: 0.14 });
+  drawShadow(ctx, foot, w, h, { blur: u * 0.025, dx: -L[0] * u * 0.006, dy: u * 0.012, opacity: 0.32 });
+  drawShadow(ctx, foot, w, h, { blur: u * 0.07, dx: -L[0] * u * 0.02, dy: u * 0.04, opacity: 0.14 });
   ctx.drawImage(toCanvas(px, w, h), 0, 0);
   return canvas;
 }

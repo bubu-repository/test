@@ -17,7 +17,8 @@ export type SiteAction =
   | { type: "liveCursors"; value?: boolean }
   | { type: "ask"; question: string }
   | { type: "toast"; message: string }
-  | { type: "highlight"; target: string };
+  | { type: "highlight"; target: string }
+  | { type: "wave" };
 
 type Handler = (action: SiteAction) => void | Promise<void>;
 
@@ -63,5 +64,7 @@ export function describeAction(action: SiteAction): string {
       return "toast()";
     case "highlight":
       return `highlight("${action.target}")`;
+    case "wave":
+      return "wave()";
   }
 }

@@ -61,8 +61,10 @@
   transition: transform 220ms var(--ease-out);
 }
 
-.daily-pack__body:hover {
-  transform: translateY(-4px) rotate(-1deg);
+@media (hover: hover) and (pointer: fine) {
+  .daily-pack__body:hover {
+    transform: translateY(-4px) rotate(-1deg);
+  }
 }
 
 .daily-pack__body:active {
@@ -75,13 +77,26 @@
 }
 
 /* The foil: Aero blue into pink and lilac, with a holographic sheen that moves with the pointer. */
+/*
+ * Metallised film over a pillowed bag: the sides turn away from the light and darken, it pinches at
+ * the seals, the glint is dark-then-bright (as film is), and fine diffraction lines run across it.
+ */
 .daily-pack__face,
 .daily-pack__strip-foil {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(115deg, transparent calc(var(--wx, 0.5) * 60% + 5%), rgba(255, 255, 255, 0.55) calc(var(--wx, 0.5) * 60% + 18%), transparent calc(var(--wx, 0.5) * 60% + 32%)),
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 7px),
+    linear-gradient(90deg, rgba(4, 30, 90, 0.26) 0%, rgba(4, 30, 90, 0) 9%, rgba(255, 255, 255, 0.22) 30%, rgba(255, 255, 255, 0) 46%, rgba(4, 30, 90, 0.06) 70%, rgba(4, 30, 90, 0.26) 100%),
+    linear-gradient(180deg, rgba(4, 30, 90, 0.22) 0%, rgba(4, 30, 90, 0) 7% 93%, rgba(4, 30, 90, 0.22) 100%),
+    linear-gradient(
+      115deg,
+      transparent calc(var(--wx, 0.5) * 60% + 2%),
+      rgba(10, 30, 90, 0.2) calc(var(--wx, 0.5) * 60% + 11%),
+      rgba(255, 255, 255, 0.75) calc(var(--wx, 0.5) * 60% + 18%),
+      rgba(255, 255, 255, 0.1) calc(var(--wx, 0.5) * 60% + 24%),
+      transparent calc(var(--wx, 0.5) * 60% + 34%)
+    ),
+    repeating-linear-gradient(115deg, rgba(255, 120, 200, 0.1) 0 2px, rgba(120, 220, 255, 0.1) 2px 4px, rgba(255, 240, 140, 0.08) 4px 6px),
     linear-gradient(160deg, #1a8fe8 0%, #57bdf7 34%, #ffb3d9 70%, #c9b8ff 100%);
 }
 
@@ -117,7 +132,7 @@
 .daily-pack__title {
   margin-top: 12px;
   font-size: clamp(26px, 2.6vw, 32px);
-  font-weight: 760;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -0.035em;
   text-shadow: 0 2px 10px rgba(4, 40, 110, 0.3);
@@ -138,6 +153,41 @@
   text-transform: uppercase;
 }
 
+/* Registered, so the strip can spring home when you let go short of tearing it. */
+@property --tear {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.daily-pack:not([data-dragging]) {
+  transition: --tear 380ms cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+/* The top of the pack (seal + strip) keeps the part not yet torn; the flap is the part that is. */
+.daily-pack__top,
+.daily-pack__flap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  height: 15%;
+}
+
+.daily-pack__top {
+  clip-path: inset(-20% 0 0 calc(var(--tear) * 100%));
+}
+
+.daily-pack__flap {
+  clip-path: inset(-40% calc((1 - var(--tear)) * 100%) 0 -10%);
+  transform-origin: calc(var(--tear) * 100%) 100%;
+  rotate: calc(var(--tear) * -16deg);
+  translate: 0 calc(var(--tear) * -6px);
+  filter: drop-shadow(0 4px 4px rgba(4, 30, 90, 0.25));
+  pointer-events: none;
+}
+
 /* Crimped heat-seal at each end. */
 .daily-pack__crimp {
   position: absolute;
@@ -146,14 +196,15 @@
   z-index: 1;
   height: 5%;
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.45) 0 2px, rgba(4, 40, 100, 0.15) 2px 4px),
-    linear-gradient(180deg, #c9b8ff, #a7c8f6);
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 1px, rgba(4, 40, 100, 0.22) 1px 3px),
+    linear-gradient(180deg, #b9c9f4, #a1bdf0);
   -webkit-mask: conic-gradient(from -45deg at 50% 100%, #000 90deg, transparent 0) 0 100% / 8px 100%;
   mask: conic-gradient(from -45deg at 50% 100%, #000 90deg, transparent 0) 0 100% / 8px 100%;
 }
 
-.daily-pack__crimp:first-child {
+:is(.daily-pack__top, .daily-pack__flap) .daily-pack__crimp {
   top: 0;
+  height: 33%;
   transform: scaleY(-1);
 }
 
@@ -161,20 +212,17 @@
   bottom: 0;
 }
 
-/* The tear strip, with a perforation under it. */
+/* The tear strip. */
 .daily-pack__strip {
   position: absolute;
-  top: 5%;
+  top: 33%;
   right: 0;
   left: 0;
-  z-index: 2;
   display: grid;
   place-items: center;
-  height: 10%;
+  height: 67%;
   overflow: hidden;
   cursor: ew-resize;
-  transform: translateX(calc(var(--tear) * 30%)) rotate(calc(var(--tear) * 6deg));
-  transform-origin: 0 100%;
 }
 
 .daily-pack__strip-label {
@@ -200,12 +248,15 @@
     animation: daily-shake 620ms var(--ease-out);
   }
 
-  .daily-pack[data-tearing] .daily-pack__strip {
-    transform: translate(70%, -60%) rotate(24deg);
+  /* Torn through: the flap flies off. */
+  .daily-pack[data-tearing] .daily-pack__flap {
+    translate: 140% -90%;
+    rotate: 32deg;
     opacity: 0;
     transition:
-      transform 420ms var(--ease-out),
-      opacity 420ms var(--ease-out) 120ms;
+      translate 380ms var(--ease-out),
+      rotate 380ms var(--ease-out),
+      opacity 120ms var(--ease-out) 260ms;
   }
 }
 
@@ -295,8 +346,50 @@
   transition: transform 220ms var(--ease-out);
 }
 
-.dcard--back:hover {
-  transform: translateY(-6px) rotate(-1.5deg);
+@media (hover: hover) and (pointer: fine) {
+  .dcard--back:hover {
+    transform: translateY(-6px) rotate(-1.5deg);
+  }
+}
+
+.dcard--back:active {
+  scale: 0.97;
+}
+
+/* The holo pull's back gives itself away: a foil glint runs round its border every few seconds. */
+.dcard--back[data-glint]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 3px;
+  background: linear-gradient(115deg, transparent 30%, #fff 45%, #ffd6e8 50%, #b5e8ff 55%, transparent 70%) 0 0 / 300% 100%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dcard--back[data-glint]::before {
+    animation: daily-glint 4s var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes daily-glint {
+  0%,
+  40% {
+    background-position: 120% 0;
+  }
+
+  100% {
+    background-position: -120% 0;
+  }
 }
 
 .dcard--back:focus-visible {
@@ -316,8 +409,9 @@
 }
 
 .dcard__back-logo {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 64px;
   height: 64px;
   border-radius: 999px;
@@ -326,7 +420,7 @@
     0 0 0 4px rgba(255, 255, 255, 0.4),
     0 6px 14px rgba(2, 30, 90, 0.35);
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.04em;
   color: #0a5fcc;
 }
@@ -340,6 +434,36 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #ffffff;
+}
+
+/* One object with two printed faces, turned over in 3D (like the ID card). */
+.dcard-flip {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 640ms cubic-bezier(0.3, 1.25, 0.5, 1);
+}
+
+.dcard-flip > * {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+}
+
+.dcard-flip > .dcard--front {
+  transform: rotateY(180deg);
+}
+
+.dcard-flip[data-up] {
+  transform: rotateY(180deg);
+}
+
+.dcard-flip[data-up] > .dcard--back {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dcard-flip {
+    transition: none;
+  }
 }
 
 .dcard--front {
@@ -364,9 +488,12 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .dcard--front,
   .daily__rare {
     animation: daily-flip 560ms var(--ease-out) both;
+  }
+
+  .daily__rare[data-foil] {
+    animation: daily-flip 900ms var(--ease-out) both;
   }
 }
 
@@ -390,9 +517,9 @@
 .dcard__text {
   margin: auto 0;
   padding: 10px 0;
-  font-family: var(--font-round);
+  font-family: var(--font-display);
   font-size: clamp(19px, 1.7vw, 22px);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.22;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -494,4 +621,35 @@
     width: 220px;
     scroll-snap-align: center;
   }
+}
+
+/* Under a product card: its collector number and the way into the case study. */
+.daily__under {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.daily__no {
+  font: 600 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.daily__binder {
+  margin-top: 4px;
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+.daily__next:focus {
+  outline: none;
+}
+
+.daily__next:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 12px;
 }

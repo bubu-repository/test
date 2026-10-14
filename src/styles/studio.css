@@ -289,7 +289,7 @@
   display: grid;
   place-items: center;
   font-size: clamp(80px, 16vw, 160px);
-  font-weight: 800;
+  font-weight: 700;
   color: #ffffff;
   text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
   animation: pop-in 300ms var(--ease-out) both;
@@ -359,7 +359,7 @@
   padding: 6px 2px;
   border-radius: 16px;
   font-size: 12px;
-  font-weight: 650;
+  font-weight: 600;
   color: var(--muted);
   white-space: nowrap;
   transition:
@@ -412,7 +412,7 @@
   display: block;
   margin-bottom: 8px;
   font-size: var(--text-14);
-  font-weight: 650;
+  font-weight: 600;
   color: var(--ink);
 }
 
@@ -736,13 +736,20 @@
     background-color var(--dur-micro) var(--ease-out);
 }
 
-.studio__tray-item:hover {
-  background: #ffffff;
-  transform: rotate(-6deg) scale(1.06);
+@media (hover: hover) and (pointer: fine) {
+  .studio__tray-item:hover {
+    background: #ffffff;
+    transform: rotate(-6deg) scale(1.06);
+  }
 }
 
 .studio__tray-item:active {
-  transform: scale(0.94);
+  transform: scale(0.88);
+}
+
+:is(.studio__material, .studio__font, .studio__layout):active {
+  scale: 0.95;
+  transition: scale 80ms var(--ease-out);
 }
 
 .studio__tray-item img {

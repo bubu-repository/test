@@ -253,7 +253,7 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
       cols.push(chan[0][i], chan[1][i], chan[2][i]);
       idx.push(i);
     }
-    const km = kmeans(Float32Array.from(cols), 6, 8, 2500);
+    const km = kmeans(Float32Array.from(cols), 5, 8, 2500);
     regionCols = [];
     for (let k = 0; k < km.k; k++) regionCols.push([km.cent[k * 3], km.cent[k * 3 + 1], km.cent[k * 3 + 2]]);
     let lq = new Uint8Array(qw * qh).fill(255);
@@ -336,13 +336,38 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
       }
     }
     edge2 = upsample(signedDistance(bnd, qw, qh), qw, qh, gw, gh, q);
-    // One stitch direction per region, mostly across the picture like long satin floats.
+    // Satin runs along the photo's luminance gradient (across its tonal edges), from a smoothed
+    // structure tensor; where the photo is flat, each region falls back to its own direction.
+    const lumQ = new Float32Array(nq);
+    for (let j = 0; j < nq; j++) lumQ[j] = chan[0][j] * 0.3 + chan[1][j] * 0.59 + chan[2][j] * 0.11;
+    const tq1 = new Float32Array(nq);
+    const tq2 = new Float32Array(nq);
+    for (let y = 1; y < qh - 1; y++) {
+      for (let x = 1; x < qw - 1; x++) {
+        const j = y * qw + x;
+        const gx = lumQ[j + 1] - lumQ[j - 1];
+        const gy = lumQ[j + qw] - lumQ[j - qw];
+        tq1[j] = gx * gx - gy * gy;
+        tq2[j] = 2 * gx * gy;
+      }
+    }
+    const sq = Math.max(1.5, (u * 0.03) / (f * q));
+    const T1 = upsample(gauss(tq1, qw, qh, sq), qw, qh, gw, gh);
+    const T2 = upsample(gauss(tq2, qw, qh, sq), qw, qh, gw, gh);
+    let mag = 0;
+    let mc = 0;
+    for (let i = 0; i < gw * gh; i++) {
+      if (lab[i] === 255) continue;
+      mag += Math.sqrt(T1[i] * T1[i] + T2[i] * T2[i]);
+      mc++;
+    }
+    const eps = (mc ? mag / mc : 1) * 0.2 + 1e-6;
     for (let i = 0; i < gw * gh; i++) {
       const v = lab[i];
       if (v === 255) continue;
       const th = (hash2(v, 7, input.seed) - 0.5) * 1.6 + (v % 2 ? Math.PI / 2 : 0);
-      j1[i] = Math.cos(th * 2);
-      j2[i] = Math.sin(th * 2);
+      j1[i] = T1[i] + Math.cos(th * 2) * eps;
+      j2[i] = T2[i] + Math.sin(th * 2) * eps;
     }
   }
   const sig = photo ? 0.6 : (u * 0.035) / f;
@@ -573,7 +598,7 @@ export function embroidery(input: MaterialInput): HTMLCanvasElement {
   softShadows(ctx, fabricMask, art, L, 0.9);
   ctx.drawImage(toCanvas(pxF, w, h), 0, 0);
   // The satin stands proud of the twill.
-  drawShadow(ctx, satinMask, w, h, { blur: Math.max(2, u * 0.008), dx: -L[0] * u * 0.008, dy: -L[1] * u * 0.008 + u * 0.004, opacity: 0.4 });
+  drawShadow(ctx, satinMask, w, h, { blur: Math.max(2, u * 0.008), dx: -L[0] * u * 0.004, dy: -L[1] * u * 0.008 + u * 0.004, opacity: 0.4 });
   ctx.drawImage(toCanvas(pxS, w, h), 0, 0);
 
   // Split-stitch outline in a darker shade (for photos, between border and picture).

@@ -9,7 +9,7 @@ export function WorkTeaser() {
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <div className="max-w-[46rem]">
           <p className="type-eyebrow">Selected work · 2024–2026</p>
-          <h2 id="work-teaser-title" className="type-display mt-3">
+          <h2 id="work-teaser-title" className="type-title mt-2">
             AI that shows its work.
           </h2>
         </div>

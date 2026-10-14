@@ -9,7 +9,7 @@ export function HowIWork() {
       <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
         <div>
           <p className="type-eyebrow">How I work</p>
-          <h2 id="how-title" className="type-display mt-3">
+          <h2 id="how-title" className="type-title mt-2">
             Four rules I build by.
           </h2>
           <p className="mt-6 max-w-[48ch] text-18 leading-relaxed text-muted">{bio.team}</p>

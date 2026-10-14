@@ -5,6 +5,7 @@ import { ViewTransition, useRef, type CSSProperties } from "react";
 import type { Project } from "@/content/projects";
 import { sfx } from "@/lib/sound";
 import { ProjectMockup } from "./ProjectMockup";
+import { colourOf } from "./project-colours";
 
 /** Rarity → foil: the holo rare shines in the art window, the rare is reverse holo, the uncommon is etched. */
 const FINISH: Record<string, { finish: "holo" | "reverse" | "etched"; glyph: string; rank: number }> = {
@@ -20,10 +21,28 @@ const FINISH: Record<string, { finish: "holo" | "reverse" | "etched"; glyph: str
  * the foil shimmers on its own. The back is printed too, so the pack can deal cards face down.
  * The whole card is a link; it morphs into the case-study icon (shared view transition).
  */
-export function HoloCard({ project, total, morph = true, level = 2 }: { project: Project; total: number; morph?: boolean; level?: 2 | 3 }) {
+export function HoloCard({
+  project,
+  total,
+  morph = true,
+  level = 2,
+  finish,
+  rarityLabel,
+}: {
+  project: Project;
+  total: number;
+  morph?: boolean;
+  level?: 2 | 3;
+  /** A pack pull can print any product in holo foil, whatever its printed rarity. */
+  finish?: "holo" | "reverse" | "etched";
+  rarityLabel?: string;
+}) {
   const Heading = level === 3 ? "h3" : "h2";
   const ref = useRef<HTMLAnchorElement>(null);
-  const rarity = FINISH[project.rarity] ?? FINISH.Uncommon;
+  const printed = FINISH[project.rarity] ?? FINISH.Uncommon;
+  const rarity = finish ? (Object.values(FINISH).find((f) => f.finish === finish) ?? printed) : printed;
+  const label = rarityLabel ?? project.rarity;
+  const colour = colourOf(project.slug);
   const pad = (n: number | string) => String(n).padStart(3, "0");
 
   const onMove = (e: React.PointerEvent) => {
@@ -57,13 +76,13 @@ export function HoloCard({ project, total, morph = true, level = 2 }: { project:
       className="tcg"
       data-tone={project.tone}
       data-finish={rarity.finish}
-      style={{ "--i": rarity.rank } as CSSProperties}
+      style={{ "--i": rarity.rank, "--frame": colour.frame, "--tone-ink": colour.ink } as CSSProperties}
       data-tour={morph ? `card-${project.slug}` : undefined}
       data-cursor="Read"
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       onPointerEnter={() => sfx.tick()}
-      aria-label={`${project.name}, ${project.rarity.toLowerCase()} card: ${project.tagline} Read the case study.`}
+      aria-label={`${project.name}, ${label.toLowerCase()} card: ${project.tagline} Read the case study.`}
     >
       <ViewTransition name={morph ? `card-${project.slug}` : undefined} share="card-morph" default="none">
         <div className="tcg__flipper">
