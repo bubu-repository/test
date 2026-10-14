@@ -113,10 +113,10 @@
 
 /* ---------- Base ---------- */
 @layer base {
-  /* The world (features/world/World.tsx) draws the sky and sea; this gradient shows until it can, or without WebGL. */
+  /* The world (features/world/World.tsx) draws the sky, the page and the sea; this gradient shows until it can, or without WebGL. */
   html {
-    background-color: #2cb4e7;
-    background-image: linear-gradient(180deg, #0a58be 0, #1570d6 40vh, #4fb0f2 60vh, #cff2ff 68vh, #7fe3f7 68.4vh, #3cc8f0 80vh, #2cb4e7 110vh);
+    background-color: var(--bg);
+    background-image: linear-gradient(180deg, #0a58be 0, #1570d6 34vh, #4fb0f2 58vh, #cff2ff 80vh, var(--bg) 115vh);
     background-repeat: no-repeat;
     color: var(--ink);
     font-family: var(--font-body);
@@ -2362,7 +2362,7 @@ html:not([data-loader="run"]) .loader {
   }
 }
 
-/* ---------- The world: one sky and sea behind every page ---------- */
+/* ---------- The world: sky at the top, the white page, the sea at the bottom ---------- */
 .world {
   position: fixed;
   top: 0;
@@ -2380,24 +2380,23 @@ html:not([data-loader="run"]) .loader {
 }
 
 /*
- * Text that sits right on the water is navy: grey would sink into the blue. Glass objects bring
- * their own text colours back (see the widget utility and the list below).
+ * The sky over each inner page ends a little under its words: the gap is the sky going pale, and
+ * the clouds that close in under the marker dissolve into the white page.
  */
-main {
-  --muted: #0f2a44;
-  --accent-ink: #052a60;
-}
-
-:is(.work-card__link, .glass, .glass-strong, .hero-work__item) {
-  --muted: #4a6175;
-  --accent-ink: #0059b8;
-}
-
-/* The sky over each inner page: the waterline a little under its words. */
-.page-sky__waterline {
+.page-sky__end {
   display: block;
   height: 0;
-  margin-top: clamp(56px, 7vw, 88px);
+  margin-top: clamp(88px, 11vw, 160px);
+}
+
+/* The shore: a strip of open water between the white page and the footer's deep sea. */
+.shore {
+  height: clamp(150px, 24vh, 260px);
+  pointer-events: none;
+}
+
+html:not(:has(.world[data-ready])) .shore {
+  background: linear-gradient(180deg, var(--bg), #cff2ff 38%, #7fe3f7 38.5%, #3cc8f0 70%, #0e8fd8);
 }
 
 /* ---------- On the water: the sky and sea scenes (hero, footer) ---------- */
@@ -2435,13 +2434,12 @@ main {
   }
 }
 
-/* ---------- Hero: a live window of sky over sea ---------- */
+/* ---------- Hero: the open sky at the top of the world ---------- */
 .hero {
   position: relative;
 }
 
-/* The window. The gradient underneath is what shows without WebGL, or before the first frame. */
-/* No frame: the hero is the open sky of the world, the products float at its waterline. */
+/* No frame: the hero is the open sky of the world; the products float on the clouds at its foot. */
 .hero__window {
   position: relative;
   display: flex;
@@ -2550,10 +2548,13 @@ main {
   margin-top: 22px;
 }
 
-/* The sea: the four products float just under the surface; the water fills the rest of the screen. */
-.hero__sea {
+/* The clouds: the products sit at the foot of the first screen, where the bank of cloud closes in. */
+.hero__clouds {
+  display: flex;
   flex: 1;
-  padding: clamp(28px, 4vw, 48px) 0 clamp(28px, 4vw, 48px);
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: clamp(28px, 5vw, 64px);
 }
 
 .hero-work {
@@ -2569,7 +2570,7 @@ main {
   }
 }
 
-/* Frosted white glass, so the water shows through but the words stay dark and sharp. */
+/* Frosted white glass, so the clouds show through but the words stay dark and sharp. */
 .hero-work__item {
   --ink: #0b1f33;
   --muted: #3f5a72;

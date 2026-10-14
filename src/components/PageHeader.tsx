@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
  * The opening of every inner page, in the sky of the world behind it: a sticker label, the title,
  * one line of lead (they rise in one after another), then the page's own object below it. The words
  * are white on the deep sky (`data-sky-text` keeps the sky deep behind them and whatever the page
- * puts under the header), and the waterline sits a little below, so the page goes on in the sea.
+ * puts under the header); a little below, the sky ends in clouds that dissolve into the white page.
  */
 export function PageHeader({ id, label, title, lead, top, children }: { id: string; label: string; title: ReactNode; lead?: ReactNode; top?: ReactNode; children?: ReactNode }) {
   return (
@@ -26,7 +26,7 @@ export function PageHeader({ id, label, title, lead, top, children }: { id: stri
         </header>
         {children}
       </div>
-      <span className="page-sky__waterline" data-waterline="1" aria-hidden="true" />
+      <span className="page-sky__end" data-sky-end="1" aria-hidden="true" />
     </section>
   );
 }

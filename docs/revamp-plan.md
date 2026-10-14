@@ -11,7 +11,8 @@ Everything the six hiring-review rounds produced stays, word for word unless a f
   costs with model versions, incidents, results, reflection) and the reading guide on `/work`
 - About: the short story, path so far, practical details for hiring teams, the CV
 - the 40-second brief, the JD matcher, the model card
-- the agent's guardrails, claim check, signed history, budgets and its eval on `/colophon`
+- the agent's guardrails, signed history, budgets and its eval on `/colophon`
+  (the claim check was removed in October 2026 at Adelia's request)
 - product screens inside the work cards and case studies (they are evidence, not decoration)
 - contrast checks, keyboard access, reduced-motion paths, cheap-phone performance
 
@@ -25,13 +26,14 @@ The pink of reference image 5 is retired.
   horizon, aqua water (`#3CC8F0`) going down to deep sea blue (`#0A56B0`, `#073B86`), white clouds and
   sunlight, Aero grass green for "on" and "open". Aero blue `#1A8FE8` is the brand; text is a deep sea
   navy. Every pair is checked on `/styleguide`.
-- **Where the colour lives:** everywhere, as one seamless world (changed in October 2026, after
-  references for real-object texture: Adelia asked for the sky and sea to be continuous, not blocks).
-  A single WebGL shader (`World`) on a fixed canvas behind every page: each page's header stands in
-  the sky, the waterline runs under it, the content floats in bright lagoon water, and the water
-  deepens into the deep sea at the footer. The layout steers it with markers (`data-waterline`,
-  `data-sky-text`, the footer); see the README's design rules. Text is white in the sky and the deep
-  sea and navy in the bright water, so the case studies stay readable.
+- **Where the colour lives:** one seamless world (October 2026: first Adelia asked for the sky and sea
+  to be continuous, not blocks; then for the sky only at the top and the sea only at the bottom,
+  with white between, and no seams). A single WebGL shader (`World`) on a fixed canvas behind every
+  page: each page's header stands in the sky, which closes into a bank of cloud that dissolves into
+  the white page; the content reads on white; above the footer the white thins into a pale haze
+  and mist over the sea, which deepens into the deep sea at the footer. The guestbook goes from its
+  header straight into the water, because it is the sea. The layout steers it with markers
+  (`data-sky-end`, `data-sky-text`, `data-waterline`, the footer); see the README's design rules.
 - **Materials:** objects you could touch. Cards and widgets are frosted acrylic (grain, sheen, a
   thickness edge, a light that follows the pointer); labels are die-cut holographic stickers; the
   guestbook creatures are clear jelly (清透) with small kawaii faces. Pink stays only as a small

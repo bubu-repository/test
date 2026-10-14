@@ -338,7 +338,7 @@ export function GuestbookSea() {
       </h2>
       <div className="gb-sea">
         {/* The water the creatures swim in; on wide screens the form floats over its right side. */}
-        <div ref={seaRef} className="gb-water">
+        <div ref={seaRef} className="gb-water" data-waterline="3">
           {notes === null && <p className="gb-sea__status">Looking into the water…</p>}
           {swimming.map((n) => (
             <SeaCreature key={n.id} note={n} open={open?.note.id === n.id} fresh={n.id === freshId} onOpen={onOpen} />

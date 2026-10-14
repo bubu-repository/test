@@ -15,7 +15,7 @@ import { CodeBlock } from "@/features/case/CodeBlock";
 export const metadata: Metadata = pageMeta({
   title: "How this site is built",
   description:
-    "The engineering behind adelia.cc: Moci, its AI agent (Claude with tool use, server-side validation, a claim check on every answer, an offline retrieval fallback and an eval you can run in your browser), and the rest of the stack.",
+    "The engineering behind adelia.cc: Moci, its AI agent (Claude with tool use, server-side validation, signed history, an offline retrieval fallback and an eval you can run in your browser), and the rest of the stack.",
   path: "/colophon",
 });
 
@@ -27,14 +27,9 @@ const ONLINE = [
       "20 requests per visitor per 10 minutes, and a ceiling of 300 answers a day across everyone, so a busy day or a script can't run up the bill. Past either, or with no API key, the browser switches to the offline brain.",
   },
   { step: "Ground", detail: "The system prompt is the knowledge base, generated from the same content files as these pages, so Moci can't drift from the site. It's prompt-cached." },
-  { step: "Act", detail: "Claude can call 7 tools (navigate, theme, tour, copy email, CV, panels, lens). Every tool input is checked against an allow-list on the server before your screen changes." },
+  { step: "Act", detail: "Claude can call 7 tools (navigate, sound, tour, copy email, CV, panels, lens). Every tool input is checked against an allow-list on the server before your screen changes." },
   { step: "Stream", detail: "Text and tool events stream back as NDJSON, at most 4 tool turns per answer. A refusal is answered politely instead of erroring." },
   { step: "Cite", detail: "Every factual answer ends with the page it came from, shown as a link. Only internal paths are linked, so a prompt can't inject a URL." },
-  {
-    step: "Check",
-    detail:
-      "Each sentence is checked before it's shown: calling her senior, years she doesn't have, an employer that isn't on her record, a link off the site, a figure the site never states. If one fails, nothing more is shown and the answer is replaced before it's signed. It catches the patterns it knows; it can't prove an answer true.",
-  },
   {
     step: "Sign",
     detail:
@@ -63,7 +58,7 @@ const STACK = [
   ["One source of truth", "Every number on the site, the CV PDF (generated with pdf-lib), the 40-second brief and Moci's knowledge come from the same content files"],
   ["Product screens", "The phones in the case studies are coded components, not images, so they stay sharp and readable at any size"],
   ["Live bits", "Presence and cursors over Server-Sent Events; weather and sea data from Open-Meteo, hidden when unavailable"],
-  ["Accessibility", "Keyboard paths for everything, visible focus, reduced-motion versions of every animation, contrast checked on both themes"],
+  ["Accessibility", "Keyboard paths for everything, visible focus, reduced-motion versions of every animation, contrast checked on /styleguide"],
   ["Cheap phones", "With Save-Data on, or on phones that report 2 GB of memory or less, the WebGL sky stays a still image"],
   [
     "AI in how I build",
@@ -71,31 +66,14 @@ const STACK = [
   ],
 ];
 
-const CLAIMS = `export function claimProblems(answer: string, knowledge?: string): string[] {
-  const problems: string[] = [];
-  for (const clause of clauses(answer)) {
-    const denied = NEGATED.test(clause); // "she isn't senior" is fine; a denial covers its own clause only
-    if (SENIOR.test(clause) && !denied) problems.push("calls_her_senior");
-    if (YEARS.test(clause) && !denied) problems.push("years_of_experience");
-    const org = namedEmployer(clause, { capitalised: true });
-    if (org && !denied && !onRecord(org)) problems.push(\`employer_not_on_record:\${org}\`);
-  }
-  if (EXTERNAL_LINK.test(answer)) problems.push("external_link");
-  if (knowledge) {
-    const known = new Set(figures(knowledge)); // every figure must be one the site states
-    for (const n of figures(answer)) if (!known.has(n)) problems.push(\`figure_not_on_record:\${n}\`);
-  }
-  return [...new Set(problems)];
-}`;
-
 const VALIDATOR = `function validToolInput(name: string, input: unknown): input is Record<string, unknown> {
   if (!input || typeof input !== "object" || Array.isArray(input)) return false;
   const value = input as Record<string, unknown>;
   switch (name) {
     case "navigate":
       return typeof value.path === "string" && PATHS.includes(value.path);
-    case "set_theme":
-      return value.theme === "light" || value.theme === "dark";
+    case "set_sound":
+      return typeof value.on === "boolean";
     case "open_panel":
       return value.panel === "brief" || value.panel === "terminal" || value.panel === "stickers";
     case "set_lens":
@@ -221,12 +199,6 @@ export default function ColophonPage() {
             caption="The model proposes; the server disposes. A tool call only reaches your screen if its input passes this check."
             source={VALIDATOR}
           />
-          <CodeBlock
-            file="features/agent/guards.ts"
-            lang="ts"
-            caption="The claim check, run on each sentence before you see it. The prompt asks Moci to be honest; this catches the patterns it knows about."
-            source={CLAIMS}
-          />
         </div>
         <p className="mt-6 max-w-[80ch] text-16 text-muted">
           Cost, estimated from token counts and Opus 5.5 list prices (not measured): about US${cost.warm} an answer with the {cost.prompt}-token prompt cached, up to US${cost.worst} with a cold
@@ -272,7 +244,7 @@ export default function ColophonPage() {
             <span>
               Not run yet. The same cases plus four attacks (a forged earlier answer, instructions hidden in a question, a link to open, a request for the prompt) run against Claude with{" "}
               <code className="font-mono text-14">npm run eval:moci</code>, and weekly in CI once an API key is set (about 30 calls, under US$1). The result will show here, failures included.
-              Until then, the online brain is protected by the claim check and the guardrails above, not by a measured pass rate.
+              Until then, the online brain is protected by its prompt and the guardrails above, not by a measured pass rate.
             </span>
           </p>
         )}

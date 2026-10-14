@@ -49,12 +49,13 @@ function Status() {
 
 /**
  * The hero, in the open sky of the world behind the page (World): her name, the role and the way in
- * sit in the sky; the four products float just under the waterline with one number each, so the
- * work is on the first screen on every device. The waterline is wherever the products start.
+ * sit in the deep sky; the four products float on the bank of cloud at the bottom of the first
+ * screen with one number each, so the work is on the first screen on every device. The sky ends
+ * (and the clouds close in) where the products start; under them the clouds turn to the white page.
  */
 export function Hero() {
   return (
-    <section id="hero" aria-labelledby="hero-name" className="hero" data-xr="Hero · live sky and sea, the name and the way in">
+    <section id="hero" aria-labelledby="hero-name" className="hero" data-xr="Hero · the live sky, the name and the way in">
       <div className="hero__window on-water">
         <div className="container-page">
           <div className="hero__copy">
@@ -98,9 +99,9 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="hero__sea" data-waterline="2">
+        <div className="hero__clouds">
           <div className="container-page">
-            <ul className="hero-work" aria-label="The work, with one number each">
+            <ul className="hero-work" aria-label="The work, with one number each" data-sky-end="1">
               {projects.map((p) => (
                 <li key={p.slug}>
                   <Link href={`/work/${p.slug}`} className="hero-work__item">

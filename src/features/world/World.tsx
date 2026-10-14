@@ -3,26 +3,34 @@
 import { useEffect, useRef } from "react";
 
 /**
- * The world behind every page: one continuous sky and sea, in the blues of Frutiger Aero, drawn by a
- * single WebGL1 fragment shader on a fixed canvas. The page is laid out on it like a long dive: the
- * sky at the top, the waterline wherever the page puts it, bright lagoon water under that, and the
- * deep sea under the footer. Nothing is boxed in a window; content floats in it as glass objects.
+ * The world behind every page, in the blues of Frutiger Aero, drawn by a single WebGL1 fragment
+ * shader on a fixed canvas: the sky at the top of each page, the clear sky-white page (--bg) in the
+ * middle, and the sea at the bottom. There are no hard edges between them: the sky thickens into a
+ * bank of cloud that dissolves into the white, and the white thins into a pale horizon haze over
+ * the water just above the footer, which sits in the deep sea.
  *
- * The layout drives it through three markers, measured every frame:
- * - `[data-waterline]`: the waterline is the top edge of the highest-priority visible marker
- *   (the value is the priority). The home hero puts it under her name; other pages under the header.
+ * The layout drives it through markers, measured as the page scrolls:
+ * - `[data-sky-end]`: where the sky has gone pale and the clouds take over (the top edge of the
+ *   highest-priority visible marker). Under it the clouds turn to white over FADE screen heights.
  * - `[data-sky-text]`: words in the sky. The sky stays at least as deep as --sky-mid behind them
  *   (white text 4.9:1), and clouds keep out of their way.
+ * - `[data-waterline]`: the sea's surface, the top edge of the highest-priority visible marker.
+ *   The layout puts one above the footer (the shore); the guestbook puts its own under the header.
  * - `footer`: the water deepens to the deep sea as the footer comes in, for its white text.
- * In the bright water in between, text is navy (5.5:1 and up on the water).
+ * Everything between the clouds and the haze is the page colour, so text there uses the page tokens.
  *
  * The sun follows the pointer, the water lights up under it, a press in open water lets out bubbles,
- * and caustics and motes drift with the scroll. It pauses in background tabs, runs at 30 fps and lower
- * resolution on touch and low-power devices, and draws only when something changes for reduced
- * motion. Without WebGL the gradient on <html> stays.
+ * and caustics and motes drift with the scroll. While only the white page is on screen nothing is
+ * drawn at all. It pauses in background tabs, runs at 30 fps and lower resolution on touch and
+ * low-power devices, and draws only when something changes for reduced motion. Without WebGL the
+ * gradients on <html> and the shore stay.
  */
 
 const BUBBLES = 6;
+/** Screen heights over which the clouds under the sky dissolve into the white page. */
+const FADE = 0.42;
+/** Screen heights of haze between the white page and the sea's surface. */
+const HAZE = 0.24;
 
 const VERTEX = `attribute vec2 aPos;varying vec2 vUv;void main(){vUv=vec2(aPos.x*.5+.5,.5-aPos.y*.5);gl_Position=vec4(aPos,0.,1.);}`;
 
@@ -35,6 +43,7 @@ precision mediump float;
 uniform vec2 uRes;
 uniform float uTime;
 uniform float uHorizon;
+uniform float uSky;
 uniform vec4 uText;
 uniform vec2 uDeep;
 uniform float uScrollY;
@@ -61,6 +70,9 @@ const vec3 SKY_TOP=vec3(.039,.345,.745);   // #0A58BE
 const vec3 SKY_MID=vec3(.082,.439,.839);   // #1570D6
 const vec3 SKY_LOW=vec3(.310,.690,.949);   // #4FB0F2
 const vec3 HORIZON=vec3(.812,.949,1.);     // #CFF2FF
+const vec3 PAGE=vec3(.957,.976,.992);      // #F4F9FD, --bg
+const float FADE=${FADE.toFixed(2)};
+const float HAZE=${HAZE.toFixed(2)};
 
 vec3 seaColor(float d){
   vec3 c=mix(vec3(.498,.890,.969),vec3(.235,.784,.941),smoothstep(0.,.03,d)); // #7FE3F7 -> #3CC8F0
@@ -79,26 +91,47 @@ void main(){
   float wy=wl+.0045*sin(q.x*9.+t*1.1)+.0025*sin(q.x*23.-t*1.7)+.0012*sin(q.x*51.+t*2.3);
   vec3 col;
 
+  float paper=0.;
   if(uv.y<wy){
-    // The sky: deep azure down to the bottom of the words, then lighter towards the horizon.
-    float tb=clamp(uText.w,0.,wl-.01);
+    // The sky: deep azure down to the bottom of the words, then paler towards the sky's end, where a
+    // bank of cloud thickens and dissolves into the white page. A page with no sky is all white here.
+    float S=min(uSky,wl-.02);
+    float tb=min(max(uText.w,-1.),S-.01);
     col=mix(SKY_TOP,SKY_MID,smoothstep(0.,max(tb,.001),uv.y));
-    float f=clamp((uv.y-tb)/max(wy-tb,.001),0.,1.);
-    col=mix(col,SKY_LOW,smoothstep(.05,.7,f)*step(tb,uv.y));
-    col=mix(col,HORIZON,smoothstep(.65,1.,f)*step(tb,uv.y));
-    // The sun, top right, nudged by the pointer; a soft halo and three faint flare ghosts.
-    vec2 sun=vec2(aspect*.86,min(.11,wl*.22))+(uPointer-.5)*vec2(.06,.035)*uPointerOn;
-    float ds=length(q-sun);
-    col+=vec3(1.,.97,.86)*(.95*exp(-ds*ds*1100.)+.2*exp(-ds*8.));
-    vec2 axis=vec2(aspect*.45,wl*.55)-sun;
-    for(int i=1;i<=3;i++){float k=float(i)*.5;float r=.01+.012*float(i);
-      col+=vec3(.75,.92,1.)*.022*smoothstep(r,r*.55,length(q-(sun+axis*k)));}
-    // Clouds: a bank above the horizon, and on wide screens a few to the side of the words.
-    float n=fbm(vec2(q.x*1.5+t*.012,(q.y-wl)*3.4)*2.2);
-    float bank=smoothstep(.2,.75,f)*step(tb,uv.y);
-    float side=aspect>1.2?max(smoothstep(uText.z+.04,uText.z+.16,uv.x),1.-smoothstep(uText.x-.16,uText.x-.04,uv.x))*smoothstep(.05,.3,uv.y/max(wl,.001)):0.;
-    float cloud=smoothstep(.52,.78,n)*clamp(bank+side*.8,0.,1.);
-    col=mix(col,mix(vec3(.84,.92,1.),vec3(1.),smoothstep(.5,.9,n)),cloud*.92);
+    float f=clamp((uv.y-tb)/max(S-tb,.001),0.,1.);
+    float below=smoothstep(tb-.005,tb+.02,uv.y);
+    col=mix(col,SKY_LOW,smoothstep(.0,.55,f)*below);
+    col=mix(col,HORIZON,smoothstep(.45,1.,f)*below);
+    float g=clamp((uv.y-S)/FADE,0.,1.);
+    col=mix(col,mix(HORIZON,PAGE,smoothstep(.15,.8,g)),step(S,uv.y));
+    // The sun, top right, sinking with the sky as it scrolls away; a soft halo and three faint flare ghosts.
+    if(S>0.){
+      vec2 sun=vec2(aspect*.86,min(.11,S*.2))+(uPointer-.5)*vec2(.06,.035)*uPointerOn;
+      float ds=length(q-sun);
+      col+=vec3(1.,.97,.86)*(.95*exp(-ds*ds*1100.)+.2*exp(-ds*8.))*(1.-g);
+      vec2 axis=vec2(aspect*.45,S*.55)-sun;
+      for(int i=1;i<=3;i++){float k=float(i)*.5;float r=.01+.012*float(i);
+        col+=vec3(.75,.92,1.)*.022*smoothstep(r,r*.55,length(q-(sun+axis*k)))*(1.-g);}
+    }
+    // Clouds: sparse above the sky's end, closing into a bank under it, lit from above; on wide
+    // screens a few to the side of the words.
+    vec2 cp=vec2(q.x*1.5+t*.012,(q.y-S)*3.4)*2.2;
+    float n=fbm(cp);
+    float lit=clamp((n-fbm(cp+vec2(.0,.22)))*5.,-1.,1.);
+    float cov=smoothstep(S-.2,S+FADE*.8,uv.y);
+    float bank=smoothstep(.62-.66*cov,.8-.6*cov,n)*smoothstep(S-.24,S-.1,uv.y)*below;
+    float side=aspect>1.2?max(smoothstep(uText.z+.04,uText.z+.16,uv.x),1.-smoothstep(uText.x-.16,uText.x-.04,uv.x))*smoothstep(.05,.3,uv.y/max(S,.001))*step(uv.y,S):0.;
+    float cloud=clamp(bank+smoothstep(.52,.78,n)*side*.8,0.,1.);
+    vec3 cloudCol=mix(vec3(.80,.89,.98),vec3(1.),.6+.4*lit);
+    col=mix(col,mix(cloudCol,PAGE,smoothstep(.3,1.,g)),cloud*.94);
+    // Past the clouds, the page: exactly --bg, so the white between sky and sea has no seam.
+    paper=smoothstep(.55,1.,g)*step(S,uv.y);
+    col=mix(col,PAGE,paper);
+    // Above the sea, the white thins into a pale horizon haze, with a bright line at the surface.
+    float h=smoothstep(wl-HAZE,wl,uv.y);
+    col=mix(col,mix(PAGE,HORIZON,.85),h*h);
+    col+=vec3(1.)*.12*exp(-(wy-uv.y)*140.)*step(wl-HAZE,uv.y);
+    paper=max(paper,h);
   } else {
     // The sea: bright lagoon water under the surface, deepening as the footer comes in.
     float d=uv.y-wy;
@@ -137,8 +170,12 @@ void main(){
       }
     }
   }
+  // Mist over the surface, so the white page goes into the sea through soft wisps, not along a ruled line.
+  float mz=uv.y-wl;
+  float mist=fbm(vec2(q.x*1.7-t*.015,mz*7.)*2.);
+  col=mix(col,vec3(.93,.98,1.),smoothstep(.4,.72,mist)*exp(-mz*mz*420.)*.8);
   vec2 vc=uv-.5;
-  col*=1.-.24*dot(vc,vc);
+  col*=1.-.24*dot(vc,vc)*(1.-paper);
   col+=(hash(gl_FragCoord.xy+fract(t))-.5)/255.;
   gl_FragColor=vec4(col,1.);
 }`;
@@ -159,25 +196,30 @@ function compile(gl: WebGLRenderingContext, type: number, source: string): WebGL
 /** Presses on these never make bubbles: controls, and the glass objects floating in the water. */
 const NO_SPLASH = "a, button, input, textarea, select, label, summary, [role='button'], [role='dialog'], .widget, .glass, .glass-strong, [data-no-splash]";
 
-type Markers = { waterline: Element | null; text: Element | null; footer: Element | null };
+type Markers = { waterline: Element | null; sky: Element | null; text: Element | null; footer: Element | null };
 
 function visible(el: Element): boolean {
   const r = el.getBoundingClientRect();
   return r.width > 0 || r.height > 0;
 }
 
-function findMarkers(): Markers {
-  let waterline: Element | null = null;
+/** The visible marker with the highest priority (the attribute's value). */
+function strongest(attribute: string): Element | null {
+  let found: Element | null = null;
   let best = -Infinity;
-  for (const el of document.querySelectorAll("[data-waterline]")) {
-    const priority = Number(el.getAttribute("data-waterline")) || 0;
+  for (const el of document.querySelectorAll(`[${attribute}]`)) {
+    const priority = Number(el.getAttribute(attribute)) || 0;
     if (priority > best && visible(el)) {
       best = priority;
-      waterline = el;
+      found = el;
     }
   }
+  return found;
+}
+
+function findMarkers(): Markers {
   const text = Array.from(document.querySelectorAll("[data-sky-text]")).find(visible) ?? null;
-  return { waterline, text, footer: document.querySelector("body > footer, #contact") };
+  return { waterline: strongest("data-waterline"), sky: strongest("data-sky-end"), text, footer: document.querySelector("body > footer, #contact") };
 }
 
 export function World() {
@@ -210,6 +252,7 @@ export function World() {
       res: gl.getUniformLocation(program, "uRes"),
       time: gl.getUniformLocation(program, "uTime"),
       horizon: gl.getUniformLocation(program, "uHorizon"),
+      sky: gl.getUniformLocation(program, "uSky"),
       text: gl.getUniformLocation(program, "uText"),
       deep: gl.getUniformLocation(program, "uDeep"),
       scrollY: gl.getUniformLocation(program, "uScrollY"),
@@ -232,7 +275,8 @@ export function World() {
     const pointer = { x: 0.5, y: 0.3, tx: 0.5, ty: 0.3, on: 0, target: 0 };
     let markers = findMarkers();
     let markersAt = 0;
-    let wl = 0.62;
+    let whiteDrawn = false;
+    let wl = 9;
 
     const resize = () => {
       const scale = Math.min(window.devicePixelRatio || 1, 2) * (lowPower ? 0.4 : 0.55);
@@ -243,6 +287,7 @@ export function World() {
         canvas.width = w;
         canvas.height = h;
         gl.viewport(0, 0, w, h);
+        whiteDrawn = false;
       }
     };
 
@@ -261,14 +306,20 @@ export function World() {
       const rect = canvas.getBoundingClientRect();
       const H = Math.max(rect.height, 1);
       const W = Math.max(rect.width, 1);
-      // The waterline: under the marker, or above the screen (all water) when a page has none.
-      wl = markers.waterline ? (markers.waterline.getBoundingClientRect().top - rect.top) / H : -1;
+      // The waterline and the sky's end, or far off screen when a page has none.
+      wl = markers.waterline ? (markers.waterline.getBoundingClientRect().top - rect.top) / H : 9;
+      const sky = markers.sky ? (markers.sky.getBoundingClientRect().top - rect.top) / H : -9;
       let text = [0, 0, 0, 0];
       if (markers.text) {
         const r = markers.text.getBoundingClientRect();
         text = [(r.left - rect.left) / W, (r.top - rect.top) / H, (r.right - rect.left) / W, (r.bottom - rect.top) / H];
       }
       const footerTop = markers.footer ? (markers.footer.getBoundingClientRect().top - rect.top) / H : 99;
+
+      // Only the white page on screen: it's already drawn, so draw nothing until the sky or sea is back.
+      const white = sky + FADE < 0 && wl - HAZE > 1.02;
+      if (white && whiteDrawn) return;
+      whiteDrawn = white;
 
       pointer.x += (pointer.tx - pointer.x) * 0.08;
       pointer.y += (pointer.ty - pointer.y) * 0.08;
@@ -282,6 +333,7 @@ export function World() {
       gl.uniform2f(u.res, canvas.width, canvas.height);
       gl.uniform1f(u.time, t);
       gl.uniform1f(u.horizon, wl);
+      gl.uniform1f(u.sky, sky);
       gl.uniform4f(u.text, text[0], text[1], text[2], text[3]);
       gl.uniform2f(u.deep, footerTop - 0.15, footerTop + 0.7);
       gl.uniform1f(u.scrollY, window.scrollY / H);

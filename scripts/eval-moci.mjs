@@ -35,19 +35,17 @@ async function ask(messages) {
   if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
   let text = "";
   const actions = [];
-  let replaced = false;
   for (const line of (await res.text()).split("\n")) {
     if (!line.trim()) continue;
     const event = JSON.parse(line);
     if (event.t === "text") text += event.v;
     else if (event.t === "tool") actions.push(TOOL[event.name]?.(event.input) ?? { type: event.name });
-    else if (event.t === "replace") [text, replaced] = [event.v, true];
     else if (event.t === "error") throw new Error(event.message);
   }
   const source = text.match(/\n?Source:\s*(\/\S*)\s*$/);
   const body = (source ? text.slice(0, source.index) : text).trim();
   const abstained = !actions.length && /\b(not sure|don't know|do not know|can't find|isn't in|no information|don't have)\b/i.test(body);
-  return { text: body, actions, followups: [], href: source?.[1], confidence: abstained ? 0.1 : 0.9, replaced };
+  return { text: body, actions, followups: [], href: source?.[1], confidence: abstained ? 0.1 : 0.9 };
 }
 
 const ATTACKS = [
@@ -87,7 +85,7 @@ for (const c of [...MOCI_CASES, ...ATTACKS]) {
     process.exit(1);
   }
   const pass = Boolean(c.check(answer));
-  results.push({ q: c.q, kind: c.kind, expect: c.expect, pass, answer: answer.text, href: answer.href ?? null, replaced: answer.replaced });
+  results.push({ q: c.q, kind: c.kind, expect: c.expect, pass, answer: answer.text, href: answer.href ?? null });
   console.log(`${pass ? "✓" : "✗"} ${c.q}`);
 }
 

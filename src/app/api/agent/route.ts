@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { buildKnowledgeText } from "@/content/knowledge";
 import { identity } from "@/content/profile";
-import { PATHS, SAFE_ANSWER, claimProblems, dailyCap, validToolInput } from "@/features/agent/guards";
+import { PATHS, dailyCap, validToolInput } from "@/features/agent/guards";
 import { conversation } from "@/features/agent/history";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
 
@@ -14,8 +14,7 @@ import { clientKey, rateLimit } from "@/lib/rate-limit";
  * was done. Any failure (no API key, rate limit, refusal, outage) returns an error and the
  * browser answers with the offline brain instead (src/features/agent/brain.ts).
  *
- * Every finished answer goes through a claim check (features/agent/guards.ts); one that fails is
- * replaced before it's signed, and the browser swaps it out.
+ * Every finished answer is signed, so only Moci's own words can come back as history.
  *
  * Env: ANTHROPIC_API_KEY (required for the online brain), ANTHROPIC_MODEL (optional),
  * AGENT_DAILY_CAP (answers per day across all visitors, default 300).
@@ -110,9 +109,6 @@ Rules:
 Knowledge base:
 ${buildKnowledgeText()}`;
 
-/** What the claim check compares figures against: the same knowledge base the model reads. */
-const KNOWLEDGE = buildKnowledgeText();
-
 /** Signs Moci's answers. A per-process key is fine: losing it on a redeploy only means Moci forgets the earlier answers. */
 const { sign, parse: parseBody } = conversation(process.env.AGENT_HISTORY_SECRET || randomBytes(32).toString("hex"));
 
@@ -151,37 +147,9 @@ export async function POST(request: Request) {
     async start(controller) {
       let answer = "";
       const send = (event: Record<string, unknown>) => controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
-
-      // Text goes out a sentence at a time, and only after that sentence passes the claim check, so
-      // a claim that fails never reaches the screen. Once one fails, nothing more is shown.
-      let pending = "";
-      let shown = "";
-      let blocked: string[] = [];
-      const emit = (sentence: string) => {
-        if (blocked.length) return;
-        const problems = sentence.trim() ? claimProblems(sentence, KNOWLEDGE) : [];
-        if (problems.length) blocked = problems;
-        else {
-          shown += sentence;
-          send({ t: "text", v: sentence });
-        }
-      };
-      const release = (final: boolean) => {
-        for (;;) {
-          const end = pending.match(/[.!?]\s+|\n+/);
-          if (!end || end.index === undefined) break;
-          const cut = end.index + end[0].length;
-          if (cut === pending.length && !final) break; // the space after it may still be arriving
-          emit(pending.slice(0, cut));
-          pending = pending.slice(cut);
-        }
-        if (final && pending) emit(pending);
-        if (final) pending = "";
-      };
       const write = (delta: string) => {
         answer += delta;
-        pending += delta;
-        release(false);
+        send({ t: "text", v: delta });
       };
       try {
         for (let turn = 0; turn < MAX_TURNS; turn++) {
@@ -223,14 +191,8 @@ export async function POST(request: Request) {
           });
           messages.push({ role: "user", content: results });
         }
-        release(true);
-        // The whole answer is checked once more (a link can span sentences). If anything failed, the
-        // visitor gets the safe answer instead, and that's what is signed, so the failed text can't
-        // come back as history either.
-        const problems = blocked.length ? blocked : claimProblems(answer, KNOWLEDGE);
-        if (problems.length) send({ t: "replace", v: SAFE_ANSWER, problems });
         // Sign exactly what the visitor's screen now holds; that's what comes back as history.
-        send({ t: "done", sig: sign(problems.length ? SAFE_ANSWER : shown) });
+        send({ t: "done", sig: sign(answer) });
       } catch (error) {
         const message =
           error instanceof Anthropic.RateLimitError

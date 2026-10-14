@@ -5,8 +5,16 @@
  * it; on phones it sits under the water.
  */
 
+/* Words right on the water are navy: slate would sink into the blue. Glass brings its own back. */
 .gb-sea {
+  --muted: #0f2a44;
+  --accent-ink: #052a60;
   position: relative;
+}
+
+.gb-sea :is(.widget, .glass, .glass-strong) {
+  --muted: #4a6175;
+  --accent-ink: #0059b8;
 }
 
 .gb-water {

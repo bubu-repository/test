@@ -7,7 +7,7 @@ import { SiteFooter } from "@/features/shell/SiteFooter";
 import { SiteNav } from "@/features/shell/SiteNav";
 import { World } from "@/features/world/World";
 
-/** Shared by every page: the world (sky and sea) behind it all, the loading screen, skip link, floating nav, main landmark, footer, and the interactive chrome. */
+/** Shared by every page: the world (sky, page, sea) behind it all, the loading screen, skip link, floating nav, main landmark, the shore, footer, and the interactive chrome. */
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
@@ -18,6 +18,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <main id="main" tabIndex={-1} className="flex-1 outline-none">
         {children}
       </main>
+      {/* The shore: where the white page meets the sea, a strip of open water above the footer. */}
+      <div className="shore" data-waterline="1" aria-hidden="true" />
       <SiteFooter />
       <SiteChrome />
       <PreferencesSync />
