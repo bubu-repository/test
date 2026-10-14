@@ -54,6 +54,7 @@ const PEARL: Paint = {
 };
 const SUNNY: Paint = { stops: [[0, PEARL_SUN], [0.55, SUN], [1, SUN]] };
 const PINKY: Paint = { stops: [[0, PINK_SOFT], [0.42, PINK], [1, PINK]] };
+const PINK_FULL: Paint = { stops: [[0, PINK_SOFT], [0.22, PINK], [1, PINK]] };
 
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const circle = (cx: number, cy: number, r: number) => `M${r2(cx - r)} ${cy}a${r} ${r} 0 1 0 ${r2(2 * r)} 0a${r} ${r} 0 1 0 ${r2(-2 * r)} 0Z`;
@@ -146,7 +147,7 @@ function Body({ d, paint, shade = 0.16, rim = 0.85, children }: { d: string; pai
       <g clipPath={`url(#${id})`}>
         {shade > 0 && <Fill d={d} paint={{ stops: [[0, NAVY, 0], [0.5, NAVY, 0], [1, NAVY, shade]], from: [0.9, 0], to: [0.1, 1] }} />}
         {children}
-        {rim > 0 && <path d={d} fill="none" stroke={WHITE} strokeOpacity={rim} strokeWidth="2.8" />}
+        {rim > 0 && <path d={d} fill="none" stroke={WHITE} strokeOpacity={rim} strokeWidth="2.8" strokeLinejoin="round" />}
       </g>
     </>
   );
@@ -235,29 +236,48 @@ function Hello() {
   );
 }
 
-const CLOUD = "M28 75A13 13 0 1 1 40.46 58.3A17 17 0 1 1 61.71 41.48A14 14 0 0 1 81.94 55.46A11 11 0 0 1 75 75Z";
+const CLOUD = "M28 75A13 13 0 1 1 30.02 49.16A17 17 0 0 1 61.71 41.48A14 14 0 0 1 81.94 55.46A11 11 0 0 1 75 75Z";
 
 function Clouds() {
   return (
-    <g transform="translate(0 3)">
-      <Body d={circle(65, 31, 15.5)} paint={SUNNY} shade={0.1}>
-        <Gloss x={69} y={22.5} rx={5} ry={2.2} />
+    <g>
+      <Body d={circle(52, 44, 29)} paint={{ stops: [[0, AZURE], [0.55, SKY_2], [1, SKY]] }} shade={0.06}>
+        <circle cx="64" cy="31" r="17.5" fill={WHITE} opacity=".3" />
+        <Body d={circle(64, 31, 12.5)} paint={SUNNY} shade={0.1} rim={0.7}>
+          <Gloss x={67.5} y={24} rx={4.2} ry={1.8} dot={1.5} />
+        </Body>
       </Body>
-      <Body d={CLOUD} paint={{ stops: [[0, WHITE], [0.45, "#F2FBFF"], [1, SKY_2]] }} shade={0.2}>
-        <ellipse cx="50" cy="80" rx="40" ry="10" fill={AZURE} opacity=".45" />
-        <Gloss x={52} y={38.5} rx={6.5} ry={2.6} rot={20} />
-      </Body>
+      <g transform="translate(50 78) scale(.94) translate(-50 -75)">
+        <Body d={CLOUD} paint={{ stops: [[0, WHITE], [0.5, "#F4FCFF"], [1, SKY_2]] }} shade={0.16}>
+          <ellipse cx="50" cy="80" rx="40" ry="9" fill={AZURE} opacity=".4" />
+          <Gloss x={53} y={38.5} rx={6.5} ry={2.6} rot={20} />
+        </Body>
+      </g>
     </g>
   );
 }
 
+/** Booster foil: the pearl run stronger, so the pack holds its own at small sizes. */
+const FOIL: Paint = {
+  stops: [
+    [0, SKY_2],
+    [0.3, PINK_SOFT],
+    [0.55, LILAC],
+    [0.8, GLASS],
+    [1, PEARL_SUN],
+  ],
+  from: [0, 0],
+  to: [1, 1],
+};
 const PACK = `M30 22${"l2-4 2 4".repeat(10)}V78${"l-2 4-2-4".repeat(10)}Z`;
 
 function Pack() {
   return (
     <g transform="rotate(-9 50 50)">
-      <Body d={PACK} paint={PEARL} shade={0.14}>
+      <Body d={PACK} paint={FOIL} shade={0.14}>
         <Fill d="M28 16h44v70H28Z" paint={{ stops: [[0, NAVY, 0.12], [0.22, NAVY, 0], [0.8, NAVY, 0], [1, NAVY, 0.1]], from: [0, 0], to: [1, 0] }} />
+        <Fill d="M28 16h44v11.5H28Z" paint={{ stops: [[0, AQUA], [1, AZURE]] }} />
+        <Fill d="M28 72.5h44V86H28Z" paint={{ stops: [[0, AZURE], [1, BLUE]] }} />
         <Holo x={28} y={26} w={44} h={46} />
         <path d="M28 27.5h44M28 72.5h44" stroke={WHITE} strokeWidth="1.4" strokeOpacity=".9" />
         <path d="M28 29h44M28 74h44" stroke={NAVY} strokeWidth="1" strokeOpacity=".08" />
@@ -269,7 +289,7 @@ function Pack() {
         <path d="M58 18h9L44 84h-9Z" fill={WHITE} opacity=".32" />
         <Gloss x={63} y={33} rx={5} ry={2.2} rot={60} />
       </Body>
-      <Body d={circle(50, 50, 12.5)} paint={{ stops: [[0, AQUA], [0.55, AZURE], [1, BLUE]] }}>
+      <Body d={circle(50, 50, 12.5)} paint={PINKY}>
         <Gloss x={54.5} y={42.5} rx={4} ry={1.8} dot={1.3} />
       </Body>
       <Body d={roundPoly(starPts(50, 51, 3.4, five(7.6)), [0.22, 0.12])} paint={SUNNY} shade={0.06} rim={0} />
@@ -330,15 +350,17 @@ const NOTE_STEMS = "M44.5 71V46L63.5 41V67H60.5V47.8L47.5 51.2V71Z";
 function Dj() {
   return (
     <g transform="translate(0 -2)">
-      <Body d="M16.5 58A33.5 33.5 0 0 1 83.5 58H75.5A25.5 25.5 0 0 0 24.5 58Z" paint={{ ...PEARL, from: [0, 0.2], to: [1, 0.8] }}>
+      {/* White inside the band, so the die-cut has no hole between it and the notes. */}
+      <path d="M24.5 58A25.5 25.5 0 0 1 75.5 58V76H24.5Z" fill={WHITE} />
+      <Body d="M16.5 58A33.5 33.5 0 0 1 83.5 58H75.5A25.5 25.5 0 0 0 24.5 58Z" paint={{ stops: [[0, SKY], [0.45, AQUA], [1, AZURE]] }}>
         <Holo x={16} y={24} w={68} h={34} at={[0.2, 0.25, 0.6, 0.65, 0.9]} />
         <Gloss x={66} y={31} rx={5} ry={2} rot={42} />
       </Body>
-      <Body d={NOTE_STEMS} paint={PINKY} rim={0.6} />
-      <Body d={oval(40.5, 71.5, 6.2, 4.8)} paint={PINKY}>
+      <Body d={NOTE_STEMS} paint={PINK_FULL} rim={0.6} />
+      <Body d={oval(40.5, 71.5, 6.2, 4.8)} paint={PINK_FULL}>
         <circle cx="43" cy="69" r="1.3" fill={WHITE} />
       </Body>
-      <Body d={oval(56.5, 67.5, 6.2, 4.8)} paint={PINKY}>
+      <Body d={oval(56.5, 67.5, 6.2, 4.8)} paint={PINK_FULL}>
         <circle cx="59" cy="65" r="1.3" fill={WHITE} />
       </Body>
       {[13, 69].map((x) => (
@@ -385,7 +407,7 @@ const BOTTLE = "M34 36H57C63 36 66 41 70 43H77a2 2 0 0 1 2 2V55a2 2 0 0 1-2 2H70
 
 function Shell() {
   return (
-    <g transform="rotate(-32 52 50) translate(-1 0)">
+    <g transform="rotate(-32 52 50) translate(54 50) scale(1.07) translate(-55 -50)">
       <Body d={BOTTLE} paint={{ stops: [[0, "#F2FFFC"], [0.55, GLASS], [1, SEA]] }} shade={0.12}>
         <ellipse cx="42" cy="63" rx="24" ry="5" fill={SEA} opacity=".55" />
       </Body>
@@ -440,13 +462,13 @@ const WATER = "M14 77c5-5 11-5 16 0s11 5 16 0 11-5 16 0 11 5 16 0c3-3 6-4 8-3v6a
 function Passenger() {
   return (
     <g transform="rotate(-6 50 52)">
-      <Body d={SAIL_L} paint={PEARL} shade={0.22}>
+      <Body d={SAIL_L} paint={{ stops: [[0, PEARL_LILAC], [1, LILAC]] }} shade={0.12}>
         <Holo x={30} y={20} w={22} h={40} at={[0.3, 0.38, 0.7]} />
       </Body>
-      <Body d={SAIL_R} paint={{ stops: [[0, WHITE], [1, SKY]] }} shade={0.08}>
+      <Body d={SAIL_R} paint={{ stops: [[0, WHITE], [1, PEARL_PINK]] }} shade={0.06}>
         <Gloss x={55} y={34} rx={4.5} ry={1.6} rot={66} dot={1.4} />
       </Body>
-      <Body d={HULL} paint={{ stops: [[0, WHITE], [0.6, SKY], [1, SKY_2]] }} shade={0.18}>
+      <Body d={HULL} paint={{ stops: [[0, PEARL_PINK], [0.45, PINK_SOFT], [1, PINK]] }} shade={0.14}>
         <path d="M34 57 50 74 66 57" stroke={NAVY} strokeOpacity=".1" strokeWidth="1.4" fill="none" strokeLinejoin="round" />
         <path d="M34 57 50 72" stroke={WHITE} strokeOpacity=".8" strokeWidth="1.2" />
         <Gloss x={76} y={55.5} rx={4} ry={1.5} rot={-20} dot={1.3} />
@@ -557,8 +579,7 @@ function Wave() {
       <Face x={48} y={55} s={0.92} />
       {/* Waving. */}
       <g stroke={AQUA} strokeWidth="2.6" strokeLinecap="round" fill="none">
-        <path d="M82 22.5q4 4.5 3 10" />
-        <path d="M76.5 15.5q3.5 1 6 3.5" />
+        <path d="M71.8 26.5 70.4 22.6M78.6 27.8l2.3-3.4M82.6 33.3l3.9-.7" />
       </g>
     </g>
   );
@@ -606,23 +627,31 @@ function Tentacle({ d, paint }: { d: string; paint: Paint }) {
   );
 }
 
-const TAIL = "M44 77C45 67 45 59 43 53C30 51 20 43 15 30C25 35 39 35 50 42C61 35 75 35 85 30C80 43 70 51 57 53C55 59 55 67 56 77Z";
-const SPLASH = "M14 76c5-5.5 11-5.5 16-1 4-4.5 9-6 14-3 3-1.5 9-1.5 12 0 5-3 10-1.5 14 3 5-4.5 11-4.5 16 1v4a6 6 0 0 1-6 6H20a6 6 0 0 1-6-6Z";
+const TAIL = "M42 79C43 71 43 63 41 58C30 57 17 51 13 34C22 37 38 35 50 45C62 35 78 37 87 34C83 51 70 57 59 58C57 63 57 71 58 79Z";
+const SPLASH = "M14 80c4.5-5 10-5 14.5 0 4.5-5 10-5 14.5 0h14c4.5-5 10-5 14.5 0 4.5-5 10-5 14.5 0v1a5 5 0 0 1-5 5H19a5 5 0 0 1-5-5Z";
+const SPRAY = "M0-5.5c-1.7 2.8-3.6 4.6-3.6 7a3.6 3.6 0 0 0 7.2 0c0-2.4-1.9-4.2-3.6-7Z";
 
 function Konami() {
   return (
     <g>
       <Body d={TAIL} paint={{ stops: [[0, AQUA], [0.45, AZURE], [1, BLUE_DEEP]] }}>
-        <path d="M17 31c8 4 20 5 31 11.5" stroke={WHITE} strokeOpacity=".55" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        <Gloss x={72} y={37} rx={5.5} ry={2} rot={-22} dot={0} />
-        <circle cx="80.5" cy="34.5" r="1.7" fill={WHITE} />
+        <path d="M16 38c10 3 22 4 32 11" stroke={WHITE} strokeOpacity=".5" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+        <Gloss x={73} y={41} rx={6} ry={2.2} rot={-14} dot={0} />
+        <circle cx="82.5" cy="39.5" r="1.8" fill={WHITE} />
       </Body>
+      {[
+        [34, 72, -28],
+        [66, 72, 28],
+        [15.5, 25, -10],
+      ].map(([x, y, r]) => (
+        <g key={x} transform={`translate(${x} ${y}) rotate(${r})`}>
+          <Body d={SPRAY} paint={{ stops: [[0, SKY], [1, AQUA]] }} rim={0.6} />
+        </g>
+      ))}
       <Body d={SPLASH} paint={{ stops: [[0, SKY], [0.45, AQUA], [1, AZURE]] }} shade={0.12}>
-        <Gloss x={67} y={74} rx={4} ry={1.4} rot={-8} dot={1.2} />
+        <Gloss x={74} y={78} rx={4} ry={1.4} rot={-8} dot={1.2} />
       </Body>
-      <Body d={circle(24, 22, 2.8)} paint={{ stops: [[0, SKY], [1, AQUA]] }} rim={0.6} />
-      <Body d={circle(17, 20, 1.8)} paint={{ stops: [[0, SKY], [1, AQUA]] }} rim={0} />
-      <Glint x={72} y={19} r={7.5} />
+      <Glint x={74} y={20} r={7.5} />
     </g>
   );
 }
