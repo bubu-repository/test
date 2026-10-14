@@ -48,7 +48,7 @@ const STEPS: { id: Step; name: string }[] = [
 
 const COLORS = ["#FF7EB6", "#FFD6E8", "#1FB0F0", "#93DCFB", "#22CDB0", "#9474FF", "#FFBE1F", "#4FD566", "#0B1F33", "#FFFFFF"];
 const PEN = ["#FF7EB6", "#1A8FE8", "#FFBE1F", "#22CDB0", "#0B1F33", "#FFFFFF"];
-const LIGHT = { x: 0.3, y: 0.2 };
+const LIGHT = { x: 0.5, y: 0.5 };
 
 /** Live preview of a filter on the camera, close to what the CPU filter does to the still. */
 const CSS_FILTER: Record<FilterId, string> = {
