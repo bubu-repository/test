@@ -105,7 +105,7 @@ function destinations(): { label: string; href: string }[] {
     { label: "home", href: "/" },
     { label: "work projects portfolio", href: "/work" },
     { label: "cv resume", href: "/about" },
-    ...labItems.filter((l) => l.where === "subdomain").map((l) => ({ label: l.name, href: "/lab" })),
+    ...labItems.filter((l) => l.onLab).map((l) => ({ label: l.name, href: l.action.type === "navigate" ? l.action.href : "/lab" })),
   ];
 }
 

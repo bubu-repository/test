@@ -160,7 +160,7 @@ export function SiteNav() {
 
   return (
     <header ref={headerRef} className="site-header pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-2 pt-3 md:pt-4">
-      <nav ref={dockRef} aria-label="Primary" data-tour="dock" data-xr="Dock · app icons with magnification" className="dock glass-strong pointer-events-auto">
+      <nav ref={dockRef} aria-label="Primary" data-tour="dock" className="dock glass-strong pointer-events-auto">
         <DockItem href="/" label="Home" bg={TILE.white} fg="#0B1F33" active={pathname === "/"} cursor="Home">
           <span className="text-[calc(22px*var(--m,1))] leading-none font-bold tracking-[-0.06em]">
             a<span className="text-accent">.</span>

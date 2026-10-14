@@ -1,0 +1,876 @@
+/*
+ * ---------- The Studio (features/studio) ----------
+ * A craft table: the piece lies on a pastel self-healing cutting mat with printed rulers, lit from
+ * the top left, and a frosted-acrylic panel beside it walks through five steps. On phones the mat
+ * sits on top and the panel follows.
+ */
+
+.studio {
+  display: grid;
+  gap: 20px;
+}
+
+@media (width >= 64rem) {
+  .studio {
+    grid-template-columns: minmax(0, 1.3fr) minmax(360px, 0.7fr);
+    align-items: start;
+    gap: 28px;
+  }
+
+  .studio__stage {
+    position: sticky;
+    top: 96px;
+  }
+}
+
+/* ---------- The cutting mat ---------- */
+.studio__mat {
+  --lx: 30%;
+  --ly: 20%;
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: clamp(380px, 62vh, 720px);
+  padding: clamp(36px, 5vw, 64px) clamp(20px, 4vw, 56px) clamp(24px, 4vw, 48px);
+  border-radius: 30px;
+  overflow: hidden;
+  background:
+    /* 5 cm lines */
+    linear-gradient(rgba(16, 118, 150, 0.18) 1.5px, transparent 1.5px) 0 0 / 100% 160px,
+    linear-gradient(90deg, rgba(16, 118, 150, 0.18) 1.5px, transparent 1.5px) 0 0 / 160px 100%,
+    /* 1 cm lines */
+    linear-gradient(rgba(16, 118, 150, 0.09) 1px, transparent 1px) 0 0 / 100% 32px,
+    linear-gradient(90deg, rgba(16, 118, 150, 0.09) 1px, transparent 1px) 0 0 / 32px 100%,
+    /* the mat itself: soft aqua, a little lighter where the lamp is */
+    radial-gradient(120% 90% at 22% 8%, #e8fbff 0%, #ccf0f7 46%, #b6e6f0 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -3px 0 rgba(16, 98, 128, 0.12),
+    inset 0 0 0 1px rgba(16, 98, 128, 0.08),
+    0 1px 2px rgba(8, 40, 80, 0.08),
+    0 18px 40px -12px rgba(8, 60, 110, 0.28);
+}
+
+/* Fine grain, so the mat reads as rubber, not as a flat fill. */
+.studio__mat::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--grain);
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* The printed rulers along the top and the left edge. */
+.studio__ruler {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.studio__ruler--top {
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 22px;
+  background:
+    repeating-linear-gradient(90deg, rgba(10, 70, 100, 0.55) 0 1.5px, transparent 1.5px 32px) 0 0 / 100% 12px no-repeat,
+    repeating-linear-gradient(90deg, rgba(10, 70, 100, 0.35) 0 1px, transparent 1px 6.4px) 0 0 / 100% 6px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.35));
+  border-bottom: 1px solid rgba(16, 98, 128, 0.14);
+}
+
+.studio__ruler--left {
+  top: 22px;
+  bottom: 0;
+  left: 0;
+  width: 22px;
+  background:
+    repeating-linear-gradient(rgba(10, 70, 100, 0.55) 0 1.5px, transparent 1.5px 32px) 0 0 / 12px 100% no-repeat,
+    repeating-linear-gradient(rgba(10, 70, 100, 0.35) 0 1px, transparent 1px 6.4px) 0 0 / 6px 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.35));
+  border-right: 1px solid rgba(16, 98, 128, 0.14);
+}
+
+/* ---------- The piece on the mat ---------- */
+.studio__piece {
+  --h: clamp(300px, 54vh, 620px);
+  position: relative;
+  z-index: 2;
+  width: min(100%, calc(var(--h) * var(--ar, 0.8)));
+  container-type: inline-size;
+  touch-action: manipulation;
+  opacity: 0;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+.studio__piece[data-ready] {
+  opacity: 1;
+}
+
+.studio__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  /* Lifted off the mat: a tight contact shadow and a soft one, both navy. */
+  filter: drop-shadow(0 1px 1px rgba(8, 40, 80, 0.18)) drop-shadow(0 14px 22px rgba(8, 40, 80, 0.22));
+}
+
+.studio__piece[data-layout="sticker"] .studio__canvas {
+  border-radius: 0;
+  filter: none;
+}
+
+.studio__piece[data-layout="tcg"] .studio__canvas {
+  border-radius: 4.5% / 3.2%;
+}
+
+/* The lamp: a soft highlight that follows the pointer over the piece. */
+.studio__sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: radial-gradient(40% 32% at var(--lx) var(--ly), rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 70%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-short) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .studio__mat:hover .studio__sheen {
+    opacity: 1;
+  }
+}
+
+.studio__piece[data-layout="sticker"] .studio__sheen {
+  display: none;
+}
+
+/* Pen strokes live on their own layer, which only takes the pointer while the pen is picked. */
+.studio__ink {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.studio__ink[data-tool="pen"] {
+  pointer-events: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.studio__item {
+  position: absolute;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: none;
+  translate: -50% -50%;
+  cursor: grab;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.studio__item:active {
+  cursor: grabbing;
+}
+
+.studio__item[data-tool="pen"] {
+  pointer-events: none;
+}
+
+.studio__item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 3px rgba(8, 40, 80, 0.28));
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.studio__item[data-selected] {
+  outline: 2px dashed var(--accent);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.studio__item:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.studio__words {
+  display: block;
+  font-family: "Gochi Hand", "Comic Sans MS", cursive;
+  font-size: var(--fs, 7cqi);
+  line-height: 1;
+  white-space: nowrap;
+  -webkit-text-stroke: calc(var(--fs, 7cqi) * 0.11) #ffffff;
+  paint-order: stroke fill;
+}
+
+/* The disposable camera's date, burned into the corner. */
+.studio__stamp {
+  position: absolute;
+  right: 5%;
+  bottom: 2.5%;
+  z-index: 3;
+  font: 700 max(10px, 4.2cqi) / 1 ui-monospace, "JetBrains Mono", monospace;
+  color: #ff9a2e;
+  text-shadow: 0 0 0.5em rgba(255, 120, 20, 0.85);
+  white-space: pre;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.studio__busy {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 10px;
+  border-radius: 999px;
+  translate: -50% 0;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--lift-sm);
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.studio__busy::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  animation: studio-pulse 900ms var(--ease-in-out) infinite alternate;
+}
+
+.studio__privacy {
+  margin-top: 12px;
+  text-align: center;
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+/* ---------- The camera ---------- */
+.studio__viewfinder {
+  position: relative;
+  z-index: 2;
+  width: min(100%, calc(clamp(300px, 54vh, 620px) * var(--ar, 1)));
+  overflow: hidden;
+  border-radius: 18px;
+  background: #0b1f33;
+  box-shadow:
+    0 0 0 6px #ffffff,
+    0 16px 30px rgba(8, 40, 80, 0.3);
+}
+
+.studio__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scale: -1 1;
+}
+
+.studio__count {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: clamp(80px, 16vw, 160px);
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+  animation: pop-in 300ms var(--ease-out) both;
+}
+
+.studio__flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  animation: studio-flash 420ms var(--ease-out) forwards;
+  pointer-events: none;
+}
+
+@keyframes studio-flash {
+  from {
+    opacity: 0.95;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.studio__hint {
+  position: absolute;
+  inset: auto 0 16px;
+  text-align: center;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.studio__empty {
+  position: relative;
+  z-index: 2;
+  max-width: 340px;
+  padding: 28px 26px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--bevel), var(--lift);
+  text-align: center;
+}
+
+/* ---------- The panel ---------- */
+.studio__panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.studio__tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
+  margin: 12px 12px 0;
+  padding: 4px;
+  border-radius: 20px;
+  background: var(--surface-2);
+  box-shadow: var(--recess);
+}
+
+/* Each step: its number over its name, so all five fit side by side even on a phone. */
+.studio__tab {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  min-height: 54px;
+  padding: 6px 2px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted);
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+
+.studio__tab:hover {
+  color: var(--ink);
+}
+
+.studio__tab[aria-selected="true"] {
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: var(--bevel), var(--lift-sm);
+}
+
+.studio__tab:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.studio__tab-n {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-ink);
+}
+
+.studio__tab[aria-selected="true"] .studio__tab-n {
+  background: var(--accent-strong);
+  color: #ffffff;
+}
+
+.studio__body {
+  display: grid;
+  align-content: start;
+  gap: 20px;
+  min-height: 420px;
+  padding: 20px;
+}
+
+.studio__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: var(--text-14);
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.studio__nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px 16px;
+  border-top: 1px solid var(--line);
+}
+
+/* Native inputs stay in the page for keyboards and screen readers; the label is what you see. */
+:is(.seg__opt, .chip-opt, .studio__font, .studio__material, .studio__layout) > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+:is(.seg__opt, .chip-opt, .studio__font, .studio__material, .studio__layout):has(input:focus-visible) {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* A segmented control, like iOS. */
+.seg {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: var(--recess);
+}
+
+.seg__opt {
+  position: relative;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.seg__opt > span {
+  display: block;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: var(--text-14);
+  font-weight: 600;
+  color: var(--muted);
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    color var(--dur-micro) var(--ease-out);
+}
+
+.seg__opt:has(input:checked) > span {
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: var(--bevel), var(--lift-sm);
+}
+
+.studio__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip-opt {
+  position: relative;
+  cursor: pointer;
+  border-radius: 999px;
+}
+
+.chip-opt > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: var(--text-14);
+  font-weight: 600;
+  transition:
+    border-color var(--dur-micro) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out);
+}
+
+.chip-opt:hover > span {
+  background: #ffffff;
+}
+
+.chip-opt:has(input:checked) > span {
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--accent-ink);
+}
+
+/* Lettering choices: "Aa" in each face. */
+.studio__fonts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.studio__font,
+.studio__material {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 10px 4px 8px;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out);
+}
+
+.studio__font:hover,
+.studio__material:hover {
+  background: #ffffff;
+}
+
+.studio__font:has(input:checked),
+.studio__material:has(input:checked) {
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.studio__font-aa {
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.studio__font-name,
+.studio__material-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.studio__materials {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.studio__swatch {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  background: radial-gradient(90% 90% at 30% 20%, #f4fbff, #dcf0fa);
+}
+
+.studio__swatch img {
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
+}
+
+.studio__swatch-wait {
+  width: 40%;
+  height: 40%;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  animation: studio-pulse 900ms var(--ease-in-out) infinite alternate;
+}
+
+.studio__colors {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+.gb-swatch[data-on] > span[aria-hidden] {
+  box-shadow:
+    inset 0 -2px 4px rgba(0, 0, 0, 0.12),
+    0 0 0 2px #ffffff,
+    0 0 0 4.5px #1a8fe8;
+}
+
+.studio__custom {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+}
+
+.studio__custom input {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: conic-gradient(#ff5fa8, #ffbe1f, #4fd566, #1fb0f0, #9474ff, #ff5fa8);
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 2px 6px rgba(4, 40, 110, 0.25);
+  cursor: pointer;
+}
+
+.studio__custom input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.studio__custom input::-webkit-color-swatch {
+  border: 0;
+  border-radius: 999px;
+  opacity: 0;
+}
+
+.studio__layouts {
+  display: grid;
+  gap: 6px;
+}
+
+.studio__layout {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+.studio__layout:hover {
+  background: #ffffff;
+}
+
+.studio__layout:has(input:checked) {
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* Little drawings of each layout. */
+.studio__layout-icon {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 44px;
+}
+
+.studio__layout-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #4fb0f2, #cff2ff);
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 2px 6px rgba(8, 40, 80, 0.25);
+}
+
+.studio__layout-icon[data-layout="card"]::before {
+  width: 30px;
+  height: 38px;
+}
+
+.studio__layout-icon[data-layout="strip"]::before {
+  width: 16px;
+  height: 44px;
+  background: repeating-linear-gradient(#ffffff 0 2px, #7fd7f5 2px 10px, #ffffff 10px 11px);
+}
+
+.studio__layout-icon[data-layout="id"]::before {
+  width: 40px;
+  height: 28px;
+  background:
+    linear-gradient(90deg, transparent 0 2px, #1f5fd0 2px 9px, transparent 9px 12px, #1f5fd0 12px 19px, transparent 19px 22px, #1f5fd0 22px 29px, transparent 29px 32px, #1f5fd0 32px 39px, transparent 39px) 0 3px / 100% 10px no-repeat,
+    linear-gradient(90deg, transparent 0 2px, #1f5fd0 2px 9px, transparent 9px 12px, #1f5fd0 12px 19px, transparent 19px 22px, #1f5fd0 22px 29px, transparent 29px 32px, #1f5fd0 32px 39px, transparent 39px) 0 15px / 100% 10px no-repeat,
+    #ffffff;
+}
+
+.studio__layout-icon[data-layout="tcg"]::before {
+  width: 30px;
+  height: 42px;
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, #cff2ff, #cff2ff) 4px 7px / 22px 16px no-repeat,
+    linear-gradient(135deg, #ffb3d9, #b5e8ff, #c9b8ff, #ffe9a6);
+}
+
+.studio__layout-icon[data-layout="sticker"]::before {
+  width: 34px;
+  height: 34px;
+  border-radius: 50% 46% 52% 44%;
+  background: #ff5fa8;
+  box-shadow:
+    0 0 0 4px #ffffff,
+    0 3px 8px rgba(8, 40, 80, 0.3);
+}
+
+.studio__tray {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.studio__tray-item {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  transition:
+    transform var(--dur-micro) var(--ease-out),
+    background-color var(--dur-micro) var(--ease-out);
+}
+
+.studio__tray-item:hover {
+  background: #ffffff;
+  transform: rotate(-6deg) scale(1.06);
+}
+
+.studio__tray-item:active {
+  transform: scale(0.94);
+}
+
+.studio__tray-item img {
+  width: 80%;
+  height: 80%;
+  filter: drop-shadow(0 2px 2px rgba(8, 40, 80, 0.25));
+}
+
+.studio__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-14);
+  cursor: pointer;
+}
+
+.studio__check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent-strong);
+}
+
+.studio__range {
+  width: 100%;
+  accent-color: var(--accent-strong);
+}
+
+.studio__slider {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-14);
+  font-weight: 600;
+}
+
+.studio__shots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.studio__shots li {
+  position: relative;
+}
+
+.studio__shot {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 3px #ffffff,
+    0 3px 8px rgba(8, 40, 80, 0.25);
+}
+
+.studio__shot-x {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1;
+}
+
+@media (width < 30rem) {
+  .studio__materials {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .studio__tray {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .studio__body {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio__tray-item:hover {
+    transform: none;
+  }
+}
+
+@keyframes studio-pulse {
+  from {
+    opacity: 0.35;
+    scale: 0.85;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* Phones: the piece stays in view at the top while the steps scroll under it, like a photo editor. */
+@media (width < 64rem) {
+  .studio__stage {
+    position: sticky;
+    top: 78px;
+    z-index: 5;
+  }
+
+  .studio__mat {
+    min-height: 0;
+    padding: 30px 14px 16px 28px;
+    border-radius: 24px;
+  }
+
+  .studio__piece,
+  .studio__viewfinder {
+    --h: clamp(220px, 36svh, 380px);
+  }
+
+  .studio__viewfinder {
+    width: min(100%, calc(clamp(220px, 36svh, 380px) * var(--ar, 1)));
+  }
+
+  .studio__privacy {
+    display: none;
+  }
+}

@@ -19,7 +19,7 @@ function CardList({ title, items }: { title: string; items: readonly string[] })
 /** The playful self-description: who she is, written as an ML model card. (Lab.) CONTOH — ganti dengan data asli */
 export function ModelCard() {
   return (
-    <div className="widget rounded-[28px] p-6 md:p-10" data-xr="Model card · rendered from content/profile.ts">
+    <div className="widget rounded-[28px] p-6 md:p-10">
       <div className="flex flex-wrap items-center gap-3 border-b border-line pb-6">
         <span className="font-mono text-20 font-semibold">adelia-tiara</span>
         <span className="chip" data-tone="magenta">

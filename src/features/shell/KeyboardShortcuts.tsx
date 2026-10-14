@@ -23,6 +23,8 @@ export function isEditable(target: EventTarget | null) {
   return el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.closest("[role='application']") !== null;
 }
 
+const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
+
 export function KeyboardShortcuts() {
   useEffect(() => {
     ui.set({ keys: readJSON("adelia:keys", true) });
@@ -31,8 +33,23 @@ export function KeyboardShortcuts() {
 
   useEffect(() => {
     let goPending = 0;
+    let konami = 0;
 
     const onKeyDown = (event: KeyboardEvent) => {
+      // The cheat code from the terminal's .secret. Its B and A don't open anything on the way.
+      if (!isEditable(event.target) && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        const k = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+        konami = k === KONAMI[konami] ? konami + 1 : k === "ArrowUp" ? (konami === 2 ? 2 : 1) : 0;
+        if (konami >= KONAMI.length - 1) {
+          event.preventDefault();
+          if (konami === KONAMI.length) {
+            konami = 0;
+            window.dispatchEvent(new Event("site:konami"));
+          }
+          return;
+        }
+      }
+
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         ui.set((s) => ({ overlay: s.overlay === "palette" ? null : "palette" }));

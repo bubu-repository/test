@@ -67,7 +67,7 @@ export default function WorkPage() {
           <li>
             <Link href="/lab" className="widget block h-full p-6">
               <span className="text-18 font-bold">The lab</span>
-              <span className="mt-1 block text-14 text-muted">Prototypes and toys: interaction experiments, a terminal, a game, and the work as trading cards.</span>
+              <span className="mt-1 block text-14 text-muted">A studio that turns your words or a photo into felt, jelly or chrome, one booster pack a day, and the JD matcher.</span>
             </Link>
           </li>
           <li>

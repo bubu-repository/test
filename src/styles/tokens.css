@@ -1,6 +1,6 @@
 /*
  * Design tokens for the main site.
- * The values live in packages/tokens (shared with every *.adelia.cc experiment).
+ * The values live in packages/tokens.
  * Do not declare tokens here; edit packages/tokens/tokens.css instead.
  */
 @import "@adelia/tokens/tokens.css";

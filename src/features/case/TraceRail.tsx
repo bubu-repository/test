@@ -58,7 +58,7 @@ export function TraceRail({ steps, slug }: { steps: TraceStep[]; slug: string })
         <div className="h-full origin-left bg-accent" style={{ transform: `scaleX(${progress})` }} />
       </div>
 
-      <nav aria-label="Case study steps" className="sticky top-28 hidden self-start lg:block" data-xr="TraceRail · IntersectionObserver">
+      <nav aria-label="Case study steps" className="sticky top-28 hidden self-start lg:block">
         <p className="type-pixel text-muted">Contents</p>
         <ol className="relative mt-4 space-y-1 border-l-2 border-dashed border-line pl-5">
           <span aria-hidden="true" className="absolute top-0 -left-[2px] w-[2px] bg-accent transition-[height] duration-300" style={{ height: `${progress * 100}%` }} />

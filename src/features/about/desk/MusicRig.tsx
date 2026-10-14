@@ -54,7 +54,7 @@ export function Monitor({ children }: { children?: ReactNode }) {
   }, []);
 
   return (
-    <div className="monitor" data-xr="Monitor · the YouTube player for the DAC">
+    <div className="monitor">
       <div className="monitor__bezel">
         <div className="monitor__screen">
           {/* The player is created in here by dac-store; React never renders inside it. */}
@@ -111,7 +111,7 @@ export function Dac() {
   const single = playlist.length < 2;
 
   return (
-    <div className="dac" role="group" aria-label="DAC: the songs on her desk" data-playing={playing || undefined} data-xr="Dac · YouTube IFrame API behind hardware keys">
+    <div className="dac" role="group" aria-label="DAC: the songs on her desk" data-playing={playing || undefined}>
       <div className="dac__display">
         <p className="dac__title" aria-live="polite">
           {song.title}

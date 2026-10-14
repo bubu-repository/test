@@ -110,7 +110,12 @@ The pink of reference image 5 is retired.
    place until her songs arrive. The synth MP3 player is gone; the CD shelf of games stays.)
 3. The guestbook aquarium. (Done, as the open sea: the world became one seamless sky and sea
    behind every page at the same time. The widgets stay, restyled as frosted acrylic.)
-4. The Lab: Studio, booster pack, cleanup of the old experiments.
+4. The Lab: Studio, booster pack, cleanup of the old experiments. (Done. The Studio has the fifteen
+   materials, eight fonts with hand jitter, seven camera filters, five layouts, stickers, words, pen
+   and date stamp, and PNG, GIF and boomerang export, all in the browser. Today's pack replaced the
+   product packs. Gone: the five subdomain experiments and their build and routing, the toy box,
+   the gumball machine, the Context Window console, the leftover X-ray annotations and the stickers
+   no one could earn any more. Widgets stay. The Konami code works again: it sends a whale.)
 
 ## Waiting on Adelia
 

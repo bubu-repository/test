@@ -224,7 +224,7 @@ export function ResampleSentence({ controls = true, className }: { controls?: bo
   const T = (i: number) => <Token slot={SLOTS[i]} choice={choices[i]} onChoose={(o) => choose(i, o)} first={i === 0} color={COLORS[i]} />;
 
   return (
-    <div data-xr="ResampleSentence · top-k sampling with temperature">
+    <div>
       <p className={cn("resample-sentence text-muted", className)}>
         I {T(0)} {T(1)} people can <span className="whitespace-nowrap">{T(2)},</span> from the {T(3)} to the {T(4)}.
       </p>

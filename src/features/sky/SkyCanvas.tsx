@@ -183,7 +183,6 @@ export function SkyCanvas({ className }: { className?: string }) {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      data-xr="SkyCanvas · fBm clouds in GLSL, cover from Bekasi's live weather"
       className={cn("pointer-events-none absolute inset-0 h-full w-full opacity-0 transition-opacity duration-700", className)}
     />
   );

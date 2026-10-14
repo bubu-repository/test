@@ -21,21 +21,20 @@ export type StickerDef = {
 
 export const STICKERS: StickerDef[] = [
   { id: "hello", name: "First hello", hint: "Visit the home page.", emoji: "👋" },
-  { id: "clouds", name: "Cloud parter", hint: "Part the clouds in the home sky with your cursor.", emoji: "☁️" },
-  { id: "night", name: "Night owl", hint: "Switch to the night sky.", emoji: "🦉" },
-  { id: "pack", name: "Pack opener", hint: "Tear open the booster pack.", emoji: "🎴" },
+  { id: "clouds", name: "Cloud parter", hint: "Part the clouds on her phone in the Lab.", emoji: "☁️" },
+  { id: "pack", name: "Pack opener", hint: "Tear open today's pack in the Lab.", emoji: "🎴" },
+  { id: "rare", name: "Holo rare", hint: "Find a holo rare in a daily pack.", emoji: "🌈" },
+  { id: "studio", name: "Maker", hint: "Make something in the Studio and save it.", emoji: "✂️" },
   { id: "collector", name: "Card collector", hint: "Read all four case studies.", emoji: "🃏" },
-  { id: "gacha", name: "Lucky capsule", hint: "Get a capsule from the gumball machine.", emoji: "🍬" },
   { id: "shell", name: "Shell native", hint: "Run five commands in the terminal.", emoji: "⌨️" },
   { id: "speed", name: "Speed reader", hint: "Finish the 40-second brief.", emoji: "⏱️" },
   { id: "passenger", name: "Passenger", hint: "Ride the autopilot tour to the end.", emoji: "🛸" },
   { id: "curious", name: "Curious mind", hint: "Ask Moci a question.", emoji: "💬" },
   { id: "sampler", name: "Temperature check", hint: "Resample the headline five times.", emoji: "🎲" },
   { id: "lost", name: "Lost & found", hint: "Find a page that doesn't exist.", emoji: "🧭" },
-  { id: "context", name: "Long context", hint: "Score 20 in Context Window.", emoji: "🐍" },
+  { id: "dj", name: "Desk DJ", hint: "Play a song on the DAC on her desk.", emoji: "🎧" },
   { id: "wave", name: "Hello neighbour", hint: "Wave at another visitor.", emoji: "🌊" },
   { id: "signed", name: "Signed", hint: "Release a creature in the guestbook.", emoji: "✍️" },
-  { id: "xray", name: "X-ray vision", hint: "See how the page is built.", emoji: "🩻" },
   { id: "konami", name: "Cheat code", hint: "A classic code, entered anywhere.", emoji: "🎮", secret: true },
 ];
 

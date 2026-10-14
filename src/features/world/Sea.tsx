@@ -56,7 +56,7 @@ export function Sea({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="sea" onPointerDown={splash} data-cursor="Splash" data-xr="Sea · ocean card: CSS mask swell + Web Audio ambience">
+    <div className="sea" onPointerDown={splash} data-cursor="Splash">
       <div className="sea__sky" aria-hidden="true">
         <div className="sky__clouds sky__clouds--far" />
       </div>

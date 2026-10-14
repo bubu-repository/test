@@ -1,8 +1,9 @@
 "use client";
 
-import { ViewTransition, useRef, useState, type ReactNode } from "react";
+import { ViewTransition, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Project } from "@/content/projects";
 import { sfx } from "@/lib/sound";
+import { collect } from "@/lib/stickers";
 import { PageHeader } from "@/components/PageHeader";
 import { ProjectIcon } from "../work/ProjectIcon";
 import { CaseChat, type CaseChatHandle } from "./CaseChat";
@@ -20,6 +21,11 @@ export function CaseStudyShell({ project, next, index, total, cover, children }:
   const [firstQuestion, setFirstQuestion] = useState<string | undefined>();
   const chatRef = useRef<CaseChatHandle>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+
+  // Read all of them and the card collector's sticker is yours.
+  useEffect(() => {
+    collect("cases", project.slug, total, "collector");
+  }, [project.slug, total]);
 
   const go = (next: Mode, question?: string) => {
     sfx.tick();

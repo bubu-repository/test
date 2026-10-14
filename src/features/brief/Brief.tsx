@@ -47,7 +47,7 @@ export function Brief() {
 
   return (
     <Dialog open={open} onClose={close} labelledBy={titleId} className="max-w-[min(760px,calc(100vw-24px))]">
-      <div className="widget max-h-[calc(100dvh-24px)] overflow-y-auto" data-xr="Brief · dialog + SVG timer">
+      <div className="widget max-h-[calc(100dvh-24px)] overflow-y-auto">
         <header className="flex items-center gap-4 rounded-t-card border-b border-line px-5 py-5 md:px-7">
           <div className="relative grid size-16 shrink-0 place-items-center">
             <svg viewBox="0 0 64 64" className="absolute inset-0 -rotate-90" aria-hidden="true">

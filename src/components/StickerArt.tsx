@@ -57,16 +57,6 @@ export const STICKER_ART: Record<string, ReactNode> = {
       <path d="M40 34a14 14 0 0 1 12-6" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" fill="none" />
     </g>
   ),
-  // A crescent moon with a star.
-  night: (
-    <g>
-      <path d="M66 68A28 28 0 0 1 38 22a28 28 0 1 0 28 46Z" fill={YELLOW} stroke={YELLOW_DEEP} strokeWidth="3.5" strokeLinejoin="round" />
-      <circle cx="34" cy="56" r="4" fill="#DDB04A" />
-      <circle cx="44" cy="68" r="2.6" fill="#DDB04A" />
-      <path d="M28 36a20 20 0 0 1 8-10" stroke="#FFF3B0" strokeWidth="3" strokeLinecap="round" fill="none" />
-      {spark(70, 30, 11, PINK)}
-    </g>
-  ),
   // A booster pack with crimped ends and a star.
   pack: (
     <g transform="rotate(-9 50 50)">
@@ -74,6 +64,44 @@ export const STICKER_ART: Record<string, ReactNode> = {
       <path d="M30 26h40M30 74h40" stroke="#FFFFFF" strokeOpacity=".6" strokeWidth="2" strokeDasharray="3 3" />
       <path d="M38 30h6v40h-6Z" fill="#FFFFFF" opacity=".28" />
       <path d="M50 38l3.2 7.4 8 .7-6 5.3 1.8 7.8L50 55l-7 4.2 1.8-7.8-6-5.3 8-.7Z" fill={YELLOW} stroke={YELLOW_DEEP} strokeWidth="1.6" strokeLinejoin="round" />
+    </g>
+  ),
+  // A holo trading card with a star, the foil a little rainbow.
+  rare: (
+    <g transform="rotate(8 50 50)">
+      <defs>
+        <linearGradient id="sticker-rare-foil" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#FFB3D9" />
+          <stop offset=".35" stopColor="#B5E8FF" />
+          <stop offset=".65" stopColor="#C9B8FF" />
+          <stop offset="1" stopColor="#FFE9A6" />
+        </linearGradient>
+      </defs>
+      <rect x="29" y="16" width="42" height="64" rx="6" fill="url(#sticker-rare-foil)" stroke={PURPLE_DEEP} strokeWidth="3" />
+      <rect x="34" y="22" width="32" height="28" rx="3" fill="#FFFFFF" opacity=".7" />
+      <path d="M50 27l3 6.6 7.2.6-5.4 4.8 1.6 7L50 42.3 43.6 46l1.6-7-5.4-4.8 7.2-.6Z" fill={YELLOW} stroke={YELLOW_DEEP} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M36 58h28M36 64h18" stroke={PURPLE_DEEP} strokeWidth="2.6" strokeLinecap="round" opacity=".55" />
+      <path d="M33 74 66 20" stroke="#FFFFFF" strokeWidth="5" opacity=".45" />
+    </g>
+  ),
+  // A felt heart with a running stitch, cut a little wonky.
+  studio: (
+    <g transform="rotate(-6 50 50)">
+      <path d="M50 80C30 66 18 54 18 39c0-10 7-17 16-17 7 0 12 4 16 10 4-6 9-10 16-10 9 0 16 7 16 17 0 15-12 27-32 41Z" fill={PINK} stroke={PINK_DEEP} strokeWidth="3" strokeLinejoin="round" />
+      <path d="M50 71C35 60 26 51 26 40c0-6 4-10 9-10 6 0 10 4 15 11 5-7 9-11 15-11 5 0 9 4 9 10 0 11-9 20-24 31Z" fill="none" stroke="#FFFFFF" strokeWidth="2.6" strokeDasharray="5 4" strokeLinecap="round" />
+      <path d="M31 33c2-3 5-4 8-4" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" opacity=".6" />
+    </g>
+  ),
+  // Headphones over a little note.
+  dj: (
+    <g>
+      <path d="M22 60V50a28 28 0 0 1 56 0v10" fill="none" stroke={BLUE_DEEP} strokeWidth="6" strokeLinecap="round" />
+      <rect x="14" y="54" width="16" height="26" rx="7" fill={BLUE} stroke={BLUE_DEEP} strokeWidth="3" />
+      <rect x="70" y="54" width="16" height="26" rx="7" fill={BLUE} stroke={BLUE_DEEP} strokeWidth="3" />
+      <path d="M46 70V44l14-4v24" stroke={PINK} strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <circle cx="42" cy="70" r="5" fill={PINK} />
+      <circle cx="56" cy="64" r="5" fill={PINK} />
+      <path d="M26 40a24 24 0 0 1 12-12" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" fill="none" />
     </g>
   ),
   // Three trading cards, fanned.
@@ -90,17 +118,6 @@ export const STICKER_ART: Record<string, ReactNode> = {
           <path d="M40 50h20M40 55h13" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" opacity=".8" />
         </g>
       ))}
-    </g>
-  ),
-  // A gumball capsule, pink over white.
-  gacha: (
-    <g>
-      <circle cx="50" cy="52" r="29" fill="#FFFFFF" stroke={PINK_DEEP} strokeWidth="3.5" />
-      <path d="M21 52a29 29 0 0 1 58 0Z" fill={PINK} />
-      <path d="M21 52h58" stroke={PINK_DEEP} strokeWidth="3.5" />
-      <circle cx="50" cy="52" r="29" fill="none" stroke={PINK_DEEP} strokeWidth="3.5" />
-      <ellipse cx="38" cy="36" rx="8" ry="4.5" transform="rotate(-30 38 36)" fill="#FFFFFF" opacity=".7" />
-      <path d="M30 62c4 6 10 9 18 10" stroke="#E7ECF4" strokeWidth="4" strokeLinecap="round" fill="none" />
     </g>
   ),
   // A tiny terminal window with a prompt.
@@ -176,18 +193,6 @@ export const STICKER_ART: Record<string, ReactNode> = {
       <path d="M28 32a26 26 0 0 1 12-9" stroke="#9CD3FF" strokeWidth="3" strokeLinecap="round" fill="none" />
     </g>
   ),
-  // A friendly snake.
-  context: (
-    <g>
-      <path d="M26 74c14 0 24-4 24-14s-20-8-20-20 12-16 26-14" stroke={GREEN_DEEP} strokeWidth="17" strokeLinecap="round" fill="none" />
-      <path d="M26 74c14 0 24-4 24-14s-20-8-20-20 12-16 26-14" stroke={GREEN} strokeWidth="12" strokeLinecap="round" fill="none" />
-      <path d="M33 60c4-2 8-2 11 0M36 44c3 2 6 3 9 3" stroke="#86EFAC" strokeWidth="2.4" strokeLinecap="round" fill="none" />
-      <ellipse cx="64" cy="27" rx="13" ry="10" fill={GREEN} stroke={GREEN_DEEP} strokeWidth="3" />
-      <circle cx="66" cy="24" r="3.4" fill="#FFFFFF" />
-      <circle cx="67" cy="24.6" r="1.8" fill={NAVY} />
-      <path d="M76 30l7 2m-7-2 5 5" stroke={PINK} strokeWidth="2.4" strokeLinecap="round" />
-    </g>
-  ),
   // A curling wave.
   wave: (
     <g>
@@ -206,15 +211,6 @@ export const STICKER_ART: Record<string, ReactNode> = {
       <path d="M77 46.8 82 50l-5 3.2Z" fill={GRAPHITE} />
       <rect x="12" y="40" width="10" height="20" rx="3" fill={PINK} stroke={PINK_DEEP} strokeWidth="3" />
       <rect x="20" y="39" width="5" height="22" fill="#C7D1E0" />
-    </g>
-  ),
-  // Red-and-blue 3D glasses.
-  xray: (
-    <g transform="rotate(-7 50 50)">
-      <path d="M12 40h76v8c0 10-5 16-14 16h-6c-8 0-12-6-14-12h-8c-2 6-6 12-14 12h-6c-9 0-14-6-14-16Z" fill="#FFFFFF" stroke={GRAPHITE} strokeWidth="3.5" strokeLinejoin="round" />
-      <rect x="18" y="44" width="24" height="15" rx="5" fill={PINK} />
-      <rect x="58" y="44" width="24" height="15" rx="5" fill={BLUE} />
-      <path d="M22 48h7M62 48h7" stroke="#FFFFFF" strokeWidth="2.4" strokeLinecap="round" opacity=".7" />
     </g>
   ),
   // A gamepad.

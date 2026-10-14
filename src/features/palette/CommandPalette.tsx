@@ -125,7 +125,7 @@ export function CommandPalette() {
 
   return (
     <Dialog open={open} onClose={close} labelledBy={titleId} placement="top" className="max-w-[min(680px,calc(100vw-24px))]">
-      <div className="widget overflow-hidden" data-xr="CommandPalette · ARIA combobox + fuzzy ranking">
+      <div className="widget overflow-hidden">
         <h2 id={titleId} className="sr-only">
           Command palette
         </h2>

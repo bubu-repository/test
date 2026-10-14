@@ -1,6 +1,7 @@
 "use client";
 
 import { playlist } from "@/content/playlist";
+import { unlock } from "@/lib/stickers";
 import { createStore, useStore } from "@/lib/store";
 
 /**
@@ -154,6 +155,7 @@ export async function play() {
         onStateChange: (e) => {
           if (e.data === PLAYING) {
             dac.set({ status: "playing" });
+            unlock("dj");
             startTicker();
           } else if (e.data === PAUSED || e.data === CUED) {
             dac.set({ status: "paused" });

@@ -32,7 +32,7 @@ export function BeforeAfter({ data }: { data: Project["beforeAfter"] }) {
   const id = useId();
 
   return (
-    <figure className="widget overflow-hidden p-0" data-xr="BeforeAfter · range input over two panels">
+    <figure className="widget overflow-hidden p-0">
       <div className="relative grid min-h-[340px] select-none">
         <div className="col-start-1 row-start-1">
           <Panel side="after" data={data} />

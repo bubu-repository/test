@@ -2,23 +2,16 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/meta";
 import { PageTransition } from "@/components/PageTransition";
 import { PageHeader } from "@/components/PageHeader";
-import { labItems } from "@/content/lab";
 import { JdMatcher } from "@/features/about/JdMatcher";
 import { ModelCard } from "@/features/about/ModelCard";
-import { projects } from "@/content/projects";
-import { BoosterPacks } from "@/features/work/BoosterPack";
-import { Gumball } from "@/features/lab/Gumball";
-import { FeatureGrid, SubdomainGrid } from "@/features/lab/LabGrid";
-import { TerminalSection } from "@/features/home/TerminalSection";
+import { DailyPack } from "@/features/pack/DailyPack";
+import { Studio } from "@/features/studio/Studio";
 import { WidgetBoard } from "@/features/widgets/WidgetBoard";
-import { ToyBox } from "@/features/lab/ToyBox";
-
-const subs = labItems.filter((l) => l.where === "subdomain").length;
-const site = labItems.filter((l) => l.where === "site").length;
 
 export const metadata: Metadata = pageMeta({
   title: "Lab",
-  description: `Experiments by Adelia Tiara: ${subs} on their own adelia.cc subdomains (WebGL, AI and type toys) and ${site} interactive features built into this site.`,
+  description:
+    "Make something in the Studio: your words or a photo in felt, cross-stitch, jelly, chrome, acrylic and more, laid out as a card, a photo strip, ID photos, a trading card or a sticker. Then open today's booster pack, and check a job description against Adelia's work.",
   path: "/lab",
 });
 
@@ -28,20 +21,36 @@ export default function LabPage() {
       <PageHeader
         id="lab-title"
         label="The lab"
-        title="Experiments, tools and toys."
-        lead={`Where I try ideas before they're useful: ${subs} experiments on their own subdomains and two tools for hiring teams. The toys are in a box at the bottom, closed.`}
+        title="Make something. Take a card."
+        lead="A studio that turns your words or a photo into felt, jelly, chrome or a holo sticker, one booster pack a day, and two tools for hiring teams. All of it runs in your browser."
       />
 
-      <section aria-labelledby="subdomains-title" className="container-page pt-12 pb-[clamp(96px,13vw,176px)] md:pt-16">
-        <p className="type-eyebrow">*.adelia.cc</p>
-        <h2 id="subdomains-title" className="type-title mt-3">
-          Experiments on their own subdomains
+      <section id="studio" aria-labelledby="studio-title" className="container-page scroll-mt-24 pt-4 pb-[clamp(96px,13vw,176px)]">
+        <p className="type-eyebrow" data-tour="lab-tools">
+          Studio
+        </p>
+        <h2 id="studio-title" className="type-title mt-3">
+          Make it out of something.
         </h2>
-        <p className="mt-4 max-w-[52ch] text-muted">Standalone pages, no framework, each deployed on its own. Preview one in a window over this page, or open the real thing.</p>
-        <div className="mt-12">
-          <SubdomainGrid />
-        </div>
+        <p className="mt-4 mb-10 max-w-[58ch] text-muted">
+          Type a word or take a photo. Pick what it&apos;s made of, lay it out as a card, a photo strip, ID photos, a trading card or a sticker, decorate it, and save it as a PNG or a
+          GIF.
+        </p>
+        <Studio />
       </section>
+
+      <section id="pack" aria-labelledby="pack-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)] text-center">
+        <p className="type-eyebrow">Once a day</p>
+        <h2 id="pack-title" className="type-title mt-3">
+          Today&apos;s pack
+        </h2>
+        <p className="mx-auto mt-4 mb-10 max-w-[52ch] text-muted">
+          Three cards: something kind, advice from the weather in Bekasi right now, and one more. About one pack in eight hides a holo rare of one of my products.
+        </p>
+        <DailyPack />
+      </section>
+
+      <WidgetBoard />
 
       <section id="match" aria-labelledby="match-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
         <p className="type-eyebrow">For hiring teams</p>
@@ -52,7 +61,7 @@ export default function LabPage() {
         <JdMatcher />
       </section>
 
-      <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)]">
+      <section id="model-card" aria-labelledby="model-title" className="container-page scroll-mt-24 pb-[clamp(72px,9vw,128px)]">
         <p className="type-eyebrow">If I were a model</p>
         <h2 id="model-title" className="type-title mt-3">
           Model card
@@ -61,39 +70,6 @@ export default function LabPage() {
           <ModelCard />
         </div>
       </section>
-
-      <ToyBox count={site}>
-        <section id="gacha" aria-labelledby="gacha-title" className="container-page scroll-mt-24 pb-10">
-          <h3 id="gacha-title" className="sr-only">
-            Gumball machine
-          </h3>
-          <Gumball />
-        </section>
-
-        <WidgetBoard />
-
-        <TerminalSection />
-
-        <section id="packs" aria-labelledby="packs-title" className="container-page scroll-mt-24 pb-[clamp(96px,13vw,176px)] text-center">
-          <p className="type-eyebrow">Collector&apos;s edition</p>
-          <h2 id="packs-title" className="type-title mt-3">
-            The work, as trading cards
-          </h2>
-          <p className="mx-auto mt-4 max-w-[52ch] text-muted">Each product sealed in a booster pack. Tear one open and it flips over as a holographic card that opens the case study.</p>
-          <div className="mt-14">
-            <BoosterPacks projects={projects.filter((p) => !p.company)} />
-          </div>
-        </section>
-
-        <section aria-labelledby="features-title" className="container-page">
-          <p className="type-eyebrow">On adelia.cc</p>
-          <h2 id="features-title" className="type-title mt-3">
-            Built into this site
-          </h2>
-          <p className="mt-4 mb-10 max-w-[52ch] text-muted">Everything interactive you may have bumped into, with a button that runs it right now.</p>
-          <FeatureGrid />
-        </section>
-      </ToyBox>
     </PageTransition>
   );
 }

@@ -138,7 +138,7 @@ export function TerminalScreen({ titleId: givenId, onClose, autoFocus = false, h
   };
 
   return (
-    <div className="bg-term-bg text-left text-term-ink" data-xr="Terminal · virtual filesystem mapped to routes" onClick={() => inputRef.current?.focus()}>
+    <div className="bg-term-bg text-left text-term-ink" onClick={() => inputRef.current?.focus()}>
         <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5">
           <span aria-hidden="true" className="flex gap-1.5">
             <span className="size-3 rounded-full bg-accent" />
@@ -226,7 +226,7 @@ export function TerminalScreen({ titleId: givenId, onClose, autoFocus = false, h
 /** A laptop: dark bezel with a camera, aluminium edge and base. Whatever you pass is the screen. */
 export function Laptop({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("laptop", className)} data-xr="Laptop · CSS hardware around the terminal">
+    <div className={cn("laptop", className)}>
       <div className="laptop__lid">
         <span className="laptop__camera" aria-hidden="true" />
         <div className="laptop__screen">{children}</div>

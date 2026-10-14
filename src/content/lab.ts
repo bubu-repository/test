@@ -2,8 +2,9 @@ import type { SiteAction } from "@/lib/actions";
 import type { Tone } from "./projects";
 
 /**
- * Everything in the Lab: experiments that live on their own subdomain (deployed separately from
- * labs/<slug>/), and the interactive features built into the main site.
+ * Everything to play with: the tools on the Lab page (the Studio, today's pack, the widgets, the JD
+ * matcher) and the interactive features around the rest of the site. The terminal lists them, the
+ * command palette runs them, and Moci knows about them.
  */
 
 export type LabTag = "AI" | "WebGL" | "Game" | "Type" | "Realtime" | "Tool" | "Sound" | "Physics" | "Data";
@@ -17,78 +18,60 @@ export type LabItem = {
   year: string;
   tech: string[];
   status: "live" | "wip";
-} & ({ where: "subdomain"; subdomain: string } | { where: "site"; action: SiteAction; actionLabel: string });
-
-export const labDomain = "adelia.cc";
+  action: SiteAction;
+  actionLabel: string;
+  /** Lives on the Lab page itself (rather than somewhere else on the site). */
+  onLab?: boolean;
+};
 
 export const labItems: LabItem[] = [
-  /* ---------- On their own subdomains ---------- */
+  /* ---------- On the Lab page ---------- */
   {
-    slug: "bloom",
-    name: "Bloom",
-    where: "subdomain",
-    subdomain: "bloom",
-    blurb: "A reaction–diffusion garden. Paint magenta chemicals with your cursor and watch coral, spots and stripes grow on the GPU.",
-    tags: ["WebGL", "Physics"],
-    tone: "magenta",
+    slug: "studio",
+    name: "Studio",
+    onLab: true,
+    action: { type: "navigate", href: "/lab#studio" },
+    actionLabel: "Make something",
+    blurb:
+      "Type a word or take a photo and make it out of something: felt with a running stitch, cross-stitch, embroidery, rhinestones, glitter glue, clear jelly, chrome, crumpled foil, torn paper, a holo sticker, embossed metal, ASCII or acrylic. Lay it out as a card, a photo strip, an ID photo, a trading card or a sticker, decorate it, and save it as a PNG or a GIF. Everything happens in your browser; photos never leave your device.",
+    tags: ["Tool", "Type"],
+    tone: "pink",
     year: "2026",
-    tech: ["WebGL2", "Gray-Scott model", "Ping-pong framebuffers"],
+    tech: ["Canvas 2D", "ImageData lighting", "getUserMedia", "GIF encoding"],
     status: "live",
   },
   {
-    slug: "tokens",
-    name: "Token Lens",
-    where: "subdomain",
-    subdomain: "tokens",
-    blurb: "Type a sentence and see roughly how a language model chops it into tokens and what it would cost. The 'what it almost said' panel is an illustration, not a real model's probabilities.",
-    tags: ["AI", "Tool", "Data"],
-    tone: "violet",
-    year: "2026",
-    tech: ["Vanilla JS", "BPE-style tokenizer", "Canvas"],
-    status: "live",
-  },
-  {
-    slug: "swarm",
-    name: "Agent Swarm",
-    where: "subdomain",
-    subdomain: "swarm",
-    blurb: "Two hundred tiny agents with goals, messages and a shared memory. Drop a task and watch them self-organise, gossip and hand off work.",
-    tags: ["AI", "Physics"],
-    tone: "cobalt",
-    year: "2026",
-    tech: ["Canvas 2D", "Boids", "Spatial hashing"],
-    status: "live",
-  },
-  {
-    slug: "type",
-    name: "Loud Type",
-    where: "subdomain",
-    subdomain: "type",
-    blurb: "Variable type that listens. Speak, hum or clap and the letters swell in weight and width. No microphone? Your cursor works too.",
-    tags: ["Type", "Sound"],
+    slug: "pack",
+    name: "Today's pack",
+    onLab: true,
+    action: { type: "navigate", href: "/lab#pack" },
+    actionLabel: "Open today's pack",
+    blurb:
+      "One booster pack a day. Tear it open for three cards: something kind, a bit of advice from today's weather in Bekasi, and one more. About one pack in eight hides a holo rare: one of my products, which opens its case study.",
+    tags: ["Game", "Data"],
     tone: "sun",
     year: "2026",
-    tech: ["Variable fonts", "Web Audio", "getUserMedia"],
+    tech: ["Seeded daily draw", "Open-Meteo", "CSS foil"],
     status: "live",
   },
   {
-    slug: "palette",
-    name: "Magenta Machine",
-    where: "subdomain",
-    subdomain: "palette",
-    blurb: "A palette generator that starts from #FF3F86 and never lets you ship a colour pair that fails contrast. Exports CSS tokens.",
-    tags: ["Tool", "Data"],
-    tone: "lime",
+    slug: "widgets",
+    name: "Widget board",
+    onLab: true,
+    action: { type: "navigate", href: "/lab#widgets" },
+    actionLabel: "Rearrange widgets",
+    blurb: "Live widgets that jiggle like a phone's home screen: her phone, the live sea, our overlap, Moci, find a time. Drag to rearrange, or pick a lens and let them sort themselves.",
+    tags: ["Physics", "Data"],
+    tone: "sky",
     year: "2026",
-    tech: ["OKLCH", "WCAG contrast", "Vanilla JS"],
+    tech: ["FLIP animation", "Keyboard reordering"],
     status: "live",
   },
 
-  /* ---------- Built into this site ---------- */
+  /* ---------- Around the site ---------- */
   {
     slug: "autopilot",
     name: "How this site works",
-    where: "site",
     action: { type: "tour" },
     actionLabel: "Show me",
     blurb: "A short guided walk through the site, one spotlight at a time, for anyone who isn't sure where to start. It only runs when you ask for it.",
@@ -101,10 +84,9 @@ export const labItems: LabItem[] = [
   {
     slug: "moci",
     name: "Ask Moci",
-    where: "site",
     action: { type: "open", panel: "agent" },
     actionLabel: "Ask a question",
-    blurb: "An agent that knows my work and can act on this site: it navigates, opens projects and switches themes. Falls back to an offline brain if the API is down.",
+    blurb: "An agent that knows my work and can act on this site: it navigates, opens projects, the brief and the CV. Falls back to an offline brain if the API is down.",
     tags: ["AI", "Realtime"],
     tone: "violet",
     year: "2026",
@@ -114,7 +96,6 @@ export const labItems: LabItem[] = [
   {
     slug: "palette-k",
     name: "⌘K palette",
-    where: "site",
     action: { type: "open", panel: "palette" },
     actionLabel: "Open the palette",
     blurb: "Fuzzy search for every page, project and action. Type a question and it answers inline.",
@@ -127,10 +108,9 @@ export const labItems: LabItem[] = [
   {
     slug: "terminal",
     name: "Terminal",
-    where: "site",
     action: { type: "open", panel: "terminal" },
     actionLabel: "Open the terminal",
-    blurb: "Explore the site from a CLI: ls, cd, cat, open, ask, theme, and a few commands you'll have to discover.",
+    blurb: "Explore the site from a CLI: ls, cd, cat, open, ask, and a few commands you'll have to discover. Press the backtick anywhere, or open the laptop on her desk.",
     tags: ["Tool"],
     tone: "ink",
     year: "2026",
@@ -140,7 +120,6 @@ export const labItems: LabItem[] = [
   {
     slug: "resample",
     name: "Resampled headline",
-    where: "site",
     action: { type: "navigate", href: "/#hero" },
     actionLabel: "Resample it",
     blurb: "The hero sentence, built like a model output you can steer: click a word to see alternatives with illustrative odds, or raise the temperature. No model runs here; the alternatives are hand-picked. It's a toy about how sampling works.",
@@ -151,37 +130,8 @@ export const labItems: LabItem[] = [
     status: "live",
   },
   {
-    slug: "live-sky",
-    name: "Live sky",
-    where: "site",
-    action: { type: "navigate", href: "/lab#widgets" },
-    actionLabel: "Part the clouds",
-    blurb:
-      "The sky in the Bekasi weather widget is a fragment shader, not a photo. Cloud cover follows Bekasi's real weather right now, the horizon warms at dawn and dusk, and your cursor parts the clouds.",
-    tags: ["WebGL", "Data"],
-    tone: "sky",
-    year: "2026",
-    tech: ["GLSL fBm", "Open-Meteo", "Half-resolution rendering"],
-    status: "live",
-  },
-  {
-    slug: "sea",
-    name: "The sea",
-    where: "site",
-    action: { type: "highlight", target: ".sea" },
-    actionLabel: "Go to the sea",
-    blurb:
-      "The bottom of every page is the sea: swell drifting at different speeds, the sun's glitter, a paper boat. Tap the water and it ripples and plops; press the button and it plays the sea, synthesised live.",
-    tags: ["Sound"],
-    tone: "sky",
-    year: "2026",
-    tech: ["CSS mask swell", "Web Audio brown noise", "LFO swell"],
-    status: "live",
-  },
-  {
     slug: "sea-widget",
     name: "Live sea",
-    where: "site",
     action: { type: "highlight", target: '[data-tour="sea"]' },
     actionLabel: "Check the waves",
     blurb: "The Java Sea off Jakarta, live from Open-Meteo's marine API: wave height, swell period and water temperature, drawn as a little sea whose waves are as tall and as quick as the real ones.",
@@ -194,11 +144,10 @@ export const labItems: LabItem[] = [
   {
     slug: "desk",
     name: "Her desk",
-    where: "site",
     action: { type: "navigate", href: "/about#desk" },
     actionLabel: "Sit down",
     blurb:
-      "Her desk in 2.5D under a window onto the live sea: a DAC that plays her songs in full through the YouTube player on the monitor (nothing loads from YouTube until you press play), a laptop that opens to a small desktop, an aquarium that leads to the guestbook, and a seal-pup clock on Bekasi time.",
+      "Her desk in 2.5D, standing in the sky where the clouds begin: a DAC that plays her songs in full through the YouTube player on the monitor (nothing loads from YouTube until you press play), a laptop that opens to a small desktop, an aquarium that leads to the guestbook, and a seal-pup clock on Bekasi time.",
     tags: ["Sound"],
     tone: "sky",
     year: "2026",
@@ -208,7 +157,6 @@ export const labItems: LabItem[] = [
   {
     slug: "cd-shelf",
     name: "CD shelf",
-    where: "site",
     action: { type: "highlight", target: ".cdshelf" },
     actionLabel: "Pull a disc out",
     blurb: "The games that taught her the most about design, as CDs in jewel cases. Pull one out: the disc slides up and spins, and the card under it says what the game taught her.",
@@ -221,7 +169,6 @@ export const labItems: LabItem[] = [
   {
     slug: "badge",
     name: "ID card",
-    where: "site",
     action: { type: "navigate", href: "/about" },
     actionLabel: "Swing it",
     blurb: "A real-looking ID card on a lanyard, hanging off the monitor on her desk, with spring physics. Drag it and it swings back, and the hologram catches the light; flip it for the magnetic stripe and a QR code to this site.",
@@ -232,36 +179,8 @@ export const labItems: LabItem[] = [
     status: "live",
   },
   {
-    slug: "booster",
-    name: "Booster pack",
-    where: "site",
-    action: { type: "navigate", href: "/lab?pack=fresh#packs" },
-    actionLabel: "Open a pack",
-    blurb:
-      "My own products come in three booster packs, one in each: a holo rare, a reverse holo and an etched card. Tap a pack or drag across its crimp to tear it; the card pops out face down and flips over, and the foil follows your cursor.",
-    tags: ["Physics"],
-    tone: "sun",
-    year: "2026",
-    tech: ["CSS blend modes", "Pointer tilt", "View Transitions"],
-    status: "live",
-  },
-  {
-    slug: "gacha",
-    name: "Gumball machine",
-    where: "site",
-    action: { type: "navigate", href: "/lab#gacha" },
-    actionLabel: "Turn the knob",
-    blurb: "Can't choose? Turn the knob and a capsule rolls out with a random experiment inside.",
-    tags: ["Game", "Physics"],
-    tone: "mint",
-    year: "2026",
-    tech: ["Drag rotation", "SVG"],
-    status: "live",
-  },
-  {
     slug: "stickers",
     name: "Sticker book",
-    where: "site",
     action: { type: "open", panel: "stickers" },
     actionLabel: "Open the book",
     blurb: "Explore the site to collect stickers, then peel them off and stick them anywhere. They stay where you put them.",
@@ -272,22 +191,8 @@ export const labItems: LabItem[] = [
     status: "live",
   },
   {
-    slug: "widgets",
-    name: "Widget board",
-    where: "site",
-    action: { type: "navigate", href: "/lab#widgets" },
-    actionLabel: "Rearrange widgets",
-    blurb: "The home page widgets jiggle like a phone home screen. Drag to rearrange, or pick a lens and let them sort themselves.",
-    tags: ["Physics", "Data"],
-    tone: "sky",
-    year: "2026",
-    tech: ["FLIP animation", "Keyboard reordering"],
-    status: "live",
-  },
-  {
     slug: "overlap",
     name: "Overlap ring",
-    where: "site",
     action: { type: "navigate", href: "/lab#widgets" },
     actionLabel: "See our overlap",
     blurb: "A 24-hour ring that shows when my working day overlaps with yours, computed from your time zone.",
@@ -300,7 +205,6 @@ export const labItems: LabItem[] = [
   {
     slug: "live",
     name: "Live cursors",
-    where: "site",
     action: { type: "liveCursors", value: true },
     actionLabel: "Show others",
     blurb: "See other visitors' cursors in real time and wave at them. Names are random and nothing is stored.",
@@ -313,7 +217,6 @@ export const labItems: LabItem[] = [
   {
     slug: "guestbook",
     name: "Guestbook",
-    where: "site",
     action: { type: "navigate", href: "/guestbook" },
     actionLabel: "Release a creature",
     blurb: "An open sea of visitors' notes: each one is a translucent jelly creature (fish, jellyfish, octopus, turtle, seahorse, pufferfish, crab or a little whale) in the colour they picked. Tap one to read it; new ones drop in for everyone, live.",
@@ -326,7 +229,6 @@ export const labItems: LabItem[] = [
   {
     slug: "hallucination",
     name: "The 404 that fact-checks itself",
-    where: "site",
     action: { type: "navigate", href: "/pricing-for-ai-unicorns" },
     actionLabel: "Visit a missing page",
     blurb: "Ask for a page that doesn't exist: Moci writes one, then a checker strikes every sentence the site can't back up and points to pages that do exist. The checker is the point.",
@@ -339,7 +241,6 @@ export const labItems: LabItem[] = [
   {
     slug: "brief",
     name: "40-second brief",
-    where: "site",
     action: { type: "open", panel: "brief" },
     actionLabel: "Start the clock",
     blurb: "For recruiters in a hurry: everything that matters, on one card, with a 40-second timer you can pause.",
@@ -351,8 +252,8 @@ export const labItems: LabItem[] = [
   },
   {
     slug: "jd",
+    onLab: true,
     name: "JD matcher",
-    where: "site",
     action: { type: "navigate", href: "/lab#match" },
     actionLabel: "Paste a JD",
     blurb: "Paste a job description and see which of my skills and projects match it, scored and highlighted.",
@@ -363,22 +264,8 @@ export const labItems: LabItem[] = [
     status: "live",
   },
   {
-    slug: "laptop",
-    name: "The laptop",
-    where: "site",
-    action: { type: "navigate", href: "/lab#terminal" },
-    actionLabel: "Type something",
-    blurb: "The terminal runs on a laptop: inline on the home page with a sticky note of things to try, and the same laptop slides up when you press the backtick anywhere.",
-    tags: ["Tool"],
-    tone: "ink",
-    year: "2026",
-    tech: ["Virtual filesystem", "Shared session", "CSS hardware"],
-    status: "live",
-  },
-  {
     slug: "lockscreen",
     name: "Her phone",
-    where: "site",
     action: { type: "navigate", href: "/lab#widgets" },
     actionLabel: "Tap to enter",
     blurb: "Her phone in the live board: a lock screen over the live sky shader, with Bekasi time and date, notifications from Moci, and one tap that starts the 40-second tour.",
@@ -391,7 +278,6 @@ export const labItems: LabItem[] = [
   {
     slug: "find-time",
     name: "Find a time",
-    where: "site",
     action: { type: "navigate", href: "/lab#widgets" },
     actionLabel: "Find a time",
     blurb: "A command bar for scheduling: share her availability converted to your time zone, find the overlap with your day, or start an intro email.",
@@ -404,7 +290,6 @@ export const labItems: LabItem[] = [
   {
     slug: "keycaps",
     name: "Keycaps",
-    where: "site",
     action: { type: "navigate", href: "/lab#widgets" },
     actionLabel: "Press a key",
     blurb: "Keycaps that travel down when you press the real key on your keyboard, each wired to the shortcut it shows.",
@@ -417,7 +302,6 @@ export const labItems: LabItem[] = [
   {
     slug: "dock",
     name: "The dock",
-    where: "site",
     action: { type: "navigate", href: "/" },
     actionLabel: "Hover the dock",
     blurb: "The navigation is a dock of app icons that magnify under your cursor, with a calendar icon showing today's date in Bekasi and a dot under the page you're on.",
@@ -430,7 +314,6 @@ export const labItems: LabItem[] = [
   {
     slug: "case-chat",
     name: "Case studies as chats",
-    where: "site",
     action: { type: "navigate", href: "/work/tenderlens" },
     actionLabel: "Chat through one",
     blurb:
@@ -442,22 +325,8 @@ export const labItems: LabItem[] = [
     status: "live",
   },
   {
-    slug: "ticker",
-    name: "Live ticker",
-    where: "site",
-    action: { type: "navigate", href: "/" },
-    actionLabel: "See it live",
-    blurb: "The pixel line under the hero is live: Bekasi's clock, your clock and city, how many people are here, and the real sky over Bekasi.",
-    tags: ["Data", "Realtime"],
-    tone: "lime",
-    year: "2026",
-    tech: ["Intl API", "Server-sent events", "Open-Meteo"],
-    status: "live",
-  },
-  {
     slug: "sound",
     name: "Jelly sounds",
-    where: "site",
     action: { type: "sound", value: true },
     actionLabel: "Turn sound on",
     blurb: "Every pop, boop and tear is synthesised live with the Web Audio API. No audio files. Off by default.",
@@ -468,12 +337,3 @@ export const labItems: LabItem[] = [
     status: "live",
   },
 ];
-
-export function labUrl(subdomain: string): string {
-  return `https://${subdomain}.${labDomain}`;
-}
-
-/** Local preview path, served from public/labs (built by scripts/build-labs.mjs). */
-export function labPreviewPath(subdomain: string): string {
-  return `/labs/${subdomain}/index.html`;
-}

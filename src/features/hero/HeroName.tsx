@@ -40,7 +40,7 @@ export function HeroName() {
 
   let i = 0;
   return (
-    <h1 className="hero-name" data-tour="name" data-xr="HeroName · letters catch the light near the cursor">
+    <h1 className="hero-name" data-tour="name">
       <span className="sr-only">{identity.name}</span>
       <span ref={ref} aria-hidden="true">
         {identity.name.split(" ").map((word, w) => (

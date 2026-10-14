@@ -332,7 +332,7 @@ export function GuestbookSea() {
   const swimming = useMemo(() => (notes ?? []).slice(0, IN_THE_SEA), [notes]);
 
   return (
-    <section aria-labelledby="gb-sea-title" className="gb" data-xr="GuestbookSea · jelly creatures in the open sea">
+    <section aria-labelledby="gb-sea-title" className="gb">
       <h2 id="gb-sea-title" className="sr-only">
         The sea of visitors
       </h2>

@@ -54,7 +54,7 @@ const OFFLINE = [
 
 const STACK = [
   ["Framework", "Next.js 16 (App Router, server components, cached components), React 19, TypeScript"],
-  ["Styling", "Tailwind CSS 4 on design tokens from a small shared package, also used by the five lab experiments on their own subdomains"],
+  ["Styling", "Tailwind CSS 4 on design tokens from a small shared package"],
   ["One source of truth", "Every number on the site, the CV PDF (generated with pdf-lib), the 40-second brief and Moci's knowledge come from the same content files"],
   ["Product screens", "The phones in the case studies are coded components, not images, so they stay sharp and readable at any size"],
   ["Live bits", "Presence and cursors over Server-Sent Events; weather and sea data from Open-Meteo, hidden when unavailable"],

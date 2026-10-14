@@ -22,7 +22,7 @@ export function RevealCard({ className }: { className?: string }) {
   };
 
   return (
-    <div className={className} data-xr="RevealCard · swipe up to reveal">
+    <div className={className}>
       <div className="reveal" data-revealed={state === "gone"}>
         <div className="reveal__under flex flex-col">
           <p className="type-pixel text-accent-ink">Revealed</p>

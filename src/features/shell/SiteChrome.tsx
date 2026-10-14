@@ -11,6 +11,7 @@ import { StickerLayer } from "../stickers/StickerLayer";
 import { Tour } from "../tour/Tour";
 import { WorldHost } from "../world/WorldHost";
 import { ActionHost } from "./ActionHost";
+import { CheatWhale } from "./CheatWhale";
 import { FloatingActions } from "./FloatingActions";
 import { KeyboardShortcuts } from "./KeyboardShortcuts";
 import { Toasts } from "./Toasts";
@@ -107,6 +108,7 @@ export function SiteChrome() {
       {overlay === "stickers" && <StickerBook />}
       {overlay === "shortcuts" && <ShortcutSheet />}
       {agentOpen && <AgentPanel />}
+      <CheatWhale />
       <Toasts />
       <FloatingActions />
       <Tour />

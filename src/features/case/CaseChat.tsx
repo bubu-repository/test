@@ -346,7 +346,7 @@ export function CaseChat({
   useImperativeHandle(ref, () => ({ ask }));
 
   return (
-    <section aria-label={`${project.name}, told as a conversation`} className="mx-auto w-full max-w-[760px]" data-xr="CaseChat · scripted story + live answers">
+    <section aria-label={`${project.name}, told as a conversation`} className="mx-auto w-full max-w-[760px]">
       <div className="mb-6 flex items-center gap-3" aria-hidden="true">
         <div className="h-1 flex-1 overflow-hidden rounded-pill bg-surface-2">
           <div className="h-full rounded-pill bar-fill transition-[width] duration-500" style={{ width: `${(shown / beats.length) * 100}%` }} />

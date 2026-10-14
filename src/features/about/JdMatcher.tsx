@@ -58,7 +58,7 @@ export function JdMatcher() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]" data-xr="JdMatcher · keyword taxonomy, no API needed">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
       <form
         className="widget flex flex-col p-5 md:p-6"
         onSubmit={(e) => {

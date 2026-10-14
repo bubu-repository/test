@@ -1,14 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { SendIcon } from "@/components/icons";
 import { MociAvatar } from "@/components/MociAvatar";
-import { Sticker } from "@/components/Sticker";
-import { labItems } from "@/content/lab";
 import { dispatch } from "@/lib/actions";
-import { STICKERS, useStickers } from "@/lib/stickers";
-import { useLive, wave } from "../live/live-store";
 import { OverlapRing } from "./OverlapRing";
 
 export function WidgetTitle({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
@@ -66,118 +61,5 @@ export function AskWidget() {
         ))}
       </div>
     </>
-  );
-}
-
-/* ---------- Presence ---------- */
-export function PresenceWidget() {
-  const count = useLive((s) => s.count);
-  const peers = useLive((s) => s.peers);
-  const status = useLive((s) => s.status);
-  const me = useLive((s) => s.me);
-  const others = peers.filter((p) => p.id !== me?.id);
-  return (
-    <>
-      <WidgetTitle aside={<span className="live-dot" aria-hidden="true" />}>Here now</WidgetTitle>
-      <p className="mt-2 text-48 leading-none font-bold tracking-[-0.04em] tabular-nums">{count}</p>
-      <p className="text-14 text-muted">{status === "local" ? `tab${count === 1 ? "" : "s"} open (live server offline)` : count === 1 ? "just you. Hi!" : "people browsing"}</p>
-      <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Who's here">
-        {me && (
-          <li className="chip">
-            <span className="size-2.5 rounded-full" style={{ background: `var(--${me.color})` }} aria-hidden="true" />
-            {status === "local" ? "you" : `${me.name} (you)`}
-          </li>
-        )}
-        {others.slice(0, 4).map((p) => (
-          <li key={p.id} className="chip">
-            <span className="size-2.5 rounded-full" style={{ background: `var(--${p.color})` }} aria-hidden="true" />
-            {p.name}
-          </li>
-        ))}
-      </ul>
-      <button type="button" className="pill mt-3" data-size="sm" data-variant="sky" onClick={wave} disabled={count < 2}>
-        👋 Wave
-      </button>
-    </>
-  );
-}
-
-/* ---------- Stickers ---------- */
-export function StickersWidget() {
-  const unlocked = useStickers((s) => s.unlocked);
-  const shown = STICKERS.filter((s) => !s.secret).slice(0, 6);
-  return (
-    <>
-      <WidgetTitle>
-        Stickers {unlocked.length}/{STICKERS.length}
-      </WidgetTitle>
-      <ul className="mt-3 grid grid-cols-3 gap-1.5" aria-label="Sticker collection preview">
-        {shown.map((s) => {
-          const has = unlocked.includes(s.id);
-          return (
-            <li key={s.id} className="grid place-items-center" title={has ? s.name : s.hint}>
-              <Sticker id={s.id} locked={!has} size={44} />
-              <span className="sr-only">{has ? `${s.name}, unlocked` : `Locked: ${s.hint}`}</span>
-            </li>
-          );
-        })}
-      </ul>
-      <button type="button" className="pill mt-3" data-variant="sun" data-size="sm" onClick={() => dispatch({ type: "open", panel: "stickers" })}>
-        Open book
-      </button>
-    </>
-  );
-}
-
-/* ---------- Lab ---------- */
-export function LabWidget() {
-  const subs = labItems.filter((l) => l.where === "subdomain").length;
-  const site = labItems.filter((l) => l.where === "site").length;
-  return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-start justify-between gap-4">
-        <WidgetTitle>The lab</WidgetTitle>
-        <svg aria-hidden="true" viewBox="0 0 100 140" className="-mt-1 w-14 shrink-0">
-          <rect x="24" y="96" width="52" height="40" rx="12" fill="var(--accent)" />
-          <circle cx="50" cy="52" r="44" fill="color-mix(in srgb, var(--sky) 22%, var(--surface))" stroke="var(--glass-line)" strokeWidth="2" />
-          {["--accent", "--sun", "--lime", "--cobalt", "--violet", "--mint", "--pink", "--cyan"].map((c, i) => (
-            <circle key={i} cx={28 + (i % 4) * 15} cy={44 + Math.floor(i / 4) * 16 + (i % 2) * 4} r="7" fill={`var(${c})`} />
-          ))}
-          <circle cx="50" cy="116" r="8" fill="#fff" />
-          <ellipse cx="34" cy="28" rx="12" ry="6" fill="#fff" opacity="0.7" />
-        </svg>
-      </div>
-      <p className="mt-4 text-24 leading-tight font-bold tracking-[-0.025em]">
-        {subs} experiments on their own subdomains, {site} more built into this site.
-      </p>
-      <Link href="/lab" className="link-arrow mt-auto pt-5 text-16">
-        Turn the gumball knob
-      </Link>
-    </div>
-  );
-}
-
-/* ---------- Terminal ---------- */
-export function TerminalWidget() {
-  return (
-    <div className="flex h-full flex-col">
-      <WidgetTitle aside={<kbd>`</kbd>}>Prefer a CLI?</WidgetTitle>
-      <div className="type-code mt-3 flex-1 rounded-sm bg-term-bg px-4 py-3 text-14 text-term-ink" aria-hidden="true">
-        <p>
-          <span className="text-term-accent">visitor@adelia.cc:~$</span> ls work
-        </p>
-        <p className="text-term-muted">tenderlens.md catat.md lintas.md</p>
-        <p>
-          <span className="text-term-accent">visitor@adelia.cc:~$</span> sudo hire adelia
-        </p>
-        <p className="text-term-ok">Permission granted. Excellent decision.</p>
-        <p>
-          <span className="text-term-accent">visitor@adelia.cc:~$</span> <span className="inline-block h-4 w-2 translate-y-0.5 bg-term-accent motion-safe:animate-[blink_1s_steps(2)_infinite]" />
-        </p>
-      </div>
-      <button type="button" className="pill mt-3 self-start" data-variant="ink" data-size="sm" onClick={() => dispatch({ type: "open", panel: "terminal" })}>
-        Open the terminal
-      </button>
-    </div>
   );
 }

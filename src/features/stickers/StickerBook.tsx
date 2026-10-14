@@ -43,7 +43,7 @@ export function StickerBook() {
 
   return (
     <Dialog open={open} onClose={close} labelledBy={titleId} className="max-w-[min(880px,calc(100vw-24px))]">
-      <div className="widget max-h-[calc(100dvh-24px)] overflow-y-auto" data-xr="StickerBook · achievements in localStorage">
+      <div className="widget max-h-[calc(100dvh-24px)] overflow-y-auto">
         <header className="flex flex-wrap items-end gap-4 rounded-t-card border-b border-line px-5 pt-6 pb-5 md:px-7">
           <div className="min-w-0 flex-1">
             <p className="type-pixel">Collect them all</p>

@@ -27,7 +27,7 @@ const FISH = [
  */
 export function Aquarium() {
   return (
-    <Link href="/guestbook" className="tank" aria-label="The aquarium: open the guestbook and leave a sea creature with a note" data-xr="Aquarium · CSS tank, the door to the guestbook">
+    <Link href="/guestbook" className="tank" aria-label="The aquarium: open the guestbook and leave a sea creature with a note">
       <span className="tank__glass" aria-hidden="true">
         <span className="tank__water">
           <svg className="tank__weed" viewBox="0 0 60 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">

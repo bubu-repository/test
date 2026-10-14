@@ -1,4 +1,4 @@
-import { labItems, labUrl } from "@/content/lab";
+import { labItems } from "@/content/lab";
 import { bio, experience, identity, skills, tagline } from "@/content/profile";
 import { projects } from "@/content/projects";
 import type { SiteAction } from "@/lib/actions";
@@ -50,10 +50,7 @@ function buildFs(): Dir {
   const lab: Dir = {
     route: "/lab",
     children: Object.fromEntries(
-      labItems.map((l) => [
-        l.where === "subdomain" ? `${l.slug}.url` : `${l.slug}.feature`,
-        file(`${l.name}\n${l.blurb}\n${l.where === "subdomain" ? `→ ${labUrl(l.subdomain)}` : "→ built into this site"}`),
-      ]),
+      labItems.map((l) => [`${l.slug}.feature`, file(`${l.name}\n${l.blurb}\n→ open ${l.slug}`)]),
     ),
   };
   return {
@@ -195,8 +192,7 @@ export function run(raw: string, cwd: string, history: string[]): ShellResult {
       const project = projects.find((p) => p.slug === name || p.name.toLowerCase() === name);
       if (project) return { lines: [{ kind: "out", text: `Opening ${project.name}…`, tone: "ok" }], actions: [{ type: "navigate", href: `/work/${project.slug}` }] };
       const lab = labItems.find((l) => l.slug === name || l.name.toLowerCase() === name);
-      if (lab?.where === "subdomain") return { lines: [{ kind: "link", text: `${lab.subdomain}.adelia.cc ↗`, href: labUrl(lab.subdomain), external: true }] };
-      if (lab?.where === "site") return { lines: [{ kind: "out", text: `Running ${lab.name}…`, tone: "ok" }], actions: [lab.action] };
+      if (lab) return { lines: [{ kind: "out", text: `Running ${lab.name}…`, tone: "ok" }], actions: [lab.action] };
       const dir = lookup(resolve("/", name));
       if (dir && typeof dir !== "string") return { lines: [{ kind: "out", text: `Opening ${dir.route}…`, tone: "ok" }], actions: [{ type: "navigate", href: dir.route }], cwd: resolve("/", name) };
       return { lines: [{ kind: "out", text: `open: nothing called “${arg}”. Try \`ls work\` or \`ls lab\`.`, tone: "warn" }] };

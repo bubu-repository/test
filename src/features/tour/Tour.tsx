@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { SiteAvatar } from "@/components/SiteAvatar";
 import { CloseIcon } from "@/components/icons";
 import { sfx } from "@/lib/sound";
+import { unlock } from "@/lib/stickers";
 import { stopTour, useTour } from "./tour-store";
 
 type Step = { target: string; title: string; body: string };
@@ -123,8 +124,10 @@ export function Tour() {
     sfx.tick();
     const next = index + delta;
     if (next < 0) return;
-    if (next >= steps.length) stopTour();
-    else setIndex(next);
+    if (next >= steps.length) {
+      unlock("passenger");
+      stopTour();
+    } else setIndex(next);
   };
 
   // The card sits below the target, or above it when there's no room.

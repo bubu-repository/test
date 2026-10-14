@@ -55,7 +55,7 @@ function Status() {
  */
 export function Hero() {
   return (
-    <section id="hero" aria-labelledby="hero-name" className="hero" data-xr="Hero · the live sky, the name and the way in">
+    <section id="hero" aria-labelledby="hero-name" className="hero">
       <div className="hero__window on-water">
         <div className="container-page">
           <div className="hero__copy">

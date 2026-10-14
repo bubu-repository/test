@@ -5,7 +5,7 @@ import { WorkCards } from "../work/WorkCards";
 /** Home: the work, right under the hero. Four products, each with its real screen and its numbers. */
 export function WorkTeaser() {
   return (
-    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16" data-xr="WorkTeaser · four case cards with real screens">
+    <section id="work" aria-labelledby="work-teaser-title" className="container-page section-y scroll-mt-16">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
         <div className="max-w-[46rem]">
           <p className="type-eyebrow">Selected work · 2024–2026</p>

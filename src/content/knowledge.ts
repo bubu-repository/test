@@ -1,4 +1,4 @@
-import { labItems, labUrl } from "./lab";
+import { labItems } from "./lab";
 import { bio, experience, identity, modelCard, skills, socials, tagline } from "./profile";
 import { projects } from "./projects";
 
@@ -27,7 +27,7 @@ export const siteMap = [
     path: "/lab",
     title: "Lab",
     description:
-      "Experiments on their own subdomains, a job-description matcher and her model card. At the bottom, in a box that starts closed: the toys (a gumball machine, a live board from Bekasi, a terminal, her products as booster packs of trading cards, and the features built into this site).",
+      "The Studio (turn your words or a photo into felt, cross-stitch, jelly, chrome, a holo sticker or acrylic, laid out as a card, a photo strip, ID photos, a trading card or a sticker, saved as a PNG or a GIF, all in the browser), today's booster pack (one a day: kind words, advice from the Bekasi weather, and sometimes a holo rare of one of her products), the live widget board, a job-description matcher and her model card.",
   },
   {
     path: "/about",
@@ -142,11 +142,11 @@ export function buildDocs(): Doc[] {
     {
       id: "lab",
       title: "Lab",
-      text: `The Lab has experiments on their own subdomains (${labItems
-        .filter((l) => l.where === "subdomain")
-        .map((l) => `${l.name} at ${l.where === "subdomain" ? labUrl(l.subdomain) : ""}`)
-        .join(", ")}) and interactive features built into this site, like the autopilot tour, the terminal and the Context Window game.`,
-      keywords: ["lab", "experiments", "experiment", "playground", "fun", "creative", "webgl", "subdomain"],
+      text: `The Lab is where you make and collect things: ${labItems
+        .filter((l) => l.onLab)
+        .map((l) => `${l.name} (${l.blurb.split(". ")[0]})`)
+        .join("; ")}.`,
+      keywords: ["lab", "experiments", "experiment", "playground", "fun", "creative", "studio", "pack", "booster", "photobooth", "lettering", "sticker", "make"],
       href: "/lab",
     },
     {
@@ -268,10 +268,7 @@ export function buildKnowledgeText(): string {
   }
 
   lines.push("", "## Lab");
-  for (const item of labItems) {
-    const where = item.where === "subdomain" ? labUrl(item.subdomain) : "built into this site";
-    lines.push(`- ${item.name} (${where}): ${item.blurb}`);
-  }
+  for (const item of labItems) lines.push(`- ${item.name} (${item.onLab ? "on /lab" : "around the site"}): ${item.blurb}`);
 
   lines.push("", "## Site map", ...siteMap.map((s) => `- ${s.path}: ${s.title}. ${s.description}`));
   return lines.join("\n");

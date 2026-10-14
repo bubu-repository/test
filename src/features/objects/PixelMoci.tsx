@@ -29,7 +29,7 @@ const frames = FEET.map((f) => pixels(f, BODY.length));
  */
 export function PixelMoci() {
   return (
-    <div className="pixel-track" data-xr="PixelMoci · 11×8 sprite, CSS steps() walk cycle">
+    <div className="pixel-track">
       <button
         type="button"
         className="pixel-moci js-only"

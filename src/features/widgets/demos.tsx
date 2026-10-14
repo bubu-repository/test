@@ -100,7 +100,7 @@ export function FindTimeWidget() {
   };
 
   return (
-    <div className="flex h-full flex-col" data-xr="FindTime · a command bar for scheduling (after marco.fyi)">
+    <div className="flex h-full flex-col">
       <WidgetTitle>Find a time</WidgetTitle>
       <div className="demo-bar mt-4">
         <span aria-hidden="true" className="demo-bar__mark">
@@ -193,7 +193,7 @@ export function WorkspaceWidget() {
   const metric = project.results.metrics[0];
 
   return (
-    <div className="flex h-full flex-col" data-xr="Workspaces · project switcher with its stack lit (after marco.fyi)">
+    <div className="flex h-full flex-col">
       <WidgetTitle>Workspaces</WidgetTitle>
       <div role="tablist" aria-label="Projects" className="mt-4 flex gap-2 overflow-x-auto pb-1">
         {projects.map((p) => (
@@ -283,7 +283,7 @@ export function KeycapsWidget() {
   }, []);
 
   return (
-    <div className="flex h-full flex-col" data-xr="Keycaps · mirror your physical keyboard">
+    <div className="flex h-full flex-col">
       <WidgetTitle>Keyboard</WidgetTitle>
       <div className="mt-5 flex flex-wrap gap-x-2.5 gap-y-4">
         {CAPS.map((c, i) => (
@@ -336,7 +336,7 @@ function Keycap({ children, down, onPress, label, first }: { children: ReactNode
 
 export function PhoneWidget() {
   return (
-    <div data-tour="sky" className="flex h-full flex-col" data-xr="PhoneWidget · the live sky on a lock screen">
+    <div data-tour="sky" className="flex h-full flex-col">
       <WidgetTitle>Bekasi, right now</WidgetTitle>
       <div className="grid flex-1 place-items-center py-4">
         <div className="rotate-[-3deg]">

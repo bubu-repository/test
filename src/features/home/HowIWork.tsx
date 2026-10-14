@@ -5,7 +5,7 @@ import { bio, principles } from "@/content/profile";
 /** Home: how she works, in four rules, then the short background and the CV. */
 export function HowIWork() {
   return (
-    <section id="how" aria-labelledby="how-title" className="container-page scroll-mt-16 pt-6 pb-[clamp(96px,13vw,176px)]" data-xr="HowIWork · principles from content/profile.ts">
+    <section id="how" aria-labelledby="how-title" className="container-page scroll-mt-16 pt-6 pb-[clamp(96px,13vw,176px)]">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
         <div>
           <p className="type-eyebrow">How I work</p>

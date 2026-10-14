@@ -1,4 +1,4 @@
-import { labItems, labUrl } from "@/content/lab";
+import { labItems } from "@/content/lab";
 import { nav } from "@/content/profile";
 import { projects } from "@/content/projects";
 import type { SiteAction } from "@/lib/actions";
@@ -54,16 +54,16 @@ export const commands: Command[] = [
   { id: "lens-designer", group: "Lens", title: "I'm a designer", subtitle: "Work, stickers and the lab first", keywords: "design ux lens view", icon: "D", action: { type: "lens", value: "designer" } },
   { id: "lens-curious", group: "Lens", title: "Just curious", subtitle: "The fun stuff first", keywords: "explore lens view fun", icon: "C", action: { type: "lens", value: "curious" } },
   ...labItems
-    .filter((item) => item.where === "subdomain")
+    .filter((item) => item.onLab)
     .map(
       (item): Command => ({
         id: `lab-${item.slug}`,
         group: "Lab",
         title: item.name,
-        subtitle: item.where === "subdomain" ? `${item.subdomain}.adelia.cc` : undefined,
+        subtitle: item.actionLabel,
         keywords: `${item.tags.join(" ")} ${item.blurb}`,
         icon: labGlyphText(item.slug),
-        external: item.where === "subdomain" ? labUrl(item.subdomain) : "/lab",
+        action: item.action,
       }),
     ),
   { id: "sound", group: "Settings", title: "Toggle sound", subtitle: "Soft interface sounds", keywords: "audio mute", icon: "♪", action: { type: "sound" } },

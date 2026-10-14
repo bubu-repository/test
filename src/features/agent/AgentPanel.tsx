@@ -72,7 +72,6 @@ export function AgentPanel() {
           close();
         }
       }}
-      data-xr="AgentPanel · Claude tool use + offline fallback"
       className="widget pop-in fixed inset-x-2 bottom-2 z-[70] flex max-h-[min(86dvh,680px)] flex-col overflow-hidden md:inset-x-auto md:right-5 md:bottom-5 md:w-[420px]"
     >
       <header className="flex items-center gap-3 border-b border-line px-4 py-3">

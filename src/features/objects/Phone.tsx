@@ -23,7 +23,7 @@ export function Phone() {
   const status = date ? probableStatus(date) : null;
 
   return (
-    <div className="phone w-[206px] select-none" data-xr="Phone · lock-screen homage over the live sky shader">
+    <div className="phone w-[206px] select-none">
       <div className="phone__screen sky-stage">
         <SkyCanvas />
         <div className="relative z-10 flex h-full flex-col items-center px-3 pt-3 pb-3 text-center">

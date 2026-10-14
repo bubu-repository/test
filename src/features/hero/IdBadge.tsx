@@ -190,7 +190,6 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
           sfx.pop();
           setFlipped((f) => !f);
         }}
-        data-xr="IdBadge · CR80 card, lanyard spring physics + 3D flip"
       >
         <span className="badge-clip" aria-hidden="true" />
         <span className="badge__card" data-flipped={flipped}>

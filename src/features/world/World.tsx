@@ -385,8 +385,8 @@ export function World() {
       pointer.ty = (e.clientY - rect.top) / rect.height;
       pointer.target = e.pointerType === "mouse" ? 1 : 0;
       // Holographic stickers and foil read the pointer too.
-      document.documentElement.style.setProperty("--mx", pointer.tx.toFixed(3));
-      document.documentElement.style.setProperty("--my", pointer.ty.toFixed(3));
+      document.documentElement.style.setProperty("--wx", pointer.tx.toFixed(3));
+      document.documentElement.style.setProperty("--wy", pointer.ty.toFixed(3));
     };
     const onLeave = () => {
       pointer.target = 0;

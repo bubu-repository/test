@@ -22,7 +22,7 @@ export function ArchitectureDiagram({ project }: { project: Project }) {
   const sy = (y: number) => 40 + (y / H) * 360;
 
   return (
-    <figure className="widget overflow-hidden p-4 md:p-6" data-xr="ArchitectureDiagram · SVG + SMIL packets">
+    <figure className="widget overflow-hidden p-4 md:p-6">
       <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Architecture diagram, scrollable">
         <svg viewBox="0 0 1000 460" className="arch min-w-[640px]" role="img" aria-labelledby={`arch-${project.slug}`}>
           <title id={`arch-${project.slug}`}>{`Architecture of ${project.name}: ${edges.map(([a, b]) => `${byId.get(a)?.label} to ${byId.get(b)?.label}`).join(", ")}.`}</title>

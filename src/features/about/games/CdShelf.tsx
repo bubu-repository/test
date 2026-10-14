@@ -14,7 +14,7 @@ export function CdShelf() {
   const game = games.find((g) => g.slug === sel) ?? games[0];
 
   return (
-    <div className="cdshelf" data-xr="CdShelf · CSS jewel cases and a spinning disc">
+    <div className="cdshelf">
       <ul className="cdshelf__row" aria-label="Games on the shelf">
         {games.map((g, i) => (
           <li key={g.slug} style={{ "--i": i } as CSSProperties}>

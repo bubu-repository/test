@@ -9,36 +9,33 @@ import { createStore, useStore } from "@/lib/store";
 import { ui, useUI, type Lens } from "@/lib/ui";
 import { RevealCard } from "../hero/RevealCard";
 import { FindTimeWidget, KeycapsWidget, PhoneWidget, WorkspaceWidget } from "./demos";
-import { PlayWidget } from "./PlayWidget";
 import { SeaWidget } from "./SeaWidget";
-import { AskWidget, LabWidget, OverlapWidget } from "./widgets";
+import { AskWidget, OverlapWidget } from "./widgets";
 
-type WidgetId = "now" | "overlap" | "ask" | "reveal" | "lab" | "findtime" | "workspace" | "keys" | "sea" | "play";
+type WidgetId = "now" | "overlap" | "ask" | "reveal" | "findtime" | "workspace" | "keys" | "sea";
 
-/** Ten widgets: her phone with the live sky, the live sea, live data, Moci, the lab, the mini-game, plus three playable UI demos (after marco.fyi). */
+/** Eight widgets: her phone with the live sky, the live sea, live data, Moci, plus three playable UI demos (after marco.fyi). */
 const WIDGETS: Record<WidgetId, { label: string; Component: ComponentType; span: string; tone?: string }> = {
   now: { label: "Bekasi now", Component: PhoneWidget, span: "sm:col-span-1 sm:row-span-2 lg:col-span-4 lg:row-span-2" },
   overlap: { label: "Working hours overlap", Component: OverlapWidget, span: "sm:col-span-1 lg:col-span-4", tone: "tone-sky" },
   ask: { label: "Ask Moci", Component: AskWidget, span: "sm:col-span-2 lg:col-span-4", tone: "tone-accent" },
   reveal: { label: "Availability", Component: RevealCard, span: "sm:col-span-1 lg:col-span-4" },
-  lab: { label: "The lab", Component: LabWidget, span: "sm:col-span-1 lg:col-span-4", tone: "tone-violet" },
   findtime: { label: "Find a time", Component: FindTimeWidget, span: "sm:col-span-1 lg:col-span-4" },
   workspace: { label: "Workspaces", Component: WorkspaceWidget, span: "sm:col-span-1 lg:col-span-4" },
   keys: { label: "Keyboard", Component: KeycapsWidget, span: "sm:col-span-2 lg:col-span-4" },
   sea: { label: "The sea", Component: SeaWidget, span: "sm:col-span-2 lg:col-span-8 overflow-hidden" },
-  play: { label: "Take a break", Component: PlayWidget, span: "sm:col-span-1 lg:col-span-4 overflow-hidden" },
 };
 
-const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "findtime", "workspace", "keys", "sea", "play", "reveal", "lab"];
+const DEFAULT_ORDER: WidgetId[] = ["now", "overlap", "ask", "findtime", "workspace", "keys", "sea", "reveal"];
 
 const LENSES: { id: Lens; label: string; order: WidgetId[] }[] = [
-  { id: "recruiter", label: "Recruiter", order: ["findtime", "reveal", "ask", "overlap", "workspace", "now", "keys", "lab", "sea", "play"] },
-  { id: "engineer", label: "Engineer", order: ["workspace", "ask", "lab", "keys", "now", "overlap", "findtime", "reveal", "play", "sea"] },
-  { id: "designer", label: "Designer", order: ["lab", "keys", "reveal", "workspace", "ask", "now", "overlap", "findtime", "sea", "play"] },
-  { id: "curious", label: "Just curious", order: ["play", "sea", "keys", "lab", "reveal", "ask", "now", "overlap", "workspace", "findtime"] },
+  { id: "recruiter", label: "Recruiter", order: ["findtime", "reveal", "ask", "overlap", "workspace", "now", "keys", "sea"] },
+  { id: "engineer", label: "Engineer", order: ["workspace", "ask", "keys", "now", "overlap", "findtime", "reveal", "sea"] },
+  { id: "designer", label: "Designer", order: ["keys", "reveal", "workspace", "ask", "now", "overlap", "findtime", "sea"] },
+  { id: "curious", label: "Just curious", order: ["sea", "keys", "reveal", "ask", "now", "overlap", "workspace", "findtime"] },
 ];
 
-const KEY = "adelia:widgets:v6";
+const KEY = "adelia:widgets:v7";
 
 function valid(order: unknown): order is WidgetId[] {
   return Array.isArray(order) && order.length === DEFAULT_ORDER.length && DEFAULT_ORDER.every((id) => order.includes(id));
@@ -176,7 +173,7 @@ export function WidgetBoard() {
   };
 
   return (
-    <section id="widgets" aria-labelledby="widgets-title" className="container-page pb-[clamp(96px,13vw,176px)]" data-xr="WidgetBoard · FLIP reorder + lenses">
+    <section id="widgets" aria-labelledby="widgets-title" className="container-page pb-[clamp(96px,13vw,176px)]">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
         <div className="max-w-[40rem]">
           <p className="type-eyebrow">Right now</p>

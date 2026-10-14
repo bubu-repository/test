@@ -52,7 +52,7 @@ export function DeskLaptop() {
   };
 
   return (
-    <div className="dlaptop" data-open={open || undefined} data-xr="DeskLaptop · a lid that lifts to a mini desktop">
+    <div className="dlaptop" data-open={open || undefined}>
       <div className="dlaptop__lid">
         <div
           ref={desktopRef}

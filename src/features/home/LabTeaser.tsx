@@ -20,7 +20,7 @@ export function LabTeaser() {
           <Link href="/colophon" className="pill" data-size="lg">
             How it&apos;s built
           </Link>
-          <Link href="/lab" className="link-arrow text-16">
+          <Link href="/lab" className="link-arrow text-16" data-tour="lab-tools">
             The lab
           </Link>
         </div>

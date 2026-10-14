@@ -16,7 +16,7 @@ import { JellyKeychain, SealClock, WhalePlush } from "./Trinkets";
  */
 export function Desk() {
   return (
-    <section id="desk" aria-label="Her desk" className="desk-wrap scroll-mt-24" data-xr="Desk · 2.5D scene: window, monitor, DAC, laptop, aquarium">
+    <section id="desk" aria-label="Her desk" className="desk-wrap scroll-mt-24">
       <div className="desk">
         {/* The desk's back edge is the waterline: the sky behind it, the sea below. */}
         <div className="desk__top" aria-hidden="true" data-sky-end="2" />

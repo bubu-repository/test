@@ -6,7 +6,7 @@ import { resolveToken, tokens } from "@/lib/tokens";
 
 export const metadata: Metadata = {
   title: "Design tokens",
-  description: "The design tokens behind adelia.cc and every *.adelia.cc experiment, with live contrast checks.",
+  description: "The design tokens behind adelia.cc, with live contrast checks.",
   alternates: { canonical: "/styleguide" },
 };
 
@@ -73,7 +73,7 @@ export default function StyleguidePage() {
           <p className="type-eyebrow">The system behind the site</p>
           <h1 className="type-display mt-3">Design tokens</h1>
           <p className="type-lead mt-5 max-w-[60ch]">
-            One file, <code>packages/tokens/tokens.css</code>, styles this site and every experiment on its own subdomain. Values on this page are read
+            One file, <code>packages/tokens/tokens.css</code>, styles the whole site. Values on this page are read
             from that file at build time, so it can&apos;t drift.
           </p>
         </div>
