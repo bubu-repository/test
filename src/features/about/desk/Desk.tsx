@@ -7,10 +7,12 @@ import { Dac, Monitor } from "./MusicRig";
 import { JellyKeychain, SealClock, WhalePlush } from "./Trinkets";
 
 /**
- * Her desk, in 2.5D: a glossy white desk standing at the edge of the world's sea, the horizon
- * along its back edge (on phones, a frosted glass shelf in the water). On it: the monitor (YouTube plays on it from the DAC), her ID card hanging off the
- * monitor, the DAC, her laptop (it opens to a small desktop), the aquarium (the door to the
- * guestbook), a seal-pup desk clock on Bekasi time, a whale plush and a jellyfish keychain.
+ * Her desk, in 2.5D: a white acrylic desk with a Bondi-blue front edge, standing at the edge of
+ * the world's sea, the horizon along its back edge (on phones, a frosted glass shelf in the water).
+ * On it: the monitor (YouTube plays on it from the DAC), her ID card hanging off the monitor, the
+ * DAC, her laptop on a gingham mat (it opens to a small desktop), the aquarium (the door to the
+ * guestbook), a seal-pup desk clock on Bekasi time, a whale plush and a jellyfish keychain. The
+ * three toys answer a tap as well as a hover.
  * On wide screens it is one scene; on phones the same things stand in a column, so every control
  * keeps a usable size and the player stays at least 200 × 200 px.
  */

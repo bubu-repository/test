@@ -611,7 +611,7 @@
   inset: 0;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 50% 50%, #eaf0f5 0 52%, transparent 53%),
+    radial-gradient(circle at 50% 50%, #d3dce5 0 52%, transparent 53%),
     repeating-conic-gradient(#dfe7ef 0 4deg, #b9c6d3 4deg 8deg);
   box-shadow:
     inset 0 1px 0 #ffffff,
@@ -646,7 +646,7 @@
   border-radius: 999px;
   background:
     repeating-radial-gradient(circle, rgba(255, 255, 255, 0.4) 0 0.6px, rgba(90, 110, 135, 0.22) 0.6px 1.4px),
-    conic-gradient(#7c8794 0deg, #ffffff 45deg, #7c8794 90deg, #3d4856 135deg, #7c8794 180deg, #ffffff 225deg, #7c8794 270deg, #3d4856 315deg, #7c8794 360deg);
+    conic-gradient(#8a95a1 0deg, #ffffff 45deg, #8a95a1 90deg, #1f2a38 135deg, #8a95a1 180deg, #ffffff 225deg, #8a95a1 270deg, #1f2a38 315deg, #8a95a1 360deg);
   -webkit-mask: radial-gradient(circle closest-side, #000 calc(100% - 1px), transparent);
   mask: radial-gradient(circle closest-side, #000 calc(100% - 1px), transparent);
   mix-blend-mode: soft-light;
@@ -1037,13 +1037,13 @@
 .tank__glass::before {
   content: "";
   position: absolute;
-  top: calc(12% - 1.8cqi);
+  top: calc(12% - 2.6cqi);
   left: 0;
   right: 0;
-  height: 1.8cqi;
+  height: 2.6cqi;
   background:
-    radial-gradient(circle at 100% 0, rgba(143, 232, 248, 0) 0 1.35cqi, rgba(255, 255, 255, 0.95) 1.45cqi 1.75cqi, #8fe8f8 1.8cqi) 0 0 / 1.8cqi 100% no-repeat,
-    radial-gradient(circle at 0 0, rgba(143, 232, 248, 0) 0 1.35cqi, rgba(255, 255, 255, 0.95) 1.45cqi 1.75cqi, #8fe8f8 1.8cqi) 100% 0 / 1.8cqi 100% no-repeat;
+    radial-gradient(circle at 100% 0, rgba(143, 232, 248, 0) 0 2cqi, rgba(255, 255, 255, 0.95) 2.1cqi 2.5cqi, #8fe8f8 2.6cqi) 0 0 / 2.6cqi 100% no-repeat,
+    radial-gradient(circle at 0 0, rgba(143, 232, 248, 0) 0 2cqi, rgba(255, 255, 255, 0.95) 2.1cqi 2.5cqi, #8fe8f8 2.6cqi) 100% 0 / 2.6cqi 100% no-repeat;
 }
 
 /*

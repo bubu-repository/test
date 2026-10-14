@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Sticker } from "@/components/Sticker";
 import { identity } from "@/content/profile";
 import { dispatch } from "@/lib/actions";
 import { useNow } from "@/lib/hooks";
 import { formatTime } from "@/lib/time";
 import { sfx } from "@/lib/sound";
-import { Sticker } from "@/components/Sticker";
 import { BoxArt, CvArt, FishArt, MociArt, TILE } from "../../shell/DockIcons";
 
 function TerminalArt() {

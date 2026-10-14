@@ -10,8 +10,8 @@ import { Creature } from "@/features/guestbook/Creature";
  */
 const SWIMMERS: { species: Species; color: NoteColor; seed: number; swim: string; x: string; y: string; dur: string; delay: string }[] = [
   { species: "jellyfish", color: "sky", seed: 1, swim: "bob", x: "64%", y: "6%", dur: "3.8s", delay: "-1.2s" },
-  { species: "fish", color: "magenta", seed: 0, swim: "swim", x: "8%", y: "30%", dur: "15s", delay: "-4s" },
-  { species: "pufferfish", color: "lime", seed: 2, swim: "potter", x: "18%", y: "54%", dur: "19s", delay: "-6s" },
+  { species: "fish", color: "magenta", seed: 0, swim: "swim", x: "6%", y: "26%", dur: "15s", delay: "-4s" },
+  { species: "pufferfish", color: "lime", seed: 2, swim: "potter", x: "30%", y: "56%", dur: "19s", delay: "-6s" },
 ];
 
 /** Kelp in sea glass: a few blades rooted in the sand. */

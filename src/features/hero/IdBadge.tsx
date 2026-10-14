@@ -235,6 +235,11 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       if (m.moved) sfx.pop();
       kick();
     };
+    // Taking over a finger's capture from the part of the card it landed on fires a (bubbling)
+    // lostpointercapture on that part: only the card itself losing it ends the drag.
+    const onLost = (e: PointerEvent) => {
+      if (e.target === el) onUp();
+    };
     // Once a finger is dragging the card, the page must not scroll under it.
     const onTouchMove = (e: TouchEvent) => {
       if (m.dragging && e.cancelable) e.preventDefault();
@@ -254,7 +259,7 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
     // A drag that ends any other way (a scroll taking over, leaving the window, a lost capture)
     // still lets go, so the card always swings back to its hook.
     window.addEventListener("pointercancel", onUp);
-    el.addEventListener("lostpointercapture", onUp);
+    el.addEventListener("lostpointercapture", onLost);
     window.addEventListener("blur", onUp);
     el.addEventListener("keydown", onKey);
     return () => {
@@ -267,7 +272,7 @@ export function IdBadge({ className, strap = 0 }: { className?: string; strap?: 
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
-      el.removeEventListener("lostpointercapture", onUp);
+      el.removeEventListener("lostpointercapture", onLost);
       window.removeEventListener("blur", onUp);
       el.removeEventListener("keydown", onKey);
     };
