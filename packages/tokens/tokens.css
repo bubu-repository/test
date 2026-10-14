@@ -103,7 +103,11 @@
   --sun: #FFE27A;         /* sunlight */
   --butter: #FFF4C8;      /* pale sun: the marker */
   --highlighter: #D8EEFD;
-  --pink: #FF8F7A;        /* coral (the pink slot) */
+  /* Pink is one family, for things you can touch or collect. Never white text on --pink (2.8:1). */
+  --pink: #FF7EB6;        /* sakura bubblegum: fills, creature cores, glows, the brand dot */
+  --pink-soft: #FFD6E8;   /* tints, washes, gingham */
+  --pink-ink: #C2286F;    /* pink as text or outline: 5.2:1 on the page */
+  --coral: #FF8F7A;       /* coral, under its own name */
   --mint: #5ED6C9;        /* sea glass */
   --cyan: #3CC8F0;        /* aqua */
   --violet: #9DB7F5;      /* periwinkle (fills and icons only) */

@@ -54,6 +54,9 @@
   --color-mint: var(--mint);
   --color-red: var(--red);
   --color-pink: var(--pink);
+  --color-pink-soft: var(--pink-soft);
+  --color-pink-ink: var(--pink-ink);
+  --color-coral: var(--coral);
   --color-cyan: var(--cyan);
   --color-orange: var(--orange);
   --color-charcoal: var(--charcoal);
@@ -2132,7 +2135,7 @@ body:has(:is(.studio__panel, .gb-form, .dac) :focus-within) .float-actions {
 
 .hl-row > .hl {
   padding: 0.12em 0.25em 0.06em;
-  background: var(--hl, var(--pink));
+  background: var(--hl, var(--coral));
   color: #1d2a4d;
   font-variant-numeric: tabular-nums;
 }
