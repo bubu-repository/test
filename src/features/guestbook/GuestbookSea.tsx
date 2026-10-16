@@ -413,7 +413,7 @@ function ReleaseForm({ onReleased }: { onReleased: (note: Note, from: DOMRect | 
       <p id="gb-error" className="text-14 font-semibold text-red" role="alert">
         {error}
       </p>
-      <button type="submit" className="pill mt-3 w-full" data-variant="magenta" aria-disabled={busy || undefined}>
+      <button type="submit" className="pill mt-3 w-full" data-variant="primary" aria-disabled={busy || undefined}>
         {busy ? "Releasing…" : "Release into the sea"}
       </button>
       <p className="mt-3 text-12 text-muted">Links are removed and rude words masked. Everyone here can see it.</p>

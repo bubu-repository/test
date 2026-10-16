@@ -251,7 +251,7 @@ export function DailyPack() {
                     </button>
                   ) : p ? (
                     <div className="daily__rare" data-foil={c.foil || undefined}>
-                      <HoloCard project={p} total={OWN.length} morph={false} level={3} finish={c.foil ? "holo" : undefined} rarityLabel={c.foil ? "Holo rare, pack foil" : first ? "Starter" : undefined} />
+                      <HoloCard project={p} total={OWN.length} number={OWN.indexOf(p) + 1} morph={false} level={3} finish={c.foil ? "holo" : undefined} rarityLabel={c.foil ? "Holo rare, pack foil" : first ? "Starter" : undefined} />
                       {c.foil && (
                         <span className="daily__burst" aria-hidden="true">
                           {Array.from({ length: 10 }, (_, k) => (

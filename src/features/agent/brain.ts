@@ -223,7 +223,17 @@ export function think(raw: string): BrainAnswer {
       confidence: 0.9,
     };
   }
-  if (/\bsenior\b|\b(lead|staff|principal|expert|seasoned|veteran)\s+(engineer|developer|designer)\b/i.test(q)) {
+  // "Why her over a senior engineer?" is a fair question, not a claim: answer it straight.
+  if (/\bwhy\b.*\b(hire|pick|choose|consider)\b|\b(over|instead of|rather than|compared (to|with)|versus|vs\.?)\b.*\b(senior|experienced)\b/i.test(q)) {
+    return {
+      text: "Not for years of experience: she's a fresh graduate (Informatics, class of 2026), so a senior engineer brings more breadth and more systems seen in production. What she brings is the habit seniors ask juniors for: she ships with real users, writes evals with frozen test sets before trusting a model, keeps the failures visible, and designs the interface and the pipeline together. The case studies show each of those with the numbers.",
+      actions: [],
+      followups: ["What's her strongest project?", "How does she evaluate a model?", "Is she open to work?"],
+      href: "/work",
+      confidence: 0.9,
+    };
+  }
+  if (/\b(is|was|she'?s|she is|as a|claims?|calls? herself)\b[^?]*\b(senior|lead|staff|principal|expert|seasoned|veteran)\b/i.test(q)) {
     return {
       text: "No. She's a fresh graduate (Informatics, class of 2026), not a senior engineer: a six-month internship in a product squad, a part-time contract, and products she shipped with real users and evals.",
       actions: [],

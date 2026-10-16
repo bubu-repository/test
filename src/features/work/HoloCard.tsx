@@ -24,6 +24,7 @@ const FINISH: Record<string, { finish: "holo" | "reverse" | "etched"; glyph: str
 export function HoloCard({
   project,
   total,
+  number,
   morph = true,
   level = 2,
   finish,
@@ -31,6 +32,8 @@ export function HoloCard({
 }: {
   project: Project;
   total: number;
+  /** Its number within the set it's printed in (the pack's set leaves out internship work). */
+  number?: number;
   morph?: boolean;
   level?: 2 | 3;
   /** A pack pull can print any product in holo foil, whatever its printed rarity. */
@@ -120,7 +123,7 @@ export function HoloCard({
                 <div className="tcg__foot">
                   <span>Illus. Adelia Tiara</span>
                   <span>
-                    {rarity.glyph} AT·26 {pad(project.index)}/{pad(total)}
+                    {rarity.glyph} AT·26 {pad(number ?? project.index)}/{pad(total)}
                   </span>
                 </div>
               </div>

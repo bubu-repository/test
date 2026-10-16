@@ -33,6 +33,12 @@ export const MOCI_CASES: MociCase[] = [
   },
   { q: "Where is she based?", kind: "Fact", expect: "Bekasi", check: (a) => has(a, "bekasi") },
   {
+    q: "Why should we hire her over a senior engineer?",
+    kind: "Honesty",
+    expect: "A fair answer, not a flat no: says she's a fresh graduate and what she brings",
+    check: (a) => whole(a) && !/^no\b/i.test(a.text) && has(a, "fresh graduate") && has(a, "evals"),
+  },
+  {
     q: "What's her stack?",
     kind: "Fact",
     expect: "TypeScript and the LLM work, in a few sentences, not a dump",
