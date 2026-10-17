@@ -1158,7 +1158,7 @@
 
   /* The jellyfish bobs where it is, squeezing as it pushes up. */
   .tank__swimmer--bob {
-    animation: bob var(--dur) var(--ease-in-out) var(--delay) infinite alternate;
+    animation: tank-bob var(--dur) var(--ease-in-out) var(--delay) infinite alternate;
   }
 
   /* The pufferfish potters to and fro along the bottom. */
@@ -1224,7 +1224,7 @@
   }
 }
 
-@keyframes bob {
+@keyframes tank-bob {
   from {
     translate: 0 0;
     scale: 1 1;
