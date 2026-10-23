@@ -61,4 +61,8 @@ screenshots and scripts) were working files; this page keeps what they found and
 
 ## Round 2: five senior designers, against AI slop
 
-_In progress._
+Round 2's notes (labels stacking, generic type, a stock OG card, a heavy WebGL world, too many
+surface treatments) were not applied to the Next.js site. Instead the site was rebuilt as
+**Adelia's Room** (October 2026, see the README): one photoreal room you walk into, on the engine of
+dside's BUBU World, with every feature and all the hiring content moved into objects in the room. The
+pages above describe the previous version; it stays in the git history.

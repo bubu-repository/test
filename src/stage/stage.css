@@ -1,0 +1,498 @@
+/* ==========================================================================
+   Stage: the 2D room (the pink plate) and the clear-tech layer on it:
+   hover lift with a white rim and a breath of blue, a frosted cursor tag
+   with a chrome code, hold-to-reveal selection outlines, depth of field.
+   ========================================================================== */
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ice-2);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.stage__world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.stage.is-ready .stage__world {
+  opacity: 1;
+}
+.stage__plate {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- hits */
+.hits {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hit {
+  position: absolute;
+  pointer-events: none;
+  outline: none;
+}
+.hits.is-live .hit {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.hit__lift {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 85%;
+  transition: transform 0.55s var(--ease-spring), filter 0.4s ease;
+}
+.hit__img {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background-repeat: no-repeat;
+}
+.hit.is-hover .hit__lift {
+  transform: translateY(-2.2%) scale(1.04);
+  /* lifted toward the window: shadow falls left, a crisp white rim, a breath of baby-blue signal */
+  filter: drop-shadow(-14px 26px 22px rgba(22, 27, 38, 0.22)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.98))
+    drop-shadow(0 0 12px rgba(169, 214, 245, 0.5)) brightness(1.04);
+}
+.hit.is-hover .hit__img {
+  opacity: 1;
+}
+/* flat wall pieces lift less */
+.hit--rect.is-hover .hit__lift {
+  transform: translateY(-1.2%) scale(1.025);
+}
+/* the window glows from within instead of lifting */
+.hit--window .hit__lift,
+.hit--window.is-hover .hit__lift {
+  transform: none;
+  filter: none;
+}
+.hit--window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.6), inset 0 0 160px rgba(220, 238, 252, 0.6);
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.hit--window.is-hover::after {
+  opacity: 1;
+}
+
+/* sheen: a soft light sweep (hint) */
+.hit__sheen {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.75) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 120% 0;
+  mix-blend-mode: screen;
+}
+.hit.is-shimmer .hit__sheen {
+  animation: hit-sheen 1.6s var(--ease-out) both;
+}
+.hit.is-hover .hit__sheen {
+  animation: hit-sheen 0.9s var(--ease-out) both;
+}
+@keyframes hit-sheen {
+  0% {
+    opacity: 0;
+    background-position: 130% 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    background-position: -30% 0;
+  }
+}
+
+/* hold-to-reveal: every object outlines itself like a selection in a design tool:
+   a white rim, a baby-blue signal line, a soft blue bloom (reads on pink and white alike) */
+.hits.is-reveal .hit__img {
+  opacity: 1;
+  filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 2.5px var(--primary)) drop-shadow(0 0 10px rgba(90, 169, 230, 0.7))
+    brightness(1.04);
+  animation: reveal-breathe 1.6s ease-in-out infinite;
+}
+.hits.is-reveal .hit--window::after {
+  opacity: 1;
+  box-shadow: inset 0 0 0 8px rgba(90, 169, 230, 0.75), inset 0 0 0 11px rgba(255, 255, 255, 0.8);
+}
+@keyframes reveal-breathe {
+  50% {
+    opacity: 0.82;
+  }
+}
+
+/* ---------------------------------------------------------------- cursor label */
+/* a small frosted-acrylic tag that follows the cursor, with an engraved chrome code */
+.hover-label {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 330px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 12px;
+  background: var(--acrylic);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(12px) saturate(1.1);
+  color: var(--ink);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  box-shadow: var(--edge-acrylic), -6px 12px 28px rgba(22, 27, 38, 0.18);
+}
+.hover-label.is-on {
+  opacity: 1;
+}
+.hover-label__code {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  height: 28px;
+  padding: 0 9px;
+  white-space: nowrap;
+  border-radius: 5px;
+  background: var(--chrome);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 0 0 1px var(--chrome-edge), inset 0 1px 0 #fff, -1px 2px 3px rgba(22, 27, 38, 0.16);
+}
+.hover-label__text {
+  display: grid;
+  line-height: 1.25;
+}
+.hover-label__text b {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.hover-label__text small {
+  font-size: 12px;
+  color: var(--primary-ink);
+}
+/* empty room: a quieter label offering to walk to that chapter */
+.hover-label--walk {
+  padding: 6px 12px 6px 6px;
+  box-shadow: inset 0 0 0 1px rgba(22, 27, 38, 0.08), -4px 8px 22px rgba(22, 27, 38, 0.12);
+}
+.hover-label--walk .hover-label__code {
+  min-width: 30px;
+  height: 26px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #2a303d, var(--ink));
+  color: #fff;
+  text-shadow: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3), -1px 2px 3px rgba(22, 27, 38, 0.16);
+}
+.hover-label--walk .hover-label__text small {
+  color: var(--ink-3);
+}
+.stage.is-walk {
+  cursor: pointer;
+}
+@media (hover: none) {
+  .hover-label {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- live layers */
+.live-clock {
+  pointer-events: none;
+}
+.live-led {
+  pointer-events: none;
+}
+.live-screen {
+  pointer-events: none;
+  box-shadow: 0 0 40px rgba(169, 214, 245, 0.08);
+}
+.live-hh {
+  pointer-events: none;
+}
+.live-vinyl {
+  pointer-events: none;
+  overflow: visible;
+}
+.live-vinyl__disc {
+  position: absolute;
+  left: 0;
+}
+.live-vinyl__disc i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  background: conic-gradient(from 0deg, transparent 0 18%, rgba(255, 255, 255, 0.28) 23%, transparent 29% 68%, rgba(255, 255, 255, 0.18) 73%, transparent 79%);
+  transition: opacity 0.6s ease;
+}
+.live-vinyl.is-playing .live-vinyl__disc i {
+  opacity: 1;
+  animation: vinyl-spin 1.8s linear infinite;
+}
+@keyframes vinyl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.live-ticket {
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 9;
+}
+.live-ticket__paper {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 12px 10px;
+  background: linear-gradient(180deg, #ffffff, #f2f4f7);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: -4px 6px 14px rgba(22, 27, 38, 0.16);
+  transform: translateY(100%);
+  animation: ticket-feed 2.6s steps(26, end) forwards;
+  -webkit-mask-image: radial-gradient(circle at 6px 0, transparent 4px, #000 4.5px);
+  -webkit-mask-size: 12px 100%;
+  -webkit-mask-repeat: repeat-x;
+}
+.live-ticket__paper b {
+  font-size: 13px;
+  color: var(--accent-ink);
+}
+.live-ticket__paper em {
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.live-ticket__paper i {
+  display: block;
+  height: 26px;
+  margin-top: 4px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px);
+}
+@keyframes ticket-feed {
+  to {
+    transform: translateY(0);
+  }
+}
+
+.live-steam {
+  pointer-events: none;
+  overflow: visible;
+}
+.live-steam path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 7;
+  stroke-linecap: round;
+  filter: blur(5px);
+  opacity: 0;
+  animation: steam 4.2s ease-in-out infinite;
+}
+@keyframes steam {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scaleY(0.8);
+  }
+  35% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scaleY(1.1);
+  }
+}
+
+.live-sky {
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.live-glass {
+  pointer-events: none;
+}
+.live-flash {
+  position: absolute;
+  inset: 0;
+  background: #eef4fb;
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 29;
+}
+
+/* lights: the room starts dark and the tubes flicker on */
+.live-dark {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: radial-gradient(120% 90% at 50% 40%, rgba(16, 20, 28, 0.86), rgba(8, 10, 15, 0.95));
+  pointer-events: none;
+}
+.live-dark.is-on {
+  animation: lights-on 1.35s linear forwards;
+}
+@keyframes lights-on {
+  0% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0.45;
+  }
+  12% {
+    opacity: 1;
+  }
+  26% {
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  44% {
+    opacity: 0.1;
+  }
+  48% {
+    opacity: 0.55;
+  }
+  62%,
+  100% {
+    opacity: 0;
+  }
+}
+.live-tube {
+  z-index: 31;
+  border-radius: 40px;
+  background: #fff;
+  filter: blur(26px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0;
+}
+.live-tube.is-on {
+  animation: tube-on 1.35s linear forwards;
+}
+@keyframes tube-on {
+  0% {
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  12% {
+    opacity: 0;
+  }
+  26% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.2;
+  }
+  44%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.45;
+  }
+}
+
+.live-grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+.live-grade--golden {
+  background: linear-gradient(90deg, transparent 35%, rgba(255, 168, 80, 0.55) 100%);
+  mix-blend-mode: soft-light;
+}
+.live-grade--night {
+  /* graphite-navy dusk, not purple */
+  background: #1f2a3d;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hits.is-reveal .hit__img {
+    animation: none;
+  }
+  .live-dark.is-on {
+    animation: none;
+    opacity: 0;
+  }
+  .live-tube.is-on {
+    animation: none;
+    opacity: 0.45;
+  }
+}
+
+/* ---------------------------------------------------------------- depth of field */
+.focus-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.focus-layer.is-on {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: zoom-out;
+}
+.focus-layer__blur {
+  position: absolute;
+  inset: 0;
+  -webkit-backdrop-filter: blur(7px) saturate(0.85);
+  backdrop-filter: blur(7px) saturate(0.85);
+  -webkit-mask-image: radial-gradient(ellipse var(--rx) var(--ry) at var(--cx) var(--cy), transparent 64%, #000 100%);
+  mask-image: radial-gradient(ellipse var(--rx) var(--ry) at var(--cx) var(--cy), transparent 64%, #000 100%);
+}
+.focus-layer__shade {
+  position: absolute;
+  inset: 0;
+  /* the room dims a little toward the edges (neutral graphite); the object stays lit */
+  background: radial-gradient(ellipse calc(var(--rx) * 1.9) calc(var(--ry) * 1.9) at var(--cx) var(--cy), rgba(16, 20, 28, 0) 35%, rgba(16, 20, 28, 0.28) 100%);
+}
+.focus-layer--stage .focus-layer__blur {
+  -webkit-backdrop-filter: blur(10px) saturate(0.78) brightness(0.97);
+  backdrop-filter: blur(10px) saturate(0.78) brightness(0.97);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.focus-layer--stage .focus-layer__shade {
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(16, 20, 28, 0.06) 40%, rgba(16, 20, 28, 0.34) 100%);
+}
+.focus-layer.is-low .focus-layer__blur {
+  display: none;
+}

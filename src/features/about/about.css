@@ -1,0 +1,803 @@
+/* ==========================================================================
+   RM-14 · Her ID card (About sheet). The lanyard card is ported from the
+   legacy .badge/.idc styles and re-skinned clear tech: white acrylic stock,
+   a navy dot-matrix band, mono printed fields, chrome hook and clip, a
+   baby-blue cord. Pink only as a hairline and the holo seal (collectible).
+   ========================================================================== */
+.ab {
+  display: grid;
+  gap: 14px;
+}
+
+/* ---------------------------------------------------------------- the card and who she is */
+.ab-top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+}
+.ab-card {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 0 4px;
+}
+.ab-card__hint {
+  font-size: 9.5px;
+}
+.ab-who {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  min-width: 0;
+}
+.ab-who__status {
+  margin-bottom: 4px;
+}
+.ab-who__role {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+.ab-who__line {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.ab-who__where {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin: 4px 0 0;
+}
+.ab-who__where .t-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.ab-who__where .readout small {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+.ab-lead {
+  margin: 2px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- keys */
+.ab-keys {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+.ab-keys__meta {
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 1px currentColor;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+}
+.ab-mail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 4px 12px;
+  border-radius: 14px;
+}
+.ab-mail__addr {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--primary-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ab-mail__addr svg {
+  flex: none;
+}
+.ab-mail__addr:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ab-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ab-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 4px;
+}
+.ab-jump__chip {
+  position: relative;
+  height: 30px;
+  border: 0;
+  cursor: pointer;
+}
+.ab-jump__chip::before {
+  /* 44px touch target */
+  content: '';
+  position: absolute;
+  inset: -7px -2px;
+}
+.ab-jump__chip:hover {
+  background: var(--primary-soft);
+  color: var(--primary-ink);
+}
+
+/* ---------------------------------------------------------------- sections */
+.ab-sec {
+  margin-top: 8px;
+  scroll-margin-top: 8px;
+}
+.ab-sec h3 {
+  margin: 8px 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.ab-sec h3:focus-visible {
+  outline-offset: 2px;
+}
+.ab-sec h3:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* the practical details, as a spec sheet */
+.ab-spec {
+  margin: 0;
+  overflow: hidden;
+  border: var(--hair);
+  border-radius: var(--r-md);
+  background: var(--ice-0);
+  box-shadow: var(--shadow-1);
+}
+.ab-spec__row {
+  padding: 10px 14px 11px;
+}
+.ab-spec__row + .ab-spec__row {
+  border-top: var(--hair);
+}
+.ab-spec__row:nth-child(even) {
+  background: var(--ice-1);
+}
+.ab-spec dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ab-spec__no {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--ice-2);
+  box-shadow: inset 0 0 0 1px rgba(22, 27, 38, 0.12);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.ab-spec dd {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.ab-avail {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  background: var(--ice-1);
+  border: var(--hair);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.ab-avail .led {
+  translate: 0 -1px;
+}
+
+/* the path: a hairline timeline with LED stops */
+.ab-path {
+  position: relative;
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style: none;
+}
+.ab-path::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  bottom: 10px;
+  left: 5px;
+  width: 1px;
+  background: linear-gradient(180deg, var(--ice-4), rgba(185, 200, 217, 0.3));
+}
+.ab-path__item {
+  position: relative;
+  padding-bottom: 18px;
+}
+.ab-path__item::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: -19px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(31, 95, 150, 0.25);
+}
+.ab-path__item:first-child::before {
+  background: var(--green);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(47, 191, 138, 0.35), 0 0 8px var(--green);
+}
+.ab-path__when {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ab-path__title {
+  margin: 3px 0 0;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.ab-path__org {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-3);
+}
+.ab-path__sum {
+  margin: 7px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ab-path__hi {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ab-path__hi li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.ab-path__hi li::before {
+  content: '';
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 1.5px;
+  background: var(--baby);
+  box-shadow: inset 0 0 0 1px rgba(31, 95, 150, 0.3);
+}
+
+/* the toolbox */
+.ab-skills {
+  display: grid;
+  gap: 10px;
+}
+.ab-skills__group {
+  padding: 12px 14px 14px;
+}
+.ab-skills__name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+.ab-skills ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ab-skills .chip {
+  height: auto;
+  min-height: 26px;
+  padding: 4px 10px;
+  background: var(--ice-0);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-transform: none;
+  white-space: normal;
+  color: var(--ink);
+}
+
+/* the story */
+.ab-story p {
+  margin: 0 0 10px;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.ab-now {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 6px 0 2px;
+  padding: 11px 13px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #eaf4ff;
+}
+.ab-now .t-dot {
+  flex: none;
+  color: var(--baby);
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   The ID card on its lanyard (CR80, portrait)
+   ========================================================================== */
+.idc-lanyard {
+  --card-w: 150px;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: calc(var(--card-w) + 8px);
+}
+/* the chrome hook on the wall */
+.idc-hook {
+  position: relative;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #ffffff 0 16%, #e3e9f0 34%, #9eabbb 74%, #c9d2dc 100%);
+  box-shadow: inset 0 0 0 1px rgba(70, 88, 112, 0.35), -2px 3px 5px rgba(22, 27, 38, 0.25);
+}
+.idc-strap {
+  display: block;
+  width: 9px;
+  height: var(--strap, 44px);
+  margin-top: -8px;
+  transform-origin: 50% 0;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0 2px, transparent 2px 6px),
+    linear-gradient(90deg, #7fb6df, #a9d6f5 35%, #cfe7fb 50%, #a9d6f5 65%, #6aa6d6);
+  box-shadow: inset 0 0 0 1px rgba(31, 95, 150, 0.18);
+}
+.idc-badge {
+  --sway: 0;
+  --hx: 0.5;
+  --hy: 0.3;
+  position: relative;
+  display: block;
+  width: var(--card-w);
+  margin-top: -2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  perspective: 900px;
+  transform-origin: 50% -16px;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.idc-badge:active,
+.idc-badge[data-dragging] {
+  cursor: grabbing;
+}
+.idc-badge:focus-visible {
+  outline: none;
+}
+.idc-badge:focus-visible .idc-face {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5.5px var(--focus);
+}
+/* the lanyard clip: a chrome hook that runs down into the punched slot */
+.idc-clip {
+  position: relative;
+  z-index: 3;
+  display: block;
+  width: 22px;
+  height: 30px;
+  margin: 0 auto -22px;
+  border-radius: 6px 6px 4px 4px;
+  background: linear-gradient(90deg, #a7b0bd, #f4f6f9 35%, #c9d0da 65%, #8d97a6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 4px rgba(22, 27, 38, 0.25);
+  -webkit-mask: linear-gradient(#000 0 0) top / 100% 16px no-repeat, linear-gradient(#000 0 0) bottom / 9px 100% no-repeat;
+  mask: linear-gradient(#000 0 0) top / 100% 16px no-repeat, linear-gradient(#000 0 0) bottom / 9px 100% no-repeat;
+}
+.idc-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 54 / 85.6;
+  container-type: inline-size;
+  transform-style: preserve-3d;
+  transition: transform 0.62s var(--ease-spring);
+}
+.idc-card[data-flipped='true'] {
+  transform: rotateY(180deg);
+}
+.idc-face {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 5.9cqi;
+  box-shadow:
+    0 1px 1px rgba(22, 27, 38, 0.12),
+    -6px 12px 20px rgba(22, 27, 38, 0.16),
+    -16px 30px 50px rgba(22, 27, 38, 0.12);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.idc-face--back {
+  transform: rotateY(180deg);
+}
+.idc {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: inherit;
+  color: var(--ink);
+  text-align: left;
+  background:
+    repeating-linear-gradient(0deg, rgba(31, 95, 150, 0.03) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #ffffff, var(--ice-1));
+  box-shadow: inset 0 0 0 1px rgba(22, 27, 38, 0.08);
+  /* the slot punched through for the clip */
+  -webkit-mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 5'%3E%3Crect width='30' height='5' rx='2.5'/%3E%3C/svg%3E") 50% 4.6cqi / 30cqi 5cqi no-repeat,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 5'%3E%3Crect width='30' height='5' rx='2.5'/%3E%3C/svg%3E") 50% 4.6cqi / 30cqi 5cqi no-repeat exclude,
+    linear-gradient(#000 0 0);
+}
+.idc::before {
+  content: '';
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 3.9cqi;
+  width: 31.4cqi;
+  height: 6.4cqi;
+  translate: -50% 0;
+  border-radius: 999px;
+  border: 0.7cqi solid rgba(169, 214, 245, 0.35);
+}
+.idc__label {
+  display: block;
+  font: 500 2.9cqi/1.2 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.idc__label--gap {
+  margin-top: 2.4cqi;
+}
+/* the band: a navy screen with a dot-matrix grain and a baby → pink hairline */
+.idc__band {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 3cqi;
+  flex: none;
+  height: 36cqi;
+  padding: 11cqi 6cqi 9cqi;
+  color: #fff;
+  background:
+    radial-gradient(circle, rgba(169, 214, 245, 0.2) 0.45cqi, transparent 0.6cqi) 0 0 / 2.6cqi 2.6cqi,
+    linear-gradient(135deg, #23354f, var(--screen) 70%);
+}
+.idc__band::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 0.9cqi;
+  background: linear-gradient(90deg, var(--baby), #ffd6e8 55%, var(--baby));
+}
+.idc__brand {
+  display: flex;
+  align-items: center;
+  gap: 2.2cqi;
+  font: 800 6.2cqi/1 var(--font-ui);
+  letter-spacing: -0.02em;
+}
+.idc__logo {
+  display: grid;
+  place-items: center;
+  width: 9cqi;
+  height: 9cqi;
+  border-radius: 999px;
+  font-size: 6cqi;
+  background: #fff;
+  color: var(--ink);
+}
+.idc__logo b {
+  color: var(--accent-ink);
+}
+.idc__pass {
+  margin-left: auto;
+  font: 500 2.7cqi/1.15 var(--font-mono);
+  letter-spacing: 0.18em;
+  text-align: right;
+  text-transform: uppercase;
+  color: var(--baby);
+}
+.idc__main {
+  display: flex;
+  gap: 4.5cqi;
+  margin-top: -8cqi;
+  padding: 0 6cqi;
+}
+/* CONTOH: swap the monogram for a real photo (an <img> inside .idc__photo) */
+.idc__photo {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 33cqi;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2cqi;
+  background:
+    radial-gradient(circle at 80% 14%, rgba(255, 255, 255, 0.85) 0 9cqi, transparent 9.2cqi),
+    linear-gradient(160deg, #ffffff, var(--primary-soft) 40%, var(--baby));
+  box-shadow: 0 0 0 1.1cqi #fff, -1cqi 1.6cqi 3cqi rgba(22, 27, 38, 0.22);
+}
+.idc__mono {
+  font: 800 15cqi/1 var(--font-ui);
+  letter-spacing: -0.06em;
+  color: var(--ink);
+}
+.idc__holo {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(120deg, rgba(255, 214, 232, 0.6) 0%, rgba(220, 238, 252, 0.6) 6%, rgba(227, 247, 238, 0.6) 12%, rgba(255, 243, 217, 0.6) 18%, rgba(255, 214, 232, 0.6) 24%);
+  background-size: 300% 300%;
+  background-position: calc(50% + var(--sway) * 4% + var(--hx) * 30%) calc(40% + var(--hy) * 30%);
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+  -webkit-mask: linear-gradient(115deg, transparent 30%, #000 50%, transparent 70%);
+  mask: linear-gradient(115deg, transparent 30%, #000 50%, transparent 70%);
+}
+.idc__who {
+  min-width: 0;
+  padding-top: 11.5cqi;
+}
+.idc__name {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 800 7.2cqi/1 var(--font-ui);
+  letter-spacing: -0.03em;
+}
+.idc__role {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 700 4.1cqi/1.2 var(--font-ui);
+  color: var(--ink-2);
+}
+.idc__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.8cqi 4cqi;
+  margin: 5cqi 6cqi 0;
+  padding-top: 3.6cqi;
+  border-top: 0.4cqi solid var(--ice-3);
+}
+.idc__val {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 500 3.9cqi/1.1 var(--font-mono);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.idc__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4cqi;
+  margin: auto 6cqi 4cqi;
+}
+.idc__code {
+  min-width: 0;
+}
+.idc__barcode {
+  display: block;
+  width: 44cqi;
+  height: 7.5cqi;
+}
+.idc__status {
+  display: flex;
+  align-items: center;
+  gap: 1.6cqi;
+  margin-top: 2cqi;
+  font: 700 3cqi/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #13704f;
+}
+.idc__led {
+  width: 2.2cqi;
+  height: 2.2cqi;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 0.7cqi rgba(47, 191, 138, 0.22), 0 0 2cqi rgba(47, 191, 138, 0.8);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .idc__led {
+    animation: idc-blink 2.4s steps(1, end) infinite;
+  }
+}
+@keyframes idc-blink {
+  85% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.35;
+  }
+}
+/* the hologram seal (a collectible touch): a foil that moves with the swing and the pointer */
+.idc__seal {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 13cqi;
+  height: 13cqi;
+  border-radius: 999px;
+  font: 800 4cqi/1 var(--font-ui);
+  letter-spacing: -0.04em;
+  color: rgba(22, 27, 38, 0.7);
+  background:
+    radial-gradient(circle at calc(var(--hx) * 100%) calc(var(--hy) * 100%), rgba(255, 255, 255, 0.95), transparent 55%),
+    repeating-conic-gradient(from calc(var(--sway) * 9deg + var(--hx) * 90deg), #dceefc 0 30deg, #ffd6e8 30deg 60deg, #e3f7ee 60deg 90deg, #fff3d9 90deg 120deg, #cfe7fb 120deg 150deg, #dceefc 150deg 180deg);
+  box-shadow: inset 0 0 0 0.5cqi rgba(255, 255, 255, 0.8), -0.4cqi 0.6cqi 1.4cqi rgba(22, 27, 38, 0.2);
+}
+.idc__strip {
+  flex: none;
+  overflow: hidden;
+  padding: 1.6cqi 6cqi;
+  font: 700 2.5cqi/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+  background: linear-gradient(90deg, var(--baby), #cfe7fb);
+}
+/* back */
+.idc--back {
+  background:
+    repeating-linear-gradient(0deg, rgba(31, 95, 150, 0.03) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--ice-1), #ffffff);
+}
+.idc__mag {
+  flex: none;
+  height: 14cqi;
+  margin-top: 14cqi;
+  background: linear-gradient(180deg, #1a2638, #2c3a50 45%, #121c2b);
+}
+.idc__back-row {
+  display: flex;
+  align-items: center;
+  gap: 4cqi;
+  margin: 6cqi 6cqi 0;
+}
+.idc__qr {
+  flex: none;
+  display: block;
+  width: 38cqi;
+  height: auto;
+  border-radius: 1.6cqi;
+  box-shadow: 0 0 0 0.4cqi var(--ice-3);
+}
+.idc__back-text {
+  min-width: 0;
+}
+.idc__url {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 800 5.6cqi/1 var(--font-ui);
+  letter-spacing: -0.02em;
+}
+.idc__email {
+  display: block;
+  margin-top: 0.6cqi;
+  font: 500 3cqi/1.25 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+.idc__return {
+  margin: 5cqi 6cqi 0;
+  font-size: 3.4cqi;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.idc__sig {
+  margin: 4cqi 6cqi 0;
+}
+.idc__sig-panel {
+  display: block;
+  height: 12cqi;
+  margin-top: 1.2cqi;
+  padding: 0.8cqi 2cqi;
+  border-radius: 1cqi;
+  background: repeating-linear-gradient(-45deg, #f8fafc 0 1.2cqi, #e8eef6 1.2cqi 1.6cqi);
+  box-shadow: inset 0 0 0 0.3cqi #d5dde8;
+}
+.idc__sig-panel svg {
+  display: block;
+  width: 70%;
+  height: 100%;
+}
+.idc__micro {
+  margin: auto 6cqi 4cqi;
+  font: 500 2.2cqi/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .idc-card {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------- narrow sheets (phones) */
+@media (max-width: 420px) {
+  .ab-top {
+    gap: 14px;
+  }
+  .idc-lanyard {
+    --card-w: 128px;
+  }
+  .ab-who__role {
+    font-size: 17px;
+  }
+  .ab-keys {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

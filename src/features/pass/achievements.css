@@ -1,0 +1,459 @@
+/* ==========================================================================
+   RM-08 · Her sticker book — clear-tech binder: chrome rings, a white page
+   on a hairline grid, clear acrylic sleeves; the holo lives on the stickers.
+   ========================================================================== */
+
+/* ---------------------------------------------------------- medal + bar */
+.sb-medal {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px 12px 10px;
+  border-radius: var(--r-md);
+  background: var(--ice-1);
+  border: var(--hair);
+  box-shadow: var(--shadow-1);
+}
+.sb-medal__text {
+  min-width: 0;
+}
+.sb-medal__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sb-medal__row b {
+  font-size: 15px;
+  font-weight: 800;
+}
+.sb-medal__count {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+.sb-medal__count .t-dot {
+  font-size: 20px;
+  color: var(--ink);
+}
+.sb-bar {
+  position: relative;
+  height: 10px;
+  margin: 8px 0 6px;
+  border-radius: 999px;
+  background: var(--ice-2);
+  box-shadow: var(--shadow-inset);
+}
+.sb-bar__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ffc2de, var(--accent) 70%, #ff9cc8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: width 900ms var(--ease-out);
+}
+.sb-bar__tick {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 16px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: var(--ice-4);
+  box-shadow: 0 0 0 1.5px var(--ice-0);
+}
+.sb-bar__tick.is-passed {
+  background: var(--accent-ink);
+}
+.sb-medal__next {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 10px;
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.sb-medal__next b {
+  color: var(--ink);
+}
+.sb-medal__hearts {
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------- the loupe */
+.sb-loupe {
+  display: grid;
+  grid-template-columns: 124px 1fr;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: var(--r-md);
+  background: var(--ice-0);
+  box-shadow: var(--edge-acrylic), -2px 4px 12px rgba(24, 38, 58, 0.07);
+}
+.sb-loupe__stage {
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 124px;
+  height: 124px;
+  border-radius: 14px;
+  background-color: var(--ice-0);
+  background-image: var(--gingham-pink);
+  background-size: 14px 14px;
+  box-shadow: inset 0 0 0 1px rgba(24, 38, 58, 0.08), inset 0 2px 6px rgba(24, 38, 58, 0.08);
+  perspective: 520px;
+}
+.sb-loupe:not(.is-on) .sb-loupe__stage {
+  background-image: var(--grid);
+  background-size: var(--grid-size);
+  background-color: var(--ice-1);
+}
+.sb-loupe__tilt {
+  display: grid;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 380ms var(--ease-out);
+}
+.sb-loupe__stk {
+  animation: sb-peel 520ms var(--ease-spring) both;
+}
+.sb-loupe__text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sb-loupe__text h3 {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.sb-loupe__text p {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.sb-loupe__prog {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.sb-loupe__prog .sb-mini {
+  width: 90px;
+  margin: 0;
+}
+.sb-loupe__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+.sb-loupe__foot .chip .t-heart::before {
+  color: var(--accent-ink);
+}
+.sb-loupe:not(.is-on) .sb-loupe__foot .chip {
+  color: var(--ink-3);
+}
+
+@keyframes sb-peel {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.86) rotate(-6deg);
+  }
+}
+
+/* ---------------------------------------------------------- filter */
+.sb-filter {
+  display: flex;
+  gap: 2px;
+  margin-top: 14px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--ice-2);
+  box-shadow: var(--shadow-inset);
+}
+.sb-filter button {
+  flex: 1;
+  min-height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.sb-filter button span {
+  margin-left: 4px;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+.sb-filter button.is-on {
+  background: var(--ice-0);
+  color: var(--ink);
+  box-shadow: var(--edge-acrylic), -1px 2px 4px rgba(24, 38, 58, 0.1);
+}
+.sb-filter button.is-on span {
+  color: var(--primary-ink);
+}
+
+/* ---------------------------------------------------------- binder page */
+.sb-page {
+  position: relative;
+  margin-top: 14px;
+  padding: 14px 12px 16px 38px;
+  border-radius: 6px 14px 14px 6px;
+  background-color: var(--ice-0);
+  background-image: linear-gradient(90deg, rgba(24, 38, 58, 0.07), rgba(24, 38, 58, 0) 30px), var(--grid);
+  background-size: auto, var(--grid-size);
+  box-shadow: var(--edge-acrylic), -3px 5px 14px rgba(24, 38, 58, 0.1);
+}
+.sb-rings {
+  position: absolute;
+  z-index: 2;
+  top: 22px;
+  bottom: 22px;
+  left: -12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  pointer-events: none;
+}
+.sb-rings i {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 36px;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--chrome);
+  box-shadow: inset 0 0 0 1px var(--chrome-edge), -2px 3px 4px rgba(24, 38, 58, 0.22);
+}
+.sb-rings i::before {
+  /* the punched hole the ring passes through */
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -5px;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  margin-top: -7.5px;
+  border-radius: 50%;
+  background: var(--ice-3);
+  box-shadow: inset -1px 2px 3px rgba(24, 38, 58, 0.3);
+}
+.sb-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+}
+
+/* a clear acrylic sleeve with its opening along the top */
+.sb-pocket {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--ice-0), var(--ice-1));
+  box-shadow: var(--edge-acrylic), -2px 3px 6px rgba(24, 38, 58, 0.07);
+}
+.sb-pocket::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 13px, rgba(255, 255, 255, 0.95) 13px 14px, rgba(132, 150, 173, 0.18) 14px 15px, transparent 15px),
+    linear-gradient(118deg, transparent 38%, rgba(255, 255, 255, 0.5) 46%, rgba(255, 255, 255, 0) 55%);
+}
+.sb-pocket:not(.is-on) {
+  background: linear-gradient(180deg, var(--ice-1), var(--ice-2));
+}
+.sb-pocket.is-sel {
+  box-shadow: var(--edge-acrylic), 0 0 0 2px var(--primary), -2px 3px 8px rgba(24, 38, 58, 0.1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sb-pocket {
+    animation: sb-in 420ms var(--ease-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+}
+@keyframes sb-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.sb-pocket__btn {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  min-height: 44px;
+  padding: 18px 6px 10px;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  text-align: center;
+  color: var(--ink);
+}
+.sb-pocket__btn:focus-visible {
+  outline-offset: -2px;
+}
+.sb-pocket__stk {
+  margin-bottom: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sb-pocket.is-on .sb-pocket__btn:hover .sb-pocket__stk {
+    transform: rotate(-4deg) scale(1.06);
+  }
+}
+.sb-pocket__stk {
+  transition: transform 260ms var(--ease-spring);
+}
+.sb-pocket__btn b {
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.sb-pocket:not(.is-on) .sb-pocket__btn b {
+  color: var(--ink-2);
+}
+.sb-pocket__meta {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--ink-3);
+}
+.sb-pocket.is-on .sb-pocket__meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+.sb-pocket__no {
+  position: absolute;
+  top: 1px;
+  left: 9px;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+}
+.sb-new {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  right: 6px;
+  padding: 3px 6px 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: -1px 2px 4px rgba(194, 40, 111, 0.28);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sb-new {
+    animation: sb-new 1.8s var(--ease-out) 600ms 2;
+  }
+}
+@keyframes sb-new {
+  50% {
+    transform: scale(1.12) rotate(-4deg);
+  }
+}
+.sb-pocket__go {
+  position: relative;
+  align-self: center;
+  min-height: 30px;
+  margin: -4px 8px 9px;
+  padding: 0 12px;
+  border: 1px solid rgba(31, 95, 150, 0.22);
+  border-radius: 999px;
+  background: var(--ice-0);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--primary-ink);
+}
+.sb-pocket__go::before {
+  content: '';
+  position: absolute;
+  inset: -7px -4px;
+}
+.sb-pocket__go:hover {
+  background: var(--primary-soft);
+}
+.sb-mini {
+  display: block;
+  width: 70%;
+  height: 4px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--ice-3);
+  overflow: hidden;
+}
+.sb-mini i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+}
+.sb-empty {
+  margin: 0;
+  padding: 28px 8px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+/* ---------------------------------------------------------- foot */
+.sb-foot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@media (max-width: 420px) {
+  .sb-loupe {
+    grid-template-columns: 96px 1fr;
+    gap: 12px;
+  }
+  .sb-loupe__stage {
+    width: 96px;
+    height: 96px;
+  }
+  .sb-loupe__tilt {
+    scale: 0.82;
+  }
+  .sb-page {
+    padding-left: 32px;
+  }
+  .sb-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+}

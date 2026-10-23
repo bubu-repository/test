@@ -1,13 +1,14 @@
+import { CAPTION, MONO as MONO_FAMILY, TITLE } from "./fonts";
 import { canvas, rng } from "./source";
 
 /*
- * How a finished piece is laid out: a card, a photo-booth strip, a sheet of 3×4 ID photos, a
+ * How a finished piece is laid out (the print the camera ejects): a card, a photo-booth strip, a sheet of 3×4 ID photos, a
  * trading card, or a die-cut sticker. Each draws the art (one canvas, or four for the strip) onto a
  * canvas at print size.
  */
 
 export type LayoutId = "card" | "strip" | "id" | "tcg" | "sticker";
-export type BackdropId = "sky" | "sea" | "gingham" | "dots" | "white";
+export type BackdropId = "sky" | "sea" | "gingham" | "blue-gingham" | "dots" | "white";
 
 export const LAYOUTS: { id: LayoutId; name: string; note: string }[] = [
   { id: "card", name: "Card", note: "4 × 5, with a caption" },
@@ -19,8 +20,9 @@ export const LAYOUTS: { id: LayoutId; name: string; note: string }[] = [
 
 export const BACKDROPS: { id: BackdropId; name: string }[] = [
   { id: "sky", name: "Sky" },
-  { id: "sea", name: "Sea" },
-  { id: "gingham", name: "Gingham" },
+  { id: "sea", name: "Aquarium" },
+  { id: "gingham", name: "Pink gingham" },
+  { id: "blue-gingham", name: "Blue gingham" },
   { id: "dots", name: "Dot grid" },
   { id: "white", name: "White" },
 ];
@@ -56,9 +58,14 @@ export function photoAspect(layout: LayoutId): number {
 
 export const takes = (layout: LayoutId) => (layout === "strip" ? 4 : 1);
 
-const HAND = '"Gochi Hand", "Comic Sans MS", cursive';
-const BOLD = '"Bagel Fat One", "Arial Rounded MT Bold", sans-serif';
-const MONO = 'ui-monospace, "JetBrains Mono", monospace';
+/** Captions and flavour text: the room's rounded face, extra bold (see fonts.ts). */
+const HAND = CAPTION.family;
+const HAND_W = CAPTION.weight;
+const BOLD = TITLE.family;
+const MONO = MONO_FAMILY;
+/** The room's ink: a deep cool navy, never black. */
+const INK = "#18263A";
+const INK_RGB = "24,38,58";
 
 const dateLine = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
@@ -72,9 +79,9 @@ export function paintBackdrop(ctx: CanvasRenderingContext2D, x: number, y: numbe
   const rand = rng(seed + 31);
   if (id === "sky") {
     const g = ctx.createLinearGradient(0, y, 0, y + h);
-    g.addColorStop(0, "#1570D6");
-    g.addColorStop(0.55, "#4FB0F2");
-    g.addColorStop(1, "#CFF2FF");
+    g.addColorStop(0, "#5AA9E6");
+    g.addColorStop(0.55, "#A9D6F5");
+    g.addColorStop(1, "#EAF5FD");
     ctx.fillStyle = g;
     ctx.fillRect(x, y, w, h);
     // Soft clouds: clusters of white puffs, brighter on top.
@@ -98,9 +105,9 @@ export function paintBackdrop(ctx: CanvasRenderingContext2D, x: number, y: numbe
     }
   } else if (id === "sea") {
     const g = ctx.createLinearGradient(0, y, 0, y + h);
-    g.addColorStop(0, "#7FE3F7");
-    g.addColorStop(0.5, "#3CC8F0");
-    g.addColorStop(1, "#0E8FD8");
+    g.addColorStop(0, "#BFE6FA");
+    g.addColorStop(0.5, "#7CC3EE");
+    g.addColorStop(1, "#3F8FCF");
     ctx.fillStyle = g;
     ctx.fillRect(x, y, w, h);
     // Caustic light: thin bright wavy lines.
@@ -122,18 +129,18 @@ export function paintBackdrop(ctx: CanvasRenderingContext2D, x: number, y: numbe
       ctx.arc(bx, by, r, 0, Math.PI * 2);
       ctx.stroke();
     }
-  } else if (id === "gingham") {
-    ctx.fillStyle = "#FFF1F6";
+  } else if (id === "gingham" || id === "blue-gingham") {
+    ctx.fillStyle = id === "gingham" ? "#FFF3F8" : "#F3F9FE";
     ctx.fillRect(x, y, w, h);
     const cell = Math.max(18, w / 14);
-    ctx.fillStyle = "rgba(255,95,168,.22)";
+    ctx.fillStyle = id === "gingham" ? "rgba(255,126,182,.24)" : "rgba(90,169,230,.22)";
     for (let i = 0; i < w / cell + 1; i += 2) ctx.fillRect(x + i * cell, y, cell, h);
     for (let j = 0; j < h / cell + 1; j += 2) ctx.fillRect(x, y + j * cell, w, cell);
   } else if (id === "dots") {
-    ctx.fillStyle = "#FBFAF6";
+    ctx.fillStyle = "#F6F9FD";
     ctx.fillRect(x, y, w, h);
     const step = Math.max(16, w / 22);
-    ctx.fillStyle = "rgba(11,31,51,.16)";
+    ctx.fillStyle = `rgba(${INK_RGB},.16)`;
     for (let i = step / 2; i < w; i += step)
       for (let j = step / 2; j < h; j += step) {
         ctx.beginPath();
@@ -181,7 +188,8 @@ export function compose(layout: LayoutId, arts: Art[], o: LayoutOptions): HTMLCa
   if (layout === "sticker") return sticker(arts[0]);
   const [W, H] = SIZE[layout];
   const out = canvas(W, H);
-  const ctx = out.getContext("2d")!;
+  // A CPU-backed canvas: the print is copied, decorated and encoded later, which would otherwise read it back from the GPU.
+  const ctx = out.getContext("2d", { willReadFrequently: true })!;
   if (layout === "card") {
     paintBackdrop(ctx, 0, 0, W, H, o.backdrop, o.seed);
     place(ctx, arts[0], W * 0.06, H * 0.05, W * 0.88, H * (o.caption ? 0.74 : 0.86), arts[0].fill ? 1 : 0.94);
@@ -189,18 +197,18 @@ export function compose(layout: LayoutId, arts: Art[], o: LayoutOptions): HTMLCa
       const light = o.backdrop === "sky" || o.backdrop === "sea";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      fitText(ctx, o.caption, HAND, W * 0.86, 84);
+      fitText(ctx, o.caption, HAND, W * 0.86, 76, HAND_W);
       ctx.lineWidth = 14;
       ctx.lineJoin = "round";
       ctx.strokeStyle = light ? "rgba(255,255,255,.95)" : "rgba(255,255,255,.9)";
       ctx.strokeText(o.caption, W / 2, H * 0.87);
-      ctx.fillStyle = "#0B1F33";
+      ctx.fillStyle = INK;
       ctx.fillText(o.caption, W / 2, H * 0.87);
     }
     ctx.font = `600 20px ${MONO}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = o.backdrop === "sky" || o.backdrop === "sea" ? "rgba(255,255,255,.85)" : "rgba(11,31,51,.55)";
+    ctx.fillStyle = o.backdrop === "sky" || o.backdrop === "sea" ? "rgba(255,255,255,.85)" : `rgba(${INK_RGB},.55)`;
     ctx.fillText("MADE AT ADELIA.CC", W * 0.05, H - H * 0.03);
   } else if (layout === "strip") {
     ctx.fillStyle = "#FFFFFF";
@@ -212,18 +220,18 @@ export function compose(layout: LayoutId, arts: Art[], o: LayoutOptions): HTMLCa
       const y = m + i * (fh + 22);
       paintBackdrop(ctx, m, y, fw, fh, o.backdrop, o.seed + i);
       place(ctx, arts[i % arts.length], m, y, fw, fh, 0.92);
-      ctx.strokeStyle = "rgba(11,31,51,.08)";
+      ctx.strokeStyle = `rgba(${INK_RGB},.08)`;
       ctx.lineWidth = 2;
       ctx.strokeRect(m + 1, y + 1, fw - 2, fh - 2);
     }
     const footY = m + 4 * (fh + 22) - 22;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#0B1F33";
-    fitText(ctx, o.caption || "sea you soon", HAND, W - m * 2, 58);
-    ctx.fillText(o.caption || "sea you soon", W / 2, footY + (H - footY) * 0.42);
+    ctx.fillStyle = INK;
+    fitText(ctx, o.caption || "see you soon", HAND, W - m * 2, 52, HAND_W);
+    ctx.fillText(o.caption || "see you soon", W / 2, footY + (H - footY) * 0.42);
     ctx.font = `600 18px ${MONO}`;
-    ctx.fillStyle = "rgba(11,31,51,.55)";
+    ctx.fillStyle = `rgba(${INK_RGB},.55)`;
     ctx.fillText(`ADELIA.CC · ${dateLine(o.date).toUpperCase()}`, W / 2, footY + (H - footY) * 0.74);
   } else if (layout === "id") {
     ctx.fillStyle = "#FFFFFF";
@@ -243,7 +251,7 @@ export function compose(layout: LayoutId, arts: Art[], o: LayoutOptions): HTMLCa
         place(ctx, arts[0], x, y, pw, ph, 0.86);
       }
     // Where to cut.
-    ctx.strokeStyle = "rgba(11,31,51,.25)";
+    ctx.strokeStyle = `rgba(${INK_RGB},.25)`;
     ctx.setLineDash([10, 8]);
     ctx.lineWidth = 2;
     for (let c = 0; c <= 4; c++) {
@@ -264,7 +272,7 @@ export function compose(layout: LayoutId, arts: Art[], o: LayoutOptions): HTMLCa
     ctx.font = `600 22px ${MONO}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "rgba(11,31,51,.6)";
+    ctx.fillStyle = `rgba(${INK_RGB},.6)`;
     ctx.fillText(`PAS FOTO 3 × 4 CM · ${o.idColor === "red" ? "MERAH" : "BIRU"} · ADELIA.CC STUDIO`, W / 2, H - 46);
   } else if (layout === "tcg") {
     tcg(ctx, W, H, arts[0], o);
@@ -279,24 +287,26 @@ function sticker(art: Art): HTMLCanvasElement {
   const H = src.height;
   const edge = Math.max(6, Math.min(W, H) * 0.035);
   const out = canvas(W, H);
-  const ctx = out.getContext("2d")!;
+  const ctx = out.getContext("2d", { willReadFrequently: true })!;
   // The art's silhouette in white, stamped around a circle: a cheap, round dilation.
   const sil = canvas(W, H);
-  const sctx = sil.getContext("2d")!;
+  const sctx = sil.getContext("2d", { willReadFrequently: true })!;
   sctx.drawImage(src, 0, 0);
   sctx.globalCompositeOperation = "source-in";
   sctx.fillStyle = "#FFFFFF";
   sctx.fillRect(0, 0, W, H);
   const white = canvas(W, H);
-  const wctx = white.getContext("2d")!;
+  const wctx = white.getContext("2d", { willReadFrequently: true })!;
   for (let a = 0; a < 24; a++) {
     const t = (a / 24) * Math.PI * 2;
     wctx.drawImage(sil, Math.cos(t) * edge, Math.sin(t) * edge);
   }
   wctx.drawImage(sil, 0, 0);
   ctx.save();
-  ctx.shadowColor = "rgba(8,40,80,.28)";
+  // Lit from the window on the right: the shadow falls down and to the left.
+  ctx.shadowColor = `rgba(${INK_RGB},.26)`;
   ctx.shadowBlur = edge * 1.6;
+  ctx.shadowOffsetX = -edge * 0.3;
   ctx.shadowOffsetY = edge * 0.5;
   ctx.drawImage(white, 0, 0);
   ctx.restore();
@@ -332,14 +342,14 @@ function tcg(ctx: CanvasRenderingContext2D, W: number, H: number, art: Art, o: L
   // Name bar.
   ctx.textBaseline = "middle";
   ctx.textAlign = "left";
-  ctx.fillStyle = "#0B1F33";
+  ctx.fillStyle = INK;
   const name = o.title || "Visitor";
   fitText(ctx, name, BOLD, W * 0.62, 50);
   ctx.fillText(name, m + 26, m + 52);
   ctx.textAlign = "right";
   ctx.font = `700 26px ${MONO}`;
-  ctx.fillStyle = "#0A68D0";
-  ctx.fillText("✦ 26", W - m - 26, m + 54);
+  ctx.fillStyle = "#C2286F";
+  ctx.fillText("♥ 26", W - m - 26, m + 54);
   // The window.
   const wx = m + 22;
   const wy = m + 100;
@@ -359,11 +369,11 @@ function tcg(ctx: CanvasRenderingContext2D, W: number, H: number, art: Art, o: L
   ctx.stroke();
   // Type line.
   const ty = wy + wh + 22;
-  ctx.fillStyle = "rgba(10,104,208,.12)";
+  ctx.fillStyle = "rgba(90,169,230,.16)";
   ctx.beginPath();
   ctx.roundRect(wx, ty, ww, 50, 25);
   ctx.fill();
-  ctx.fillStyle = "#0B1F33";
+  ctx.fillStyle = INK;
   ctx.textAlign = "left";
   ctx.font = `700 24px ${MONO}`;
   ctx.fillText(`HANDMADE · ${o.material.toUpperCase()}`, wx + 22, ty + 26);
@@ -373,13 +383,13 @@ function tcg(ctx: CanvasRenderingContext2D, W: number, H: number, art: Art, o: L
   const flavour = o.caption || `Made by hand in the Studio at adelia.cc on ${dateLine(o.date)}.`;
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
-  ctx.fillStyle = "#24384D";
-  ctx.font = `400 34px ${HAND}`;
+  ctx.fillStyle = "#2E3F57";
+  ctx.font = `${HAND_W} 30px ${HAND}`;
   wrap(ctx, flavour, wx + 8, ty + 74, ww - 16, 40, 3);
   // Set number.
   ctx.textBaseline = "alphabetic";
   ctx.font = `600 20px ${MONO}`;
-  ctx.fillStyle = "rgba(11,31,51,.55)";
+  ctx.fillStyle = `rgba(${INK_RGB},.55)`;
   ctx.textAlign = "left";
   ctx.fillText("ADELIA TCG · STUDIO SET", m + 26, H - m - 22);
   ctx.textAlign = "right";

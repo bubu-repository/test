@@ -1,4 +1,7 @@
 /**
+ * Ported verbatim from the legacy adelia.cc (Next.js) `src/content/profile.ts`. Framework-free.
+ * (`nav` lists the old site's routes; the room doesn't use it.)
+ *
  * Identity and profile. The identity block is final (brief §1).
  * Everything marked CONTOH is sample copy written so the site reads like the real thing.
  * Search the repo for "CONTOH" to find every value to replace.

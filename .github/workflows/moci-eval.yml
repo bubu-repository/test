@@ -1,7 +1,8 @@
-# Moci's eval against the online brain (Claude). Weekly and on demand; skipped without an API key.
-name: Moci eval (online)
+# Typecheck and Moci's offline eval (25 cases) on every push, weekly, and on demand.
+name: Moci eval
 
 on:
+  push:
   workflow_dispatch:
   schedule:
     - cron: "17 2 * * 1"
@@ -9,29 +10,12 @@ on:
 jobs:
   eval:
     runs-on: ubuntu-latest
-    env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      AGENT_DAILY_CAP: "200"
     steps:
       - uses: actions/checkout@v4
-        if: env.ANTHROPIC_API_KEY != ''
       - uses: actions/setup-node@v4
-        if: env.ANTHROPIC_API_KEY != ''
         with:
           node-version: 22
           cache: npm
       - run: npm ci
-        if: env.ANTHROPIC_API_KEY != ''
-      - run: npm run build
-        if: env.ANTHROPIC_API_KEY != ''
-      - name: Run the eval against a local server
-        if: env.ANTHROPIC_API_KEY != ''
-        run: |
-          npx next start -p 3000 &
-          npx wait-on http://localhost:3000 --timeout 60000
-          npm run eval:moci -- http://localhost:3000
-      - uses: actions/upload-artifact@v4
-        if: env.ANTHROPIC_API_KEY != ''
-        with:
-          name: moci-online-eval
-          path: src/content/moci-online-eval.json
+      - run: npm run typecheck
+      - run: npm run eval:moci

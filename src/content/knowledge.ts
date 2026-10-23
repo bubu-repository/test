@@ -1,3 +1,9 @@
+/*
+ * Ported verbatim from the legacy adelia.cc (Next.js) `src/content/knowledge.ts`: Moci's
+ * retrieval docs and system-prompt knowledge text. Framework-free. `siteMap` and the `href`s
+ * describe the OLD site's pages (/work, /about, /lab, /guestbook, /colophon); map them to the
+ * room's stations where you use them.
+ */
 import { labItems } from "./lab";
 import { bio, experience, identity, modelCard, skills, socials, tagline } from "./profile";
 import { projects } from "./projects";

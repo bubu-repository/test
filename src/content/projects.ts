@@ -1,4 +1,6 @@
 /**
+ * Ported verbatim from the legacy adelia.cc (Next.js) `src/content/projects.ts`. Framework-free.
+ *
  * The four case studies: her thesis product, her internship feature (under NDA), a campus
  * incubator product she co-founded, and a side project. This file is the single source of truth
  * for every number: the cards, the case pages, About, the CV, the brief and the agent read it.

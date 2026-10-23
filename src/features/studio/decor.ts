@@ -1,3 +1,4 @@
+import { CAPTION, MONO } from "./fonts";
 import { canvas } from "./source";
 
 /*
@@ -11,9 +12,9 @@ export type DecorText = { kind: "text"; id: string; text: string; color: string;
 export type Decor = DecorSticker | DecorText;
 export type Stroke = { color: string; width: number; points: [number, number][] };
 
-// Colours from the site's sky-to-sea palette; navy only ever as a tint.
-const NAVY = "#082850";
-const EYE = "#0B1F33";
+// Colours from the room's pastels; its navy ink only ever as a tint.
+const NAVY = "#18263A";
+const EYE = "#18263A";
 const BLUSH = "#FF8FB8";
 const RIM = "rgba(255,255,255,.85)";
 const SKY = "#D4F3FF";
@@ -226,7 +227,7 @@ function stickerImage(id: string): Promise<HTMLImageElement> {
 }
 
 /** Draws every decoration onto a layout canvas (in place). */
-export async function drawDecor(target: HTMLCanvasElement, items: Decor[], strokes: Stroke[], stamp: string | null, fontFamily: string) {
+export async function drawDecor(target: HTMLCanvasElement, items: Decor[], strokes: Stroke[], stamp: string | null) {
   const ctx = target.getContext("2d")!;
   const W = target.width;
   const H = target.height;
@@ -249,13 +250,14 @@ export async function drawDecor(target: HTMLCanvasElement, items: Decor[], strok
     if (d.kind === "sticker") {
       const img = await stickerImage(d.art);
       const s = d.size * W;
-      ctx.shadowColor = "rgba(8,40,80,.28)";
+      ctx.shadowColor = "rgba(24,38,58,.28)";
       ctx.shadowBlur = s * 0.08;
+      ctx.shadowOffsetX = -s * 0.015;
       ctx.shadowOffsetY = s * 0.03;
       ctx.drawImage(img, -s / 2, -s / 2, s, s);
     } else {
       const px = d.size * W;
-      ctx.font = `400 ${px}px ${fontFamily}`;
+      ctx.font = `${CAPTION.weight} ${px}px ${CAPTION.family}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.lineWidth = px * 0.22;
@@ -269,11 +271,11 @@ export async function drawDecor(target: HTMLCanvasElement, items: Decor[], strok
   if (stamp) drawStamp(ctx, W, H, stamp);
 }
 
-/** The orange date a disposable camera burns into the corner. */
+/** The orange date a disposable camera burns into the corner (the one orange in the room: it's the film's). */
 export function drawStamp(ctx: CanvasRenderingContext2D, W: number, H: number, text: string) {
   const px = Math.max(14, W * 0.042);
   ctx.save();
-  ctx.font = `700 ${px}px ui-monospace, "JetBrains Mono", monospace`;
+  ctx.font = `700 ${px}px ${MONO}`;
   ctx.textAlign = "right";
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = "#FF9A2E";
@@ -294,6 +296,6 @@ export function stampText(d = new Date()): string {
 
 export const flatten = (c: HTMLCanvasElement) => {
   const out = canvas(c.width, c.height);
-  out.getContext("2d")!.drawImage(c, 0, 0);
+  out.getContext("2d", { willReadFrequently: true })!.drawImage(c, 0, 0);
   return out;
 };

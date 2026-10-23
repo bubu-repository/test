@@ -17,7 +17,7 @@ export type Path = { pts: Float32Array; closed: boolean };
 /** The navy that every shadow is tinted with, never pure black. */
 export const SHADOW: RGB = [8, 40, 80];
 
-/** The site's pink and its soft tint (tokens.css --pink and --pink-soft). */
+/** The room's pink and its soft tint (--accent and --accent-soft). */
 export const PINK: RGB = [255, 126, 182];
 export const PINK_SOFT: RGB = [255, 214, 232];
 
@@ -136,10 +136,17 @@ function noiseRaw(w: number, h: number, scale: number, seed: number, octaves: nu
 
 /* --------------------------------------------------------------- canvases */
 
+/**
+ * A blank canvas. In the render worker there is no document, so it is an OffscreenCanvas: the
+ * renderers only use what both share (width, height, a 2D context, being drawn with drawImage).
+ */
 export function makeCanvas(w: number, h: number): HTMLCanvasElement {
+  const cw = Math.max(1, Math.round(w));
+  const ch = Math.max(1, Math.round(h));
+  if (typeof document === "undefined") return new OffscreenCanvas(cw, ch) as unknown as HTMLCanvasElement;
   const c = document.createElement("canvas");
-  c.width = Math.max(1, Math.round(w));
-  c.height = Math.max(1, Math.round(h));
+  c.width = cw;
+  c.height = ch;
   return c;
 }
 
@@ -821,7 +828,7 @@ export function smin(a: number, b: number, k: number): number {
 
 /**
  * The key light's direction (towards the light), from `light`: {0.5, 0.5} is the house light, up
- * and to the right (where the site's sun is drawn); moving the pointer swings it around. Shadows
+ * and to the right (where the room's window is); moving the pointer swings it around. Shadows
  * therefore fall down and a little to the left.
  */
 export function lightDir(light: { x: number; y: number }): Vec3 {

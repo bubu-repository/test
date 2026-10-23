@@ -1,0 +1,74 @@
+/* Die-cut holo stickers (Sticker.tsx): a cached bitmap + an HTML foil layer. */
+.stk {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  line-height: 0;
+}
+.stk__img,
+.stk__foil,
+.stk__glare {
+  position: absolute;
+  /* the bitmap bleeds past the sticker's box so the cut edge and shadow are never clipped */
+  inset: -7%;
+  width: 114%;
+  height: 114%;
+  pointer-events: none;
+  user-select: none;
+}
+.stk.is-ready .stk__img {
+  animation: stk-in 220ms var(--ease-out) both;
+}
+@keyframes stk-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* foil: pastel bands tinting the whole cut (edge included) + a white glare, both clipped to the silhouette */
+.stk__foil,
+.stk__glare {
+  -webkit-mask: var(--sil) center / 100% 100% no-repeat;
+  mask: var(--sil) center / 100% 100% no-repeat;
+}
+.stk__foil {
+  background: repeating-linear-gradient(125deg, #ffc2de 0%, #c4e4ff 8%, #c9f5e2 16%, #fff0b8 24%, #e2d6ff 32%, #ffc2de 40%)
+    calc(50% + var(--hx, 0) * 1%) calc(50% + var(--hy, 0) * 1%) / 250% 250%;
+  mix-blend-mode: multiply;
+  opacity: 0.45;
+  transition: background-position 500ms var(--ease-out);
+}
+.stk__glare {
+  background: linear-gradient(118deg, transparent 38%, rgba(255, 255, 255, 0.9) 47%, rgba(255, 255, 255, 0.9) 51%, transparent 60%) 120% 0 / 300% 100% no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  transition: background-position 900ms var(--ease-out);
+}
+.stk--live .stk__glare {
+  background-position: -20% 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .stk--live .stk__foil {
+    animation: stk-foil 3.4s linear infinite;
+  }
+  .stk--live .stk__glare {
+    animation: stk-glare 3.4s var(--ease-out) infinite;
+  }
+}
+@keyframes stk-foil {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+@keyframes stk-glare {
+  0% {
+    background-position: 120% 0;
+  }
+  55%,
+  100% {
+    background-position: -20% 0;
+  }
+}

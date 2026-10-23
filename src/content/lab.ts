@@ -1,5 +1,27 @@
-import type { SiteAction } from "@/lib/actions";
 import type { Tone } from "./projects";
+
+/*
+ * Ported from the legacy adelia.cc (Next.js) `src/content/lab.ts`, unchanged in substance.
+ * Only the import changed: `SiteAction` used to come from the old site's `lib/actions` (its
+ * ⌘K palette / terminal / agent action language). It's declared here so this file has no
+ * framework dependency. `href`s and `panel`s are the OLD site's routes and overlays; map them to
+ * stations / panels in the room where you use them.
+ */
+export type SiteAction =
+  | { type: "navigate"; href: string }
+  | { type: "open"; panel: string }
+  | { type: "close" }
+  | { type: "sound"; value?: boolean }
+  | { type: "tour" }
+  | { type: "copyEmail" }
+  | { type: "download"; href: string; filename?: string }
+  | { type: "lens"; value: string | null }
+  | { type: "liveCursors"; value?: boolean }
+  | { type: "ask"; question: string }
+  | { type: "toast"; message: string }
+  | { type: "highlight"; target: string }
+  | { type: "wave" }
+  | { type: "konami" };
 
 /**
  * Everything to play with: the tools on the Lab page (the Studio, today's pack, the widgets, the JD

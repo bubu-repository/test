@@ -33,7 +33,7 @@ import {
 import type { MaterialInput } from "./types";
 
 const CORE: RGB = [251, 250, 246];
-/** Washi tape: halfway between the site's pink and its soft tint. */
+/** Washi tape: halfway between the room's pink and its soft tint. */
 const TAPE: RGB = mixRGB(PINK, PINK_SOFT, 0.5);
 
 export function tornPaper(input: MaterialInput): HTMLCanvasElement {

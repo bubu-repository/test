@@ -29,11 +29,12 @@ import type { MaterialInput } from "./types";
 
 const RAMP = " .:-=+*#%@";
 
-/** The site's monospace face if the page defines one, then sensible fallbacks. */
+/** The page's monospace face if it defines one, then sensible fallbacks. */
 function monoFamily(): string {
   let fam = "";
   try {
-    fam = getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim();
+    // In the render worker there is no page to ask: the worker loads JetBrains Mono itself.
+    if (typeof document !== "undefined") fam = getComputedStyle(document.documentElement).getPropertyValue("--font-mono").trim();
   } catch {
     fam = "";
   }

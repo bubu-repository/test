@@ -1,9 +1,10 @@
-import { cssFont, type StudioFont } from "./fonts";
-
 /*
- * What the Studio's materials are made from: lettering, or a photo. Both come out as a transparent
- * canvas with the art in the middle and room around it (PAD of the shorter side on every edge) for
- * the material's borders, stands, rings and shadows.
+ * What the Studio's materials are made from, and the pixel helpers around them. Everything here
+ * runs on the page and in the render worker alike (no fonts, no DOM beyond making canvases), so
+ * the worker can import it. Lettering, which needs the page's fonts, lives in lettering.ts.
+ *
+ * Art comes out as a transparent canvas with the piece in the middle and room around it (PAD of
+ * the shorter side on every edge) for the material's borders, stands, rings and shadows.
  */
 
 export const PAD = 0.18;
@@ -20,76 +21,20 @@ export function rng(seed: number) {
   };
 }
 
+/** A blank canvas; an OffscreenCanvas in the worker (typed as a canvas: only the shared API is used). */
 export function canvas(w: number, h: number): HTMLCanvasElement {
-  const c = document.createElement("canvas");
-  c.width = Math.max(1, Math.round(w));
-  c.height = Math.max(1, Math.round(h));
+  const cw = Math.max(1, Math.round(w));
+  const ch = Math.max(1, Math.round(h));
+  if (typeof document === 'undefined') return new OffscreenCanvas(cw, ch) as unknown as HTMLCanvasElement;
+  const c = document.createElement('canvas');
+  c.width = cw;
+  c.height = ch;
   return c;
-}
-
-/** Splits a long line in two at the space nearest its middle. */
-export function lines(text: string): string[] {
-  const clean = text.replace(/[ \t]+/g, " ").trim() || "hello";
-  if (clean.includes("\n")) return clean.split("\n").slice(0, 2);
-  if (clean.length <= 11 || !clean.includes(" ")) return [clean];
-  const mid = clean.length / 2;
-  let best = -1;
-  for (let i = 0; i < clean.length; i++) if (clean[i] === " " && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
-  return [clean.slice(0, best), clean.slice(best + 1)];
-}
-
-/**
- * Lettering: each letter set on its own, nudged by hand (a little turn, lift, size and spacing),
- * so it looks cut or stitched one piece at a time rather than typed. `wobble` 0 is neat, 1 is loose.
- */
-export function renderLettering({ text, font, ink, wobble, seed, size = 300 }: { text: string; font: StudioFont; ink: string; wobble: number; seed: number; size?: number }): HTMLCanvasElement {
-  const rand = rng(seed * 7919 + 13);
-  const rows = lines(text);
-  const measure = canvas(8, 8).getContext("2d")!;
-  measure.font = cssFont(font, size);
-  const lineHeight = size * 1.02;
-  type Glyph = { ch: string; x: number; y: number; w: number; rot: number; scale: number };
-  const glyphs: Glyph[] = [];
-  let maxW = 0;
-  rows.forEach((row, r) => {
-    let x = 0;
-    for (const ch of Array.from(row)) {
-      const w = measure.measureText(ch).width;
-      const j = ch === " " ? 0 : wobble;
-      glyphs.push({ ch, x, y: r * lineHeight + (rand() - 0.5) * size * 0.09 * j, w, rot: (rand() - 0.5) * 0.2 * j, scale: 1 + (rand() - 0.5) * 0.12 * j });
-      x += w + size * (0.01 + (rand() - 0.5) * 0.03 * j);
-    }
-    // Centre each row.
-    const rowGlyphs = glyphs.slice(glyphs.length - Array.from(row).length);
-    const rowW = x;
-    maxW = Math.max(maxW, rowW);
-    rowGlyphs.forEach((g) => (g.x -= rowW / 2));
-  });
-  const artW = maxW + size * 0.2;
-  const artH = rows.length * lineHeight + size * 0.25;
-  const pad = Math.min(artW, artH) * PAD + size * 0.08;
-  const out = canvas(artW + pad * 2, artH + pad * 2);
-  const ctx = out.getContext("2d", { willReadFrequently: true })!;
-  ctx.font = cssFont(font, size);
-  ctx.textBaseline = "middle";
-  ctx.textAlign = "left";
-  ctx.fillStyle = ink;
-  const top = pad + size * 0.125 + lineHeight / 2;
-  for (const g of glyphs) {
-    if (g.ch === " ") continue;
-    ctx.save();
-    ctx.translate(out.width / 2 + g.x + g.w / 2, top + g.y);
-    ctx.rotate(g.rot);
-    ctx.scale(g.scale, g.scale);
-    ctx.fillText(g.ch, -g.w / 2, 0);
-    ctx.restore();
-  }
-  return trim(out, pad);
 }
 
 /** Crops a canvas to its drawn pixels, then puts `pad` of empty room back around them. */
 export function trim(src: HTMLCanvasElement, pad: number): HTMLCanvasElement {
-  const ctx = src.getContext("2d", { willReadFrequently: true })!;
+  const ctx = src.getContext('2d', { willReadFrequently: true })!;
   const { width: w, height: h } = src;
   const data = ctx.getImageData(0, 0, w, h).data;
   let x0 = w,
@@ -109,14 +54,14 @@ export function trim(src: HTMLCanvasElement, pad: number): HTMLCanvasElement {
   const bh = y1 - y0 + 1;
   const p = Math.round(Math.max(pad, Math.min(bw, bh) * PAD));
   const out = canvas(bw + p * 2, bh + p * 2);
-  out.getContext("2d", { willReadFrequently: true })!.drawImage(src, x0, y0, bw, bh, p, p, bw, bh);
+  out.getContext('2d', { willReadFrequently: true })!.drawImage(src, x0, y0, bw, bh, p, p, bw, bh);
   return out;
 }
 
 /** Crops a finished piece to what's drawn (shadows included), keeping a small margin, so layouts can show it big. */
 export function tight(src: HTMLCanvasElement, margin = 0.04): HTMLCanvasElement {
   const { width: w, height: h } = src;
-  const data = src.getContext("2d", { willReadFrequently: true })!.getImageData(0, 0, w, h).data;
+  const data = src.getContext('2d', { willReadFrequently: true })!.getImageData(0, 0, w, h).data;
   let x0 = w,
     y0 = h,
     x1 = -1,
@@ -136,22 +81,35 @@ export function tight(src: HTMLCanvasElement, margin = 0.04): HTMLCanvasElement 
   x1 = Math.min(w - 1, x1 + m);
   y1 = Math.min(h - 1, y1 + m);
   const out = canvas(x1 - x0 + 1, y1 - y0 + 1);
-  out.getContext("2d")!.drawImage(src, x0, y0, out.width, out.height, 0, 0, out.width, out.height);
+  out.getContext('2d', { willReadFrequently: true })!.drawImage(src, x0, y0, out.width, out.height, 0, 0, out.width, out.height);
+  return out;
+}
+
+/** Lettering or a photo with nothing done to it but a soft shadow (falling left, away from the window): "Ink" / "Just the photo". */
+export function plain(src: HTMLCanvasElement): HTMLCanvasElement {
+  const out = canvas(src.width, src.height);
+  const ctx = out.getContext('2d', { willReadFrequently: true })!;
+  const u = Math.min(src.width, src.height);
+  ctx.shadowColor = 'rgba(24,38,58,.22)';
+  ctx.shadowBlur = u * 0.025;
+  ctx.shadowOffsetX = -u * 0.006;
+  ctx.shadowOffsetY = u * 0.012;
+  ctx.drawImage(src, 0, 0);
   return out;
 }
 
 /* ---------- Photos ---------- */
 
-export type FilterId = "natural" | "film" | "aqua" | "pink" | "dreamy" | "mono" | "disposable";
+export type FilterId = 'natural' | 'film' | 'aqua' | 'pink' | 'dreamy' | 'mono' | 'disposable';
 
 export const FILTERS: { id: FilterId; name: string }[] = [
-  { id: "natural", name: "Natural" },
-  { id: "aqua", name: "Aqua" },
-  { id: "pink", name: "Pink pop" },
-  { id: "dreamy", name: "Dreamy" },
-  { id: "film", name: "Film" },
-  { id: "disposable", name: "Disposable" },
-  { id: "mono", name: "Mono" },
+  { id: 'natural', name: 'Natural' },
+  { id: 'aqua', name: 'Baby blue' },
+  { id: 'pink', name: 'Pink pop' },
+  { id: 'dreamy', name: 'Dreamy' },
+  { id: 'film', name: 'Film' },
+  { id: 'disposable', name: 'Disposable' },
+  { id: 'mono', name: 'Mono' },
 ];
 
 const clamp = (v: number) => (v < 0 ? 0 : v > 255 ? 255 : v);
@@ -159,9 +117,9 @@ const clamp = (v: number) => (v < 0 ? 0 : v > 255 ? 255 : v);
 /** A camera filter, on the CPU: a colour matrix, a tone curve, then glow, vignette and grain. */
 export function applyFilter(src: HTMLCanvasElement, id: FilterId, seed = 1): HTMLCanvasElement {
   const out = canvas(src.width, src.height);
-  const ctx = out.getContext("2d", { willReadFrequently: true })!;
+  const ctx = out.getContext('2d', { willReadFrequently: true })!;
   ctx.drawImage(src, 0, 0);
-  if (id === "natural") return out;
+  if (id === 'natural') return out;
   const { width: w, height: h } = out;
   const img = ctx.getImageData(0, 0, w, h);
   const d = img.data;
@@ -199,37 +157,39 @@ export function applyFilter(src: HTMLCanvasElement, id: FilterId, seed = 1): HTM
     }
   }
   ctx.putImageData(img, 0, 0);
-  if (id === "dreamy" || id === "pink") glow(out, id === "dreamy" ? 0.45 : 0.25);
+  if (id === 'dreamy' || id === 'pink') glow(out, id === 'dreamy' ? 0.45 : 0.25);
   return out;
 }
 
 /** Bloom without ctx.filter: a tiny copy scaled back up is a blur; screen it over the highlights. */
 function glow(c: HTMLCanvasElement, amount: number) {
   const small = canvas(Math.max(1, c.width / 16), Math.max(1, c.height / 16));
-  const sctx = small.getContext("2d")!;
-  sctx.imageSmoothingQuality = "high";
+  const sctx = small.getContext('2d', { willReadFrequently: true })!;
+  sctx.imageSmoothingQuality = 'high';
   sctx.drawImage(c, 0, 0, small.width, small.height);
-  const ctx = c.getContext("2d")!;
+  const ctx = c.getContext('2d', { willReadFrequently: true })!;
   ctx.save();
   ctx.globalAlpha = amount;
-  ctx.globalCompositeOperation = "screen";
-  ctx.imageSmoothingQuality = "high";
+  ctx.globalCompositeOperation = 'screen';
+  ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(small, 0, 0, c.width, c.height);
   ctx.restore();
 }
 
+type Drawable = CanvasImageSource & { width?: number | SVGAnimatedLength; height?: number | SVGAnimatedLength };
+
 /** Draws an image (or video frame) cropped to cover `aspect` (w / h), at most `long` px on its longer side. */
-export function cover(img: CanvasImageSource & { width?: number; height?: number; videoWidth?: number; videoHeight?: number }, aspect: number, long = 900, mirror = false): HTMLCanvasElement {
+export function cover(img: Drawable, aspect: number, long = 900, mirror = false): HTMLCanvasElement {
   const iw = (img as HTMLVideoElement).videoWidth || (img as HTMLImageElement).naturalWidth || (img.width as number);
   const ih = (img as HTMLVideoElement).videoHeight || (img as HTMLImageElement).naturalHeight || (img.height as number);
   const w = aspect >= 1 ? long : long * aspect;
   const h = aspect >= 1 ? long / aspect : long;
   const out = canvas(w, h);
-  const ctx = out.getContext("2d")!;
+  const ctx = out.getContext('2d', { willReadFrequently: true })!;
   const scale = Math.max(w / iw, h / ih);
   const dw = iw * scale;
   const dh = ih * scale;
-  ctx.imageSmoothingQuality = "high";
+  ctx.imageSmoothingQuality = 'high';
   if (mirror) {
     ctx.translate(w, 0);
     ctx.scale(-1, 1);
@@ -238,17 +198,13 @@ export function cover(img: CanvasImageSource & { width?: number; height?: number
   return out;
 }
 
-export function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r);
-}
-
 /** A photo as the materials want it: cut to a rounded rectangle, with room around it. */
 export function renderPhoto(photo: HTMLCanvasElement, radius = 0.07): HTMLCanvasElement {
   const pad = Math.round(Math.min(photo.width, photo.height) * PAD);
   const out = canvas(photo.width + pad * 2, photo.height + pad * 2);
-  const ctx = out.getContext("2d", { willReadFrequently: true })!;
-  roundRect(ctx, pad, pad, photo.width, photo.height, Math.min(photo.width, photo.height) * radius);
+  const ctx = out.getContext('2d', { willReadFrequently: true })!;
+  ctx.beginPath();
+  ctx.roundRect(pad, pad, photo.width, photo.height, Math.min(photo.width, photo.height) * radius);
   ctx.save();
   ctx.clip();
   ctx.drawImage(photo, pad, pad);

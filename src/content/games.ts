@@ -1,3 +1,4 @@
+/* Ported verbatim from the legacy adelia.cc (Next.js) `src/content/games.ts`. Framework-free. */
 /**
  * The games on the CD shelf on /about. CONTOH — ganti dengan data asli: swap in the games that
  * really shaped you, your hours, and what each one taught you. Titles belong to their publishers;

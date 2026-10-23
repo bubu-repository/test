@@ -1,90 +1,100 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/cn";
+import { useEffect, useState, type MouseEvent, type RefObject } from 'react';
+import { offsetWithin, scrollToEl, useCase } from './env';
+import { sectionId } from './data';
 
 export type TraceStep = { id: string; label: string };
 
 /**
- * The case study's contents: which section you're reading, how far along you are, and how many
- * minutes are left at a calm reading pace.
+ * The case's contents: which section you're reading, how far along you are, and how many minutes
+ * are left at a calm reading pace (230 words a minute). On narrow layouts it folds into a thin
+ * progress bar at the top.
  */
-export function TraceRail({ steps }: { steps: TraceStep[] }) {
+export function TraceRail({ steps, bodyRef }: { steps: TraceStep[]; bodyRef: RefObject<HTMLElement | null> }) {
+  const { scrollRoot, mode, tick } = useCase();
   const [active, setActive] = useState(steps[0]?.id);
   const [progress, setProgress] = useState(0);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    const article = document.getElementById("case-body");
-    const words = article?.innerText.split(/\s+/).length ?? 0;
-    const sections = steps.map((s) => document.getElementById(s.id)).filter(Boolean) as HTMLElement[];
+    const body = bodyRef.current;
+    if (!body) return;
+    const words = body.innerText.split(/\s+/).length;
+    setTotal(Math.max(1, Math.round(words / 230)));
+    const sections = steps.map((s) => document.getElementById(sectionId(s.id))).filter(Boolean) as HTMLElement[];
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-30% 0px -60% 0px" },
-    );
-    sections.forEach((s) => io.observe(s));
-
+    // Where things are, in the scroller's own coordinates (layout offsets inside the room's panel,
+    // which may still be tipping in with a 3D transform; page coordinates on the plain page).
+    const topOf = (el: HTMLElement) => (scrollRoot ? offsetWithin(el, scrollRoot) : el.getBoundingClientRect().top + window.scrollY);
     let raf = 0;
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        if (!article) return;
-        const r = article.getBoundingClientRect();
-        const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - r.top) / r.height));
-        setProgress(p);
-        setTotal(Math.max(1, Math.round(words / 230)));
-      });
+    const measure = () => {
+      raf = 0;
+      const y = scrollRoot ? scrollRoot.scrollTop : window.scrollY;
+      const h = scrollRoot ? scrollRoot.clientHeight : window.innerHeight;
+      const top = topOf(body);
+      setProgress(Math.min(1, Math.max(0, (y + h * 0.5 - top) / body.offsetHeight)));
+      // the active step: the last section whose top has passed 30% of the view
+      let on = steps[0]?.id;
+      for (const el of sections) if (topOf(el) <= y + h * 0.3) on = el.id.replace(/^case-/, '');
+      setActive(on);
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    const target: HTMLElement | Window = scrollRoot ?? window;
+    target.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    measure();
     return () => {
-      io.disconnect();
-      window.removeEventListener("scroll", onScroll);
+      target.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
       cancelAnimationFrame(raf);
     };
-  }, [steps]);
+  }, [steps, scrollRoot, bodyRef]);
+
+  const jump = (id: string) => (e: MouseEvent) => {
+    e.preventDefault();
+    tick?.();
+    const el = document.getElementById(sectionId(id));
+    scrollToEl(el, scrollRoot, mode === 'page' ? 84 : 12);
+    if (mode === 'page') history.replaceState(history.state, '', `#${id}`);
+    // move focus to the section heading so keyboard and screen-reader users land there too
+    const h = el?.querySelector<HTMLElement>('h2, h3');
+    if (h) {
+      h.setAttribute('tabindex', '-1');
+      h.focus({ preventScroll: true });
+    }
+  };
+
+  const left = Math.max(0, Math.round((1 - progress) * total));
 
   return (
     <>
-      {/* Phones: a thin progress bar under the nav */}
-      <div aria-hidden="true" className="fixed inset-x-0 top-0 z-[55] h-1 lg:hidden">
-        <div className="h-full origin-left bg-accent" style={{ transform: `scaleX(${progress})` }} />
+      <div className="cf-progress" aria-hidden>
+        <i style={{ transform: `scaleX(${progress})` }} />
       </div>
-
-      <nav aria-label="Case study steps" className="sticky top-28 hidden self-start lg:block">
-        <p className="type-pixel text-muted">Contents</p>
-        <ol className="relative mt-4 space-y-1 border-l-2 border-dashed border-line pl-5">
-          <span aria-hidden="true" className="absolute top-0 -left-[2px] w-[2px] bg-accent transition-[height] duration-300" style={{ height: `${progress * 100}%` }} />
+      <nav className="cf-rail" aria-label="Case study contents">
+        <p className="t-label">Contents</p>
+        <ol className="cf-rail__list">
+          <span className="cf-rail__fill" aria-hidden style={{ height: `${progress * 100}%` }} />
           {steps.map((step, i) => {
-            const isActive = step.id === active;
+            const on = step.id === active;
             return (
-              <li key={step.id} className="relative">
-                <span aria-hidden="true" className={cn("absolute top-3 -left-[27px] size-3 rounded-full border-2 border-surface transition-transform", isActive ? "scale-125 bg-accent" : "bg-line")} />
-                <a
-                  href={`#${step.id}`}
-                  aria-current={isActive ? "step" : undefined}
-                  className={cn("block rounded-sm px-2 py-1.5 transition-colors", isActive ? "bg-surface font-semibold shadow-sm" : "text-muted hover:text-ink")}
-                >
-                  <span className="text-14">
-                    <span className="mr-2 font-mono text-12 text-muted tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-                    {step.label}
-                  </span>
+              <li key={step.id}>
+                <a href={`#${step.id}`} onClick={jump(step.id)} aria-current={on ? 'step' : undefined} className={on ? 'is-on' : ''}>
+                  <span className="cf-rail__n">{String(i + 1).padStart(2, '0')}</span>
+                  {step.label}
                 </a>
               </li>
             );
           })}
         </ol>
-        <div className="mt-6 rounded-sm bg-surface p-3 shadow-sm">
-          <p className="type-pixel text-muted">Reading time</p>
-          <p className="font-display text-24 font-bold tabular-nums">
-            {Math.max(0, Math.round((1 - progress) * total))} min
-            <span className="text-14 font-semibold text-muted"> left of {total}</span>
-          </p>
+        <div className="cf-rail__time lcd">
+          <span className="t-label">Reading time</span>
+          <b className="t-dot">
+            {left}
+            <small> min</small>
+          </b>
+          <span className="cf-rail__of">left of {total}</span>
         </div>
       </nav>
     </>

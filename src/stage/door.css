@@ -1,0 +1,383 @@
+/* ==========================================================================
+   The door: a quiet cool-white corridor, an icy baby-blue door, a blank
+   acrylic sign plate with two screws, a white keypad. The UI here is clear
+   tech too: chrome letters on the plate, a pink keypad LED, a label-maker
+   strip with the code, and a frosted acrylic caption at the bottom.
+   ========================================================================== */
+.door {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  background: #eef0f4; /* the corridor white, so loading never flashes grey */
+  transition: opacity 0.9s ease, filter 0.9s ease;
+}
+.door--done {
+  opacity: 0;
+  pointer-events: none;
+}
+.door__scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  opacity: 0;
+  transition: opacity 1.2s ease, transform 2.4s cubic-bezier(0.55, 0, 0.35, 1);
+  will-change: transform;
+}
+.door.is-loaded .door__scene {
+  opacity: 1;
+}
+.door--walk .door__scene {
+  transition: transform 2.3s cubic-bezier(0.6, 0, 0.3, 1), opacity 1s ease;
+}
+
+/* the room behind the doorway */
+.door__inside {
+  position: absolute;
+  overflow: hidden;
+  background: #0d1017;
+}
+.door__inside img {
+  position: absolute;
+  max-width: none;
+}
+.door__inside-dark {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(80% 70% at 50% 50%, rgba(13, 16, 23, 0.9), rgba(7, 9, 13, 0.97));
+}
+.door--lights .door__inside-dark,
+.door--walk .door__inside-dark,
+.door--done .door__inside-dark {
+  animation: lights-on 1.35s linear forwards;
+}
+
+.door__wall {
+  position: absolute;
+  inset: 0;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+/* the leaf swings into the room around its hinge (left edge) */
+.door__leaf {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background-repeat: no-repeat;
+  transform-origin: 0 50%;
+  transform: perspective(5200px) rotateY(0deg);
+  transition: transform 1.6s cubic-bezier(0.55, 0.05, 0.25, 1), filter 0.4s ease;
+  cursor: pointer;
+}
+.door__leaf:focus-visible {
+  /* scaled with the scene: a thick ring so it still reads at 1/4 size */
+  outline: 12px solid var(--primary-ink);
+  outline-offset: 10px;
+}
+.door.is-ready .door__leaf:hover {
+  filter: brightness(1.03);
+}
+.door--unlock .door__leaf {
+  transform: perspective(5200px) rotateY(-1.2deg);
+  transition-duration: 0.25s;
+}
+.door--open .door__leaf,
+.door--lights .door__leaf,
+.door--walk .door__leaf,
+.door--done .door__leaf {
+  transform: perspective(5200px) rotateY(-96deg);
+}
+.door__leaf:disabled {
+  cursor: default;
+}
+.door__leaf-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(16, 20, 28, 0.05), rgba(16, 20, 28, 0.5));
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+.door--open .door__leaf-shade,
+.door--lights .door__leaf-shade,
+.door--walk .door__leaf-shade {
+  opacity: 1;
+}
+.door__handle-glint {
+  position: absolute;
+  width: 36px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.85) 45%, transparent);
+  background-size: 100% 300%;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.door.is-ready .door__leaf:hover .door__handle-glint {
+  opacity: 1;
+  animation: glint 1.4s ease-in-out infinite;
+}
+@keyframes glint {
+  from {
+    background-position: 0 100%;
+  }
+  to {
+    background-position: 0 -100%;
+  }
+}
+
+/* sign: raised chrome letters between the plate's two screws (door px) */
+.door__sign {
+  position: absolute;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 6px 70px 0;
+  text-align: center;
+  pointer-events: none;
+}
+.door__sign-name {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 60px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  color: transparent;
+  /* polished chrome: bright sky on top, a dark horizon band, floor reflection below */
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #d9dde3 24%,
+    #8c939e 48%,
+    #4b5260 52%,
+    #a7adb7 70%,
+    #eef0f3 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 1px rgba(52, 58, 70, 0.45);
+  filter: drop-shadow(0 1.5px 0 rgba(255, 255, 255, 0.95)) drop-shadow(-3px 5px 3px rgba(22, 27, 38, 0.32));
+}
+.door__sign-spec {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #6f7682;
+  /* engraved: dark on top, a light catch below */
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* keypad LED: pink heartbeat, mint when the code is accepted */
+.door__led {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px 3px rgba(255, 126, 182, 0.75), 0 0 34px 10px rgba(255, 126, 182, 0.35);
+  animation: led-breathe 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.door--unlock .door__led,
+.door--open .door__led,
+.door--lights .door__led,
+.door--walk .door__led {
+  background: var(--green);
+  box-shadow: 0 0 8px 3px rgba(47, 191, 138, 0.8), 0 0 34px 12px rgba(47, 191, 138, 0.4);
+  animation: none;
+}
+@keyframes led-breathe {
+  50% {
+    opacity: 0.35;
+  }
+}
+.door__keypad {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  cursor: pointer;
+}
+.door__keypad:focus-visible {
+  outline: 10px solid var(--primary-ink);
+  outline-offset: 10px;
+}
+
+/* the code: a white label-maker strip stuck on the wall (door px) */
+.door__note {
+  position: absolute;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 26px 12px 22px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff, #f2f4f7);
+  color: var(--ink);
+  transform: rotate(-3deg);
+  box-shadow: inset 0 0 0 2px rgba(22, 27, 38, 0.06), inset 0 -4px 0 rgba(197, 202, 210, 0.5),
+    -6px 10px 14px rgba(22, 27, 38, 0.14);
+  pointer-events: none;
+}
+.door__note::before {
+  /* a little pink tape: the one kawaii touch out here */
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  width: 70px;
+  height: 28px;
+  margin-left: -35px;
+  transform: rotate(6deg);
+  background: var(--tape-pink);
+  opacity: 0.92;
+  clip-path: polygon(
+    3px 0, calc(100% - 3px) 0, 100% 20%, calc(100% - 3px) 40%, 100% 60%, calc(100% - 3px) 80%, 100% 100%,
+    3px 100%, 0 80%, 3px 60%, 0 40%, 3px 20%
+  );
+}
+.door__note small {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.door__note b {
+  font-family: var(--font-mono);
+  font-size: 50px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+/* ---------------------------------------------------------------- overlay UI (not scaled) */
+.door__ui {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  justify-items: center;
+  padding: 0 16px max(26px, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+.door__hint {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 100%;
+  padding: 8px 8px 8px 18px;
+  border-radius: 16px;
+  background: var(--acrylic);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
+  color: var(--ink-2);
+  font-size: 15px;
+  box-shadow: var(--edge-acrylic), -6px 12px 30px rgba(22, 27, 38, 0.14);
+  pointer-events: auto;
+  animation: rise-in 0.8s 0.4s var(--ease-out) both;
+}
+.door__hint-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+.door__hint b {
+  color: var(--ink);
+  font-weight: 800;
+}
+.door__code {
+  display: inline-block;
+  margin-left: 2px;
+  padding: 3px 7px 2px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #2a303d, var(--screen));
+  color: var(--accent);
+  font-family: var(--font-dot);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  vertical-align: 1px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.door__hint--ok {
+  padding-right: 18px;
+  /* swaps in for the knock caption: no second entrance */
+  animation: fade-in 0.2s ease both;
+}
+.door__hint--ok .door__code {
+  color: #8ff0c9;
+}
+.door__sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff, var(--ice-2));
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: inset 0 0 0 1px rgba(22, 27, 38, 0.1), 0 2px 0 var(--ice-4);
+}
+.door__sound::before {
+  /* 44px touch target */
+  content: '';
+  position: absolute;
+  inset: -4px 0;
+}
+.door__sound {
+  position: relative;
+}
+.door__sound:hover {
+  background: var(--ink);
+  color: #fff;
+}
+.door__loading {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: var(--ink-3);
+}
+.door__loading i {
+  display: block;
+  width: 180px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(22, 27, 38, 0.1);
+  overflow: hidden;
+}
+.door__loading b {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--ink), var(--primary));
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 520px) {
+  .door__hint {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 12px;
+    padding: 10px 10px 10px 14px;
+    font-size: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .door__led {
+    animation: none;
+  }
+}

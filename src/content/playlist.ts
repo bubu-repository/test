@@ -1,3 +1,4 @@
+/* Ported verbatim from the legacy adelia.cc (Next.js) `src/content/playlist.ts`. Framework-free. */
 /**
  * The songs on the DAC on her desk (About). Each plays in full through the YouTube IFrame player,
  * which only loads when someone presses play.

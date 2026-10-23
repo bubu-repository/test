@@ -1,0 +1,541 @@
+/* ==========================================================================
+   Toasts (small acrylic tags), the "You found" moment (a House Rule is
+   written: the one place the UI gets a sticker and a strip of washi tape),
+   and the menu (the room's index, an acrylic plate on four standoffs).
+   ========================================================================== */
+
+/* ---------------- toasts ---------------- */
+.toasts {
+  position: fixed;
+  top: 80px;
+  right: 18px;
+  z-index: 90;
+  display: grid;
+  gap: 10px;
+  justify-items: end;
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 340px;
+  padding: 10px 16px 10px 10px;
+  border-radius: 14px;
+  background: var(--acrylic);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
+  color: var(--ink);
+  box-shadow: var(--edge-acrylic), -6px 14px 34px rgba(22, 27, 38, 0.18);
+  animation: toast-in 0.5s var(--ease-out) both;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* +hearts: a small graphite readout */
+.toast--points {
+  gap: 8px;
+  padding: 7px 14px 7px 12px;
+  border-radius: 10px;
+  background: radial-gradient(120% 160% at 30% 0%, #2a303d 0%, var(--screen) 62%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: #c9ced6;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), -4px 8px 20px rgba(16, 20, 28, 0.28);
+}
+.toast--points b {
+  color: #ffe6f1;
+  font-size: 18px;
+  line-height: 1;
+  text-transform: none;
+  text-shadow: 0 0 8px rgba(255, 126, 182, 0.45);
+}
+.toast__heart {
+  color: var(--accent);
+  font-size: 14px;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(255, 126, 182, 0.7);
+}
+/* the pin: a little sticker; holo foil when it is a collectible */
+.toast__pin {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff0f6, var(--accent-soft) 60%, #ffcfe3);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: inset 0 0 0 2px #fff, inset 0 -3px 0 rgba(188, 37, 112, 0.1), -2px 3px 7px rgba(22, 27, 38, 0.14);
+  overflow: hidden;
+}
+.toast__pin.holo {
+  color: var(--ink);
+}
+.toast--tier .toast__pin {
+  background: var(--chrome);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--chrome-edge), -2px 3px 7px rgba(22, 27, 38, 0.14);
+}
+.toast--manifesto .toast__pin,
+.toast--info .toast__pin {
+  background: radial-gradient(circle at 35% 30%, #ffffff, var(--primary-soft) 62%, #cbe4f7);
+  color: var(--primary-ink);
+}
+.toast__text {
+  display: grid;
+  gap: 1px;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.toast__text .t-label {
+  color: var(--accent-ink);
+  font-size: 9.5px;
+}
+.toast--tier .toast__text .t-label,
+.toast--manifesto .toast__text .t-label,
+.toast--info .toast__text .t-label {
+  color: var(--primary-ink);
+}
+.toast__text b {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.toast__text span:last-child {
+  color: var(--ink-3);
+}
+.toast__pts {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+  padding: 4px 7px 3px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #2a303d, var(--screen));
+  color: #ffe6f1;
+  font-family: var(--font-dot);
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1;
+}
+.toast__pts i {
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 11px;
+  color: var(--accent);
+}
+
+/* ---------------- found ---------------- */
+.found {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  padding: 56px 20px 40px;
+  animation: fade-in 0.6s ease both;
+}
+.found__blur {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  backdrop-filter: blur(9px) saturate(0.9);
+  -webkit-backdrop-filter: blur(9px) saturate(0.9);
+  mask-image: radial-gradient(ellipse 34% 38% at 50% 48%, transparent 40%, #000 100%);
+  -webkit-mask-image: radial-gradient(ellipse 34% 38% at 50% 48%, transparent 40%, #000 100%);
+  /* a white veil, not a dark one: the room stays light */
+  background: radial-gradient(ellipse 62% 62% at 50% 48%, rgba(247, 248, 250, 0) 30%, rgba(239, 241, 244, 0.74));
+}
+.found__title {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  color: var(--ink);
+  animation: found-title-in 1s var(--ease-out) both;
+}
+.found__title .t-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  color: var(--ink-2);
+}
+.found__title h2 {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: clamp(32px, 4.6vw, 58px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.9), 0 0 18px rgba(255, 255, 255, 0.75);
+}
+@keyframes found-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+.found__card {
+  grid-row: 3;
+  align-items: flex-start;
+  max-width: 480px;
+  padding: 18px 24px 18px 16px;
+  animation: note-pop 0.7s 0.35s var(--ease-spring) both;
+}
+@keyframes note-pop {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotate(-4deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-1.2deg);
+  }
+}
+/* the rule number as a round holo sticker (a collectible) */
+.found__rule {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  flex: none;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  box-shadow: inset 0 0 0 2px #fff, -2px 3px 8px rgba(22, 27, 38, 0.16);
+  transform: rotate(-6deg);
+}
+.found__rule small {
+  margin-bottom: 2px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.found__card p {
+  margin: 2px 0 6px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.found__card blockquote {
+  margin: 0 0 16px;
+  font-family: var(--font-ui);
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.found__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------------- menu ---------------- */
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  /* a definite row, so the panel's max-height resolves and it stays on screen */
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  padding: 20px 16px 16px;
+  background: rgba(16, 20, 28, 0.24);
+  backdrop-filter: blur(5px) saturate(0.9);
+  -webkit-backdrop-filter: blur(5px) saturate(0.9);
+  animation: fade-in 0.3s ease both;
+}
+.menu__panel {
+  position: relative;
+  width: min(1000px, 100%);
+  max-height: min(780px, 100%);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0) 60%, rgba(255, 255, 255, 0.55) 67%, rgba(255, 255, 255, 0) 74%),
+    linear-gradient(172deg, #ffffff 0%, #ffffff 45%, var(--ice-1) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.95),
+    inset 0 -3px 0 rgba(197, 202, 210, 0.5),
+    0 0 0 1px rgba(22, 27, 38, 0.12),
+    -16px 34px 70px -12px rgba(16, 20, 28, 0.36);
+  animation: menu-in 0.45s var(--ease-out) both;
+}
+.menu__panel > .screws {
+  z-index: 2;
+  inset: 11px;
+}
+.menu__panel > .screws i {
+  width: 9px;
+  height: 9px;
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.menu__head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 26px 22px 18px 30px;
+  border-bottom: 1px solid rgba(22, 27, 38, 0.1);
+}
+.menu__head::after {
+  content: '';
+  position: absolute;
+  left: 30px;
+  right: 22px;
+  bottom: -6px;
+  height: 5px;
+  background: var(--ticks);
+  background-size: 100% 5px, 100% 3px;
+  background-repeat: repeat-x;
+  opacity: 0.6;
+}
+.menu__mark {
+  flex: none;
+  filter: drop-shadow(-2px 3px 3px rgba(22, 27, 38, 0.18));
+}
+.menu__titles {
+  flex: 1;
+  min-width: 0;
+}
+.menu__head h2 {
+  margin: 4px 0 0;
+  font-family: var(--font-ui);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.menu__spec {
+  text-align: right;
+  line-height: 1.6;
+}
+.menu__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 22px 26px;
+  padding: 24px 26px 22px 30px;
+}
+.menu__grid section {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+}
+.menu__chapter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.menu__chapter::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(22, 27, 38, 0.1);
+}
+.menu__chapter .nameplate {
+  min-width: 38px;
+  justify-content: center;
+}
+.menu__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  color: var(--ink);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.menu__item:hover {
+  background: var(--ice-1);
+  box-shadow: inset 0 0 0 1px rgba(22, 27, 38, 0.08);
+}
+.menu__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff, var(--ice-2));
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px rgba(22, 27, 38, 0.1), 0 2px 0 var(--ice-3);
+}
+.menu__item:hover .menu__icon {
+  color: var(--ink);
+}
+.menu__item.is-done .menu__icon {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.menu__item > span:nth-child(2) {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+  line-height: 1.25;
+}
+.menu__item b {
+  font-weight: 700;
+}
+.menu__item small {
+  color: var(--ink-3);
+  font-size: 12.5px;
+}
+.menu__code {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+}
+.menu__item.is-done .menu__code {
+  color: var(--accent-ink);
+}
+.menu__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 20px;
+  flex-wrap: wrap;
+  padding: 16px 26px 22px 30px;
+  border-top: 1px solid rgba(22, 27, 38, 0.08);
+  background: var(--ice-1);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+}
+.menu__contact {
+  display: grid;
+  gap: 4px;
+}
+.menu__mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  color: var(--primary-ink);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: rgba(31, 95, 150, 0.3);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+.menu__mail:hover {
+  text-decoration-color: currentColor;
+}
+.menu__keys {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.menu__pdf {
+  padding: 2px 4px 1px;
+  border-radius: 3px;
+  background: var(--ice-2);
+  box-shadow: inset 0 0 0 1px rgba(22, 27, 38, 0.08);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+}
+.panel-loading {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--acrylic);
+  box-shadow: var(--edge-acrylic), var(--shadow-1);
+}
+
+@media (max-width: 640px) {
+  .menu {
+    padding: 12px 10px 10px;
+  }
+  .menu__head {
+    padding: 20px 14px 14px 20px;
+  }
+  .menu__head::after {
+    left: 20px;
+    right: 14px;
+  }
+  .menu__head h2 {
+    font-size: 24px;
+  }
+  .menu__spec {
+    display: none;
+  }
+  .menu__panel > .screws {
+    inset: 7px;
+  }
+  .menu__panel > .screws i {
+    width: 7px;
+    height: 7px;
+  }
+  .menu__grid {
+    grid-template-columns: 1fr;
+    padding: 18px 14px 18px;
+  }
+  .menu__foot {
+    padding: 14px 16px 18px;
+  }
+  .found__card blockquote {
+    font-size: 20px;
+  }
+  .found__rule {
+    width: 48px;
+    height: 48px;
+    font-size: 19px;
+  }
+}

@@ -1,3 +1,4 @@
+/* Ported verbatim from the legacy adelia.cc (Next.js) `src/content/guestbook.ts`. Framework-free. */
 /**
  * The guestbook is the sea: every visitor leaves a sea creature with a note, and it swims there.
  */

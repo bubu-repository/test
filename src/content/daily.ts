@@ -1,4 +1,20 @@
-import type { Weather } from "@/app/api/weather/route";
+/*
+ * Ported from the legacy adelia.cc (Next.js) `src/content/daily.ts`, unchanged in substance.
+ * Only the import changed: `Weather` used to come from the old site's `app/api/weather/route`;
+ * its shape is declared here so this file has no framework dependency.
+ */
+export type Weather = {
+  ok: boolean;
+  temperature: number | null;
+  code: number | null;
+  isDay: boolean;
+  humidity: number | null;
+  cloudCover: number | null;
+  wind: number | null;
+  sunrise: string | null;
+  sunset: string | null;
+  fetchedAt: string;
+};
 
 /*
  * Today's pack, in the Lab: one pack a day per visitor, three cards. Something kind, a bit of advice
