@@ -1,0 +1,1103 @@
+/* Her phone: the overlay (shan 10, 11) and the bento tile. Tokens only (src/styles/tokens.css).
+   The device is a phone, not glass: ink body, a metal rim, no acrylic (concept: acrylic is only the
+   stand, the frames and the slabs). Never glass on glass. */
+
+/* ============ overlay =============================================================================== */
+
+.ph {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  outline: none;
+  --ph-w: min(440px, 92vw);
+  --ph-top: max(52px, 6svh);
+  --bezel: 8px;
+  /* paper white for cards on the frost background: the one local colour, declared once */
+  --paper-rgb: 255 255 255; /* qa-ignore */
+  --ph-shadow: 0 0 0 1.5px var(--metal), inset 0 1px 0 rgb(var(--paper-rgb) / 0.16), inset 0 0 0 1px rgb(var(--paper-rgb) / 0.05),
+    var(--lift-2);
+}
+@media (max-width: 599px) {
+  /* a sheet: the header stays readable above it, dimmed; the device's top bezel shows */
+  .ph {
+    --ph-w: calc(100vw - 16px);
+    --ph-top: calc(68px + env(safe-area-inset-top));
+  }
+}
+
+/* The room or bento dims behind (shan 11 frame 1). A light blur on desktop only: no full-screen
+   live blur on phones. */
+.ph-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--ink-rgb) / 0.34);
+}
+@media (min-width: 900px) {
+  .ph-scrim {
+    background: rgb(var(--ink-rgb) / 0.26);
+    -webkit-backdrop-filter: blur(var(--blur-large)) saturate(120%);
+    backdrop-filter: blur(var(--blur-large)) saturate(120%);
+  }
+}
+
+/* Screen-title tag, top left like every overlay (shan 10 'モバイル'; ours is the house tag). */
+.ph-tag {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  pointer-events: none;
+}
+@media (max-width: 899px) {
+  .ph-tag {
+    display: none;
+  }
+}
+
+.ph-device {
+  position: absolute;
+  top: var(--ph-top);
+  left: 50%;
+  width: var(--ph-w);
+  margin-left: calc(var(--ph-w) / -2);
+  /* always taller than what is left of the viewport: the bottom edge cuts it (shan 10) */
+  height: max(calc(var(--ph-w) * 2.06), calc(100svh - var(--ph-top) + 72px));
+  padding: var(--bezel);
+  border-radius: var(--r-device);
+  background: var(--ink);
+  box-shadow: var(--ph-shadow);
+  transform-origin: 50% 32%;
+  outline: none;
+}
+.ph-device:focus-visible {
+  box-shadow: var(--ph-shadow);
+}
+/* side keys on the metal rim */
+.ph-device::before,
+.ph-device::after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--metal);
+}
+.ph-device::before {
+  right: -4px;
+  top: 150px;
+  height: 72px;
+}
+.ph-device::after {
+  left: -4px;
+  top: 118px;
+  height: 44px;
+}
+
+.ph-screen {
+  position: relative;
+  height: 100%;
+  border-radius: var(--r-screen);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--prism-1);
+}
+
+/* ---------- wallpaper: hard-edged bands from the prism tokens ------------------------------------- */
+.ph-wall {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  max-width: none;
+}
+.ph-wall .w0 {
+  fill: var(--prism-1);
+}
+.ph-wall .w1 {
+  fill: var(--prism-2);
+}
+.ph-wall .w2 {
+  fill: color-mix(in oklab, var(--prism-3) 55%, var(--cyan));
+}
+.ph-wall .w3 {
+  fill: var(--prism-3);
+}
+.ph-wall .w4 {
+  fill: var(--prism-2);
+}
+
+/* The part of the screen you can see: it ends at the viewport's bottom edge, so the home bar does too. */
+.ph-view {
+  position: relative;
+  z-index: 1;
+  height: calc(100svh - var(--ph-top) - var(--bezel));
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
+}
+.ph-view[data-in-app] {
+  background: var(--frost);
+}
+.ph-view[data-view='call'] {
+  background: transparent;
+}
+
+.ph-status {
+  flex: none;
+  height: 40px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 26px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.ph-cam {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.ph-status-r {
+  justify-self: end;
+}
+
+.ph-main {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ph-homebar {
+  flex: none;
+  width: 100%;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+.ph-homebar span {
+  width: 132px;
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  opacity: 0.86;
+  transition: transform var(--duration-micro) var(--ease-smooth-out);
+}
+.ph-homebar:hover span {
+  transform: scaleX(1.06);
+}
+.ph-homebar:focus-visible {
+  box-shadow: none;
+}
+.ph-homebar:focus-visible span {
+  box-shadow: var(--focus);
+}
+
+/* ---------- home ---------------------------------------------------------------------------------- */
+.ph-home {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 4px 18px 4px;
+}
+.ph-x {
+  position: absolute;
+  top: -4px;
+  right: 8px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  color: var(--ink-2);
+  transition: background-color var(--duration-quick) var(--ease-smooth-out);
+}
+.ph-x:hover {
+  background: rgb(var(--ink-rgb) / 0.07);
+}
+
+.ph-lock {
+  display: block;
+  padding: 18px 2px 0;
+}
+.ph-lock > span {
+  display: block;
+}
+.ph-lock-place {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.ph-clock {
+  margin: 10px 0 8px;
+  font-family: var(--mono);
+  font-weight: 250;
+  font-size: clamp(3.6rem, 2.8rem + 3.4vw, 4.6rem);
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.ph-date {
+  font-size: 0.98rem;
+  font-weight: 560;
+  color: var(--ink-2);
+}
+
+/* a widget card on the wallpaper (opaque enough to read, no blur: never glass on glass) */
+.ph-card {
+  display: block;
+  border-radius: var(--r-tile);
+  background: rgb(var(--paper-rgb) / 0.68);
+  box-shadow: inset 0 0 0 1px var(--hairline), var(--lift-1);
+}
+.ph-overlap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+}
+.ph-ov-num {
+  font-size: 1.12rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.ph-ov-text,
+.ph-ov-cap,
+.ph-ov-sub {
+  display: block;
+}
+.ph-ov-cap {
+  font-size: 0.95rem;
+  font-weight: 620;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.ph-ov-sub {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+
+.ph-stack {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ph-notif {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 16px;
+  text-align: left;
+  transition: transform var(--duration-micro) var(--ease-smooth-out);
+}
+.ph-notif:active {
+  transform: scale(var(--scale-small));
+}
+.ph-notif-ico {
+  width: 28px;
+  height: 28px;
+  flex: none;
+}
+.ph-notif-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.ph-notif-app {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ph-notif-text {
+  font-size: 0.95rem;
+  font-weight: 620;
+}
+.ph-apps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  padding: 0 0 4px;
+}
+.ph-app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 4px 0;
+  border-radius: 18px;
+}
+.ph-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  background: var(--frost);
+  box-shadow: var(--slab-edge), var(--lift-1);
+  transition: transform var(--duration-micro) var(--ease-smooth-out);
+}
+.ph-icon .ph-ico {
+  width: 34px;
+  height: 34px;
+}
+.ph-app:hover .ph-icon {
+  transform: translateY(calc(var(--distance-micro) * -0.5));
+}
+.ph-app:active .ph-icon {
+  transform: scale(var(--scale-medium));
+}
+.ph-app-name {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ph-badge {
+  position: absolute;
+  top: -1px;
+  left: calc(50% + 20px);
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  background: var(--cyan-ink);
+  color: rgb(var(--paper-rgb));
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  box-shadow: 0 0 0 2px var(--frost);
+}
+
+/* ---------- icons --------------------------------------------------------------------------------- */
+.ph-ico {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+}
+.ph-ico .soft {
+  fill: var(--prism-3);
+}
+.ph-ico .paper {
+  fill: rgb(var(--paper-rgb));
+}
+.ph-ico .acc {
+  fill: var(--cyan);
+  stroke: none;
+}
+.ph-ico .cord {
+  stroke: var(--cyan-ink);
+}
+.ph-ico-sm {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+
+/* ---------- app screens --------------------------------------------------------------------------- */
+.ph-appwrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ph-home[data-enter],
+.ph-appwrap[data-enter] {
+  animation: ph-in var(--duration-fast) var(--ease-smooth-out) both;
+}
+.ph-appview {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ph-apphead {
+  flex: none;
+  display: grid;
+  grid-template-columns: 76px 1fr 76px;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 6px 8px;
+  border-bottom: 1px solid var(--hairline);
+}
+.ph-back {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  color: var(--cyan-ink);
+  transition: background-color var(--duration-quick) var(--ease-smooth-out);
+}
+.ph-back .ph-ico-sm {
+  width: 18px;
+  height: 18px;
+}
+.ph-back:hover {
+  background: var(--cyan-wash);
+}
+.ph-apptitle {
+  min-width: 0;
+  text-align: center;
+}
+.ph-apptitle h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 680;
+  font-stretch: 106%;
+  line-height: 1.2;
+}
+.ph-appsub {
+  margin: 2px 0 0;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ph-head-r {
+  justify-self: end;
+}
+.ph-headbtn {
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: var(--r-pill);
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--cyan-ink);
+  white-space: nowrap;
+}
+.ph-headbtn:hover {
+  background: var(--cyan-wash);
+}
+
+.ph-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* TODO_SEA values: visible drafts, never hidden (src/content/site.ts) */
+.ph-post[data-draft] h4,
+.ph-post[data-draft] p,
+.ph-run-name[data-todo],
+.ph-run-result[data-todo] {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+
+/* Posts */
+.ph-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 12px 18px;
+}
+.ph-post {
+  padding: 14px 15px 15px;
+  border-radius: 16px;
+  background: rgb(var(--paper-rgb));
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.ph-post[data-draft] {
+  background: transparent;
+  box-shadow: none;
+  border: 1.5px dashed var(--hairline-strong);
+}
+.ph-post-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+.ph-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--cyan-ink);
+  color: rgb(var(--paper-rgb));
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.ph-post-who {
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.ph-post-date {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ph-post h4 {
+  margin: 0 0 5px;
+  font-size: 1rem;
+  font-weight: 680;
+  line-height: 1.3;
+}
+.ph-post p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* Chat */
+.ph-chat {
+  position: relative;
+}
+.ph-log {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 12px 10px;
+}
+.ph-msg-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.ph-msg-row[data-from='you'] {
+  align-items: flex-end;
+}
+.ph-msg {
+  max-width: 84%;
+  padding: 9px 13px;
+  border-radius: 18px;
+  font-size: 0.9rem;
+  line-height: 1.42;
+  animation: ph-bubble var(--duration-fast) var(--ease-smooth-out) both;
+}
+.ph-msg[data-from='her'] {
+  background: rgb(var(--paper-rgb));
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  border-bottom-left-radius: 6px;
+}
+.ph-msg[data-from='you'] {
+  background: var(--cyan-ink);
+  color: rgb(var(--paper-rgb));
+  border-bottom-right-radius: 6px;
+}
+.ph-msg[data-draft] {
+  background: transparent;
+  box-shadow: none;
+  border: 1.5px dashed var(--hairline-strong);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--ink-3);
+}
+.ph-msg-act {
+  margin: 0 0 6px;
+  animation: ph-bubble var(--duration-fast) var(--ease-smooth-out) both;
+}
+.ph-typing {
+  flex: none;
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 4px;
+  margin: 0 0 8px 12px;
+  padding: 13px 14px;
+  border-radius: 18px;
+  border-bottom-left-radius: 6px;
+  background: rgb(var(--paper-rgb));
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.ph-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  animation: ph-dot calc(var(--duration-very-slow) * 2) var(--ease-move) infinite;
+}
+.ph-typing span:nth-child(2) {
+  animation-delay: var(--duration-quick);
+}
+.ph-typing span:nth-child(3) {
+  animation-delay: calc(var(--duration-quick) * 2);
+}
+.ph-chips {
+  flex: none;
+  max-height: 50%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border-top: 1px solid var(--hairline);
+  background: var(--frost);
+}
+.ph-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 15px;
+  border-radius: var(--r-pill);
+  background: rgb(var(--paper-rgb));
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  font-size: 0.86rem;
+  font-weight: 560;
+  line-height: 1.2;
+  text-align: left;
+  text-decoration: none;
+  color: var(--ink);
+  transition: box-shadow var(--duration-quick) var(--ease-smooth-out), transform var(--duration-micro) var(--ease-smooth-out);
+}
+.ph-chip:hover {
+  box-shadow: inset 0 0 0 1.5px var(--cyan-ink);
+}
+.ph-chip:active {
+  transform: scale(var(--scale-small));
+}
+/* Email me is this view's one commit action, so it carries the orange (gak §3). Ink on orange. */
+.ph-chip-commit {
+  font-weight: 680;
+  color: var(--on-commit);
+  background: var(--commit);
+  box-shadow: inset 0 1px 0 rgb(var(--paper-rgb) / 0.45);
+}
+.ph-chip-commit:hover {
+  box-shadow: inset 0 1px 0 rgb(var(--paper-rgb) / 0.45);
+  filter: brightness(1.04);
+}
+
+/* Call */
+.ph-call .ph-apphead {
+  border-bottom-color: transparent;
+}
+.ph-call-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px 10px;
+  text-align: center;
+}
+.ph-callee {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+}
+.ph-callee-face {
+  width: 92px;
+  height: 92px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--frost);
+  box-shadow: 0 0 0 1px var(--hairline), 0 0 0 7px rgb(var(--paper-rgb) / 0.5), var(--lift-1);
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-stretch: 112%;
+  color: var(--cyan-ink);
+}
+.ph-callee-name {
+  font-size: 1.3rem;
+  font-weight: 680;
+  font-stretch: 108%;
+}
+.ph-callee-state {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.ph-call-note {
+  white-space: normal;
+  border-radius: 12px;
+  text-align: center;
+  justify-content: center;
+}
+.ph-captions {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  text-align: left;
+}
+.ph-cap {
+  padding: 0 6px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+.ph-cap[data-current] {
+  padding: 12px 15px;
+  border-radius: 16px;
+  background: rgb(var(--paper-rgb) / 0.8);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  color: var(--ink);
+  font-weight: 540;
+  animation: ph-bubble var(--duration-fast) var(--ease-smooth-out) both;
+}
+.ph-callctl {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+.ph-callctl .btn {
+  min-width: 116px;
+}
+
+/* Work */
+.ph-runs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 12px 18px;
+}
+.ph-run {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 20px;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+  padding: 14px 12px 14px 15px;
+  border-radius: 16px;
+  text-align: left;
+  background: rgb(var(--paper-rgb));
+  box-shadow: inset 0 0 0 1px var(--hairline), var(--lift-1);
+  transition: box-shadow var(--duration-quick) var(--ease-smooth-out), transform var(--duration-micro) var(--ease-smooth-out);
+}
+.ph-run:hover {
+  box-shadow: inset 0 0 0 1.5px var(--cyan-ink), var(--lift-1);
+}
+.ph-run:active {
+  transform: scale(var(--scale-small));
+}
+.ph-run-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.ph-run-tag {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cyan-ink);
+}
+.ph-run-name {
+  font-size: 1rem;
+  font-weight: 680;
+  line-height: 1.25;
+}
+.ph-run-result {
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
+.ph-run-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 3px;
+}
+.ph-run-go {
+  color: var(--cyan-ink);
+}
+
+@keyframes ph-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--distance-base));
+  }
+}
+@keyframes ph-bubble {
+  from {
+    opacity: 0;
+    transform: translateY(var(--distance-small)) scale(var(--scale-small));
+  }
+}
+@keyframes ph-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ============ bento tile ============================================================================ */
+/* The bento's .tile-phone clips with inset(-72px ... 0): the device crosses the tile's top border and
+   is cut by its bottom one, the way Shanison's phone is cut by the screen edge (shan 10). */
+
+.pt {
+  --paper-rgb: 255 255 255; /* qa-ignore */
+  --pt-dev-w: clamp(150px, 52%, 220px);
+  --pt-right: max(14px, 6%);
+  --pt-rise: 18px;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  border-radius: var(--r-tile);
+  text-align: left;
+  color: var(--ink);
+}
+.pt:focus-visible {
+  box-shadow: var(--focus);
+  border-radius: var(--r-tile);
+}
+.pt-head {
+  position: absolute;
+  top: var(--pad);
+  bottom: var(--pad);
+  left: var(--pad);
+  width: calc(100% - var(--pt-dev-w) - var(--pt-right) - var(--pad) - 14px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+.pt-line {
+  display: block;
+  font-size: var(--t-small);
+  font-weight: 560;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+.pt-open {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: var(--t-small);
+  font-weight: 650;
+  color: var(--cyan-ink);
+}
+.pt-open .ph-ico-sm {
+  width: 13px;
+  height: 13px;
+  transition: transform var(--duration-fast) var(--ease-smooth-out);
+}
+.pt:hover .pt-open .ph-ico-sm {
+  transform: translateX(var(--distance-micro));
+}
+
+.pt-device {
+  container-type: inline-size;
+  position: absolute;
+  top: calc(var(--pt-rise) * -1);
+  right: var(--pt-right);
+  width: var(--pt-dev-w);
+  height: max(calc(var(--pt-dev-w) * 2.05), calc(100% + var(--pt-rise) + 24px));
+  padding: 6px;
+  border-radius: 30px;
+  background: var(--ink);
+  box-shadow: 0 0 0 1.25px var(--metal), inset 0 1px 0 rgb(var(--paper-rgb) / 0.16), var(--lift-2);
+  transform: rotate(-3deg);
+  transform-origin: 50% 0;
+  transition: transform var(--duration-fast) var(--ease-smooth-out);
+}
+.pt:hover .pt-device,
+.pt:focus-visible .pt-device {
+  transform: translateY(calc(var(--distance-base) * -1)) rotate(-1deg);
+}
+.pt:active .pt-device {
+  transform: translateY(calc(var(--distance-micro) * -1)) rotate(-1deg) scale(var(--scale-small));
+}
+.pt-screen {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--prism-1);
+}
+.pt-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 10px;
+}
+.pt-content .ph-status {
+  height: 26px;
+  padding: 0 10px;
+  font-size: 0.56rem;
+}
+.pt-content .ph-cam {
+  width: 8px;
+  height: 8px;
+}
+.pt-content .ph-lock {
+  padding: 0 2px;
+}
+.pt-content .ph-clock {
+  margin: 0 0 4px;
+  font-size: min(2.4rem, 22cqi);
+}
+.pt-content .ph-date {
+  font-size: 0.7rem;
+}
+.pt-card {
+  display: block;
+  border-radius: 14px;
+  background: rgb(var(--paper-rgb) / 0.72);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.pt-card .ph-overlap {
+  gap: 9px;
+  padding: 8px 9px;
+}
+.pt-card .ph-ov-num {
+  font-size: 0.8rem;
+}
+.pt-card .ph-ov-cap {
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.pt-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+  border-radius: 14px;
+  background: rgb(var(--paper-rgb));
+  box-shadow: inset 0 0 0 1px var(--hairline), var(--lift-1);
+}
+.pt-note > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pt-note-ico {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  color: var(--ink);
+}
+.pt-note-app {
+  font-family: var(--mono);
+  font-size: 0.54rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pt-note-text {
+  font-size: 0.74rem;
+  font-weight: 620;
+  line-height: 1.2;
+}
+
+/* ============ motion preferences ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .ph-home[data-enter],
+  .ph-appwrap[data-enter],
+  .ph-msg,
+  .ph-msg-act,
+  .ph-cap[data-current] {
+    animation-name: ph-fade;
+    animation-duration: var(--duration-quick);
+  }
+  .ph-typing span {
+    animation: none;
+    opacity: 0.6;
+  }
+  .pt-device,
+  .ph-icon,
+  .ph-homebar span {
+    transition: none;
+  }
+  .pt:hover .pt-device,
+  .pt:focus-visible .pt-device,
+  .pt:active .pt-device {
+    transform: rotate(-3deg);
+  }
+  .pt-open .ph-ico-sm {
+    transition: none;
+  }
+}
+@keyframes ph-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .ph-device,
+  .pt-device {
+    border: 2px solid CanvasText;
+  }
+  .ph-chip,
+  .ph-run,
+  .ph-post {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* ============ focus: elements that draw their own shadow restate the house focus ring ============== */
+.ph-notif:focus-visible,
+.ph-chip:focus-visible,
+.ph-run:focus-visible,
+.ph .btn:focus-visible {
+  box-shadow: var(--focus);
+}
+.ph-app:focus-visible {
+  box-shadow: none;
+}
+.ph-app:focus-visible .ph-icon {
+  box-shadow: var(--focus);
+}

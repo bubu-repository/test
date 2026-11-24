@@ -25,5 +25,14 @@ function render(o: Overlay, i: number) {
 
 export function Overlays() {
   const overlays = useApp((s) => s.overlays);
-  return <Suspense fallback={null}>{overlays.map(render)}</Suspense>;
+  // one boundary per overlay: a lazy run sheet loading must not suspend (and replay) the phone under it
+  return (
+    <>
+      {overlays.map((o, i) => (
+        <Suspense key={`${o.kind}-${i}`} fallback={null}>
+          {render(o, i)}
+        </Suspense>
+      ))}
+    </>
+  );
 }

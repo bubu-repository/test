@@ -7,7 +7,7 @@
   justify-content: center;
   /* the room or bento dims behind (shan 07: the room stays, softened) */
   background: rgb(var(--ink-rgb) / 0.18);
-  animation: scrim-in var(--duration-fast) var(--ease-smooth-out) both;
+  animation: scrim-in var(--duration-fast) var(--ease-smooth-out) backwards;
 }
 .sheet-scrim[data-tone='verdict'] {
   background: rgb(var(--ink-rgb) / 0.42);

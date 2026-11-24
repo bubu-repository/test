@@ -1,0 +1,63 @@
+/* Flat single-colour ring (tokens.css rule: rings and gauges are flat strokes, no gradients). */
+.ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  vertical-align: middle;
+}
+.ring > svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.ring-track {
+  fill: none;
+  stroke: rgb(var(--ink-rgb) / 0.1);
+}
+.ring-value {
+  fill: none;
+  stroke: var(--cyan-ink);
+  stroke-linecap: round;
+  /* a beat, then the sweep (gak §5). Opacity flips on when the sweep starts, so a round cap
+     never shows as a dot at 12 o'clock while the ring is still empty. */
+  transition:
+    stroke-dashoffset var(--duration-fast) var(--ease-smooth-out) var(--duration-quick),
+    opacity 0s linear var(--duration-quick);
+}
+.ring-value[data-zero] {
+  opacity: 0;
+  transition:
+    stroke-dashoffset var(--duration-fast) var(--ease-smooth-out) var(--duration-quick),
+    opacity 0s linear calc(var(--duration-quick) + var(--duration-fast));
+}
+.ring[data-tone='dark'] .ring-track {
+  stroke: rgb(255 255 255 / 0.16);
+}
+.ring[data-tone='dark'] .ring-value {
+  stroke: var(--cyan-glow);
+}
+.ring-center {
+  position: relative;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  line-height: 1;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-value,
+  .ring-value[data-zero] {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .ring-track {
+    stroke: GrayText;
+  }
+  .ring-value {
+    stroke: Highlight;
+  }
+}

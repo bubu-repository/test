@@ -1,0 +1,629 @@
+/* ==========================================================================
+   Runs: the project run sheet, the room's visit ring and the visit stamp.
+   Frost for reading, one dark verdict card for judging (gak 16, 17; docs/concept.md, Materials).
+   Rings are flat single-colour strokes. Orange appears once, on the stamp's email button.
+   ========================================================================== */
+
+/* The stamp's drop is 100 ms (gak 20, measured at 30 fps: 533 to 633 ms). One definition. */
+.run,
+.stamp-scrim {
+  --stamp-drop: 100ms;
+  --stamp-beat: var(--duration-fast);
+  --stamp-rise-at: calc(var(--stamp-beat) * 2 + var(--stamp-drop));
+}
+
+/* ---------- run sheet ------------------------------------------------------------------------- */
+.run {
+  display: grid;
+  gap: 14px;
+  padding-bottom: 4px;
+}
+.run-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.run-meta .chip {
+  max-width: 100%;
+  white-space: normal;
+}
+
+.run-visual {
+  aspect-ratio: 16 / 10;
+  border-radius: max(var(--r-inner), 8px);
+  overflow: hidden;
+  background: var(--prism-2);
+}
+.run-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The placeholder look shared with .chip[data-todo]: a hatch, a firm hairline, mono text. */
+.run-hatch {
+  background: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.6) 0 6px, rgb(var(--ink-rgb) / 0.04) 6px 7px);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  color: var(--ink-3);
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+}
+.run-visual.run-hatch {
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  text-align: center;
+  padding: 16px;
+}
+.run-hatch-note {
+  font-size: 0.68rem;
+}
+.run-hatch-sub {
+  font-size: 0.6rem;
+  color: var(--ink-3);
+  opacity: 0.85;
+}
+
+.run-result {
+  font-size: 1.06rem;
+  font-weight: 560;
+  font-stretch: 104%;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+}
+.run-result.run-hatch-line {
+  font-size: 0.68rem;
+  font-weight: 500;
+  font-stretch: 100%;
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: max(var(--r-inner), 8px);
+}
+
+/* ---------- cards ------------------------------------------------------------------------------ */
+.run-card {
+  border-radius: max(var(--r-inner), 10px);
+  padding: 14px;
+}
+.run-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 6px;
+}
+.run-card-aside {
+  font-size: var(--t-small);
+  color: var(--ink-3);
+}
+
+/* Criteria: printed on white, shown before the verdict (gak 17: the pass condition comes first). */
+.run-criteria {
+  background: rgb(255 255 255 / 0.72);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.crit-list {
+  display: grid;
+}
+.crit {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  gap: 2px 10px;
+  align-items: start;
+  padding: 11px 0;
+  border-top: 1px solid var(--hairline);
+}
+.crit:first-child {
+  border-top: 0;
+}
+.crit-tick {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--hairline-strong);
+  display: grid;
+  place-items: center;
+}
+.crit[data-met] .crit-tick {
+  background: var(--cyan-ink);
+  box-shadow: none;
+}
+.crit-tick svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.crit-title {
+  font-weight: 620;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+.crit-counts {
+  font-size: var(--t-small);
+  color: var(--ink-3);
+  line-height: 1.35;
+}
+.crit-value {
+  margin-top: 6px;
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.crit-value .chip {
+  white-space: normal;
+}
+.crit-quote {
+  quotes: '\201C' '\201D';
+}
+.crit-tier {
+  padding-top: 3px;
+  text-align: right;
+}
+.crit[data-met] .crit-tier {
+  color: var(--cyan-ink);
+}
+
+/* Verdict: the one dark card (gak 16 rows: cool dark glass for anything judged). */
+.run-verdict {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--verdict-glass);
+  color: #fff;
+  box-shadow: inset 1px 1px 0 rgb(255 255 255 / 0.18), inset -1px -1px 0 rgb(0 0 0 / 0.12);
+}
+/* Result pending: the track turns into a dashed outline, nothing is filled. */
+.run-verdict[data-pending] .ring-track {
+  stroke: rgb(255 255 255 / 0.4);
+  stroke-dasharray: 2 5;
+}
+.verdict-count {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.verdict-num {
+  font-size: 1.7rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.verdict-small {
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.78);
+}
+.verdict-kicker {
+  color: rgb(255 255 255 / 0.7);
+}
+.verdict-word {
+  margin: 2px 0 4px;
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.7rem);
+  font-weight: 680;
+  font-stretch: 112%;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  transform-origin: left center;
+}
+.run-verdict[data-pending] .verdict-word {
+  font-weight: 560;
+  color: rgb(255 255 255 / 0.9);
+}
+.verdict-detail {
+  font-size: var(--t-small);
+  line-height: 1.4;
+  color: rgb(255 255 255 / 0.82);
+  text-wrap: pretty;
+}
+/* The run stamp: only the first time a run with real evidence is seen. Lands after the ring sweep. */
+.verdict-word[data-stamp] {
+  animation: stamp-drop var(--stamp-drop) var(--ease-stamp) calc(var(--duration-quick) + var(--duration-fast)) both;
+}
+
+/* Phases: one dial segment per real phase (gak 15 turn dial), no colour coding, shapes carry kind. */
+.run-phases {
+  display: grid;
+  gap: 8px;
+  padding: 2px 2px 0;
+}
+.phases-row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+.phases-dial {
+  overflow: visible;
+}
+.phases-dial path,
+.phases-dial circle {
+  fill: none;
+  stroke: var(--cyan-ink);
+  stroke-width: 3;
+}
+.phases-dial[data-empty] circle {
+  stroke: var(--hairline-strong);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 5;
+}
+.phases-dial text {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  fill: var(--ink);
+}
+.phases-dial[data-empty] text {
+  fill: var(--ink-3);
+}
+.phases-empty {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+.phases-empty .chip {
+  white-space: normal;
+}
+.phases-note {
+  font-size: var(--t-small);
+  color: var(--ink-3);
+}
+.phases-list {
+  display: grid;
+  gap: 6px;
+}
+.phases-list li {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+}
+.phases-i {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--ink-3);
+}
+
+.run-next svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sheet-foot .run-next {
+  margin-left: auto;
+}
+.sheet-foot .btn[data-todo] {
+  white-space: normal;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .run {
+    gap: 16px;
+  }
+  .run-card {
+    padding: 16px 18px;
+  }
+  .run-verdict {
+    padding: 18px;
+    gap: 20px;
+  }
+}
+
+/* ---------- visit ring (room HUD) --------------------------------------------------------------- */
+.visit {
+  position: relative;
+  display: inline-block;
+}
+.visit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 14px 4px 5px;
+  border-radius: var(--r-pill);
+  color: var(--ink);
+  transition: transform var(--duration-micro) var(--ease-smooth-out);
+}
+.visit-btn:active {
+  transform: scale(var(--scale-medium));
+}
+.visit-num {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.visit-label {
+  color: var(--ink-2);
+}
+.visit-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 55;
+  width: min(300px, calc(100vw - 2 * var(--page-x)));
+  max-height: min(70svh, 520px);
+  overflow-y: auto;
+  padding: 14px;
+  border-radius: var(--r-tile);
+  background: var(--frost-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: var(--slab-edge), var(--lift-2);
+  color: var(--ink);
+  animation: visit-pop-in var(--duration-fast) var(--ease-smooth-out) both;
+  transform-origin: top right;
+}
+.visit-pop-lead {
+  margin: 4px 0 10px;
+  font-size: var(--t-small);
+  color: var(--ink-2);
+  line-height: 1.4;
+}
+.visit-tier {
+  padding: 10px 0 4px;
+  border-top: 1px solid var(--hairline);
+}
+.visit-tier-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.95rem;
+  font-weight: 640;
+}
+.visit-tier-count {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+.visit-tier[data-done] .visit-tier-count {
+  color: var(--cyan-ink);
+}
+.visit-tier-rule {
+  font-size: var(--t-small);
+  color: var(--ink-3);
+  margin: 2px 0 6px;
+}
+.visit-list {
+  display: grid;
+  gap: 1px 10px;
+  font-size: 0.86rem;
+  color: var(--ink-3);
+}
+.visit-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+/* the longer list sits in two columns so the whole visit fits without scrolling on a phone */
+.visit-list[data-cols] {
+  grid-template-columns: 1fr 1fr;
+}
+.visit-list li[data-found] {
+  color: var(--ink);
+}
+.visit-dot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--hairline-strong);
+}
+li[data-found] > .visit-dot {
+  background: var(--cyan-ink);
+  box-shadow: none;
+}
+@keyframes visit-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--distance-small) * -1)) scale(var(--scale-small));
+  }
+}
+
+/* ---------- visit stamp ------------------------------------------------------------------------- */
+.stamp-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: max(24px, env(safe-area-inset-top)) var(--page-x) max(24px, env(safe-area-inset-bottom));
+  background: var(--verdict-glass);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  backdrop-filter: blur(10px) saturate(120%);
+  color: #fff;
+  animation: stamp-fade var(--duration-quick) var(--ease-smooth-out) both;
+}
+.stamp {
+  width: min(100%, 380px);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  outline: none;
+}
+.stamp-kicker {
+  color: rgb(255 255 255 / 0.72);
+  animation: stamp-fade var(--duration-quick) var(--ease-smooth-out) both;
+}
+.stamp-word-box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 18px 0 14px;
+  min-height: 1.1em;
+  font-size: clamp(3.1rem, 15vw, 5.6rem);
+}
+.stamp-word {
+  position: relative;
+  font-size: inherit;
+  font-weight: 720;
+  font-stretch: 125%;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+  outline: none;
+  /* the empty beat (gak 20: 266-500 ms of title only), then the drop */
+  animation: stamp-drop var(--stamp-drop) var(--ease-stamp) var(--stamp-beat) both;
+}
+.stamp-ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.9em;
+  height: 1.9em;
+  margin: -0.95em 0 0 -0.95em;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.55);
+  opacity: 0;
+  animation: stamp-ripple var(--duration-very-slow) var(--ease-smooth-out) calc(var(--stamp-beat) + var(--stamp-drop)) both;
+  pointer-events: none;
+}
+.stamp-line,
+.stamp-note,
+.stamp-card {
+  animation: stamp-rise var(--duration-fast) var(--ease-smooth-out) var(--stamp-rise-at) both;
+}
+.stamp-line {
+  max-width: 32ch;
+  font-size: 1rem;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.stamp-note {
+  margin-top: 6px;
+  font-size: var(--t-small);
+  color: rgb(255 255 255 / 0.7);
+}
+
+/* The clear acrylic card: cut edge lit top left, thickness bottom right (tokens --slab-edge). */
+.stamp-card {
+  width: 100%;
+  margin-top: 22px;
+  padding: 18px 18px 16px;
+  border-radius: var(--r-tile);
+  background: rgb(246 250 255 / 0.94);
+  box-shadow: var(--slab-edge), var(--lift-2);
+  color: var(--ink);
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+.stamp-name {
+  font-size: 1.35rem;
+  font-weight: 680;
+  font-stretch: 110%;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.stamp-role {
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+.stamp-status {
+  margin-top: 4px;
+}
+.stamp-where {
+  font-size: var(--t-small);
+  color: var(--ink-3);
+}
+.stamp-clock {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-2);
+}
+.stamp-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+.stamp-actions .btn {
+  flex: 1 1 140px;
+}
+
+/* A tap during the drop skips to the settled state. */
+.stamp-scrim[data-done] *,
+.stamp-scrim[data-done] {
+  animation: none;
+}
+.stamp-scrim[data-done] .stamp-ripple {
+  opacity: 0;
+}
+
+@keyframes stamp-fade {
+  from {
+    opacity: 0;
+  }
+}
+/* 2.5x to 1x, ease-in, no overshoot (gak 20). Visible from the first frame, like the game. */
+@keyframes stamp-drop {
+  0% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes stamp-ripple {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.55);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+@keyframes stamp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--distance-base));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-word,
+  .verdict-word[data-stamp],
+  .stamp-line,
+  .stamp-note,
+  .stamp-card,
+  .visit-pop {
+    animation: stamp-fade var(--duration-quick) linear both;
+  }
+  .stamp-ripple {
+    display: none;
+  }
+}
+@media (forced-colors: active) {
+  .run-verdict,
+  .stamp-card,
+  .visit-pop {
+    border: 1px solid CanvasText;
+  }
+}
+/* The dialog takes focus so the screen reader reads it; it is not a control, so no ring. */
+.stamp:focus,
+.stamp:focus-visible {
+  box-shadow: none;
+}
