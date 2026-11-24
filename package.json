@@ -1,45 +1,28 @@
 {
-  "name": "adelia-room",
+  "name": "adelia-cc",
   "private": true,
-  "version": "2.0.0",
-  "description": "Adelia's Room — the portfolio of Adelia Tiara, AI Product Engineer: one room you walk into, where every object opens a piece of her work.",
+  "version": "3.0.0",
+  "description": "adelia.cc: Adelia Tiara, product designer and AI product engineer. A glass bento for the quick read, a room for the long one.",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && npm run build:cv && npm run build:knowledge && vite build",
-    "build:cv": "node scripts/build-cv.mjs",
+    "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "eval:moci": "node scripts/eval-moci.mjs",
-    "preview": "vite preview",
-    "serve": "node server/index.mjs",
-    "start": "npm run build && node server/index.mjs",
-    "build:knowledge": "node scripts/build-knowledge.mjs"
+    "preview": "vite preview --port 4173",
+    "shots": "node scripts/screenshots.mjs",
+    "qa": "node scripts/qa.mjs"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "@fontsource/bagel-fat-one": "^5.3.0",
-    "@fontsource/doto": "^5.3.0",
-    "@fontsource/jetbrains-mono": "^5.3.0",
-    "@fontsource/m-plus-rounded-1c": "^5.3.0",
-    "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.2",
-    "@react-three/postprocessing": "^3.2.2",
-    "gifenc": "^1.0.3",
-    "postprocessing": "^6.39.5",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "three": "^0.186.1",
-    "zustand": "^5.0.15"
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@types/node": "^22.20.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^5.2.0",
-    "pdf-lib": "^1.17.1",
     "typescript": "5.9",
     "vite": "^7.3.7"
   }
