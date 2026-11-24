@@ -1,6 +1,0 @@
-# Netlify / static hosting for Adelia's Room.
-# Real files win over these rules: /cv.pdf (built by `npm run build:cv`) and /assets/* are served as files.
-# Every room route (/, /work/*, /launch, /admin, …) is the single-page app.
-# Without the Node API, /api/* is a 404 and the app runs in local demo mode.
-/api/*  /index.html  404
-/*      /index.html  200
