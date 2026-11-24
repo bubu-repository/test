@@ -56,13 +56,13 @@ The status column is what I saw when checking on 24 November 2026.
 | S31 | MDN, prefers-reduced-transparency | https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-transparency | "Limited availability ... Experimental" | live |
 | S32 | WCAG 2.2 | https://www.w3.org/TR/WCAG22/ | 1.4.3, 1.4.11, 2.2.2, 2.4.7, 2.4.11, 2.5.8 | live |
 | S33 | Mozilla and WebKit bugs on backdrop-filter cost | https://bugzilla.mozilla.org/show_bug.cgi?id=1732817, https://bugs.webkit.org/show_bug.cgi?id=271340 | low-end GPU jank, root compositing memory | live |
-| S34–S37 | Client-sent: inspora.design, saved.design, vibedesign.tips, directoryyy.com | see §11 | taste signals | live (inspora post pages sit behind a Vercel bot checkpoint) |
+| S34-S37 | Client-sent: inspora.design, saved.design, vibedesign.tips, directoryyy.com | see §11 | taste signals | live (inspora post pages sit behind a Vercel bot checkpoint) |
 
 **Dead or blocked links.** nevflynn.com, the well-known bento portfolio, returns `500 Internal Server Error`. andrewwoan.com is "Site under construction". godly.website now 301-redirects to recent.design. awwwards.com is blocked from this container, land-book.com returns 403 and siteinspire.com returns 429. I did not cite anything from those sites. The Lead covers yanhladchenko.com.
 
 ---
 
-## 1. Glass done well, 2025–26
+## 1. Glass done well, 2025-26
 
 ### What Apple actually says (S1, extracted from the live HIG page)
 
@@ -81,7 +81,7 @@ The status column is what I saw when checking on 24 November 2026.
 | **Apple Vision Pro** ([S5](https://www.apple.com/apple-vision-pro/)) | `trends/img/03-apple-vision-pro-window-in-room.jpg` | A wide curved window showing a misty city at dawn floats inside a softly lit living room, with a sofa, a lamp and a rug. | This is the closest real reference for "a room with glass in it". The room is the world and the panels float in it, which is the model for our Screen 2 HUD. |
 | **Mercury** ([S7](https://mercury.com)) | `trends/img/04-mercury-glass-over-world.jpg` | A photographic world (a desk on a misty hill) with the email field and the "Launch demo" pill as translucent glass capsules. The headline sits on the sky without any panel. | Glass over a photographic world, with small glass areas only for the controls and calm type. Translate this to cold blue-hour light. |
 | **vibedesign.tips #010 "Liquid glass material"** ([S9](https://vibedesign.tips/010-liquid-glass/), client-sent, 131K views) | `trends/img/05-vibedesign-010-liquid-glass.jpg` | A "Glass Hours" music player in glass over a deep blue wave. It shows a dot-matrix album tile, a progress bar and transport icons, with the code `.player { background: var(--glass-tint); backdrop-filter: var(--glass-blur) var(--glass-lens); box-shadow: var(--glass-edge); color: var(--glass-ink); }`. | It gives the best public recipe, with **six layers: shadow, blur and lift, rim refraction, tint veil, rim highlights and adaptive ink**. Turning any component into glass means changing just those four declarations. Exact values are in §8.1. |
-| **kube.io refraction** ([S8](https://kube.io/blog/liquid-glass-css-svg/)) | `trends/img/06-kube-refraction-lens.jpg` | A circular glass lens over a magenta-and-navy gradient, with its edge visibly bending the shapes behind it. | This is real Snell's-law displacement with `feDisplacementMap` inside `backdrop-filter`, but it is **Chromium-only**. Mobile Firefox and Safari get no bend. Use it only as an enhancement on 1–2 small controls. |
+| **kube.io refraction** ([S8](https://kube.io/blog/liquid-glass-css-svg/)) | `trends/img/06-kube-refraction-lens.jpg` | A circular glass lens over a magenta-and-navy gradient, with its edge visibly bending the shapes behind it. | This is real Snell's-law displacement with `feDisplacementMap` inside `backdrop-filter`, but it is **Chromium-only**. Mobile Firefox and Safari get no bend. Use it only as an enhancement on 1-2 small controls. |
 | *also:* inspora frosted "quick actions" tile and Daryl's "Properties / Presets" glass pill over a cloudy sky | `trends/img/21-client-inspora.jpg`, `trends/img/08-imdaryl-spec-frame-grid.jpg` | Inspora shows four action keys ("Chase overdue · Offer a plan · New invoice · Ask the agent") frosted over a pastel gradient. Daryl shows a glass segmented pill over sky and cloud. | A cold sky behind glass is the palette we want. |
 
 ### What makes glass read as real, and what makes it look cheap
@@ -92,7 +92,7 @@ The status column is what I saw when checking on 24 November 2026.
 | **A rim highlight on two sides** (top-left bright, bottom-right dimmer) plus a 0.5px inner contour | A uniform 1px white border all round |
 | A **shallow blur with saturation and brightness lift**: vibedesign uses `blur(2px) saturate(180%) brightness(1.06)` for controls, and thicker frost for content | A heavy blur with no saturation boost, which goes milky grey (vibedesign: *"over-blurring with low saturation makes the glass look milky"*) |
 | **Tint density that adapts** to how busy the backdrop is. Raise density, not ink opacity, to pass contrast. | A fixed 10% white whatever is behind it |
-| A **specular sheen** (a radial gradient from the top-left) and 2–4% **grain** so the surface doesn't band | Gradient banding and a perfectly smooth wash |
+| A **specular sheen** (a radial gradient from the top-left) and 2-4% **grain** so the surface doesn't band | Gradient banding and a perfectly smooth wash |
 | **Real thickness**: rim refraction, or a bottom inner shadow to fake it | A flat sheet with a drop shadow |
 | **Hierarchy**: one or two glass controls, with the content on calmer material | Every card glassy, or glass on glass (HIG: *"sparingly"*; sea-style: *"every card glassy"* banned) |
 | **Adaptive ink**: dark text with `multiply` on light glass, light text with `plus-lighter` on dark glass | Grey text that disappears on the brightest spot behind it |
@@ -105,8 +105,8 @@ The status column is what I saw when checking on 24 November 2026.
 |---|---|---|---|
 | **Supabase product bento** ([S10](https://supabase.com)) | `trends/img/07-supabase-bento.jpg` | One wide tile (Postgres Database, with three check-marked facts and an elephant line drawing), then six single tiles. Each has an icon and title, one sentence, and a small live diagram (auth emails, a deploy globe, a vector cube, an API list). | This is the scannable formula: **icon + 2-word title + one sentence + one visual proof** per tile, with exactly one wide tile carrying priority. |
 | **Daryl Patigas** ([S11](https://imdaryl.com/)) | `trends/img/08-imdaryl-spec-frame-grid.jpg` | Pixel rulers along the top and left edges, the label "Column 1060 · Scale 1:1", crosshair marks, and a live London time and weather chip. Below a short bio sits "Fig 0.1 · Nine pieces. Each cell is one thing I made.", an edge-to-edge 3×3 grid of live motion pieces. On phone the bio comes first and the grid stacks under it. | This is a **real portfolio using sea-style's spec-sheet framing** (pillar 6), and it reads as craft rather than gimmick. The grid caption tells a recruiter what a cell is. Steal the "Fig" captions and the live time chip (Adelia: WIB, open to remote). |
-| **Bento Grids gallery** ([S12](https://bentogrids.com)) | `trends/img/09-bentogrids-gallery.jpg` | A gallery of 2–4-tile bento compositions with Dark/Light filters. Most are SaaS feature grids, many dark-on-dark. | Use it for references. The good ones vary tile size by importance; the bad ones are uniform piles of dark tiles with tiny text. |
-| **Masonry as a cousin**: vibedesign.tips, saved.design, inspora (client-sent) | `trends/img/21–23-client-*.jpg` | Three to four column masonry of demo cards, each with a single media area plus a title and view/like counts in small type, filtered by black pill tabs. | The client already likes dense, quiet, media-first grids with tiny metadata. Our bento can be denser than Apple's. |
+| **Bento Grids gallery** ([S12](https://bentogrids.com)) | `trends/img/09-bentogrids-gallery.jpg` | A gallery of 2-4-tile bento compositions with Dark/Light filters. Most are SaaS feature grids, many dark-on-dark. | Use it for references. The good ones vary tile size by importance; the bad ones are uniform piles of dark tiles with tiny text. |
+| **Masonry as a cousin**: vibedesign.tips, saved.design, inspora (client-sent) | `trends/img/21-23-client-*.jpg` | Three to four column masonry of demo cards, each with a single media area plus a title and view/like counts in small type, filtered by black pill tabs. | The client already likes dense, quiet, media-first grids with tiny metadata. Our bento can be denser than Apple's. |
 
 **What makes a bento scannable for a recruiter, rather than a pile of tiles**
 
@@ -173,9 +173,9 @@ The status column is what I saw when checking on 24 November 2026.
 | Apple WWDC23 ([S29](https://developer.apple.com/videos/play/wwdc2023/10158/)) | Springs are two numbers, **duration + bounce**. The examples use 0, 0.15 and 0.3 at 0.5 s; these are the presets `.smooth` (0), `.snappy` (small bounce) and `.bouncy` (higher bounce). |
 | Motion ([S28](https://motion.dev/docs/react-transitions)) | `visualDuration` (s) plus `bounce` (default **0.25**; 0 is critically damped; negative values overdamp but arrive at the same time). Setting stiffness, damping or mass overrides both. |
 | Material 3 Expressive ([S30](https://m3.material.io/styles/motion/overview/how-it-works)) | Verified on m3.material.io: **spatial** springs (position, size, rotation, corners) overshoot; **effects** springs (colour, opacity) don't; each has three speeds (fast for small elements, default, slow for large). The numbers come from community Flutter packages, not verified on m3.io: standard spatial default 700 / 0.9, expressive spatial default 380 / 0.8, expressive effects 1600 / 1.0. |
-| sea-style (client signature) | Chrome 150–250ms `cubic-bezier(.22,1,.36,1)` with no bounce; hover and press 150ms `(.4,0,.2,1)`; hero spring 260/20/m1 (about bounce 0.25); tilt 150/15; layout and morph 400/30; shimmer loops 4–6 s. |
-| vibedesign #011 easing (client-sent) | out `(0,0,.58,1)` for entrances · out-strong `(.22,1,.36,1)` for settling (**identical to sea-style**) · in `(.42,0,1,1)` for exits only · in-out `(.42,0,.58,1)` for things on screen · overshoot `(.34,1.56,.64,1)` for small confirmations only, never over 64px · spring `linear(0,.32,.78,1.04,1.09,1.06,1.02,1,.99,.99,1)` for gesture releases. Durations: small 150–250 in / 120–200 out; medium 250–350; large 350–500; hover and press 100–150; springs about 1.5× the plain duration; stagger 100–200 for child parts. |
-| vibedesign #015 UI continuity (client-sent) | `cubic-bezier(.32,.72,0,1)`, a fast start with a long settle. Phone: full-screen becoming 450–700ms, menus and sheets 350–500ms; desktop about ⅔ of that. Stagger 20–50ms (about 25 for menus). The page behind a presented panel goes to scale **0.94** and dims **30%**. Origin-only content fades out over the first 25–35%; destination-only content fades in after 45–55%. **Never block input**; reversal retraces the path. Reduced motion: a 150ms cross-fade. |
+| sea-style (client signature) | Chrome 150-250ms `cubic-bezier(.22,1,.36,1)` with no bounce; hover and press 150ms `(.4,0,.2,1)`; hero spring 260/20/m1 (about bounce 0.25); tilt 150/15; layout and morph 400/30; shimmer loops 4-6 s. |
+| vibedesign #011 easing (client-sent) | out `(0,0,.58,1)` for entrances · out-strong `(.22,1,.36,1)` for settling (**identical to sea-style**) · in `(.42,0,1,1)` for exits only · in-out `(.42,0,.58,1)` for things on screen · overshoot `(.34,1.56,.64,1)` for small confirmations only, never over 64px · spring `linear(0,.32,.78,1.04,1.09,1.06,1.02,1,.99,.99,1)` for gesture releases. Durations: small 150-250 in / 120-200 out; medium 250-350; large 350-500; hover and press 100-150; springs about 1.5× the plain duration; stagger 100-200 for child parts. |
+| vibedesign #015 UI continuity (client-sent) | `cubic-bezier(.32,.72,0,1)`, a fast start with a long settle. Phone: full-screen becoming 450-700ms, menus and sheets 350-500ms; desktop about ⅔ of that. Stagger 20-50ms (about 25 for menus). The page behind a presented panel goes to scale **0.94** and dims **30%**. Origin-only content fades out over the first 25-35%; destination-only content fades in after 45-55%. **Never block input**; reversal retraces the path. Reduced motion: a 150ms cross-fade. |
 
 Images: `trends/img/19-vibedesign-015-ui-continuity.jpg` shows a phone "Library" demo mid-morph over a grainy painted field, with the title doubling as it moves into the header, and pattern tabs for Navigation, Card, Player, Search, Chart and Menu. `trends/img/20-vibedesign-019-021-017.jpg` shows three tips. Scroll cards: "Bloom" and "Signal" cards stacking with a "0.89 progress" chip and "The golden rule: scrubbed directly by scroll position". Ring cards: a curved ring of watercolour gradient cards with Perspective 860 / Glass rim 160 / Dispersion 25% / Flow 20% / Corner 32 sliders. Loading states: a task app with a Spinner / Skeleton / Progress / Optimistic switcher.
 
@@ -185,7 +185,7 @@ Images: `trends/img/19-vibedesign-015-ui-continuity.jpg` shows a phone "Library"
 
 | Topic | Source fact | Our rule (§8.3) |
 |---|---|---|
-| backdrop-filter cost | web.dev: *"may harm performance. Test it."* Mozilla bugs: jank on low-end Android Adreno GPUs, *"well short of hitting a smooth 60FPS"*. WebKit bug: forces root compositing and uses extra memory ([S33](https://bugs.webkit.org/show_bug.cgi?id=271340)). No source gives a per-layer number; practitioner guides say 3–5, unmeasured. | **≤ 3 live blurred surfaces visible at once on phone, ≤ 6 on desktop**. Blur ≤ 16px on phone and ≤ 24px on desktop. **Never animate the blur radius.** Never put backdrop-filter on the scroller or on anything larger than about half the viewport; use a pre-blurred image layer instead. |
+| backdrop-filter cost | web.dev: *"may harm performance. Test it."* Mozilla bugs: jank on low-end Android Adreno GPUs, *"well short of hitting a smooth 60FPS"*. WebKit bug: forces root compositing and uses extra memory ([S33](https://bugs.webkit.org/show_bug.cgi?id=271340)). No source gives a per-layer number; practitioner guides say 3-5, unmeasured. | **≤ 3 live blurred surfaces visible at once on phone, ≤ 6 on desktop**. Blur ≤ 16px on phone and ≤ 24px on desktop. **Never animate the blur radius.** Never put backdrop-filter on the scroller or on anything larger than about half the viewport; use a pre-blurred image layer instead. |
 | Compositor-only animation | web.dev: *"restrict animations to opacity and transform"*. `top`/`left` dropped 50% of frames against 1% for `transform`. `will-change` *"sparingly"*. | transform, opacity, plus `filter` and `clip-path` on small elements only. Add `will-change` just before an animation and remove it after. |
 | LCP | Good ≤ **2.5 s** at p75 (mobile and desktop measured separately). Elements with `opacity:0` are ignored, and full-viewport background-like images are excluded. | LCP ≤ **2.0 s** p75 on a mid-range Android over 4G. The LCP element is bento text or the portrait tile, never a fading-in element. |
 | Long blank load | vibedesign #017: no loader under 300ms; once shown, hold ≥ 500ms; one indicator per wait. | No splash. The bento is prerendered HTML. The room is a poster first, with progress only if a wait passes 300ms. |
@@ -238,7 +238,7 @@ Every bento tile has a home object in the room, and on Enter **each tile flies t
   - `::view-transition-group(*) { animation-duration: 520ms; animation-timing-function: cubic-bezier(.32,.72,0,1); }`
   - Stagger with `animation-delay` per name (0/30/60/90ms).
   - For the aspect-ratio change (card to object), set `::view-transition-old(x), ::view-transition-new(x) { height: 100%; overflow: clip; object-fit: cover; }`.
-  - Keep tile text **out** of the shared element so it fades in the first 30% (vibedesign: origin-only content fades out over 25–35%).
+  - Keep tile text **out** of the shared element so it fades in the first 30% (vibedesign: origin-only content fades out over 25-35%).
   - Run A's veil-clearing and tile-exit for everything that isn't named.
 - **Support and fallback.** Same-document VT is Baseline (Chrome 111+, Safari 18+, Firefox 144+). Without it, A runs alone. A FLIP fallback through Motion `layoutId` is only worth it if Motion is adopted anyway.
 - **Gotchas.**
@@ -246,7 +246,7 @@ Every bento tile has a home object in the room, and on Enter **each tile flies t
   - A VT can't be reversed mid-flight; a new one skips the old.
   - Snapshots freeze canvas and video, which is fine here.
   - **Name ≤ 8 elements**, and only ones on screen.
-  - Each snapshot is a GPU texture. My estimate is about 12 MB for a full-screen root at DPR 3 (1179×2556×4 B), so old plus new is about 24 MB plus the groups. Fine on modern phones; test on a 3–4 GB RAM Android.
+  - Each snapshot is a GPU texture. My estimate is about 12 MB for a full-screen root at DPR 3 (1179×2556×4 B), so old plus new is about 24 MB plus the groups. Fine on modern phones; test on a 3-4 GB RAM Android.
 - **Reduced motion.** Skip the VT and run A's 150ms cross-fade.
 - **Why it wins.** The menu *becomes* the room: "my 3 projects" turn into 3 objects you can pick up, so the bento and the room are the same inventory seen two ways. This is the one designers will screenshot.
 
@@ -276,7 +276,7 @@ For moving *between* rooms inside Screen 2 (living room → closet for dress-up)
   --ink-2: oklch(0.446 0.03 256.8);
   --shadow-ink: 8 20 40;                       /* cool navy, never pure black */
 
-  /* FROST = content layer (bento tiles, room panels) — Apple "standard material", thick */
+  /* FROST = content layer (bento tiles, room panels): Apple "standard material", thick */
   --frost-bg:   rgb(246 250 255 / .66);
   --frost-blur: 20px;                           /* 16px on (max-width: 600px) */
   --frost-edge: inset 0 1px 0 rgb(255 255 255 / .75),
@@ -284,7 +284,7 @@ For moving *between* rooms inside Screen 2 (living room → closet for dress-up)
                 0 1px 2px rgb(var(--shadow-ink) / .08),
                 0 16px 40px -16px rgb(var(--shadow-ink) / .28);
 
-  /* LIQUID = control layer (dock, Contact, Back to Bento, phone chrome) — vibedesign #010 values */
+  /* LIQUID = control layer (dock, Contact, Back to Bento, phone chrome): vibedesign #010 values */
   --glass-tint: linear-gradient(180deg, rgb(255 255 255 / .24), rgb(255 255 255 / .06));
   --glass-filter: blur(3px) saturate(180%) brightness(1.06);
   --glass-edge: inset 1.5px 1.5px 1px -1px rgb(255 255 255 / .95),
@@ -305,7 +305,7 @@ For moving *between* rooms inside Screen 2 (living room → closet for dress-up)
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: radial-gradient(120% 80% at 15% 0%, rgb(255 255 255 / .35), transparent 55%);
 }
-.frost::after {                                  /* 3–4% grain kills banding */
+.frost::after {                                  /* 3-4% grain kills banding */
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: url("/tex/noise-128.png"); opacity: .035; mix-blend-mode: overlay;
 }
@@ -355,7 +355,7 @@ Rules:
 ```css
 :root {
   --dur-press: 100ms;  --dur-1: 150ms;  --dur-2: 200ms;  --dur-3: 300ms;  --dur-4: 450ms;
-  --dur-room: 560ms;   /* phone; desktop 400ms (≈ ⅔–0.7×) */
+  --dur-room: 560ms;   /* phone; desktop 400ms (≈ ⅔-0.7×) */
   --stagger: 25ms;     /* max 8 staggered items */
   --ease-out:        cubic-bezier(.22, 1, .36, 1);   /* chrome + settle (sea-style = vibedesign) */
   --ease-enter:      cubic-bezier(0, 0, .58, 1);     /* toasts, popovers */
@@ -372,13 +372,13 @@ Rules:
 | `spring.chrome` | visualDuration .25, bounce 0 | 1.0 | nav, sheets, panels | Apple `.smooth`, M3 effects |
 | `spring.layout` | stiffness 400, damping 30 | 0.75 | tile morph, Dynamic Island on the phone | sea-style |
 | `spring.hero` | 260 / 20 / mass 1 | 0.62 | character reactions, phone pop-up | sea-style |
-| `spring.tilt` | 150 / 15 (Quiet: 120 / 18) | 0.61 | holo cards, hover tilt ≤ 8–12° | sea-style ≈ vibedesign 140/15 |
+| `spring.tilt` | 150 / 15 (Quiet: 120 / 18) | 0.61 | holo cards, hover tilt ≤ 8-12° | sea-style ≈ vibedesign 140/15 |
 | `spring.light` | 160 / 25.3 | 1.0 | glare and light position | vibedesign #018 |
 | `spring.meter` | 170 / 26 | 1.0 | gauge fills (no overshoot) | derived, critically damped |
 | `spring.needle` | 60 / 5.5 | 0.36 | live needle wobble on one hero gauge | vibedesign #018 compass |
 | `spring.flip` | 70 / 11 | 0.66 | card flip | vibedesign #018 |
 
-Chrome never bounces. Only the character, the phone and the holo cards get life. Ambient loops of 4–6 s run on the hero only, and pause when off-screen or when the tab is hidden.
+Chrome never bounces. Only the character, the phone and the holo cards get life. Ambient loops of 4-6 s run on the hero only, and pause when off-screen or when the tab is hidden.
 
 **Library note.** The repo has no Motion today. Either adopt `motion/react` (check the bundle cost on the bento route) or use CSS `linear()` springs plus a tiny spring integrator in one rAF loop for pointer-driven values.
 
@@ -422,11 +422,11 @@ Chrome never bounces. Only the character, the phone and the holo cards get life.
 |---|---|---|
 | Bento → room | A + B morph, 560 ms | 150 ms cross-fade; no scale or translate; no VT |
 | Scroll door (C) | scrubbed keyframes | disabled: plain sections, and the Enter button jumps |
-| Character idle (blink, breathe 4–6 s) | on | one still pose; reactions become a 150 ms swap |
+| Character idle (blink, breathe 4-6 s) | on | one still pose; reactions become a 150 ms swap |
 | Holo cards | tilt, sway, flip | no tilt or sway; flip becomes an instant swap or 200 ms fade; glare may still follow the pointer |
 | Gauges | spring to value, digit flip | final value at once |
-| Ambient (dust, light shimmer) | on hero only, 4–6 s | off |
-| Hover and press feedback | 100–150 ms | kept (opacity or colour only) |
+| Ambient (dust, light shimmer) | on hero only, 4-6 s | off |
+| Hover and press feedback | 100-150 ms | kept (opacity or colour only) |
 | Folding rooms | 600 ms hinge | 150 ms cross-fade |
 
 A global pause toggle covers WCAG 2.2.2 for anyone without the OS setting.
@@ -486,11 +486,11 @@ Also out: scroll-jacking or forced snapping (vibedesign #019 golden rule); a Web
 | Conflict | Resolution |
 |---|---|
 | The brief's "glassy bento" vs sea-style's *"every card glassy"* banned and HIG *"Don't use Liquid Glass in the content layer"* | Tiles are **frost** (standard material, thick); only the controls are **liquid**. The hero tile carries the colour. |
-| sea-style's *"Never two heroes in one view"* and 70–80% quiet stage vs a room with "objects everywhere" | Colour and saturation go only on the character and the 3 project objects. Everything else is desaturated cool, and other objects reveal on focus or hint. |
+| sea-style's *"Never two heroes in one view"* and 70-80% quiet stage vs a room with "objects everywhere" | Colour and saturation go only on the character and the 3 project objects. Everything else is desaturated cool, and other objects reveal on focus or hint. |
 | sea-style's warm gradient families (Sunset Haze, Golden Fog, Ember Mesh) vs the "cold" brief | Restrict to **Pastel Frost, Ocean Fuzz, Sky Cloud, Iris Holo (on foil only) and Chrome**. |
 | sea-style's "glass on white is banned" vs `docs/revamp-plan.md`'s *"white glass with dark text on the page"* | The plan's page glass is exactly the banned case. Proposal A fixes it with the room behind the glass. |
 | sea-style's type (Space Grotesk + Geist + Geist Mono) vs the repo's Mona Sans + JetBrains Mono | The team must pick one. Don't ship four families. |
-| sea-style's shimmer loops of 4–6 s vs WCAG 2.2.2 (> 5 s needs a pause) | Hero only, pause off-screen, and a global motion toggle. |
+| sea-style's shimmer loops of 4-6 s vs WCAG 2.2.2 (> 5 s needs a pause) | Hero only, pause off-screen, and a global motion toggle. |
 | sea-style's sound ("Sound is soft and physical") vs accessibility | Off by default, with a toggle (sea-style already says "Mute toggle always"). |
 
 ---
@@ -512,7 +512,7 @@ Also out: scroll-jacking or forced snapping (vibedesign #019 golden rule); a Web
 | **vibedesign #015 UI continuity** | vibedesign | `19-…` | **Taken.** Timings and principles for §7. |
 | **vibedesign #018 Holo card** | vibedesign | `17-…` | **Taken.** Springs, layers and the a11y rules in §4 and §8. |
 | **vibedesign #019 / #021 / #017** (scroll cards, ring cards, loading) | vibedesign | `20-…` | #019 and #017 **taken** (§7 C, §8.3). #021 **rejected for the build**: two-pass WebGL 2, per-pixel DOF. The idea of a ring of cards could inspire a project picker in CSS-3D fallback form only. |
-| **vibedesign #023 mobile web** | vibedesign (text) | – | **Taken**: `-webkit-tap-highlight-color: transparent`, all `:hover` inside `@media (hover:hover)`, `:active` everywhere, a floating bottom bar at `bottom: calc(12px + env(safe-area-inset-bottom))` with height 56, which folds to a 40px capsule after 8px of downward scroll travel. iOS 26+ Safari samples the top fixed element for the toolbar tint, so hide inactive layers with `visibility:hidden`, not `opacity:0`. |
+| **vibedesign #023 mobile web** | vibedesign (text) | - | **Taken**: `-webkit-tap-highlight-color: transparent`, all `:hover` inside `@media (hover:hover)`, `:active` everywhere, a floating bottom bar at `bottom: calc(12px + env(safe-area-inset-bottom))` with height 56, which folds to a 40px capsule after 8px of downward scroll travel. iOS 26+ Safari samples the top fixed element for the toolbar tint, so hide inactive layers with `visibility:hidden`, not `opacity:0`. |
 | **Daryl Patigas** (imdaryl.com) | directoryyy | `08-…` | **Taken**: spec frame, Fig captions, 9-cell evidence grid, glass pill over sky. |
 | **Chloe Yan** (chloeyan.me) | directoryyy | `11-…` | **Taken**: objects as menu, always-visible labels on touch, live counters in the corners. **Rejected**: warm peach palette. |
 | **Melike Turgut** (meliketurgut.com, "Halloween portfolio" on saved.design) | saved | `12-…`, `25-…` | **Taken**: 8 tactile jelly objects = 8 chapters on a calm stage (the live site today shows the non-Halloween version). |

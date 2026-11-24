@@ -1,40 +1,52 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-time="morning" data-glass="frost">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Adelia’s Room · Adelia Tiara, AI Product Engineer</title>
-    <meta name="description" content="Adelia Tiara is an AI product engineer and 2026 Informatics graduate in Bekasi, Indonesia. Walk into her room: case studies, the toolkit, her CV, and a printer that books a chat." />
-    <meta name="theme-color" content="#F7F8FA" />
+    <title>Adelia Tiara · Product Designer & AI Product Engineer</title>
+    <meta name="description" content="Adelia Tiara designs and builds AI products and interactive websites end to end. Based in Bekasi, Indonesia (UTC+7), open to remote roles abroad." />
+    <meta name="theme-color" content="#e4f7fd" />
     <meta name="color-scheme" content="light" />
     <meta name="author" content="Adelia Tiara" />
     <link rel="canonical" href="https://adelia.cc/" />
-    <meta property="og:title" content="Adelia’s Room · Adelia Tiara, AI Product Engineer" />
-    <meta property="og:description" content="She designs and builds AI products people can trust, from the first interview to the shipped code. Come in, look around, book a chat." />
+    <meta property="og:title" content="Adelia Tiara · Product Designer & AI Product Engineer" />
+    <meta property="og:description" content="A glass bento for the quick read, and a room for the long one." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://adelia.cc/" />
-    <meta property="og:site_name" content="Adelia’s Room" />
     <meta property="og:image" content="https://adelia.cc/og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Adelia’s Room: a clear acrylic sign over her pink room, with a Book a chat key." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://adelia.cc/og.jpg" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      /* Before first paint: the room follows the clock in Bekasi (UTC+7), or the visitor's choice. */
+      (function () {
+        var t = 'morning';
+        try {
+          var saved = JSON.parse(sessionStorage.getItem('adelia.cc/v3') || '{}');
+          if (saved.timeOverride) t = saved.timeOverride;
+          else {
+            var h = new Date(Date.now() + 7 * 36e5).getUTCHours();
+            t = h >= 5 && h < 17 ? 'morning' : h >= 17 && h < 19 ? 'dusk' : 'night';
+          }
+          if (saved.glass) document.documentElement.dataset.glass = saved.glass;
+        } catch (e) {}
+        document.documentElement.dataset.time = t;
+        if (location.pathname.indexOf('/room') === 0) document.documentElement.dataset.screen = 'room';
+        var l = document.createElement('link');
+        l.rel = 'preload';
+        l.as = 'image';
+        l.href = '/veil/' + t + '.webp';
+        document.head.appendChild(l);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <noscript>
-      <div style="font-family: system-ui, sans-serif; max-width: 34em; margin: 4em auto; padding: 0 1em; color: #161b26; line-height: 1.55">
-        <p style="font: 500 11px/1.4 ui-monospace, Menlo, monospace; letter-spacing: 0.14em; text-transform: uppercase; color: #5c6472">Adelia’s Room · Bekasi</p>
-        <p>
-          Adelia’s Room needs JavaScript to open the door. Adelia Tiara is an AI product engineer (B.Sc. Informatics, class of 2026)
-          in Bekasi, Indonesia, open to full-time roles.
-        </p>
-        <p>
-          Email her at <a href="mailto:aadeliatiara@gmail.com" style="color: #1f5f96; font-weight: 700">aadeliatiara@gmail.com</a>
-          or read <a href="/cv.pdf" style="color: #1f5f96; font-weight: 700">her CV (PDF)</a>.
-        </p>
+      <div style="font-family: system-ui, sans-serif; max-width: 34em; margin: 4em auto; padding: 0 1em; color: #14213a; line-height: 1.55">
+        <p><strong>Adelia Tiara</strong>, product designer and AI product engineer in Bekasi, Indonesia (UTC+7). Open to remote roles abroad.</p>
+        <p>Email: <a href="mailto:aadeliatiara@gmail.com" style="color: #1c75bf">aadeliatiara@gmail.com</a></p>
       </div>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>

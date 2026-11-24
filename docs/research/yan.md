@@ -22,8 +22,8 @@ Anything about those is marked *unverified* below.
 - **Nav:** one floating pill, centred at the top: `Home | About | Contact`, separated by hairlines,
   a very light grey fill (`#F8F8F8`) with a soft drop shadow. Three items, nothing else.
 - **Page:** pure white `#FFFFFF`. Cards are a flat light grey `#F7F7F7` with large rounded corners
-  (roughly 20–24 px at this scale), **no borders, no shadows**. Gutters are tight and even, about
-  12–16 px (measured 13 px horizontally, 16 px vertically in the capture).
+  (roughly 20-24 px at this scale), **no borders, no shadows**. Gutters are tight and even, about
+  12-16 px (measured 13 px horizontally, 16 px vertically in the capture).
 - **Grid:** the content block is ~1020 px wide in the capture, split about 40 / 60: a wide left
   column (~405 px) and a right side made of two equal columns (~295 px each). Cards span either one
   column or both right columns ("My design garden" spans the two right columns). Heights vary, so

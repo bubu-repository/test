@@ -58,7 +58,7 @@ Blocked or not used: YouTube video (bot check), bilibili video CDN (403/567), wi
 | Shop (相談) | `gakumas/img/14-shop-card-upgrade.jpg` | S7 | "Pポイントと交換するものを選んでください". Cards and drinks carry P prices, with strike-through "SALE" prices. Upgrading a card makes it glow gold, with a burst of diamond particles, a thin circle outline, and a "-100" P cost bubble. |
 | The run's goals | `gakumas/img/25-growth-info-goals.jpg` | S6 | The "育成情報" sheet shows a bar chart titled "最終試験の審査基準" (pink Vo tall, blue Da, yellow Vi) against a dashed 500 line. Below it, "育成課題" goal cards read "ボーカル200以上" → reward "Pポイント+50", then "ダンス450以上", and so on. |
 
-Observed run shape, all seen across S1 and S5–S8: weekly turns counting down to "中間" (midterm), then a final-push lesson, then 中間試験 (midterm exam), then weeks counting down to "最終", then 最終試験 (final exam), then the final produce evaluation, then the completion card. **Unverified:** whether a live performance always plays between the final exam ranking and the evaluation. The S9 video cuts straight from the exam to the evaluation, but the video is edited.
+Observed run shape, all seen across S1 and S5-S8: weekly turns counting down to "中間" (midterm), then a final-push lesson, then 中間試験 (midterm exam), then weeks counting down to "最終", then 最終試験 (final exam), then the final produce evaluation, then the completion card. **Unverified:** whether a live performance always plays between the final exam ranking and the evaluation. The S9 video cuts straight from the exam to the evaluation, but the video is edited.
 
 ### 2.3 A Lesson
 
@@ -100,7 +100,7 @@ Observed run shape, all seen across S1 and S5–S8: weekly turns counting down t
 | Briefing before the exam | `gakumas/img/17-exam-briefing.jpg` | S8 | Frosted, translucent dark panels over the 3D idol. "審査基準" shows a mini bar chart. **"合格条件: 3位以上 もしくはスコア1700以上"** states the pass condition up front. Per parameter: 278 ≫ 380% (pink), 548 ≫ 774% (blue), 465 ≫ 627% (amber), each rated "◎ すばらしい！". "タップして次へ". |
 | What changes vs a lesson | `gakumas/img/15-exam-hud.jpg` | S5, S7 | The CLEAR ring is replaced by a **turn dial**: a dark navy disc (#403B52) with the remaining-turn number, ringed by **one dashed segment per remaining turn, coloured by that turn's attribute** (pink/blue/yellow), with a white triangle pointer. A pink glow label beside it shows the current turn's attribute and multiplier ("ボーカル 1587%", #F45A8A). Cards preview **score**, not parameter gain. |
 | Ranking vs rivals | 15 | S5, S7 | A top strip of six portrait tiles with ordinals "1st 2nd 3rd 4th 5th 6th". The ordinal colours differ: 1st gold gradient, 2nd blue-lavender, 3rd red. Each tile has a score and a vertical stacked Vo/Da/Vi score bar. **A white vertical divider after 3rd is the pass line.** |
-| Exam result | `gakumas/img/16-exam-ranking-result.jpg` | S7 | A gold "1位" laurel medallion (#F7B730), then **frosted dark rows over a blurred, dimmed scene** (#495054–#595959). Each row has a big "1st" ordinal, avatar, name, "75,104 Pt" and a horizontal stacked bar (pink #F23585, blue #1B84ED, amber #F6B12F). The 1st row has a white outline. A **thin orange line after 3rd** marks the pass cut. Bottom: "再挑戦" (retry, "あと3回") in a white pill and **"次へ" as the one orange gradient pill** (#FD7041 → #FFA22B). |
+| Exam result | `gakumas/img/16-exam-ranking-result.jpg` | S7 | A gold "1位" laurel medallion (#F7B730), then **frosted dark rows over a blurred, dimmed scene** (#495054-#595959). Each row has a big "1st" ordinal, avatar, name, "75,104 Pt" and a horizontal stacked bar (pink #F23585, blue #1B84ED, amber #F6B12F). The 1st row has a white outline. A **thin orange line after 3rd** marks the pass cut. Bottom: "再挑戦" (retry, "あと3回") in a white pill and **"次へ" as the one orange gradient pill** (#FD7041 → #FFA22B). |
 
 ### 2.7 Result screen and the produce rank
 
@@ -109,7 +109,7 @@ Observed run shape, all seen across S1 and S5–S8: weekly turns counting down t
 | Final produce evaluation | `gakumas/img/19-final-eval-rank.jpg` | S8 | A charcoal screen (#2C2C2C) with a **large geometric tile pattern** in a slightly darker tone (#212121): quarter circles, squares and diamonds. Title "最終プロデュース評価". A **thin silver diamond frame** (#ACACAC) with internal arcs and hatching sits behind a soft white glow. Inside it is a big glossy pink **"A"**. Below: the evaluation number **"11459"** in white bold, then a **progress bar from "A" to "A+"** (white → cyan, #F2FCFF → #48DBFE) that is almost full. "TAPで次へ". |
 | Rank = a band on a continuous number | 19, 21, 22 | S8, S7 | 11,459 is A with the bar nearly at A+; S8's other captures show 11,553 to 11,863 as A+; S7 shows 13,045 to 13,113 as S. Inferred: the letter is a band over the evaluation points, and the bar shows progress through the band. Exact thresholds are not needed and are not claimed. |
 | What the rank is computed from | `gakumas/img/24-official-a-plus-criteria.jpg` | S2 | The official page: "A+を取るにはアイドルのパラメータの合計値をあげることが大事", "最終試験のスコアも最後の評価に関わってきます". The official guide for A+ is a parameter total of about 3,100 and a final exam score of about 13,000. **The rank comes from two inputs, both stated openly.** The exact formula is not given officially. |
-| Completion card | `gakumas/img/21-completion-card.jpg` | S8 | A white "certificate" page with a faint line pattern and "—✦—" rules at top and bottom. A pink header band carries the idol's name in **handwritten script**. A **tilted photo** (white border, slight rotation, shadow) shows a live-performance still, over a yellow band with the romanized name. Two "stamps" side by side: a gold laurel **"1位 / 最終試験"** and a pink **"A+ / プロデュース評価"**. One orange "完了する" CTA, plus a white "プロデュース履歴" secondary pill. |
+| Completion card | `gakumas/img/21-completion-card.jpg` | S8 | A white "certificate" page with a faint line pattern and "line-sparkle-line" rules at top and bottom. A pink header band carries the idol's name in **handwritten script**. A **tilted photo** (white border, slight rotation, shadow) shows a live-performance still, over a yellow band with the romanized name. Two "stamps" side by side: a gold laurel **"1位 / 最終試験"** and a pink **"A+ / プロデュース評価"**. One orange "完了する" CTA, plus a white "プロデュース履歴" secondary pill. |
 | Produce history record | `gakumas/img/22-produce-history.jpg` | S7 | A white sheet. Header: mode "定期公演『初』", a "プロ" pill (blue → violet gradient #92AEFF → #D480FF) and the date. A gold "S" with "13,113 Pt" and a thumbnail of the live. The idol card shows final Vo/Da/Vi with grade letters (B 798, A+ 1443, A+ 1310) and stamina. Below that: the support cards and memories used, final P-items and final skill cards. The bottom edge is a coral gradient band. |
 | Archive of runs | `gakumas/img/23-memory-archive.jpg` | S5 | "Memories": a grid of **date-stamped tiles ("24/06/27")**, each a frozen frame from that run's live with skill-card chips on top. A large hero preview above has a gold "S" in the corner. There are filter chips by idol and an orange "詳細を見る" CTA. |
 
@@ -117,7 +117,7 @@ Observed run shape, all seen across S1 and S5–S8: weekly turns counting down t
 
 ## 3. Palette samples
 
-Method: `python3 -I` with PIL. Each value is the median of a 7×7 box at a point, or the median of pixels that pass a colour test inside a region (`findcol`), or the dominant colour of a region (`quantize`). JPEG captures are ±3–5 per channel.
+Method: `python3 -I` with PIL. Each value is the median of a 7×7 box at a point, or the median of pixels that pass a colour test inside a region (`findcol`), or the dominant colour of a region (`quantize`). JPEG captures are ±3-5 per channel.
 
 | Hex | Image (in `/tmp/gakumas-work/dl/`, copy in `gakumas/img/`) | Coords / region | UI element | Read |
 |---|---|---|---|---|
@@ -127,36 +127,36 @@ Method: `python3 -I` with PIL. Each value is the median of a 7×7 box at a point
 | #FFDD15 / #FFAE01 | thumb_1.png | (345,900) / (323,612) | Vi button / Vi gauge arc | Lemon to amber. The Visual colour, and the only native warm hue in the HUD. |
 | #FF1F82 · #0287FC · #FFB617 | thumb_1.png | (433,145) (452,142) (470,140) | 審査基準 criteria bars | The Vo/Da/Vi trio at full saturation. |
 | #353336 | thumb_1.png | (216,600) | Gauge track | Dark translucent charcoal. |
-| #364F7A | fam/full_f20.jpg (img 18) | region 250–480 × 170–330 (blue pixels) | Maxed (S) Da gauge | Deep navy: "full" reads darker, not brighter. |
-| #B2FFE3 / #11A52D | thumb_1.png | (140–176, 625) / (164,600) | C+ grade letter fill / outline | Mint + green. |
-| #FCFDC5–#FFE09D / #FB4C0F | thumb_1.png | (248–268, 600–625) / (272,600) | B grade letter fill / outline | Cream-peach + red-orange. |
+| #364F7A | fam/full_f20.jpg (img 18) | region 250-480 × 170-330 (blue pixels) | Maxed (S) Da gauge | Deep navy: "full" reads darker, not brighter. |
+| #B2FFE3 / #11A52D | thumb_1.png | (140-176, 625) / (164,600) | C+ grade letter fill / outline | Mint + green. |
+| #FCFDC5-#FFE09D / #FB4C0F | thumb_1.png | (248-268, 600-625) / (272,600) | B grade letter fill / outline | Cream-peach + red-orange. |
 | #E4FD1B → #61FD44 → #2BF098 → #1DE2EA | appstore/as10.jpg (img 07) | row y=262, x=577 → 709 | Stamina bar (full) | Lime → green → mint → cyan. Cool-leaning. |
 | #8DF5EC | as10.jpg | (742,262) | 元気 shield | Pale aqua. |
-| #545F7C / #50586C | as10.jpg | 25–195 × 135–225 | "残りターン数" panel | **Translucent cool slate**: the game's own glass. |
-| #6A9EF7 | as10.jpg | 290–520 × 120–360 (blue pixels) | Da CLEAR ring line + numerals | Periwinkle. |
-| #F770BF | 4g_full/a816_013.jpg (img 08) | 255–372 × 0–200 (pink pixels) | Vo CLEAR ring arc | Soft pink. Lighter than the gauge pink because it sits over the scene. |
-| #FEBA32 | 4g_full/a816_024.jpg | 255–372 × 0–200 (gold pixels) | Vi CLEAR ring arc | Gold. |
-| #403B52 | 4g_full/a816_025.jpg (img 15) | 10–90 × 30–110 | Exam turn dial disc | Ink violet-navy. |
-| #F45A8A | a816_025.jpg | 85–180 × 60–100 | "ボーカル 1587%" | Pink attribute label. |
-| #495054 / #595959 | 4g_full/a816_026.jpg (img 16) | 20–560 × 560–860 | Exam result rows | **Frosted dark glass over a blurred scene.** |
+| #545F7C / #50586C | as10.jpg | 25-195 × 135-225 | "残りターン数" panel | **Translucent cool slate**: the game's own glass. |
+| #6A9EF7 | as10.jpg | 290-520 × 120-360 (blue pixels) | Da CLEAR ring line + numerals | Periwinkle. |
+| #F770BF | 4g_full/a816_013.jpg (img 08) | 255-372 × 0-200 (pink pixels) | Vo CLEAR ring arc | Soft pink. Lighter than the gauge pink because it sits over the scene. |
+| #FEBA32 | 4g_full/a816_024.jpg | 255-372 × 0-200 (gold pixels) | Vi CLEAR ring arc | Gold. |
+| #403B52 | 4g_full/a816_025.jpg (img 15) | 10-90 × 30-110 | Exam turn dial disc | Ink violet-navy. |
+| #F45A8A | a816_025.jpg | 85-180 × 60-100 | "ボーカル 1587%" | Pink attribute label. |
+| #495054 / #595959 | 4g_full/a816_026.jpg (img 16) | 20-560 × 560-860 | Exam result rows | **Frosted dark glass over a blurred scene.** |
 | #F23585 · #1B84ED · #F6B12F | a816_026.jpg | (330,286) (400,286) (445,286) | Stacked score bar | Vo/Da/Vi in a data bar. |
-| #FD7041 → #FFA22B | a816_026.jpg | 190–240 × 905–950 → 340–385 × 905–950 | "次へ" primary CTA | **The orange.** Red-orange to amber gradient. |
-| #F7B730 / #E69713 | a816_026.jpg | 50–130 × 100–190 | "1位" medal | Warm gold. |
-| #2C2C2C / #212121 | fam/full_f05.jpg (img 19) | 0–750 × 250–300 and 1050–1330 | Final evaluation background + tile pattern | Neutral charcoal, tone-on-tone geometry. |
-| #FE95BF / #B90614 | full_f05.jpg | 250–500 × 420–660 | Rank letter "A" fill / outline | Glossy pink with a deep red outline. |
+| #FD7041 → #FFA22B | a816_026.jpg | 190-240 × 905-950 → 340-385 × 905-950 | "次へ" primary CTA | **The orange.** Red-orange to amber gradient. |
+| #F7B730 / #E69713 | a816_026.jpg | 50-130 × 100-190 | "1位" medal | Warm gold. |
+| #2C2C2C / #212121 | fam/full_f05.jpg (img 19) | 0-750 × 250-300 and 1050-1330 | Final evaluation background + tile pattern | Neutral charcoal, tone-on-tone geometry. |
+| #FE95BF / #B90614 | full_f05.jpg | 250-500 × 420-660 | Rank letter "A" fill / outline | Glossy pink with a deep red outline. |
 | #ACACAC | full_f05.jpg | (140,540) | Diamond frame line | Silver. |
-| #F2FCFF → #48DBFE (end #1CD3FF) | full_f05.jpg | 175–560 × 975–1015 | Progress-to-next-rank bar | White → cyan. **The rank screen's accent is cold.** |
-| #F1D440 / #853C01 | 4g_full/a816_019.jpg (img 22) | 50–105 × 180–240 | "S" rank letter / outline | Gold + brown. |
-| #92AEFF → #D480FF | a816_019.jpg | 190–290 × 100–125 | "プロ" difficulty pill | Periwinkle → violet. |
-| #FFB7CE · #FACE53 | fam/full_f22.jpg (img 21) | 40–700 × 130–180 · 40–700 × 700–760 | Completion card bands | Sakura pink, butter yellow. |
-| #F3B03C / #FC75A6 | full_f22.jpg | 1位 laurel (60–330 × 780–1030) / A+ (420–700 × 800–1020) | Completion stamps | Gold + pink. |
-| #FFA85D | 4g_full/a703_006.jpg (img 02) | 20–110 × 20–100 | PLv badge | Orange. |
-| #FFB252 | a703_006.jpg | 470–560 × 700–790 | Home "ショップ" button | Orange. |
-| #FFEECF / #F5CFA7 | a703_006.jpg | 30–550 × 870–960 | Home curved nav bar | Cream/peach (possibly tinted by the scene). |
-| #5481A3 / #447091 | appstore/as2.jpg (img 01) | 0–800 × 0–300 | Title screen sky | Dusty steel blue. |
+| #F2FCFF → #48DBFE (end #1CD3FF) | full_f05.jpg | 175-560 × 975-1015 | Progress-to-next-rank bar | White → cyan. **The rank screen's accent is cold.** |
+| #F1D440 / #853C01 | 4g_full/a816_019.jpg (img 22) | 50-105 × 180-240 | "S" rank letter / outline | Gold + brown. |
+| #92AEFF → #D480FF | a816_019.jpg | 190-290 × 100-125 | "プロ" difficulty pill | Periwinkle → violet. |
+| #FFB7CE · #FACE53 | fam/full_f22.jpg (img 21) | 40-700 × 130-180 · 40-700 × 700-760 | Completion card bands | Sakura pink, butter yellow. |
+| #F3B03C / #FC75A6 | full_f22.jpg | 1位 laurel (60-330 × 780-1030) / A+ (420-700 × 800-1020) | Completion stamps | Gold + pink. |
+| #FFA85D | 4g_full/a703_006.jpg (img 02) | 20-110 × 20-100 | PLv badge | Orange. |
+| #FFB252 | a703_006.jpg | 470-560 × 700-790 | Home "ショップ" button | Orange. |
+| #FFEECF / #F5CFA7 | a703_006.jpg | 30-550 × 870-960 | Home curved nav bar | Cream/peach (possibly tinted by the scene). |
+| #5481A3 / #447091 | appstore/as2.jpg (img 01) | 0-800 × 0-300 | Title screen sky | Dusty steel blue. |
 | #6F63F4 / #5E50F4 / #A49BF7 | ytthumb/kYJqwyrqolw_maxresdefault.jpg | full frame | H.I.F mode key visual | Electric violet with geometric tiles. |
 
-**Is the warm accent earned?** I measured the share of strongly orange pixels (hue 11–40°, saturation >0.55, value >0.75) per screen:
+**Is the warm accent earned?** I measured the share of strongly orange pixels (hue 11-40°, saturation >0.55, value >0.75) per screen:
 
 | Screen | Orange share |
 |---|---|
@@ -173,7 +173,7 @@ Method: `python3 -I` with PIL. Each value is the median of a 7×7 box at a point
 
 The exam screen is 6.6% only because of a sunset scene and orange card pictograms. The store screenshot is 8.7% only because of the marketing banner.
 
-In-game, orange is **rationed**. It marks the single "go forward / commit" action (次へ, 完了する, 詳細を見る, 特訓) and a few status badges (PLv, Shop). Gold is kept for 1st place and S. The **marketing layer** (S1–S4 banners, S2 cards) is orange-heavy. Verdict: one warm accent has earned its place **only as the commit/CTA colour plus the achievement gold**. Never use it as a surface. The rank screen itself uses no orange at all.
+In-game, orange is **rationed**. It marks the single "go forward / commit" action (次へ, 完了する, 詳細を見る, 特訓) and a few status badges (PLv, Shop). Gold is kept for 1st place and S. The **marketing layer** (S1-S4 banners, S2 cards) is orange-heavy. Verdict: one warm accent has earned its place **only as the commit/CTA colour plus the achievement gold**. Never use it as a surface. The rank screen itself uses no orange at all.
 
 ---
 
@@ -183,7 +183,7 @@ In-game, orange is **rationed**. It marks the single "go forward / commit" actio
 - **Ordinals.** "1st/2nd/3rd" pair a huge numeral with a small suffix. In the exam strip each ordinal has its own gradient (gold, blue-lavender, red).
 - **Latin labels.** Geometric caps: "CLEARまで", "PERFECT", "SKIP", "SELECT", "TAPで次へ".
 - **Japanese UI.** A clean gothic sans, bold for titles. Not rounded.
-- **Editorial touches.** The logo and the idol's name on the completion card are in **handwritten script**, set against geometric sans. **"—✦—" thin rules with a centre sparkle** recur as dividers (week card, tooltips, completion card). A **geometric tile pattern** (quarter circles, squares, diamonds) is used as texture in several places: dark on the rank screen, violet on the H.I.F key visual, blue on loading screens (S12), and pale on menus. Pictogram card art adds to the graphic, poster-like feel.
+- **Editorial touches.** The logo and the idol's name on the completion card are in **handwritten script**, set against geometric sans. **"line-sparkle-line" thin rules with a centre sparkle** recur as dividers (week card, tooltips, completion card). A **geometric tile pattern** (quarter circles, squares, diamonds) is used as texture in several places: dark on the rank screen, violet on the H.I.F key visual, blue on loading screens (S12), and pale on menus. Pictogram card art adds to the graphic, poster-like feel.
 - **Material.** Three layers:
   1. Solid white cards with soft shadows for planning info (week, criteria, tooltips, records).
   2. **Translucent slate or charcoal glass over a blurred, dimmed 3D scene** for anything about performance and judgement (turn panel, exam briefing, ranking rows).
@@ -200,7 +200,7 @@ All timings come from S9 at 30 fps (1 frame ≈ 33 ms). Frames are in `gakumas/i
 1. A card is played. The ring stays at "109" for about 160 ms, an impact beat.
 2. The number then **ticks down with ease-out**: 108 (166 ms), 76 (233), 63 (266), 54 (300), 52 (333). That is about 170 ms for a 57-point drop, with big steps first and small steps last.
 3. In sync, the param pill ticks **up** (326 → 383) and a "+57" gain pill appears.
-4. Thin white outline circles ripple outward from the ring for about 0.3–0.5 s.
+4. Thin white outline circles ripple outward from the ring for about 0.3-0.5 s.
 5. The next card drops 52 → 40 → 30 → 6 → 2 → 0 in about 200 ms (866 → 1033 ms).
 6. At 0, the ring ripples for about 300 ms. Then a **"PERFECT" wordmark** fades and zooms in across the whole screen (about 1333 ms) with a pink-to-cyan chromatic glow and light rays, and holds for 1 s or more.
 7. A white flash then cuts to a close-up of the idol with a concentric-ring motif. This is from the 5 fps pass, so it is approximate.
@@ -209,19 +209,19 @@ All timings come from S9 at 30 fps (1 frame ≈ 33 ms). Frames are in `gakumas/i
 
 | Time | What happens |
 |---|---|
-| 0–266 ms | The exam scene crossfades into the charcoal pattern. The title "最終プロデュース評価" fades in **during** the crossfade. |
-| 266–500 ms | **Empty beat**: only the title on charcoal. |
+| 0-266 ms | The exam scene crossfades into the charcoal pattern. The title "最終プロデュース評価" fades in **during** the crossfade. |
+| 266-500 ms | **Empty beat**: only the title on charcoal. |
 | 533 ms | The grade letter **slams in oversized** (about 2.5× final size, overflowing the frame). |
-| 533–633 ms | It shrinks to final size in about 100 ms, a stamp. The silver diamond appears behind it at about 633 ms. |
+| 533-633 ms | It shrinks to final size in about 100 ms, a stamp. The silver diamond appears behind it at about 633 ms. |
 | 666 ms | Settled, with a white glow. |
-| 666–933 ms | Hold. |
-| 966–1066 ms | The **number and the next-rank bar fade up from a few px lower** (blurred at first). |
+| 666-933 ms | Hold. |
+| 966-1066 ms | The **number and the next-rank bar fade up from a few px lower** (blurred at first). |
 
 In total it takes about **1.1 s** to reach the full information screen, and then it waits for "TAPで次へ". The order is fixed: letter → number → next-band bar. The bar appeared already at its value; **no bar-fill animation was visible in this clip** (unverified whether one exists elsewhere).
 
 ### Other motion
 
-- **Exam / midterm result.** The "1位" gold medallion pops over the idol with a thin ring and sparkles, and holds about 1.3–1.7 s (from a 3 fps pass, approximate). The reward pick then plays an **iridescent pink → violet → cyan radial burst**.
+- **Exam / midterm result.** The "1位" gold medallion pops over the idol with a thin ring and sparkles, and holds about 1.3-1.7 s (from a 3 fps pass, approximate). The reward pick then plays an **iridescent pink → violet → cyan radial burst**.
 - **Gauges in the week HUD.** A static capture (img 18) shows a "+4" white pill with a cyan glow above the gauge that grew. **The arc-fill animation itself is unverified** (no 30 fps footage of it).
 - **Exam scores in later modes.** Very large white score numerals with a thin circle at top-centre (S12; low resolution, low confidence).
 
@@ -237,11 +237,11 @@ In total it takes about **1.1 s** to reach the full information screen, and then
 6. **Completion card as a certificate.** Script name, a tilted photo, two side-by-side "stamps", one orange CTA (img 21). Belongs on **result-and-rank** as the closing card of a project; the first stamp could be "Shipped" and the second the evidence rank.
 7. **The history record** as a case-study spine: mode/difficulty pill, date, a hero still, inputs (support cards = team, tools) and outputs (img 22). Belongs on **project run pages** (summary header).
 8. **Dated memory archive.** Date-stamped frozen frames (img 23). Belongs in the **room** (an album or shelf) and the project index.
-9. **Ease-out count-up with a "+N" gain pill.** About 160 ms delay, then a ~170–200 ms ease-out tick, with a thin ripple (img 11, 18). Belongs on **gauges**.
+9. **Ease-out count-up with a "+N" gain pill.** About 160 ms delay, then a ~170-200 ms ease-out tick, with a thin ripple (img 11, 18). Belongs on **gauges**.
 10. **Segmented turn dial.** One segment per remaining turn, coloured by type (img 15). Belongs on **project run pages** as the project timeline: each segment is a phase coloured by discipline. Real phases only.
 11. **Horseshoe gauge with a letter or value in the centre, open at the bottom** (img 04, 18). Belongs on **bento skills tile / gauges**, with honest content (see Do not copy #2 and Honest rank).
 12. **Orange rationed to one commit action per screen, gold only for achievement** (measured in §3). Belongs **globally**: the Contact button is the orange.
-13. **Geometric tile pattern + "—✦—" rules** as quiet texture (img 19, 21). Belongs on **transitions** (bento → room wipe) and section dividers.
+13. **Geometric tile pattern + "line-sparkle-line" rules** as quiet texture (img 19, 21). Belongs on **transitions** (bento → room wipe) and section dividers.
 14. **Shape encodes type** (circle vs hexagon art windows) with corner badges (img 12). Belongs on **skill chips** in the bento, e.g. circle for design skills and hexagon for engineering skills.
 15. **"PERFECT" wordmark cut-in with a white flash** (img 11). Belongs on **transitions**: use rarely, only when opening a project that truly reached PERFECT (verified outcome).
 
@@ -251,7 +251,7 @@ In total it takes about **1.1 s** to reach the full information screen, and then
 2. **The exact Vo/Da/Vi trio**: magenta/azure/amber with mic, shoe and face icons. As a set it reads as Gakumas data at a glance. Recolour into a cool family and use her own skill axes and icons.
 3. **The glossy bevelled grade letters and the silver diamond emblem with internal arcs.** These are specific assets. Make a flat or glass letter and our own frame shape.
 4. **Gacha and progression vocabulary**: SSR/SR rainbow rarity frames, P-drinks, PLv, stamina hearts on cards, "SKIP" with costs, a shop. HRD would read monetization, not craft, and it adds learning cost to a 5-second scan.
-5. **Fake rivals and fake points.** "1st vs 2nd–6th" leaderboards, invented "Pt" scores. A portfolio has no rivals, and inventing them breaks the honesty constraint. The only exception is a real, citable placement such as a hackathon result.
+5. **Fake rivals and fake points.** "1st vs 2nd-6th" leaderboards, invented "Pt" scores. A portfolio has no rivals, and inventing them breaks the honesty constraint. The only exception is a real, citable placement such as a hackathon result.
 6. **Home layout clone**: the curved smile-shaped bottom nav, round side buttons around a central character, the big pearl "Produce" pill. Too recognisable as a direct screen copy.
 7. **Verbatim Japanese UI strings** ("CLEARまで", "TAPで次へ", "最終プロデュース評価"). Write our own English microcopy. "Clear" and "Perfect" as plain words are fine; the PERFECT wordmark treatment is not.
 8. **Warm surfaces**: the cream home nav, brown round buttons, the orange marketing frames. They work against "cold and glassy".
@@ -276,7 +276,7 @@ Translation for adelia.cc, with nothing invented:
    - Reflection written
 2. **Two tiers, like the lesson ring.** **CLEAR** = shipped plus role stated. **PERFECT** = CLEAR plus a measured outcome with a cited source. The ring counts down the remaining criteria ("2 to Perfect"), so the number is a real count by construction.
 3. **Optional letter band.** Map the met-criteria count to letters with a published table (for example 2 = C, 3 = B, 4 = A, 5 = S). Show the "next band" bar as "1 more criterion to S", and link it to the table. A letter without its table is not allowed.
-4. **TODO state.** While Adelia has not supplied evidence, the ring shows an empty dashed track, a "—" for the number, and a hollow outline letter with "Result pending". In the build, a visible `TODO(adelia): metric + source` chip sits under it. **In production, show "In progress / result pending" honestly, or hide the rank component, rather than showing a placeholder that looks broken to recruiters.** The Lead decides which; I recommend "Result pending".
+4. **TODO state.** While Adelia has not supplied evidence, the ring shows an empty dashed track, a dash placeholder for the number, and a hollow outline letter with "Result pending". In the build, a visible `TODO(adelia): metric + source` chip sits under it. **In production, show "In progress / result pending" honestly, or hide the rank component, rather than showing a placeholder that looks broken to recruiters.** The Lead decides which; I recommend "Result pending".
 5. **Never**: rival ordinals, "Pt" scores, percentages or multipliers unless they are her real, sourced numbers.
 
 ## 9. Player's gut check
@@ -284,7 +284,7 @@ Translation for adelia.cc, with nothing invented:
 - **Right:** a ring that counts *down* what's left to CLEAR, then keeps going to PERFECT. That is the Gakumas feeling in my thumbs. A bar filling *up* reads as any other game.
 - **Right:** the letter lands *first* and lands *hard* (oversized slam, about 100 ms), then the number, then "next band". A slow fill-then-reveal reads as a different genre.
 - **Right:** one orange button per screen, everything else cool. Gakumas players won't miss the orange if Contact is the only orange thing.
-- **Wrong:** sparkle, heart and star confetti everywhere. Gakumas is cleaner than people remember: white cards, thin "—✦—" rules, pictograms, and glass over a blurred scene.
+- **Wrong:** sparkle, heart and star confetti everywhere. Gakumas is cleaner than people remember: white cards, thin "line-sparkle-line" rules, pictograms, and glass over a blurred scene.
 - **Wrong:** a rank with no visible criteria. Every player knows A+ comes from parameter total plus exam score. A letter with no "why" feels like a gacha pull.
 - **Wrong:** pink/cyan/yellow Vo/Da/Vi with mic, shoe and face icons. Fans will recognise it instantly as lifted.
 - **Right:** a dated archive of past runs with one frozen frame each. That is the "memories" habit players have, and it maps perfectly onto a project index.

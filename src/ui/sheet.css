@@ -1,0 +1,130 @@
+.sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* the room or bento dims behind (shan 07: the room stays, softened) */
+  background: rgb(var(--ink-rgb) / 0.18);
+  animation: scrim-in var(--duration-fast) var(--ease-smooth-out) both;
+}
+.sheet-scrim[data-tone='verdict'] {
+  background: rgb(var(--ink-rgb) / 0.42);
+}
+
+.sheet {
+  position: relative;
+  width: 100%;
+  max-height: min(86svh, 760px);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-tile) var(--r-tile) 0 0;
+  background: var(--frost-glass);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: var(--slab-edge), var(--lift-2);
+  color: var(--ink);
+  padding: 14px var(--pad) calc(var(--pad) + env(safe-area-inset-bottom));
+  outline: none;
+  animation: sheet-up var(--duration-slow) var(--ease-continuity) both;
+}
+.sheet[data-tone='verdict'] {
+  background: var(--verdict-glass);
+  color: #fff;
+  box-shadow: inset 1px 1px 0 rgb(255 255 255 / 0.18), var(--lift-2);
+}
+
+@media (min-width: 900px) {
+  .sheet-scrim {
+    align-items: center;
+    justify-content: flex-end;
+    padding: 84px 24px 24px;
+  }
+  .sheet {
+    width: 420px;
+    max-height: calc(100svh - 108px);
+    border-radius: var(--r-tile);
+    padding: 16px 22px 22px;
+    animation-name: sheet-side;
+  }
+  .sheet[data-wide] {
+    width: 560px;
+  }
+}
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+}
+.sheet-close {
+  width: 36px;
+  height: 36px;
+  margin-right: -6px;
+  border-radius: var(--r-pill);
+  display: grid;
+  place-items: center;
+  color: inherit;
+  transition: background-color var(--duration-quick) var(--ease-smooth-out);
+}
+.sheet-close:hover {
+  background: rgb(var(--ink-rgb) / 0.06);
+}
+.sheet[data-tone='verdict'] .sheet-close:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+.sheet-close svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.sheet-title {
+  margin: 10px 0 12px;
+  font-size: var(--t-title);
+  font-weight: 650;
+  font-stretch: 108%;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+.sheet-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0 calc(var(--pad) * -1);
+  padding: 0 var(--pad) 4px;
+}
+.sheet-foot {
+  padding-top: 14px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+@keyframes sheet-side {
+  from {
+    transform: translateX(28px);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .sheet-scrim {
+    animation-name: scrim-in;
+    animation-duration: var(--duration-quick);
+  }
+}

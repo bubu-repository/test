@@ -1,0 +1,266 @@
+@import '@fontsource-variable/mona-sans/wdth.css';
+@import '@fontsource-variable/martian-mono/wdth.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--prism-1);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 100%;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-padding-top: 80px;
+}
+body {
+  margin: 0;
+  min-height: 100svh;
+  font-size: var(--t-body);
+  line-height: 1.45;
+  font-stretch: 100%;
+  background: var(--prism-1);
+}
+body.locked {
+  overflow: hidden;
+}
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+a {
+  color: var(--cyan-ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  -webkit-tap-highlight-color: transparent;
+}
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+  border-radius: 8px;
+}
+::selection {
+  background: var(--prism-3);
+  color: var(--ink);
+}
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- printed labels (Martian Mono) ------------------------------------------------------ */
+.label {
+  font-family: var(--mono);
+  font-size: var(--t-label);
+  font-weight: 500;
+  font-stretch: 100%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  line-height: 1.3;
+}
+
+/* Screen-title tag. Shanison has one on every overlay (shan 07, 09, 10); ours is a clipped
+   corner chip in mono, not their parallelogram in a rounded face (do-not-copy 7). */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 10px 0 8px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--cyan-ink);
+  clip-path: polygon(0 0, 100% 0, 100% 62%, calc(100% - 8px) 100%, 0 100%);
+  border-radius: 4px 0 0 4px;
+}
+.tag::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background: var(--cyan-glow);
+  border-radius: 1px;
+}
+[data-tone='verdict'] .tag {
+  background: rgb(255 255 255 / 0.14);
+}
+
+/* ---------- chips ------------------------------------------------------------------------------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: rgb(255 255 255 / 0.7);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  font-size: 0.78rem;
+  font-weight: 520;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.chip[data-todo] {
+  color: var(--ink-3);
+  background: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.6) 0 6px, rgb(var(--ink-rgb) / 0.035) 6px 7px);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+}
+.chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 0 3px var(--cyan-wash);
+}
+
+/* Shape marks for skill kinds (gak 12: shape encodes type). Outline only (gak critique). */
+.mark {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border: 1.5px solid var(--cyan-ink);
+}
+.mark[data-shape='circle'] {
+  border-radius: 50%;
+}
+.mark[data-shape='hex'] {
+  border: 0;
+  background: var(--cyan-ink);
+  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+  -webkit-mask: radial-gradient(circle, transparent 2.6px, #000 2.8px);
+  mask: radial-gradient(circle, transparent 2.6px, #000 2.8px);
+}
+.mark[data-shape='diamond'] {
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+/* ---------- buttons ----------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: var(--r-pill);
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-stretch: 104%;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--ink);
+  background: rgb(255 255 255 / 0.86);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong), var(--lift-1);
+  transition: transform var(--duration-micro) var(--ease-smooth-out), background-color var(--duration-quick) var(--ease-smooth-out);
+}
+.btn:hover {
+  background: #fff;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-ghost {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+}
+.btn-sm {
+  min-height: 34px;
+  padding: 0 13px;
+  font-size: 0.82rem;
+}
+/* The only orange on the site (gak §3). Ink text: white on orange fails contrast. */
+.btn-commit {
+  color: var(--on-commit);
+  background: var(--commit);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), inset 0 -1px 0 rgb(150 50 0 / 0.18), 0 6px 18px -8px rgb(220 90 30 / 0.55);
+}
+.btn-commit:hover {
+  background: var(--commit);
+  filter: brightness(1.04);
+}
+.btn[data-todo] {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  background: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.6) 0 6px, rgb(var(--ink-rgb) / 0.04) 6px 7px);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  cursor: not-allowed;
+}
+
+/* ---------- liquid glass: controls only ---------------------------------------------------------- */
+.liquid {
+  background: var(--liquid-tint);
+  -webkit-backdrop-filter: var(--liquid-filter);
+  backdrop-filter: var(--liquid-filter);
+  box-shadow: var(--liquid-edge);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .liquid {
+    background: rgb(244 248 252 / 0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+@media (forced-colors: active) {
+  .tag,
+  .chip,
+  .btn {
+    border: 1px solid CanvasText;
+  }
+}

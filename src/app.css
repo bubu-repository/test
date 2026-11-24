@@ -1,0 +1,47 @@
+/* Layers, back to front:
+   room (z 1) → veil (z 2, the blurred room) → bento (z 3) → header and room HUD (z 50) → overlays (z 60). */
+
+.world {
+  position: relative;
+  min-height: 100svh;
+  isolation: isolate;
+}
+
+/* The veil is the room, blurred offline (scripts/bake-veil.mjs), tinted and grained.
+   The gradients underneath are the fallback while the image loads: the same bands as the room. */
+.veil {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-color: var(--wall);
+  background-image: var(--veil-img), linear-gradient(rgb(246 250 255 / 0.55), rgb(246 250 255 / 0.55)),
+    radial-gradient(60% 45% at 30% 30%, var(--sky-morning-2), transparent 70%),
+    linear-gradient(180deg, var(--wall) 0 64%, var(--floor) 64% 100%);
+  background-size: cover;
+  background-position: center;
+  transform: translateZ(0);
+}
+:root[data-time='morning'] {
+  --veil-img: url('/veil/morning.webp');
+}
+:root[data-time='dusk'] {
+  --veil-img: url('/veil/dusk.webp');
+}
+:root[data-time='night'] {
+  --veil-img: url('/veil/night.webp');
+}
+/* 3 % grain on the veil, against banding when a 96 px image is stretched (trends critique). */
+.veil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .13 0 0 0 0 .23 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+}
+
+.world[data-screen='room'] .veil {
+  opacity: 0;
+  visibility: hidden;
+}

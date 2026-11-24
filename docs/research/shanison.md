@@ -213,7 +213,7 @@ Shanison's mood is **"frosted white glass floating over a warm, lived-in, sunlit
 | 1 | Warm, lived-in room under a frosted glass HUD. Contrast is the point. | room | 01, 03 |
 | 2 | Opening any overlay blurs the live room with real depth-of-field, and the panel stays translucent. | room, bento, phone | 07, 08, 10 |
 | 3 | Phone boot choreography: HUD out, blur in, phone rises tilted and straightens, wallpaper, then icons fade in, then chrome. Closing reverses it. About 1 s. | phone | 11 |
-| 4 | A phone with 3 to 4 apps modelled on real app genres, given our own names and icons, with red unread dots. For us: Posts (work log), Chat (Q&A with Adelia), Call (voice intro), Stream (demo videos). | phone | 10, 12–15 |
+| 4 | A phone with 3 to 4 apps modelled on real app genres, given our own names and icons, with red unread dots. For us: Posts (work log), Chat (Q&A with Adelia), Call (voice intro), Stream (demo videos). | phone | 10, 12-15 |
 | 5 | The chat layout: left/right bubbles, a soft wallpaper with a stamp watermark, an input bar. Use it for "Ask me" or a recruiter FAQ that plays like a conversation. | phone | 13 |
 | 6 | An in-call screen with a round avatar, a name and a frosted subtitle box, where the visitor's lines are highlighted in another colour and a replay button appears at the end. Use it for a 30 s voice intro with captions. | phone | 14 |
 | 7 | The room changes with the visitor's local time (day, dusk, night through the window), plus a few seasonal props. | room | 05 |
@@ -226,14 +226,14 @@ Shanison's mood is **"frosted white glass floating over a warm, lived-in, sunlit
 | 14 | Song-select skewed glass card stack, where the selected card glows with a gradient border and a large preview sits at right. "Difficulty" orbs could become reading depth: TL;DR, Standard, Deep dive. | project picker | 24 |
 | 15 | A frosted see-through "today" board in the room (adapted from the login board): availability, timezone, current focus. | room | 25 (c) |
 | 16 | A "photo mode" that hides all UI to look at the room. | room | 02 |
-| 17 | Translucent highway over a performance, with a rainbow judgement word and large thin numerals. Only for a short "energy" moment. | live-ish moment | 20–22 |
+| 17 | Translucent highway over a performance, with a rainbow judgement word and large thin numerals. Only for a short "energy" moment. | live-ish moment | 20-22 |
 
 ## 12. DO NOT COPY
 
 1. **Any Shiny Colors or 283 IP.** That covers characters and look-alikes (including an assistant who resembles the office assistant), the "283" window lettering, the swan emblem, the feather logo, unit logos, chibi art, the app names Twesta, CHAIN and OurSTREAM, the app icons, music and MVs. It is an IP problem, and fans spot it instantly.
 2. **Real-app look-alikes.** The 電話 icon is a green speech-bubble phone, and CHAIN apes LINE. Do not mimic LINE, Instagram, WhatsApp or YouTube brand marks. Take the genre, not the trade dress.
 3. **The gacha and stamina HUD.** ST and LB gauges, the jewel counter with "+", stacked campaign banners, a red dot on everything, "10回無料！" callouts and the GET-stamp reward grid. To a recruiter these read as monetised clutter and dark patterns.
-4. **Putting the phone's navigation outside the device.** Shanison puts back, close and the app switcher around the phone (see 10, 12–15), and S10 rightly criticises it. On the web, keep controls inside the device and support Esc and the back button.
+4. **Putting the phone's navigation outside the device.** Shanison puts back, close and the app switcher around the phone (see 10, 12-15), and S10 rightly criticises it. On the web, keep controls inside the device and support Esc and the back button.
 5. **Making HRD play anything.** No rhythm game, no deck building, no Produce loop. The 5-second read must not depend on a mechanic. Keep the Live idea to a passive or optional moment.
 6. **The saturated neon Live palette as the site palette** (magenta, lime and lasers in 21 and 22). It fights the "cold glassy" brief. Energy belongs in a small, scoped moment.
 7. **The exact cyan tag shape, rounded font and white-outlined labels together, at Shanison's proportions.** Any one of them is fine. All three at once reads as a skin of the game.
